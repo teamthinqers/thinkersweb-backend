@@ -239,6 +239,42 @@ export const savedThoughtsRelations = relations(savedThoughts, ({ one }) => ({
   }),
 }));
 
+// Perspectives system relations
+export const perspectivesThreadsRelations = relations(perspectivesThreads, ({ one, many }) => ({
+  thought: one(thoughts, {
+    fields: [perspectivesThreads.thoughtId],
+    references: [thoughts.id],
+  }),
+  user: one(users, {
+    fields: [perspectivesThreads.userId],
+    references: [users.id],
+  }),
+  messages: many(perspectivesMessages),
+  participants: many(perspectivesParticipants),
+}));
+
+export const perspectivesMessagesRelations = relations(perspectivesMessages, ({ one }) => ({
+  thread: one(perspectivesThreads, {
+    fields: [perspectivesMessages.threadId],
+    references: [perspectivesThreads.id],
+  }),
+  user: one(users, {
+    fields: [perspectivesMessages.userId],
+    references: [users.id],
+  }),
+}));
+
+export const perspectivesParticipantsRelations = relations(perspectivesParticipants, ({ one }) => ({
+  thread: one(perspectivesThreads, {
+    fields: [perspectivesParticipants.threadId],
+    references: [perspectivesThreads.id],
+  }),
+  user: one(users, {
+    fields: [perspectivesParticipants.userId],
+    references: [users.id],
+  }),
+}));
+
 // Old system relations (legacy)
 export const dotsRelations = relations(dots, ({ one }) => ({
   user: one(users, {
@@ -356,6 +392,19 @@ export const insertUserBehaviorSchema = createInsertSchema(userBehavior, {
   entityType: (schema) => schema.refine(val => !val || ['dot', 'wheel', 'chakra', 'chat', 'search'].includes(val), "Invalid entity type").optional(),
   actionData: (schema) => schema.optional(),
 });
+
+// Perspectives schemas
+export const perspectivesMessagesInsertSchema = createInsertSchema(perspectivesMessages, {
+  messageBody: (schema) => schema.min(1, "Message cannot be empty").max(2000, "Message too long"),
+});
+
+export const perspectivesMessagesSelectSchema = createSelectSchema(perspectivesMessages);
+
+export const perspectivesThreadsInsertSchema = createInsertSchema(perspectivesThreads);
+export const perspectivesThreadsSelectSchema = createSelectSchema(perspectivesThreads);
+
+export const perspectivesParticipantsInsertSchema = createInsertSchema(perspectivesParticipants);
+export const perspectivesParticipantsSelectSchema = createSelectSchema(perspectivesParticipants);
 
 // Legacy tables for backward compatibility (keeping minimal structure)
 export const entries = pgTable("entries", {
