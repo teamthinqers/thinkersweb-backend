@@ -1,12 +1,13 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
 import { 
   Brain, Users, Heart,
   Cloud, List as ListIcon, Loader2, Maximize, Minimize, RefreshCw,
-  PenTool, Bookmark, Sparkles
+  PenTool, Bookmark, Sparkles, Send
 } from "lucide-react";
 import { SiWhatsapp, SiLinkedin, SiOpenai } from 'react-icons/si';
 import { useAuth } from "@/hooks/use-auth-new";
@@ -37,6 +38,17 @@ import { ThoughtDot } from "@/components/ThoughtCloudGrid";
 
 // Channel-specific visual configurations now in gridConstants
 
+interface PerspectiveMessage {
+  id: number;
+  messageBody: string;
+  createdAt: string;
+  user: {
+    id: number;
+    fullName: string | null;
+    avatar: string | null;
+  };
+}
+
 export default function SocialFeedPage() {
   const { user, isLoading: authLoading } = useAuth();
   const [, setLocation] = useLocation();
@@ -44,6 +56,8 @@ export default function SocialFeedPage() {
   const [dots, setDots] = useState<ThoughtDot[]>([]);
   const [viewMode, setViewMode] = useState<'cloud' | 'feed'>('cloud');
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [perspectiveInput, setPerspectiveInput] = useState('');
+  const messagesEndRef = useRef<HTMLDivElement>(null);
   
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -88,6 +102,54 @@ export default function SocialFeedPage() {
       });
     },
   });
+
+  // Fetch perspectives for selected thought
+  const { data: perspectivesData } = useQuery<{ messages: PerspectiveMessage[] }>({
+    queryKey: ['/api/thoughts', selectedDot?.id, 'perspectives'],
+    enabled: !!selectedDot,
+  });
+
+  // Post perspective mutation
+  const postPerspectiveMutation = useMutation({
+    mutationFn: async (data: { thoughtId: number; messageBody: string }) => {
+      const response = await apiRequest('POST', `/api/thoughts/${data.thoughtId}/perspectives`, {
+        messageBody: data.messageBody,
+      });
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/thoughts', selectedDot?.id, 'perspectives'] });
+      setPerspectiveInput('');
+      // Scroll to bottom after posting
+      setTimeout(() => {
+        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+      }, 100);
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
+
+  // Auto-scroll to bottom when new messages arrive
+  useEffect(() => {
+    if (perspectivesData?.messages) {
+      messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [perspectivesData?.messages]);
+
+  // Handle send perspective
+  const handleSendPerspective = () => {
+    if (!selectedDot || !perspectiveInput.trim()) return;
+    
+    postPerspectiveMutation.mutate({
+      thoughtId: selectedDot.id,
+      messageBody: perspectiveInput.trim(),
+    });
+  };
 
   // Load thoughts
   useEffect(() => {
@@ -444,10 +506,72 @@ export default function SocialFeedPage() {
                       </svg>
                       <h3 className="text-lg font-semibold text-gray-900">Perspectives</h3>
                     </div>
-                    <div className="flex-1 p-6 overflow-y-auto bg-gray-50">
-                      <div className="text-center text-gray-500 py-8">
-                        <p className="text-sm">Perspectives feature coming soon...</p>
-                        <p className="text-xs mt-2">Users will be able to share thoughts and reflections here</p>
+                    
+                    {/* Messages Area */}
+                    <div className="flex-1 overflow-y-auto p-4 bg-gray-50 space-y-3">
+                      {perspectivesData?.messages && perspectivesData.messages.length > 0 ? (
+                        <>
+                          {perspectivesData.messages.map((message) => (
+                            <div key={message.id} className="flex gap-3">
+                              <Avatar className="h-8 w-8 flex-shrink-0">
+                                <AvatarImage src={message.user.avatar || undefined} />
+                                <AvatarFallback className="bg-gradient-to-r from-amber-500 to-orange-500 text-white text-xs">
+                                  {message.user.fullName?.[0]?.toUpperCase() || 'U'}
+                                </AvatarFallback>
+                              </Avatar>
+                              <div className="flex-1 min-w-0">
+                                <div className="flex items-baseline gap-2 mb-1">
+                                  <span className="text-sm font-semibold text-gray-900">
+                                    {message.user.fullName || 'Anonymous'}
+                                  </span>
+                                  <span className="text-xs text-gray-500">
+                                    {new Date(message.createdAt).toLocaleTimeString('en-US', {
+                                      hour: 'numeric',
+                                      minute: '2-digit',
+                                      hour12: true
+                                    })}
+                                  </span>
+                                </div>
+                                <p className="text-sm text-gray-700 whitespace-pre-wrap break-words">
+                                  {message.messageBody}
+                                </p>
+                              </div>
+                            </div>
+                          ))}
+                          <div ref={messagesEndRef} />
+                        </>
+                      ) : (
+                        <div className="text-center text-gray-500 py-8">
+                          <p className="text-sm">No perspectives yet</p>
+                          <p className="text-xs mt-2">Be the first to share your thoughts!</p>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Input Area */}
+                    <div className="p-4 border-t border-gray-200 bg-white">
+                      <div className="flex gap-2">
+                        <Input
+                          value={perspectiveInput}
+                          onChange={(e) => setPerspectiveInput(e.target.value)}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter' && !e.shiftKey) {
+                              e.preventDefault();
+                              handleSendPerspective();
+                            }
+                          }}
+                          placeholder="Share your perspective..."
+                          className="flex-1"
+                          disabled={postPerspectiveMutation.isPending}
+                        />
+                        <Button
+                          onClick={handleSendPerspective}
+                          disabled={!perspectiveInput.trim() || postPerspectiveMutation.isPending}
+                          size="icon"
+                          className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600"
+                        >
+                          <Send className="h-4 w-4" />
+                        </Button>
                       </div>
                     </div>
                   </div>
