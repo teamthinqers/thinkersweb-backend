@@ -9,21 +9,6 @@ import { fileURLToPath } from 'url';
 // Load environment variables from .env file
 dotenv.config();
 
-// Test API connections
-console.log('OpenAI API key is configured and available');
-if (process.env.OPENAI_API_KEY) {
-  console.log('Testing OpenAI API connection...');
-  // OpenAI connection test will be done in openai.ts module load
-}
-
-if (process.env.DEEPSEEK_API_KEY) {
-  console.log('DeepSeek API key is configured and available');
-  console.log('Testing DeepSeek API connection...');
-  // DeepSeek connection test will be done in deepseek.ts module load
-} else {
-  console.log('DeepSeek API key not found - DeepSeek integration disabled');
-}
-
 // ES module replacement for __dirname
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -93,34 +78,65 @@ app.use((req, res, next) => {
 });
 
 (async () => {
+  // ALWAYS serve the app on port 5000
+  // this serves both the API and the client.
+  // It is the only port that is not firewalled.
+  const port = 5000;
+
+  // Register routes WITHOUT waiting for expensive operations
   const server = await registerRoutes(app);
 
+  // Error handler - MUST be before static serving
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
     const status = err.status || err.statusCode || 500;
     const message = err.message || "Internal Server Error";
-
     res.status(status).json({ message });
     throw err;
   });
 
-  // importantly only setup vite in development and after
-  // setting up all the other routes so the catch-all route
-  // doesn't interfere with the other routes
+  // Setup static serving or Vite - BEFORE server.listen
   if (app.get("env") === "development") {
     await setupVite(app, server);
   } else {
     serveStatic(app);
   }
 
-  // ALWAYS serve the app on port 5000
-  // this serves both the API and the client.
-  // It is the only port that is not firewalled.
-  const port = 5000;
+  // START LISTENING IMMEDIATELY - this is critical for deployment health checks
   server.listen({
     port,
     host: "0.0.0.0",
     reusePort: true,
   }, () => {
     log(`serving on port ${port}`);
+    
+    // Run expensive initialization AFTER server is listening
+    // This ensures deployment health checks pass quickly
+    setTimeout(async () => {
+      try {
+        // These operations run asynchronously after server is ready
+        
+        // Initialize vector database
+        try {
+          const { initializeVectorDB } = await import('./vector-db.js');
+          await initializeVectorDB();
+          console.log('Vector database initialization completed');
+        } catch (error) {
+          console.error('Vector database initialization failed:', error);
+        }
+        
+        // Test API connections
+        if (process.env.OPENAI_API_KEY) {
+          const { testOpenAIConnection } = await import('./openai.js');
+          testOpenAIConnection().catch(err => console.error('OpenAI test failed:', err));
+        }
+        
+        if (process.env.DEEPSEEK_API_KEY) {
+          const { testDeepSeekConnection } = await import('./deepseek.js');
+          testDeepSeekConnection().catch(err => console.error('DeepSeek test failed:', err));
+        }
+      } catch (error) {
+        console.error('Post-startup initialization error:', error);
+      }
+    }, 100); // Small delay to ensure server is fully ready
   });
 })();

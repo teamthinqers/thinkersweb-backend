@@ -15,8 +15,11 @@ if (!process.env.OPENAI_API_KEY) {
   console.log("OpenAI API key is configured and available");
 }
 
-// Add a test function to verify API connectivity
+// Lazy test function - only runs on first actual OpenAI call
+let connectionTested = false;
 async function testOpenAIConnection() {
+  if (connectionTested) return true;
+  
   try {
     console.log("Testing OpenAI API connection...");
     const response = await openai.chat.completions.create({
@@ -25,6 +28,7 @@ async function testOpenAIConnection() {
       max_tokens: 50
     });
     console.log("OpenAI connection successful:", response.choices[0]?.message?.content);
+    connectionTested = true;
     return true;
   } catch (error) {
     console.error("OpenAI connection test failed:", error);
@@ -32,8 +36,8 @@ async function testOpenAIConnection() {
   }
 }
 
-// Run the test immediately to check connectivity
-testOpenAIConnection();
+// Export for lazy testing
+export { testOpenAIConnection };
 
 /**
  * Generate a one-word summary for a dot

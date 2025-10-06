@@ -2224,14 +2224,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     return await getContextualSuggestions(req, res);
   });
 
-  // Initialize vector database on startup
-  try {
-    await initializeVectorDB();
-    console.log('Vector database initialization completed');
-  } catch (error) {
-    console.error('Vector database initialization failed:', error);
-    // Continue without vector DB for now - can be initialized manually via API
-  }
+  // Vector DB initialization moved to post-startup for faster deployment
 
   // ==========================================
   // INTELLIGENT VECTOR-ENHANCED CHAT
