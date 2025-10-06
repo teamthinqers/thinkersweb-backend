@@ -1,8 +1,15 @@
 import { Router } from 'express';
 import { db } from '@db';
-import { thoughts, savedThoughts, users } from '@shared/schema';
+import { 
+  thoughts, 
+  savedThoughts, 
+  users, 
+  perspectivesThreads, 
+  perspectivesMessages,
+  perspectivesParticipants 
+} from '@shared/schema';
 import { eq, desc, and, or, sql } from 'drizzle-orm';
-import { insertThoughtSchema } from '@shared/schema';
+import { insertThoughtSchema, perspectivesMessagesInsertSchema } from '@shared/schema';
 import { storeVectorEmbedding } from '../vector-db';
 import { calculateNeuralStrength } from '../neural-strength';
 
@@ -545,6 +552,178 @@ router.get('/neural-strength', async (req, res) => {
     res.status(500).json({
       success: false,
       error: 'Failed to calculate neural strength',
+      details: error instanceof Error ? error.message : 'Unknown error'
+    });
+  }
+});
+
+/**
+ * GET /api/thoughts/:thoughtId/perspectives
+ * Get all perspective messages for a thought
+ * Creates a social thread if it doesn't exist
+ */
+router.get('/:thoughtId/perspectives', async (req, res) => {
+  try {
+    const thoughtId = parseInt(req.params.thoughtId);
+
+    if (!thoughtId || isNaN(thoughtId)) {
+      return res.status(400).json({ error: 'Invalid thought ID' });
+    }
+
+    // Check if thought exists
+    const thought = await db.query.thoughts.findFirst({
+      where: eq(thoughts.id, thoughtId),
+    });
+
+    if (!thought) {
+      return res.status(404).json({ error: 'Thought not found' });
+    }
+
+    // Get or create social thread for this thought
+    let thread = await db.query.perspectivesThreads.findFirst({
+      where: and(
+        eq(perspectivesThreads.thoughtId, thoughtId),
+        eq(perspectivesThreads.threadType, 'social')
+      ),
+    });
+
+    // Create thread if it doesn't exist
+    if (!thread) {
+      const [newThread] = await db.insert(perspectivesThreads).values({
+        thoughtId,
+        threadType: 'social',
+      }).returning();
+      thread = newThread;
+    }
+
+    // Get all messages for this thread with user info
+    const messages = await db.query.perspectivesMessages.findMany({
+      where: and(
+        eq(perspectivesMessages.threadId, thread.id),
+        eq(perspectivesMessages.isDeleted, false)
+      ),
+      orderBy: perspectivesMessages.createdAt,
+      with: {
+        user: {
+          columns: {
+            id: true,
+            fullName: true,
+            avatar: true,
+          }
+        }
+      }
+    });
+
+    res.json({
+      success: true,
+      threadId: thread.id,
+      messages,
+    });
+
+  } catch (error) {
+    console.error('Fetch perspectives error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to fetch perspectives',
+      details: error instanceof Error ? error.message : 'Unknown error'
+    });
+  }
+});
+
+/**
+ * POST /api/thoughts/:thoughtId/perspectives
+ * Add a new perspective message to a thought
+ * Requires authentication
+ */
+router.post('/:thoughtId/perspectives', async (req, res) => {
+  try {
+    const userId = (req as any).user?.id;
+
+    if (!userId) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+
+    const thoughtId = parseInt(req.params.thoughtId);
+
+    if (!thoughtId || isNaN(thoughtId)) {
+      return res.status(400).json({ error: 'Invalid thought ID' });
+    }
+
+    // Validate message body
+    const validatedData = perspectivesMessagesInsertSchema.parse({
+      messageBody: req.body.messageBody,
+      userId,
+      threadId: 0, // Will be set below
+    });
+
+    // Get or create social thread for this thought
+    let thread = await db.query.perspectivesThreads.findFirst({
+      where: and(
+        eq(perspectivesThreads.thoughtId, thoughtId),
+        eq(perspectivesThreads.threadType, 'social')
+      ),
+    });
+
+    if (!thread) {
+      const [newThread] = await db.insert(perspectivesThreads).values({
+        thoughtId,
+        threadType: 'social',
+      }).returning();
+      thread = newThread;
+    }
+
+    // Insert the message
+    const [newMessage] = await db.insert(perspectivesMessages).values({
+      threadId: thread.id,
+      userId,
+      messageBody: validatedData.messageBody,
+      visibilityScope: 'public',
+    }).returning();
+
+    // Update thread's last activity
+    await db.update(perspectivesThreads)
+      .set({ lastActivityAt: new Date() })
+      .where(eq(perspectivesThreads.id, thread.id));
+
+    // Add user as participant if not already
+    const existingParticipant = await db.query.perspectivesParticipants.findFirst({
+      where: and(
+        eq(perspectivesParticipants.threadId, thread.id),
+        eq(perspectivesParticipants.userId, userId)
+      ),
+    });
+
+    if (!existingParticipant) {
+      await db.insert(perspectivesParticipants).values({
+        threadId: thread.id,
+        userId,
+      });
+    }
+
+    // Get the message with user info to return
+    const messageWithUser = await db.query.perspectivesMessages.findFirst({
+      where: eq(perspectivesMessages.id, newMessage.id),
+      with: {
+        user: {
+          columns: {
+            id: true,
+            fullName: true,
+            avatar: true,
+          }
+        }
+      }
+    });
+
+    res.status(201).json({
+      success: true,
+      message: messageWithUser,
+    });
+
+  } catch (error) {
+    console.error('Post perspective error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to post perspective',
       details: error instanceof Error ? error.message : 'Unknown error'
     });
   }
