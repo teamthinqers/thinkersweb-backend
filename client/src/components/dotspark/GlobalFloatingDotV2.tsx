@@ -13,7 +13,7 @@ interface FormData {
   // Dot fields
   summary: string;
   anchor: string;
-  pulse: string;
+  pulse: string[];  // Array of emotions for multi-select
   wheelId: string;
   dotChakraId: string;  // For direct dot-to-chakra mapping
   
@@ -77,7 +77,7 @@ function GlobalFloatingDotV2() {
   const [formData, setFormData] = useState<FormData>({
     summary: '',
     anchor: '',
-    pulse: '',
+    pulse: [],  // Array for multi-select emotions
     wheelId: '',
     dotChakraId: '',
     heading: '',
@@ -165,7 +165,7 @@ function GlobalFloatingDotV2() {
     setFormData({
       summary: '',
       anchor: '',
-      pulse: '',
+      pulse: [],  // Reset to empty array for multi-select
       wheelId: '',
       dotChakraId: '',
       heading: '',
@@ -175,6 +175,7 @@ function GlobalFloatingDotV2() {
       chakraId: '',
       purpose: ''
     });
+    setCustomEmotion('');  // Reset custom emotion too
   }, [contentType]);
 
   // Update capture mode when localStorage changes
@@ -223,6 +224,17 @@ function GlobalFloatingDotV2() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Validate emotions for dot content type
+    if (contentType === 'dot' && formData.pulse.length === 0) {
+      toast({
+        title: 'Validation Error',
+        description: 'Please select at least one emotion.',
+        variant: 'destructive'
+      });
+      return;
+    }
+    
     setIsLoading(true);
 
     try {
@@ -238,7 +250,7 @@ function GlobalFloatingDotV2() {
           ...payload,
           summary: formData.summary,
           anchor: formData.anchor,
-          pulse: formData.pulse,
+          pulse: JSON.stringify(formData.pulse),  // Convert array to JSON string
           wheelId: formData.wheelId ? parseInt(formData.wheelId) : null,
           chakraId: formData.dotChakraId ? parseInt(formData.dotChakraId) : null
         };
@@ -476,20 +488,30 @@ function GlobalFloatingDotV2() {
                         />
                       </div>
                       <div>
-                        <label className="text-xs font-medium text-amber-700 block mb-1">What's the emotion associated with your thought? *</label>
+                        <label className="text-xs font-medium text-amber-700 block mb-1">What's the emotion associated with your thought? * (Select multiple)</label>
                         <div className="space-y-2">
-                          {/* Emotion buttons */}
+                          {/* Emotion buttons - multi-select */}
                           <div className="grid grid-cols-3 gap-1">
                             {emotions.map((emotion) => (
                               <button
                                 key={emotion}
                                 type="button"
                                 onClick={() => {
-                                  setFormData({ ...formData, pulse: emotion });
-                                  setCustomEmotion('');
+                                  const currentEmotions = [...formData.pulse];
+                                  const emotionIndex = currentEmotions.indexOf(emotion);
+                                  
+                                  if (emotionIndex > -1) {
+                                    // Remove if already selected
+                                    currentEmotions.splice(emotionIndex, 1);
+                                  } else {
+                                    // Add if not selected
+                                    currentEmotions.push(emotion);
+                                  }
+                                  
+                                  setFormData({ ...formData, pulse: currentEmotions });
                                 }}
                                 className={`p-1.5 text-xs rounded border transition-all ${
-                                  formData.pulse === emotion
+                                  formData.pulse.includes(emotion)
                                     ? 'bg-amber-100 border-amber-300 text-amber-800 font-medium'
                                     : 'bg-gray-50 border-gray-200 text-gray-700 hover:bg-gray-100'
                                 }`}
@@ -500,20 +522,62 @@ function GlobalFloatingDotV2() {
                           </div>
                           
                           {/* Custom emotion input */}
-                          <div>
+                          <div className="flex gap-1">
                             <input
                               type="text"
                               value={customEmotion}
-                              onChange={(e) => {
-                                setCustomEmotion(e.target.value);
-                                if (e.target.value.trim()) {
-                                  setFormData({ ...formData, pulse: e.target.value.trim() });
+                              onChange={(e) => setCustomEmotion(e.target.value)}
+                              onKeyPress={(e) => {
+                                if (e.key === 'Enter') {
+                                  e.preventDefault();
+                                  const trimmed = customEmotion.trim();
+                                  if (trimmed && !formData.pulse.includes(trimmed)) {
+                                    setFormData({ ...formData, pulse: [...formData.pulse, trimmed] });
+                                    setCustomEmotion('');
+                                  }
                                 }
                               }}
-                              placeholder="Or type your own..."
-                              className="w-full p-1.5 text-xs border border-amber-200 rounded"
+                              placeholder="Add custom emotion..."
+                              className="flex-1 p-1.5 text-xs border border-amber-200 rounded"
                             />
+                            <button
+                              type="button"
+                              onClick={() => {
+                                const trimmed = customEmotion.trim();
+                                if (trimmed && !formData.pulse.includes(trimmed)) {
+                                  setFormData({ ...formData, pulse: [...formData.pulse, trimmed] });
+                                  setCustomEmotion('');
+                                }
+                              }}
+                              className="px-2 py-1.5 text-xs bg-amber-100 text-amber-700 rounded border border-amber-300 hover:bg-amber-200"
+                            >
+                              Add
+                            </button>
                           </div>
+                          
+                          {/* Selected emotions display */}
+                          {formData.pulse.length > 0 && (
+                            <div className="flex flex-wrap gap-1">
+                              {formData.pulse.map((emotion, idx) => (
+                                <span
+                                  key={idx}
+                                  className="inline-flex items-center gap-1 px-2 py-1 text-xs bg-gradient-to-r from-amber-500 to-orange-500 text-white rounded"
+                                >
+                                  {emotion}
+                                  <button
+                                    type="button"
+                                    onClick={() => {
+                                      const updated = formData.pulse.filter((_, i) => i !== idx);
+                                      setFormData({ ...formData, pulse: updated });
+                                    }}
+                                    className="hover:bg-white/20 rounded-full"
+                                  >
+                                    <X className="w-3 h-3" />
+                                  </button>
+                                </span>
+                              ))}
+                            </div>
+                          )}
                         </div>
                       </div>
                       
