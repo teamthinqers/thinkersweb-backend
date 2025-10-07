@@ -105,7 +105,7 @@ export default function SocialFeedPage() {
 
   // Fetch perspectives for selected thought
   const { data: perspectivesData } = useQuery<{ messages: PerspectiveMessage[] }>({
-    queryKey: ['/api/thoughts', selectedDot?.id, 'perspectives'],
+    queryKey: [`/api/thoughts/${selectedDot?.id}/perspectives`],
     enabled: !!selectedDot,
   });
 
@@ -118,7 +118,7 @@ export default function SocialFeedPage() {
       return response.json();
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/thoughts', selectedDot?.id, 'perspectives'] });
+      queryClient.invalidateQueries({ queryKey: [`/api/thoughts/${selectedDot?.id}/perspectives`] });
       setPerspectiveInput('');
       // Scroll to bottom after posting
       setTimeout(() => {
