@@ -199,9 +199,16 @@ export default function ThoughtCloudGrid({
           
           // Clamp positions to prevent overflow (with dot radius buffer)
           const dotRadius = (dot.size || 120) / 2;
+          const identityCardHeight = 60; // Height of identity card above dot
+          
+          // X-axis clamping
           const minX = dotRadius + 32; // 32px padding
           const maxX = containerWidth - dotRadius - 32;
           const clampedX = Math.max(minX, Math.min(maxX, scaledX));
+          
+          // Y-axis clamping (account for identity card above and dot radius below)
+          const minY = identityCardHeight + dotRadius + 20; // 20px top padding
+          const clampedY = Math.max(minY, dot.y || 0);
           
           return (
             <div
@@ -209,7 +216,7 @@ export default function ThoughtCloudGrid({
               className="absolute transition-all duration-300 hover:z-50 group"
               style={{
                 left: `${clampedX}px`,
-                top: `${dot.y}px`,
+                top: `${clampedY}px`,
                 transform: `translate(-50%, -50%)`,
               }}
             >
