@@ -124,7 +124,7 @@ function PersonalPerspectives({ thoughtId }: { thoughtId: number }) {
                 onClick={() => setShowSocialModal(true)}
                 className="border-red-400 text-red-500 hover:bg-red-50"
               >
-                <Users className="h-4 w-4 mr-1" />
+                <Users className="h-4 w-4 mr-1 text-red-500" />
                 Social
               </Button>
             )}
@@ -244,11 +244,11 @@ function SocialPerspectivesModal({
               </div>
             ) : (
               messages.map((msg: any) => (
-                <div key={msg.id} className="bg-purple-50 rounded-lg p-3 border border-purple-100">
+                <div key={msg.id} className="bg-white rounded-lg p-3 border border-gray-200 shadow-sm">
                   <div className="flex items-start gap-2">
                     <Avatar className="h-8 w-8">
                       <AvatarImage src={msg.user?.avatar} />
-                      <AvatarFallback className="bg-purple-500 text-white text-xs">
+                      <AvatarFallback className="bg-gray-500 text-white text-xs">
                         {msg.user?.fullName?.[0] || 'U'}
                       </AvatarFallback>
                     </Avatar>
