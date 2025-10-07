@@ -300,23 +300,25 @@ function SparksSection({ thoughtId }: { thoughtId: number }) {
           </div>
 
           {evolvedLoading ? (
-            <div className="text-center py-6">
-              <RefreshCw className="h-6 w-6 animate-spin mx-auto mb-2 text-yellow-500" />
-              <p className="text-xs text-gray-500">Generating evolved insight...</p>
+            <div className="h-[220px] flex items-center justify-center">
+              <div className="text-center">
+                <RefreshCw className="h-6 w-6 animate-spin mx-auto mb-2 text-yellow-500" />
+                <p className="text-xs text-gray-500">Generating evolved insight...</p>
+              </div>
             </div>
           ) : viewMode === 'text' ? (
-            <div className="space-y-2">
-              <div className="bg-gradient-to-r from-yellow-50 to-amber-50 rounded-lg p-3 border border-yellow-200">
+            <div className="h-[220px] flex flex-col justify-between">
+              <div className="bg-gradient-to-r from-yellow-50 to-amber-50 rounded-lg p-4 border border-yellow-200 flex-1 flex items-center overflow-y-auto">
                 <p className="text-sm text-gray-800">{evolvedData?.evolvedSummary || 'No evolved thought yet. Add perspectives to generate insights!'}</p>
               </div>
               {evolvedData?.thoughtContext && (
-                <p className="text-xs text-gray-500">
+                <p className="text-xs text-gray-500 mt-2">
                   Based on {evolvedData.thoughtContext.perspectivesCount} perspective{evolvedData.thoughtContext.perspectivesCount !== 1 ? 's' : ''}
                 </p>
               )}
             </div>
           ) : (
-            <div className="bg-gradient-to-br from-yellow-100 via-amber-100 to-orange-100 rounded-lg p-6 min-h-[200px] flex items-center justify-center">
+            <div className="bg-gradient-to-br from-yellow-100 via-amber-100 to-orange-100 rounded-lg p-6 h-[220px] flex items-center justify-center">
               <div className="text-center">
                 <Lightbulb className="h-12 w-12 text-yellow-600 mx-auto mb-3" />
                 <p className="text-sm font-medium text-gray-800 mb-2">Visual Summary</p>
