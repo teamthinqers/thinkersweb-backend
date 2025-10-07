@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { 
   Brain, Users, Heart,
   Cloud, List as ListIcon, Loader2, Maximize, Minimize, RefreshCw,
-  PenTool, Bookmark, Sparkles, Send
+  PenTool, Bookmark, Sparkles, Send, Zap, Lightbulb, MoreHorizontal
 } from "lucide-react";
 import { SiWhatsapp, SiLinkedin, SiOpenai } from 'react-icons/si';
 import { useAuth } from "@/hooks/use-auth-new";
@@ -57,6 +57,8 @@ export default function SocialFeedPage() {
   const [viewMode, setViewMode] = useState<'cloud' | 'feed'>('cloud');
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [perspectiveInput, setPerspectiveInput] = useState('');
+  const [sparkViewMode, setSparkViewMode] = useState<'text' | 'visual'>('text');
+  const [sparkNote, setSparkNote] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
   
   const { toast } = useToast();
@@ -150,6 +152,58 @@ export default function SocialFeedPage() {
       messageBody: perspectiveInput.trim(),
     });
   };
+
+  // Fetch evolved thought summary for Sparks
+  const { data: evolvedData, isLoading: evolvedLoading } = useQuery<{
+    evolvedSummary: string;
+    thoughtContext?: { perspectivesCount: number };
+  }>({
+    queryKey: [`/api/thoughts/${selectedDot?.id}/evolved-summary`],
+    enabled: !!selectedDot,
+  });
+
+  // Fetch sparks for selected thought
+  const { data: sparksData, isLoading: sparksLoading } = useQuery<{
+    success: boolean;
+    sparks: any[];
+  }>({
+    queryKey: [`/api/thoughts/${selectedDot?.id}/sparks`],
+    enabled: !!selectedDot,
+  });
+
+  // Add spark mutation
+  const addSparkMutation = useMutation({
+    mutationFn: async (content: string) => {
+      return apiRequest("POST", `/api/thoughts/${selectedDot?.id}/sparks`, { content });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [`/api/thoughts/${selectedDot?.id}/sparks`] });
+      queryClient.invalidateQueries({ queryKey: ['/api/thoughts/user/sparks-count'] });
+      setSparkNote("");
+      toast({
+        title: "Spark saved!",
+        description: "Your insight has been captured",
+      });
+    },
+  });
+
+  // Delete spark mutation
+  const deleteSparkMutation = useMutation({
+    mutationFn: async (sparkId: number) => {
+      return apiRequest("DELETE", `/api/thoughts/${selectedDot?.id}/sparks/${sparkId}`, {});
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [`/api/thoughts/${selectedDot?.id}/sparks`] });
+      queryClient.invalidateQueries({ queryKey: ['/api/thoughts/user/sparks-count'] });
+    },
+  });
+
+  const handleSaveSpark = () => {
+    if (!sparkNote.trim()) return;
+    addSparkMutation.mutate(sparkNote);
+  };
+
+  const userSparks = sparksData?.sparks || [];
 
   // Load thoughts
   useEffect(() => {
@@ -601,17 +655,125 @@ export default function SocialFeedPage() {
                     </div>
                   </div>
 
-                  {/* Right Column: Spark */}
+                  {/* Right Column: Sparks */}
                   <div className="flex flex-col h-full min-h-0">
                     {/* Header */}
                     <div className="flex-shrink-0 p-6 border-b border-gray-200">
-                      <h3 className="text-lg font-semibold text-gray-900">Spark</h3>
+                      <div className="flex items-center gap-2">
+                        <div className="relative">
+                          <Zap className="h-5 w-5 text-yellow-500" />
+                          <div className="absolute inset-0 animate-pulse">
+                            <Zap className="h-5 w-5 text-yellow-400 opacity-50" />
+                          </div>
+                          <Sparkles className="h-3 w-3 text-yellow-400 absolute -top-0.5 -right-0.5 animate-pulse" />
+                        </div>
+                        <h3 className="text-lg font-semibold text-gray-900">Sparks</h3>
+                      </div>
                     </div>
                     
                     {/* Main Content - Scrollable */}
-                    <div className="flex-1 min-h-0 overflow-y-auto p-6 bg-gray-50">
-                      <div className="text-center text-gray-500 py-8">
-                        <p className="text-sm">Spark section placeholder</p>
+                    <div className="flex-1 min-h-0 overflow-y-auto p-6 bg-gray-50 space-y-6">
+                      
+                      {/* Section 1: Smart Summary (Evolved Thought) */}
+                      <div className="bg-white rounded-lg border border-gray-200 p-4">
+                        <div className="flex items-center justify-between mb-4">
+                          <h4 className="text-sm font-semibold text-gray-900">Smart Summary (Evolved Thought)</h4>
+                          <div className="flex gap-1 bg-gray-100 rounded-md p-1">
+                            <Button
+                              variant={sparkViewMode === 'text' ? 'default' : 'ghost'}
+                              size="sm"
+                              onClick={() => setSparkViewMode('text')}
+                              className="text-xs"
+                            >
+                              Text
+                            </Button>
+                            <Button
+                              variant={sparkViewMode === 'visual' ? 'default' : 'ghost'}
+                              size="sm"
+                              onClick={() => setSparkViewMode('visual')}
+                              className="text-xs"
+                            >
+                              Visual
+                            </Button>
+                          </div>
+                        </div>
+
+                        {evolvedLoading ? (
+                          <div className="h-[220px] flex items-center justify-center">
+                            <div className="text-center">
+                              <RefreshCw className="h-6 w-6 animate-spin mx-auto mb-2 text-yellow-500" />
+                              <p className="text-xs text-gray-500">Generating evolved insight...</p>
+                            </div>
+                          </div>
+                        ) : sparkViewMode === 'text' ? (
+                          <div className="h-[220px] flex flex-col justify-between">
+                            <div className="bg-gradient-to-r from-yellow-50 to-amber-50 rounded-lg p-4 border border-yellow-200 flex-1 flex items-center overflow-y-auto">
+                              <p className="text-sm text-gray-800">{evolvedData?.evolvedSummary || 'No evolved thought yet. Add perspectives to generate insights!'}</p>
+                            </div>
+                            {evolvedData?.thoughtContext && (
+                              <p className="text-xs text-gray-500 mt-2">
+                                Based on {evolvedData.thoughtContext.perspectivesCount} perspective{evolvedData.thoughtContext.perspectivesCount !== 1 ? 's' : ''}
+                              </p>
+                            )}
+                          </div>
+                        ) : (
+                          <div className="bg-gradient-to-br from-yellow-100 via-amber-100 to-orange-100 rounded-lg p-6 h-[220px] flex items-center justify-center">
+                            <div className="text-center">
+                              <Lightbulb className="h-12 w-12 text-yellow-600 mx-auto mb-3" />
+                              <p className="text-sm font-medium text-gray-800 mb-2">Visual Summary</p>
+                              <p className="text-xs text-gray-600 max-w-[250px]">{evolvedData?.evolvedSummary || 'Infographic visualization coming soon!'}</p>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Section 2: My Sparks (Note-taking) */}
+                      <div className="bg-white rounded-lg border border-gray-200 p-4">
+                        <h4 className="text-sm font-semibold text-gray-900 mb-3">My Sparks ({userSparks.length})</h4>
+                        
+                        {/* Sparks List */}
+                        <div className="space-y-2 mb-4 max-h-[200px] overflow-y-auto">
+                          {sparksLoading ? (
+                            <div className="text-center py-4">
+                              <RefreshCw className="h-4 w-4 animate-spin mx-auto text-gray-400" />
+                            </div>
+                          ) : userSparks.length === 0 ? (
+                            <p className="text-xs text-gray-500 text-center py-4">No sparks saved yet</p>
+                          ) : (
+                            userSparks.map((spark: any) => (
+                              <div key={spark.id} className="bg-yellow-50 rounded-lg p-3 border border-yellow-100 group relative">
+                                <p className="text-sm text-gray-800 pr-6">{spark.content}</p>
+                                <button
+                                  onClick={() => deleteSparkMutation.mutate(spark.id)}
+                                  className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity"
+                                >
+                                  <MoreHorizontal className="h-4 w-4 text-gray-400 hover:text-red-500" />
+                                </button>
+                                <p className="text-xs text-gray-400 mt-1">{new Date(spark.createdAt).toLocaleString()}</p>
+                              </div>
+                            ))
+                          )}
+                        </div>
+
+                        {/* Add Spark Input */}
+                        <div className="flex gap-2">
+                          <input
+                            type="text"
+                            value={sparkNote}
+                            onChange={(e) => setSparkNote(e.target.value)}
+                            onKeyDown={(e) => e.key === 'Enter' && handleSaveSpark()}
+                            placeholder="Capture your spark..."
+                            className="flex-1 text-sm border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-yellow-500"
+                          />
+                          <Button
+                            onClick={handleSaveSpark}
+                            disabled={!sparkNote.trim() || addSparkMutation.isPending}
+                            className="bg-gradient-to-r from-yellow-500 to-amber-500 hover:from-yellow-600 hover:to-amber-600"
+                            size="sm"
+                          >
+                            <Zap className="h-4 w-4" />
+                          </Button>
+                        </div>
                       </div>
                     </div>
                   </div>
