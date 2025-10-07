@@ -261,7 +261,7 @@ function SparksSection({ thoughtId, thought }: { thoughtId: number; thought: Tho
   return (
     <div className="flex flex-col h-full min-h-0">
       {/* Header */}
-      <div className="flex-shrink-0 p-6 border-b border-gray-200">
+      <div className="flex-shrink-0 p-4 border-b border-gray-200">
         <div className="flex items-center gap-2">
           <div className="relative">
             <Zap className="h-5 w-5 text-yellow-500" />
