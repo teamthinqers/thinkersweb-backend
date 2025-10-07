@@ -109,34 +109,27 @@ app.use((req, res, next) => {
   }, () => {
     log(`serving on port ${port}`);
     
-    // Run expensive initialization AFTER server is listening
-    // This ensures deployment health checks pass quickly
-    setTimeout(async () => {
-      try {
-        // These operations run asynchronously after server is ready
-        
-        // Initialize vector database
-        try {
-          const { initializeVectorDB } = await import('./vector-db.js');
-          await initializeVectorDB();
-          console.log('Vector database initialization completed');
-        } catch (error) {
-          console.error('Vector database initialization failed:', error);
-        }
-        
-        // Test API connections
-        if (process.env.OPENAI_API_KEY) {
-          const { testOpenAIConnection } = await import('./openai.js');
-          testOpenAIConnection().catch(err => console.error('OpenAI test failed:', err));
-        }
-        
-        if (process.env.DEEPSEEK_API_KEY) {
-          const { testDeepSeekConnection } = await import('./deepseek.js');
-          testDeepSeekConnection().catch(err => console.error('DeepSeek test failed:', err));
-        }
-      } catch (error) {
-        console.error('Post-startup initialization error:', error);
-      }
-    }, 100); // Small delay to ensure server is fully ready
+    // Run expensive initialization in the background (fire-and-forget)
+    // This ensures deployment health checks pass immediately
+    // All operations are non-blocking and run asynchronously
+    
+    // Initialize vector database (non-blocking)
+    import('./vector-db.js')
+      .then(({ initializeVectorDB }) => initializeVectorDB())
+      .then(() => console.log('Vector database initialization completed'))
+      .catch(error => console.error('Vector database initialization failed:', error));
+    
+    // Test API connections (non-blocking)
+    if (process.env.OPENAI_API_KEY) {
+      import('./openai.js')
+        .then(({ testOpenAIConnection }) => testOpenAIConnection())
+        .catch(err => console.error('OpenAI test failed:', err));
+    }
+    
+    if (process.env.DEEPSEEK_API_KEY) {
+      import('./deepseek.js')
+        .then(({ testDeepSeekConnection }) => testDeepSeekConnection())
+        .catch(err => console.error('DeepSeek test failed:', err));
+    }
   });
 })();
