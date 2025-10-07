@@ -535,6 +535,24 @@ export default function MyNeuraPage() {
                           </div>
                         </CardContent>
                       </Card>
+
+                      {/* Keywords Layer */}
+                      <Card className="border-amber-200 bg-white/50">
+                        <CardContent className="pt-4">
+                          <div className="flex items-start gap-3">
+                            <div className="flex-shrink-0 w-24">
+                              <p className="text-sm font-semibold text-gray-700">Keywords</p>
+                            </div>
+                            <div className="flex-1">
+                              {selectedThought.keywords ? (
+                                <p className="text-sm text-gray-600">{selectedThought.keywords}</p>
+                              ) : (
+                                <p className="text-sm text-gray-400 italic">No keywords added yet</p>
+                              )}
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
                     </div>
                   </div>
                   </div>
