@@ -122,7 +122,7 @@ function PersonalPerspectives({ thoughtId }: { thoughtId: number }) {
                 variant="outline"
                 size="sm"
                 onClick={() => setShowSocialModal(true)}
-                className="border-orange-300 text-orange-600 hover:bg-orange-50"
+                className="border-red-400 text-red-500 hover:bg-red-50"
               >
                 <Users className="h-4 w-4 mr-1" />
                 Social
@@ -225,7 +225,7 @@ function SocialPerspectivesModal({
       <DialogContent className="max-w-2xl max-h-[80vh]">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            <Users className="h-5 w-5 text-orange-600" />
+            <Users className="h-5 w-5 text-red-500" />
             Social Perspectives
           </DialogTitle>
         </DialogHeader>
@@ -244,11 +244,11 @@ function SocialPerspectivesModal({
               </div>
             ) : (
               messages.map((msg: any) => (
-                <div key={msg.id} className="bg-orange-50 rounded-lg p-3 border border-orange-100">
+                <div key={msg.id} className="bg-red-50 rounded-lg p-3 border border-red-100">
                   <div className="flex items-start gap-2">
                     <Avatar className="h-8 w-8">
                       <AvatarImage src={msg.user?.avatar} />
-                      <AvatarFallback className="bg-orange-500 text-white text-xs">
+                      <AvatarFallback className="bg-red-500 text-white text-xs">
                         {msg.user?.fullName?.[0] || 'U'}
                       </AvatarFallback>
                     </Avatar>
