@@ -199,15 +199,20 @@ export default function ThoughtCloudGrid({
           
           // Clamp positions to prevent overflow (with dot radius buffer)
           const dotRadius = (dot.size || 120) / 2;
-          const identityCardHeight = 60; // Height of identity card above dot
+          const identityCardHeight = 80; // Height of identity card + offset above dot
+          const channelBadgeHeight = 15; // Height of channel badge below dot
+          const padding = 32; // Container padding from p-8
           
-          // X-axis clamping
-          const minX = dotRadius + 32; // 32px padding
-          const maxX = containerWidth - dotRadius - 32;
+          // X-axis clamping (dot center position accounting for transform translate)
+          const minX = dotRadius + padding;
+          const maxX = containerWidth - dotRadius - padding;
           const clampedX = Math.max(minX, Math.min(maxX, scaledX));
           
-          // Y-axis clamping (account for identity card above and dot radius below)
-          const minY = identityCardHeight + dotRadius + 20; // 20px top padding
+          // Y-axis clamping (account for identity card above and channel badge below)
+          // Since transform translates -50%, the visual bounds are:
+          // - Top edge: y - identityCardHeight
+          // - Bottom edge: y + dotRadius + channelBadgeHeight
+          const minY = identityCardHeight + padding;
           const clampedY = Math.max(minY, dot.y || 0);
           
           return (

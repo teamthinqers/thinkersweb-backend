@@ -127,10 +127,15 @@ function generateFixedGridPositions(): Array<{ x: number; y: number; size: numbe
   
   // Use pixel-based layout for infinite canvas (assume 1200px width container)
   const containerWidth = 1200;
-  const leftMarginPx = 180; // 15% of 1200px
-  const rightMarginPx = 180;
-  const topMarginPx = 150; // Starting top margin in pixels - more space at top
-  const availableWidthPx = containerWidth - leftMarginPx - rightMarginPx; // 840px
+  const dotSize = sizes[0]; // 120px
+  const dotRadius = dotSize / 2; // 60px
+  const identityCardHeight = 80; // Identity card + offset
+  const padding = 32; // Container padding
+  
+  const leftMarginPx = dotRadius + padding + 50; // Extra margin for safety
+  const rightMarginPx = dotRadius + padding + 50;
+  const topMarginPx = identityCardHeight + padding + 50; // Ensure identity cards are never cut
+  const availableWidthPx = containerWidth - leftMarginPx - rightMarginPx;
   
   // Base grid spacing in pixels
   const cellWidthPx = availableWidthPx / DOTS_PER_ROW; // ~210px per cell
@@ -153,7 +158,7 @@ function generateFixedGridPositions(): Array<{ x: number; y: number; size: numbe
       const jitterY = (seededRandom(index * 3.7) - 0.5) * 2 * maxJitterYPx;
       
       // Final position with jitter (clamped to margins) in PIXELS
-      const x = Math.max(leftMarginPx + 60, Math.min(containerWidth - rightMarginPx - 60, baseX + jitterX));
+      const x = Math.max(leftMarginPx, Math.min(containerWidth - rightMarginPx, baseX + jitterX));
       const y = Math.max(topMarginPx, baseY + jitterY);
       
       const size = sizes[index % sizes.length];
