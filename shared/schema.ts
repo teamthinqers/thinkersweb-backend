@@ -121,6 +121,18 @@ export const perspectivesParticipants = pgTable("perspectives_participants", {
   uniqueParticipant: unique().on(table.threadId, table.userId),
 }));
 
+// === SPARKS SYSTEM (Personal notes/insights on thoughts) ===
+
+// Sparks - User's personal notes and insights saved for thoughts
+export const sparks = pgTable("sparks", {
+  id: serial("id").primaryKey(),
+  thoughtId: integer("thought_id").references(() => thoughts.id).notNull(),
+  userId: integer("user_id").references(() => users.id).notNull(), // Owner of the spark
+  content: text("content").notNull(), // The spark note content
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
 // === SEPARATE TABLES FOR VECTOR DB MIGRATION ===
 
 // 1. DOTS table - Individual insights with three-layer structure
@@ -404,6 +416,15 @@ export const perspectivesThreadsInsertSchema = createInsertSchema(perspectivesTh
 export const perspectivesThreadsSelectSchema = createSelectSchema(perspectivesThreads);
 
 export const perspectivesParticipantsInsertSchema = createInsertSchema(perspectivesParticipants);
+
+// Sparks schemas
+export const sparksInsertSchema = createInsertSchema(sparks, {
+  content: (schema) => schema.min(1, "Spark cannot be empty").max(5000, "Spark too long"),
+});
+
+export const sparksSelectSchema = createSelectSchema(sparks);
+export type Spark = z.infer<typeof sparksSelectSchema>;
+export type SparkInsert = z.infer<typeof sparksInsertSchema>;
 export const perspectivesParticipantsSelectSchema = createSelectSchema(perspectivesParticipants);
 
 // Legacy tables for backward compatibility (keeping minimal structure)
