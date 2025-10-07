@@ -405,12 +405,14 @@ export default function MyNeuraPage() {
 
       {/* Expanded Thought Modal - Three Column Layout */}
       <Dialog open={!!selectedThought} onOpenChange={(open) => !open && setSelectedThought(null)}>
-        <DialogContent className="max-w-7xl max-h-[90vh] p-0 overflow-hidden">
+        <DialogContent className="max-w-7xl h-[90vh] p-0 overflow-hidden">
           {selectedThought && (
-            <div className="grid grid-cols-3 h-full max-h-[90vh]">
+            <div className="grid grid-cols-3 h-full">
               {/* Left Column: Thought Details */}
-              <div className="p-6 overflow-y-auto border-r border-gray-200">
-                <DialogHeader>
+              <div className="flex flex-col h-full min-h-0 border-r border-gray-200">
+                {/* Header */}
+                <div className="flex-shrink-0 p-6 border-b border-gray-200">
+                  <DialogHeader>
                   <div className="flex items-center gap-3 mb-4">
                     {selectedThought.isSaved ? (
                       <>
@@ -441,12 +443,15 @@ export default function MyNeuraPage() {
                     )}
                   </div>
                   
-                  <DialogTitle className="text-2xl font-bold text-gray-900 mt-4">
-                    {selectedThought.heading}
-                  </DialogTitle>
-                </DialogHeader>
+                    <DialogTitle className="text-2xl font-bold text-gray-900 mt-4">
+                      {selectedThought.heading}
+                    </DialogTitle>
+                  </DialogHeader>
+                </div>
 
-                <div className="space-y-6 mt-6">
+                {/* Main Content - Scrollable */}
+                <div className="flex-1 min-h-0 overflow-y-auto p-6">
+                  <div className="space-y-6">
                   {/* Image - if present */}
                   {selectedThought.imageUrl && (
                     <div className="space-y-2">
@@ -532,33 +537,37 @@ export default function MyNeuraPage() {
                       </Card>
                     </div>
                   </div>
-
-                  {/* Share to Social Button - only for non-saved thoughts */}
-                  {!selectedThought.isSaved && (
-                    <div className="pt-4">
-                      <Button
-                        onClick={() => shareToSocialMutation.mutate(selectedThought.id)}
-                        disabled={shareToSocialMutation.isPending || selectedThought.sharedToSocial}
-                        className="w-full bg-gradient-to-r from-red-500 to-orange-500 hover:from-red-600 hover:to-orange-600"
-                      >
-                        <Share2 className="h-4 w-4 mr-2" />
-                        {selectedThought.sharedToSocial ? 'Already Shared to Social' : 'Share to Social'}
-                      </Button>
-                    </div>
-                  )}
+                  </div>
                 </div>
+
+                {/* Footer - Action Button */}
+                {!selectedThought.isSaved && (
+                  <div className="flex-shrink-0 p-4 border-t border-gray-200 bg-white">
+                    <Button
+                      onClick={() => shareToSocialMutation.mutate(selectedThought.id)}
+                      disabled={shareToSocialMutation.isPending || selectedThought.sharedToSocial}
+                      className="w-full bg-gradient-to-r from-red-500 to-orange-500 hover:from-red-600 hover:to-orange-600"
+                    >
+                      <Share2 className="h-4 w-4 mr-2" />
+                      {selectedThought.sharedToSocial ? 'Already Shared to Social' : 'Share to Social'}
+                    </Button>
+                  </div>
+                )}
               </div>
 
               {/* Middle Column: Perspectives (Chat) */}
-              <div className="flex flex-col h-full border-r border-gray-200">
-                <div className="p-6 border-b border-gray-200 flex items-center gap-2">
+              <div className="flex flex-col h-full min-h-0 border-r border-gray-200">
+                {/* Header */}
+                <div className="flex-shrink-0 p-6 border-b border-gray-200 flex items-center gap-2">
                   <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-amber-500">
                     <circle cx="11" cy="11" r="8"></circle>
                     <path d="m21 21-4.3-4.3"></path>
                   </svg>
                   <h3 className="text-lg font-semibold text-gray-900">Perspectives</h3>
                 </div>
-                <div className="flex-1 p-6 overflow-y-auto bg-gray-50">
+                
+                {/* Main Content - Scrollable */}
+                <div className="flex-1 min-h-0 overflow-y-auto p-6 bg-gray-50">
                   <div className="text-center text-gray-500 py-8">
                     <p className="text-sm">Perspectives feature coming soon...</p>
                     <p className="text-xs mt-2">Users will be able to share thoughts and reflections here</p>
@@ -567,11 +576,14 @@ export default function MyNeuraPage() {
               </div>
 
               {/* Right Column: Spark */}
-              <div className="flex flex-col h-full">
-                <div className="p-6 border-b border-gray-200">
+              <div className="flex flex-col h-full min-h-0">
+                {/* Header */}
+                <div className="flex-shrink-0 p-6 border-b border-gray-200">
                   <h3 className="text-lg font-semibold text-gray-900">Spark</h3>
                 </div>
-                <div className="flex-1 p-6 overflow-y-auto bg-gray-50">
+                
+                {/* Main Content - Scrollable */}
+                <div className="flex-1 min-h-0 overflow-y-auto p-6 bg-gray-50">
                   <div className="text-center text-gray-500 py-8">
                     <p className="text-sm">Spark section placeholder</p>
                   </div>
