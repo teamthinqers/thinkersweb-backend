@@ -338,6 +338,17 @@ export const userBehaviorRelations = relations(userBehavior, ({ one }) => ({
   }),
 }));
 
+export const sparksRelations = relations(sparks, ({ one }) => ({
+  user: one(users, {
+    fields: [sparks.userId],
+    references: [users.id],
+  }),
+  thought: one(thoughts, {
+    fields: [sparks.thoughtId],
+    references: [thoughts.id],
+  }),
+}));
+
 // === VALIDATION SCHEMAS ===
 
 // New thought system schemas

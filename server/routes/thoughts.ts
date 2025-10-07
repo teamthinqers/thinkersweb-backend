@@ -1188,6 +1188,49 @@ router.delete('/:thoughtId/sparks/:sparkId', async (req, res) => {
 });
 
 /**
+ * GET /api/thoughts/:thoughtId/social-sparks
+ * Get ALL sparks from all users for a thought (social sparks)
+ */
+router.get('/:thoughtId/social-sparks', async (req, res) => {
+  try {
+    const thoughtId = parseInt(req.params.thoughtId);
+    const userId = (req as any).user?.id;
+
+    if (!userId) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+
+    // Get all sparks for this thought from all users
+    const allSparks = await db.query.sparks.findMany({
+      where: eq(sparks.thoughtId, thoughtId),
+      orderBy: desc(sparks.createdAt),
+      with: {
+        user: {
+          columns: {
+            id: true,
+            fullName: true,
+            avatar: true
+          }
+        }
+      }
+    });
+
+    res.json({
+      success: true,
+      sparks: allSparks
+    });
+
+  } catch (error) {
+    console.error('Get social sparks error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to get social sparks',
+      details: error instanceof Error ? error.message : 'Unknown error'
+    });
+  }
+});
+
+/**
  * GET /api/user/sparks-count
  * Get total sparks count for the logged-in user
  */

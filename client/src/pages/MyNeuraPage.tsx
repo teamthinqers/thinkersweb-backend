@@ -199,9 +199,10 @@ function PersonalPerspectives({ thoughtId }: { thoughtId: number }) {
 }
 
 // Sparks Section Component
-function SparksSection({ thoughtId }: { thoughtId: number }) {
+function SparksSection({ thoughtId, thought }: { thoughtId: number; thought: ThoughtDot }) {
   const [viewMode, setViewMode] = useState<'text' | 'visual'>('text');
   const [sparkNote, setSparkNote] = useState('');
+  const [showSocialSparks, setShowSocialSparks] = useState(false);
   const queryClient = useQueryClient();
   const { toast } = useToast();
 
@@ -330,7 +331,20 @@ function SparksSection({ thoughtId }: { thoughtId: number }) {
 
         {/* Section 2: My Sparks (Note-taking) */}
         <div className="bg-white rounded-lg border border-gray-200 p-4">
-          <h4 className="text-sm font-semibold text-gray-900 mb-3">My Sparks ({userSparks.length})</h4>
+          <div className="flex items-center justify-between mb-3">
+            <h4 className="text-sm font-semibold text-gray-900">My Sparks ({userSparks.length})</h4>
+            {thought?.sharedToSocial && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setShowSocialSparks(true)}
+                className="text-xs text-red-600 border-red-300 hover:bg-red-50"
+              >
+                <Users className="h-3 w-3 mr-1" />
+                Social Sparks
+              </Button>
+            )}
+          </div>
           
           {/* Sparks List */}
           <div className="space-y-2 mb-4 max-h-[200px] overflow-y-auto">
@@ -376,8 +390,82 @@ function SparksSection({ thoughtId }: { thoughtId: number }) {
             </Button>
           </div>
         </div>
+
+        {/* Social Sparks Modal */}
+        <Dialog open={showSocialSparks} onOpenChange={setShowSocialSparks}>
+          <DialogContent className="max-w-2xl max-h-[80vh]">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2 text-red-600">
+                <Users className="h-5 w-5" />
+                Social Sparks - Community Insights
+              </DialogTitle>
+            </DialogHeader>
+            <SocialSparksContent thoughtId={thoughtId} />
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
+  );
+}
+
+// Social Sparks Content Component
+function SocialSparksContent({ thoughtId }: { thoughtId: number }) {
+  // Fetch all social sparks for this thought
+  const { data: socialSparksData, isLoading: socialSparksLoading } = useQuery<{
+    success: boolean;
+    sparks: Array<{
+      id: number;
+      content: string;
+      createdAt: string;
+      user: {
+        id: number;
+        fullName: string | null;
+        avatar: string | null;
+      };
+    }>;
+  }>({
+    queryKey: [`/api/thoughts/${thoughtId}/social-sparks`],
+  });
+
+  const socialSparks = socialSparksData?.sparks || [];
+
+  return (
+    <ScrollArea className="h-[500px] pr-4">
+      <div className="space-y-3">
+        {socialSparksLoading ? (
+          <div className="text-center py-8">
+            <RefreshCw className="h-6 w-6 animate-spin mx-auto mb-2 text-red-500" />
+            <p className="text-sm text-gray-500">Loading social sparks...</p>
+          </div>
+        ) : socialSparks.length === 0 ? (
+          <div className="text-center py-8">
+            <Users className="h-12 w-12 mx-auto text-gray-300 mb-3" />
+            <p className="text-sm text-gray-500">No community sparks yet</p>
+            <p className="text-xs text-gray-400 mt-2">Be the first to add a spark!</p>
+          </div>
+        ) : (
+          socialSparks.map((spark) => (
+            <div key={spark.id} className="bg-gradient-to-r from-red-50 to-orange-50 rounded-lg p-4 border border-red-100">
+              <div className="flex items-start gap-3 mb-2">
+                <Avatar className="h-8 w-8 flex-shrink-0 border-2 border-red-200">
+                  <AvatarImage src={spark.user.avatar || undefined} />
+                  <AvatarFallback className="bg-gradient-to-r from-red-500 to-orange-500 text-white text-xs">
+                    {spark.user.fullName?.[0]?.toUpperCase() || 'U'}
+                  </AvatarFallback>
+                </Avatar>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-semibold text-gray-900">{spark.user.fullName || 'Anonymous'}</p>
+                  <p className="text-xs text-gray-500">
+                    {new Date(spark.createdAt).toLocaleString()}
+                  </p>
+                </div>
+              </div>
+              <p className="text-sm text-gray-800 ml-11">{spark.content}</p>
+            </div>
+          ))
+        )}
+      </div>
+    </ScrollArea>
   );
 }
 
@@ -983,7 +1071,7 @@ export default function MyNeuraPage() {
               <PersonalPerspectives thoughtId={selectedThought.id} />
 
               {/* Right Column: Sparks */}
-              <SparksSection thoughtId={selectedThought.id} />
+              <SparksSection thoughtId={selectedThought.id} thought={selectedThought} />
             </div>
           )}
         </DialogContent>
