@@ -115,30 +115,30 @@ function seededRandom(seed: number): number {
   return x - Math.floor(x);
 }
 
-// Generate 1000 fixed positions with organic "stars in the cloud" distribution
+// Generate 100 fixed positions with organic "stars in the cloud" distribution
 // Uses jittered grid to ensure spacing while creating natural scatter
 // Returns PIXEL positions for use in infinite scrolling canvas
 function generateFixedGridPositions(): Array<{ x: number; y: number; size: number; rotation: number }> {
   const positions: Array<{ x: number; y: number; size: number; rotation: number }> = [];
   const sizes = GRID_CONSTANTS.DOT_SIZES.DESKTOP;
   
-  const TOTAL_POSITIONS = 1000;
+  const TOTAL_POSITIONS = 100; // Optimize for 100 thoughts max
   const DOTS_PER_ROW = 4; // Base grid: 4 dots per row - very spacious cloud layout
   
   // Use pixel-based layout for infinite canvas (assume 1200px width container)
   const containerWidth = 1200;
   const leftMarginPx = 180; // 15% of 1200px
   const rightMarginPx = 180;
-  const topMarginPx = 100; // Starting top margin in pixels
+  const topMarginPx = 150; // Starting top margin in pixels - more space at top
   const availableWidthPx = containerWidth - leftMarginPx - rightMarginPx; // 840px
   
   // Base grid spacing in pixels
   const cellWidthPx = availableWidthPx / DOTS_PER_ROW; // ~210px per cell
-  const cellHeightPx = 300; // Vertical spacing in pixels - extra spacious for clean cloud with 4 dots per row
+  const cellHeightPx = 350; // Vertical spacing in pixels - extra spacious for clean cloud with 4 dots per row
   
   // Jitter amount in pixels - random offset within cell to create organic look
-  const maxJitterXPx = cellWidthPx * 0.25; // ~52px
-  const maxJitterYPx = cellHeightPx * 0.2; // ~50px
+  const maxJitterXPx = cellWidthPx * 0.2; // Reduced jitter for better spacing
+  const maxJitterYPx = cellHeightPx * 0.15; // Reduced jitter for better spacing
   
   let index = 0;
   
@@ -171,8 +171,8 @@ function generateFixedGridPositions(): Array<{ x: number; y: number; size: numbe
 const FIXED_GRID_POSITIONS = generateFixedGridPositions();
 
 export function getFixedPosition(index: number): { x: number; y: number; size: number; rotation: number } {
-  // Cycle through positions if we exceed 1000
-  const actualIndex = index % 1000;
+  // Cycle through positions if we exceed 100
+  const actualIndex = index % 100;
   return FIXED_GRID_POSITIONS[actualIndex];
 }
 
