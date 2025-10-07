@@ -6,7 +6,9 @@ import {
   users, 
   perspectivesThreads, 
   perspectivesMessages,
-  perspectivesParticipants 
+  perspectivesParticipants,
+  sparks,
+  sparksInsertSchema
 } from '@shared/schema';
 import { eq, desc, and, or, sql } from 'drizzle-orm';
 import { insertThoughtSchema, perspectivesMessagesInsertSchema } from '@shared/schema';
@@ -979,6 +981,208 @@ router.get('/:thoughtId/social-thread-status', async (req, res) => {
       success: false,
       error: 'Failed to check social thread status',
       details: error instanceof Error ? error.message : 'Unknown error'
+    });
+  }
+});
+
+/**
+ * GET /api/thoughts/:thoughtId/evolved-summary
+ * Generate AI-powered evolved thought summary based on thought and perspectives
+ */
+router.get('/:thoughtId/evolved-summary', async (req, res) => {
+  try {
+    const thoughtId = parseInt(req.params.thoughtId);
+    const userId = (req as any).user?.id;
+
+    if (!userId) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+
+    // Get thought
+    const thought = await db.query.thoughts.findFirst({
+      where: eq(thoughts.id, thoughtId),
+    });
+
+    if (!thought) {
+      return res.status(404).json({ error: 'Thought not found' });
+    }
+
+    // Get all perspectives (both personal and social)
+    const personalThread = await db.query.perspectivesThreads.findFirst({
+      where: and(
+        eq(perspectivesThreads.thoughtId, thoughtId),
+        eq(perspectivesThreads.threadType, 'personal'),
+        eq(perspectivesThreads.userId, userId)
+      ),
+      with: {
+        messages: {
+          with: { user: true },
+          orderBy: desc(perspectivesMessages.createdAt)
+        }
+      }
+    });
+
+    const socialThread = await db.query.perspectivesThreads.findFirst({
+      where: and(
+        eq(perspectivesThreads.thoughtId, thoughtId),
+        eq(perspectivesThreads.threadType, 'social')
+      ),
+      with: {
+        messages: {
+          with: { user: true },
+          orderBy: desc(perspectivesMessages.createdAt)
+        }
+      }
+    });
+
+    const allPerspectives = [
+      ...(personalThread?.messages || []),
+      ...(socialThread?.messages || [])
+    ];
+
+    // Generate evolved thought using AI
+    const OpenAI = (await import('openai')).default;
+    const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+
+    const prompt = `Based on this original thought and various perspectives, create an evolved, deeper insight.
+
+Original Thought:
+Heading: ${thought.heading}
+Summary: ${thought.summary}
+
+Perspectives shared:
+${allPerspectives.map(p => `- ${p.messageBody}`).join('\n')}
+
+Generate a concise evolved thought (2-3 sentences) that synthesizes the original thought with all perspectives to reveal a deeper understanding.`;
+
+    const completion = await openai.chat.completions.create({
+      model: "gpt-4",
+      messages: [{ role: "user", content: prompt }],
+      temperature: 0.7,
+      max_tokens: 200,
+    });
+
+    const evolvedSummary = completion.choices[0]?.message?.content || 'Unable to generate evolved thought';
+
+    res.json({
+      success: true,
+      evolvedSummary,
+      thoughtContext: {
+        heading: thought.heading,
+        summary: thought.summary,
+        perspectivesCount: allPerspectives.length
+      }
+    });
+
+  } catch (error) {
+    console.error('Generate evolved summary error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to generate evolved summary',
+      details: error instanceof Error ? error.message : 'Unknown error'
+    });
+  }
+});
+
+/**
+ * GET /api/thoughts/:thoughtId/sparks
+ * Get user's saved sparks for a thought
+ */
+router.get('/:thoughtId/sparks', async (req, res) => {
+  try {
+    const thoughtId = parseInt(req.params.thoughtId);
+    const userId = (req as any).user?.id;
+
+    if (!userId) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+
+    const userSparks = await db.query.sparks.findMany({
+      where: and(
+        eq(sparks.thoughtId, thoughtId),
+        eq(sparks.userId, userId)
+      ),
+      orderBy: desc(sparks.createdAt)
+    });
+
+    res.json({
+      success: true,
+      sparks: userSparks
+    });
+
+  } catch (error) {
+    console.error('Get sparks error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to get sparks',
+      details: error instanceof Error ? error.message : 'Unknown error'
+    });
+  }
+});
+
+/**
+ * POST /api/thoughts/:thoughtId/sparks
+ * Create a new spark for a thought
+ */
+router.post('/:thoughtId/sparks', async (req, res) => {
+  try {
+    const thoughtId = parseInt(req.params.thoughtId);
+    const userId = (req as any).user?.id;
+
+    if (!userId) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+
+    const validatedData = sparksInsertSchema.parse({
+      thoughtId,
+      userId,
+      content: req.body.content
+    });
+
+    const [newSpark] = await db.insert(sparks).values(validatedData).returning();
+
+    res.status(201).json({
+      success: true,
+      spark: newSpark
+    });
+
+  } catch (error) {
+    console.error('Create spark error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to create spark',
+      details: error instanceof Error ? error.message : 'Unknown error'
+    });
+  }
+});
+
+/**
+ * DELETE /api/thoughts/:thoughtId/sparks/:sparkId
+ * Delete a spark
+ */
+router.delete('/:thoughtId/sparks/:sparkId', async (req, res) => {
+  try {
+    const sparkId = parseInt(req.params.sparkId);
+    const userId = (req as any).user?.id;
+
+    if (!userId) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+
+    await db.delete(sparks).where(
+      and(
+        eq(sparks.id, sparkId),
+        eq(sparks.userId, userId)
+      )
+    );
+
+    res.json({ success: true });
+
+  } catch (error) {
+    console.error('Delete spark error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to delete spark'
     });
   }
 });

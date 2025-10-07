@@ -793,11 +793,20 @@ export default function MyNeuraPage() {
               {/* Middle Column: Personal Perspectives (Self-Reflection) */}
               <PersonalPerspectives thoughtId={selectedThought.id} />
 
-              {/* Right Column: Spark */}
+              {/* Right Column: Sparks */}
               <div className="flex flex-col h-full min-h-0">
                 {/* Header */}
                 <div className="flex-shrink-0 p-6 border-b border-gray-200">
-                  <h3 className="text-lg font-semibold text-gray-900">Spark</h3>
+                  <div className="flex items-center gap-2">
+                    <div className="relative">
+                      <Zap className="h-5 w-5 text-yellow-500" />
+                      <div className="absolute inset-0 animate-pulse">
+                        <Zap className="h-5 w-5 text-yellow-400 opacity-50" />
+                      </div>
+                      <Sparkles className="h-3 w-3 text-yellow-400 absolute -top-0.5 -right-0.5 animate-pulse" />
+                    </div>
+                    <h3 className="text-lg font-semibold text-gray-900">Sparks</h3>
+                  </div>
                 </div>
                 
                 {/* Main Content - Scrollable */}
