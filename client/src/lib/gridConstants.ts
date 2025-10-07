@@ -134,7 +134,7 @@ function generateFixedGridPositions(): Array<{ x: number; y: number; size: numbe
   
   // Base grid spacing in pixels
   const cellWidthPx = availableWidthPx / DOTS_PER_ROW; // ~210px per cell
-  const cellHeightPx = 250; // Vertical spacing in pixels - very spacious for clean cloud
+  const cellHeightPx = 300; // Vertical spacing in pixels - extra spacious for clean cloud with 4 dots per row
   
   // Jitter amount in pixels - random offset within cell to create organic look
   const maxJitterXPx = cellWidthPx * 0.25; // ~52px

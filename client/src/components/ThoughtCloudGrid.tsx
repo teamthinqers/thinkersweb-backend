@@ -241,10 +241,10 @@ export default function ThoughtCloudGrid({
                     )}
                   </Avatar>
 
-                  {/* Contributor avatars (up to 3) - only show on /social */}
+                  {/* Contributor avatars (up to 2) - only show on /social */}
                   {dot.contributors && dot.contributors.length > 0 && (
                     <>
-                      {dot.contributors.slice(0, 3).map((contributor) => (
+                      {dot.contributors.slice(0, 2).map((contributor) => (
                         <Avatar 
                           key={contributor.id} 
                           className="h-8 w-8 border-2 border-red-400 shadow-lg -ml-3"
@@ -259,10 +259,10 @@ export default function ThoughtCloudGrid({
                         </Avatar>
                       ))}
 
-                      {/* +X indicator if more than 3 contributors - slight gap */}
-                      {dot.contributorCount && dot.contributorCount > 3 && (
+                      {/* +X indicator if more than 2 contributors - slight gap */}
+                      {dot.contributorCount && dot.contributorCount > 2 && (
                         <div className="h-8 w-8 rounded-full bg-gradient-to-r from-red-500 to-orange-500 border-2 border-red-400 flex items-center justify-center -ml-1 shadow-lg">
-                          <p className="text-white text-[10px] font-bold">+{dot.contributorCount - 3}</p>
+                          <p className="text-white text-[10px] font-bold">+{dot.contributorCount - 2}</p>
                         </div>
                       )}
                     </>
