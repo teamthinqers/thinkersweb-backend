@@ -197,23 +197,29 @@ export default function ThoughtCloudGrid({
           const scaleFactor = containerWidth / 1200;
           const scaledX = (dot.x || 0) * scaleFactor;
           
-          // Clamp positions to prevent overflow (with dot radius buffer)
-          const dotRadius = (dot.size || 120) / 2;
-          const identityCardHeight = 80; // Height of identity card + offset above dot
-          const channelBadgeHeight = 15; // Height of channel badge below dot
+          // Calculate complete bounding box accounting for ALL visual elements and transforms
+          const dotRadius = (dot.size || 120) / 2; // 60px
+          const identityCardOffset = 60; // Distance from dot center to identity card
+          const identityCardHeight = 45; // Actual height of identity card
+          const channelBadgeHeight = 24; // Height of channel badge
+          const channelBadgeOffset = 2; // Distance from dot bottom (negative in CSS)
           const padding = 32; // Container padding from p-8
           
-          // X-axis clamping (dot center position accounting for transform translate)
+          // X-axis clamping
           const minX = dotRadius + padding;
           const maxX = containerWidth - dotRadius - padding;
           const clampedX = Math.max(minX, Math.min(maxX, scaledX));
           
-          // Y-axis clamping (account for identity card above and channel badge below)
-          // Since transform translates -50%, the visual bounds are:
-          // - Top edge: y - identityCardHeight
-          // - Bottom edge: y + dotRadius + channelBadgeHeight
-          const minY = identityCardHeight + padding;
-          const clampedY = Math.max(minY, dot.y || 0);
+          // Y-axis clamping - accounting for transform: translate(-50%, -50%) on BOTH elements
+          // Top visual edge: y - dotRadius - identityCardOffset - (identityCardHeight/2)
+          // Bottom visual edge: y + dotRadius + channelBadgeOffset + channelBadgeHeight
+          const topBuffer = dotRadius + identityCardOffset + (identityCardHeight / 2) + padding;
+          const bottomBuffer = dotRadius + channelBadgeOffset + channelBadgeHeight + padding;
+          const canvasHeight = 10000; // Virtual canvas height
+          
+          const minY = topBuffer;
+          const maxY = canvasHeight - bottomBuffer;
+          const clampedY = Math.max(minY, Math.min(maxY, dot.y || 0));
           
           return (
             <div

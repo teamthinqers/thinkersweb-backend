@@ -125,20 +125,29 @@ function generateFixedGridPositions(): Array<{ x: number; y: number; size: numbe
   const TOTAL_POSITIONS = 100; // Optimize for 100 thoughts max
   const DOTS_PER_ROW = 4; // Base grid: 4 dots per row - very spacious cloud layout
   
-  // Use pixel-based layout for infinite canvas (assume 1200px width container)
+  // Calculate complete bounding box accounting for ALL visual elements and transforms
   const containerWidth = 1200;
   const dotSize = sizes[0]; // 120px
   const dotRadius = dotSize / 2; // 60px
-  const identityCardHeight = 80; // Identity card + offset
+  const identityCardOffset = 60; // Distance from dot center to identity card
+  const identityCardHeight = 45; // Actual height of identity card
+  const channelBadgeHeight = 24; // Height of channel badge
+  const channelBadgeOffset = 2; // Distance from dot bottom
   const padding = 32; // Container padding
   
-  const leftMarginPx = dotRadius + padding + 50; // Extra margin for safety
-  const rightMarginPx = dotRadius + padding + 50;
-  const topMarginPx = identityCardHeight + padding + 50; // Ensure identity cards are never cut
+  // Buffers accounting for transform: translate(-50%, -50%) on elements
+  const topBuffer = dotRadius + identityCardOffset + (identityCardHeight / 2) + padding;
+  const bottomBuffer = dotRadius + channelBadgeOffset + channelBadgeHeight + padding;
+  const leftBuffer = dotRadius + padding;
+  const rightBuffer = dotRadius + padding;
+  
+  const leftMarginPx = leftBuffer;
+  const rightMarginPx = rightBuffer;
+  const topMarginPx = topBuffer;
   const availableWidthPx = containerWidth - leftMarginPx - rightMarginPx;
   
   // Base grid spacing in pixels
-  const cellWidthPx = availableWidthPx / DOTS_PER_ROW; // ~210px per cell
+  const cellWidthPx = availableWidthPx / DOTS_PER_ROW;
   const cellHeightPx = 350; // Vertical spacing in pixels - extra spacious for clean cloud with 4 dots per row
   
   // Jitter amount in pixels - random offset within cell to create organic look
