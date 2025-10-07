@@ -1187,4 +1187,34 @@ router.delete('/:thoughtId/sparks/:sparkId', async (req, res) => {
   }
 });
 
+/**
+ * GET /api/user/sparks-count
+ * Get total sparks count for the logged-in user
+ */
+router.get('/user/sparks-count', async (req, res) => {
+  try {
+    const userId = (req as any).user?.id;
+
+    if (!userId) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+
+    const userSparks = await db.query.sparks.findMany({
+      where: eq(sparks.userId, userId),
+    });
+
+    res.json({
+      success: true,
+      count: userSparks.length
+    });
+
+  } catch (error) {
+    console.error('Get sparks count error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to get sparks count'
+    });
+  }
+});
+
 export default router;

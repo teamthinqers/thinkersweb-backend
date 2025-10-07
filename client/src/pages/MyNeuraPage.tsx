@@ -229,6 +229,7 @@ function SparksSection({ thoughtId }: { thoughtId: number }) {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [`/api/thoughts/${thoughtId}/sparks`] });
+      queryClient.invalidateQueries({ queryKey: ['/api/thoughts/user/sparks-count'] });
       setSparkNote("");
       toast({
         title: "Spark saved!",
@@ -244,6 +245,7 @@ function SparksSection({ thoughtId }: { thoughtId: number }) {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [`/api/thoughts/${thoughtId}/sparks`] });
+      queryClient.invalidateQueries({ queryKey: ['/api/thoughts/user/sparks-count'] });
     },
   });
 
@@ -474,6 +476,12 @@ export default function MyNeuraPage() {
     enabled: !!user,
   });
 
+  // Fetch sparks count
+  const { data: sparksCountData } = useQuery<{ success: boolean; count: number }>({
+    queryKey: ['/api/thoughts/user/sparks-count'],
+    enabled: !!user,
+  });
+
   // Share thought to social feed
   const shareToSocialMutation = useMutation({
     mutationFn: async (thoughtId: number) => {
@@ -619,7 +627,7 @@ export default function MyNeuraPage() {
                   </span>
                 </Button>
                 <div className="px-2.5 py-1 bg-gradient-to-br from-yellow-50 to-amber-50 rounded-lg border border-yellow-200/50">
-                  <span className="text-xs font-semibold text-yellow-800">0</span>
+                  <span className="text-xs font-semibold text-yellow-800">{sparksCountData?.count || 0}</span>
                 </div>
               </div>
               
