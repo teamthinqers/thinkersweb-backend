@@ -221,6 +221,7 @@ function SparksSection({ thoughtId, thought }: { thoughtId: number; thought: Tho
     sparks: any[];
   }>({
     queryKey: [`/api/thoughts/${thoughtId}/sparks`],
+    enabled: !!thoughtId, // Only fetch when we have a valid thoughtId
   });
 
   // Add spark mutation
