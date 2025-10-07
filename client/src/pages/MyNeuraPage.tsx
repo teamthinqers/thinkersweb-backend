@@ -36,6 +36,9 @@ import ThoughtCloudGrid from "@/components/ThoughtCloudGrid";
 
 // Import ThoughtDot type from shared component
 import { ThoughtDot } from "@/components/ThoughtCloudGrid";
+import { Input } from "@/components/ui/input";
+import { Send } from "lucide-react";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 // Channel-specific visual configurations now in gridConstants
 
@@ -52,6 +55,220 @@ type NeuralStrengthData = {
     savedSparksCount: number;
   };
 };
+
+// Personal Perspectives Component (Self-Reflection Chat)
+function PersonalPerspectives({ thoughtId }: { thoughtId: number }) {
+  const [personalMessage, setPersonalMessage] = useState("");
+  const [showSocialModal, setShowSocialModal] = useState(false);
+  const queryClient = useQueryClient();
+  const { toast } = useToast();
+
+  // Fetch personal perspectives
+  const { data: personalData, isLoading: personalLoading } = useQuery<{
+    success: boolean;
+    threadId: number;
+    messages: any[];
+  }>({
+    queryKey: [`/api/thoughts/${thoughtId}/perspectives/personal`],
+  });
+
+  // Fetch social thread status
+  const { data: socialStatus } = useQuery<{
+    success: boolean;
+    hasSocialThread: boolean;
+    isSharedOrImported: boolean;
+    shouldShowSocialButton: boolean;
+  }>({
+    queryKey: [`/api/thoughts/${thoughtId}/social-thread-status`],
+  });
+
+  // Add personal perspective mutation
+  const addPersonalPerspectiveMutation = useMutation({
+    mutationFn: async (messageBody: string) => {
+      return apiRequest("POST", `/api/thoughts/${thoughtId}/perspectives/personal`, { messageBody });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [`/api/thoughts/${thoughtId}/perspectives/personal`] });
+      setPersonalMessage("");
+    },
+    onError: () => {
+      toast({
+        title: "Error",
+        description: "Failed to add perspective",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const handleSendMessage = () => {
+    if (!personalMessage.trim()) return;
+    addPersonalPerspectiveMutation.mutate(personalMessage);
+  };
+
+  const messages = personalData?.messages || [];
+
+  return (
+    <>
+      <div className="flex flex-col h-full min-h-0 border-r border-gray-200">
+        {/* Header */}
+        <div className="flex-shrink-0 p-4 border-b border-gray-200">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <MessageCircle className="h-5 w-5 text-amber-500" />
+              <h3 className="text-lg font-semibold text-gray-900">My Reflections</h3>
+            </div>
+            {socialStatus?.shouldShowSocialButton && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setShowSocialModal(true)}
+                className="border-purple-300 text-purple-700 hover:bg-purple-50"
+              >
+                <Users className="h-4 w-4 mr-1" />
+                Social
+              </Button>
+            )}
+          </div>
+        </div>
+
+        {/* Messages - Scrollable */}
+        <div className="flex-1 min-h-0 overflow-y-auto p-4 bg-gray-50 space-y-3">
+          {personalLoading ? (
+            <div className="text-center text-gray-500 py-8">
+              <RefreshCw className="h-6 w-6 animate-spin mx-auto mb-2" />
+              <p className="text-sm">Loading reflections...</p>
+            </div>
+          ) : messages.length === 0 ? (
+            <div className="text-center text-gray-500 py-8">
+              <p className="text-sm">No reflections yet</p>
+              <p className="text-xs mt-2">Start writing your thoughts and perspectives</p>
+            </div>
+          ) : (
+            messages.map((msg: any) => (
+              <div key={msg.id} className="bg-white rounded-lg p-3 shadow-sm border border-amber-100">
+                <div className="flex items-start gap-2">
+                  <Avatar className="h-8 w-8">
+                    <AvatarImage src={msg.user?.avatar} />
+                    <AvatarFallback className="bg-amber-500 text-white text-xs">
+                      {msg.user?.fullName?.[0] || 'U'}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className="flex-1">
+                    <p className="text-sm text-gray-800">{msg.messageBody}</p>
+                    <p className="text-xs text-gray-400 mt-1">
+                      {new Date(msg.createdAt).toLocaleTimeString()}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+
+        {/* Input - Footer */}
+        <div className="flex-shrink-0 p-4 border-t border-gray-200 bg-white">
+          <div className="flex gap-2">
+            <Input
+              value={personalMessage}
+              onChange={(e) => setPersonalMessage(e.target.value)}
+              onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
+              placeholder="Write your reflection..."
+              className="flex-1"
+            />
+            <Button
+              onClick={handleSendMessage}
+              disabled={!personalMessage.trim() || addPersonalPerspectiveMutation.isPending}
+              className="bg-gradient-to-r from-amber-500 to-orange-500"
+            >
+              <Send className="h-4 w-4" />
+            </Button>
+          </div>
+        </div>
+      </div>
+
+      {/* Social Perspectives Modal */}
+      {showSocialModal && (
+        <SocialPerspectivesModal
+          thoughtId={thoughtId}
+          open={showSocialModal}
+          onOpenChange={setShowSocialModal}
+        />
+      )}
+    </>
+  );
+}
+
+// Social Perspectives Modal Component
+function SocialPerspectivesModal({
+  thoughtId,
+  open,
+  onOpenChange,
+}: {
+  thoughtId: number;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+}) {
+  // Fetch social perspectives
+  const { data: socialData, isLoading: socialLoading } = useQuery<{
+    success: boolean;
+    threadId: number;
+    messages: any[];
+  }>({
+    queryKey: [`/api/thoughts/${thoughtId}/perspectives`],
+    enabled: open,
+  });
+
+  const messages = socialData?.messages || [];
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="max-w-2xl max-h-[80vh]">
+        <DialogHeader>
+          <DialogTitle className="flex items-center gap-2">
+            <Users className="h-5 w-5 text-purple-600" />
+            Social Perspectives
+          </DialogTitle>
+        </DialogHeader>
+        
+        <ScrollArea className="h-[60vh] pr-4">
+          <div className="space-y-3">
+            {socialLoading ? (
+              <div className="text-center text-gray-500 py-8">
+                <RefreshCw className="h-6 w-6 animate-spin mx-auto mb-2" />
+                <p className="text-sm">Loading social perspectives...</p>
+              </div>
+            ) : messages.length === 0 ? (
+              <div className="text-center text-gray-500 py-8">
+                <p className="text-sm">No social perspectives yet</p>
+                <p className="text-xs mt-2">Be the first to share in /social!</p>
+              </div>
+            ) : (
+              messages.map((msg: any) => (
+                <div key={msg.id} className="bg-purple-50 rounded-lg p-3 border border-purple-100">
+                  <div className="flex items-start gap-2">
+                    <Avatar className="h-8 w-8">
+                      <AvatarImage src={msg.user?.avatar} />
+                      <AvatarFallback className="bg-purple-500 text-white text-xs">
+                        {msg.user?.fullName?.[0] || 'U'}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div className="flex-1">
+                      <p className="text-xs font-medium text-gray-900">{msg.user?.fullName || 'Anonymous'}</p>
+                      <p className="text-sm text-gray-700 mt-1">{msg.messageBody}</p>
+                      <p className="text-xs text-gray-400 mt-1">
+                        {new Date(msg.createdAt).toLocaleString()}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
+        </ScrollArea>
+      </DialogContent>
+    </Dialog>
+  );
+}
 
 export default function MyNeuraPage() {
   const { user, logout } = useAuth();
@@ -573,25 +790,8 @@ export default function MyNeuraPage() {
                 </div>
               </div>
 
-              {/* Middle Column: Perspectives (Chat) */}
-              <div className="flex flex-col h-full min-h-0 border-r border-gray-200">
-                {/* Header */}
-                <div className="flex-shrink-0 p-6 border-b border-gray-200 flex items-center gap-2">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-amber-500">
-                    <circle cx="11" cy="11" r="8"></circle>
-                    <path d="m21 21-4.3-4.3"></path>
-                  </svg>
-                  <h3 className="text-lg font-semibold text-gray-900">Perspectives</h3>
-                </div>
-                
-                {/* Main Content - Scrollable */}
-                <div className="flex-1 min-h-0 overflow-y-auto p-6 bg-gray-50">
-                  <div className="text-center text-gray-500 py-8">
-                    <p className="text-sm">Perspectives feature coming soon...</p>
-                    <p className="text-xs mt-2">Users will be able to share thoughts and reflections here</p>
-                  </div>
-                </div>
-              </div>
+              {/* Middle Column: Personal Perspectives (Self-Reflection) */}
+              <PersonalPerspectives thoughtId={selectedThought.id} />
 
               {/* Right Column: Spark */}
               <div className="flex flex-col h-full min-h-0">
