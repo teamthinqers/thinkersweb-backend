@@ -405,9 +405,9 @@ export default function MyNeuraPage() {
 
       {/* Expanded Thought Modal - Three Column Layout */}
       <Dialog open={!!selectedThought} onOpenChange={(open) => !open && setSelectedThought(null)}>
-        <DialogContent className="max-w-7xl h-[90vh] p-0 overflow-hidden">
+        <DialogContent className="max-w-7xl max-h-[90vh] p-0 overflow-hidden flex flex-col">
           {selectedThought && (
-            <div className="grid grid-cols-3 h-full">
+            <div className="grid grid-cols-3 flex-1 min-h-0 overflow-hidden">
               {/* Left Column: Thought Details */}
               <div className="flex flex-col h-full min-h-0 border-r border-gray-200">
                 {/* Header */}
