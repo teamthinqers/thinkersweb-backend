@@ -115,7 +115,7 @@ function PersonalPerspectives({ thoughtId }: { thoughtId: number }) {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <MessageCircle className="h-5 w-5 text-orange-600" />
-              <h3 className="text-lg font-semibold text-orange-600">My Reflections</h3>
+              <h3 className="text-lg font-semibold text-gray-900">My Reflections</h3>
             </div>
             {socialStatus?.shouldShowSocialButton && (
               <Button
