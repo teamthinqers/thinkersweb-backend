@@ -920,10 +920,7 @@ export default function MyNeuraPage() {
                     <div className="flex items-center gap-2">
                       <FileText className="h-5 w-5 text-amber-600" />
                       <h3 className="text-lg font-semibold text-gray-900">
-                        {selectedThought.isSaved 
-                          ? `${selectedThought.user?.fullName || 'Community'}'s Thought`
-                          : 'My Thought'
-                        }
+                        {selectedThought.user?.fullName || 'Anonymous'}
                       </h3>
                     </div>
                   </div>
