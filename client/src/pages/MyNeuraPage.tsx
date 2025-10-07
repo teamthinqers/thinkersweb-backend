@@ -244,11 +244,11 @@ function SocialPerspectivesModal({
               </div>
             ) : (
               messages.map((msg: any) => (
-                <div key={msg.id} className="bg-red-50 rounded-lg p-3 border border-red-100">
+                <div key={msg.id} className="bg-purple-50 rounded-lg p-3 border border-purple-100">
                   <div className="flex items-start gap-2">
                     <Avatar className="h-8 w-8">
                       <AvatarImage src={msg.user?.avatar} />
-                      <AvatarFallback className="bg-red-500 text-white text-xs">
+                      <AvatarFallback className="bg-purple-500 text-white text-xs">
                         {msg.user?.fullName?.[0] || 'U'}
                       </AvatarFallback>
                     </Avatar>
