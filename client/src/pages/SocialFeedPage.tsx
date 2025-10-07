@@ -491,13 +491,20 @@ export default function SocialFeedPage() {
                                 <div className="flex-shrink-0 w-24">
                                   <p className="text-sm font-semibold text-gray-700">Emotions Tag</p>
                                 </div>
-                                <div className="flex-1">
-                                  {selectedDot.emotion ? (
-                                    <Badge className="bg-gradient-to-r from-amber-500 to-orange-500 text-white border-0">
-                                      {selectedDot.emotion}
-                                    </Badge>
-                                  ) : (
-                                    <p className="text-sm text-gray-400 italic">No emotion added yet</p>
+                                <div className="flex-1 flex flex-wrap gap-2">
+                                  {selectedDot.emotions ? (() => {
+                                    try {
+                                      const emotionsArray = JSON.parse(selectedDot.emotions);
+                                      return emotionsArray.length > 0 ? emotionsArray.map((emotion: string, idx: number) => (
+                                        <Badge key={idx} className="bg-gradient-to-r from-amber-500 to-orange-500 text-white border-0">
+                                          {emotion}
+                                        </Badge>
+                                      )) : <p className="text-sm text-gray-400 italic">No emotions added yet</p>;
+                                    } catch {
+                                      return <p className="text-sm text-gray-400 italic">No emotions added yet</p>;
+                                    }
+                                  })() : (
+                                    <p className="text-sm text-gray-400 italic">No emotions added yet</p>
                                   )}
                                 </div>
                               </div>

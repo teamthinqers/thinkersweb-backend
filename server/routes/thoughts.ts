@@ -162,7 +162,9 @@ router.post('/', async (req, res) => {
 
     // Store vector embedding for semantic search
     try {
-      const embeddingContent = `${newThought.heading}\n\n${newThought.summary}${newThought.emotion ? `\nEmotion: ${newThought.emotion}` : ''}`;
+      const emotionsArray = newThought.emotions ? JSON.parse(newThought.emotions) : [];
+      const emotionsStr = emotionsArray.length > 0 ? `\nEmotions: ${emotionsArray.join(', ')}` : '';
+      const embeddingContent = `${newThought.heading}\n\n${newThought.summary}${emotionsStr}`;
       await storeVectorEmbedding(
         'thought',
         newThought.id,
@@ -171,7 +173,7 @@ router.post('/', async (req, res) => {
         {
           heading: newThought.heading,
           visibility: newThought.visibility,
-          emotion: newThought.emotion || '',
+          emotions: emotionsArray.join(', '),
           createdAt: newThought.createdAt.toISOString(),
         }
       );

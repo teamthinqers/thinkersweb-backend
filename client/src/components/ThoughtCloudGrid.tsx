@@ -10,7 +10,7 @@ export interface ThoughtDot {
   id: number;
   heading: string;
   summary: string;
-  emotion?: string;
+  emotions?: string; // JSON string array of emotions like '["Joy", "Curiosity"]'
   imageUrl?: string;
   channel?: string;
   userId?: number;

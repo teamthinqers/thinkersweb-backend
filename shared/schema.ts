@@ -54,7 +54,7 @@ export const thoughts = pgTable("thoughts", {
   userId: integer("user_id").references(() => users.id).notNull(),
   heading: text("heading").notNull(),
   summary: text("summary").notNull(),
-  emotion: text("emotion"), // Optional: joy, curiosity, frustration, etc.
+  emotions: text("emotions"), // Optional: JSON array of emotions like ["Joy", "Curiosity", "Hope"]
   imageUrl: text("image_url"), // Optional: image attachment
   visibility: text("visibility").notNull().default("personal"), // 'personal' or 'social'
   sharedToSocial: boolean("shared_to_social").default(false).notNull(), // Track if personal thought is shared to social
@@ -355,7 +355,7 @@ export const sparksRelations = relations(sparks, ({ one }) => ({
 export const insertThoughtSchema = createInsertSchema(thoughts, {
   heading: (schema) => schema.min(1, "Heading is required").max(100, "Heading too long"),
   summary: (schema) => schema.min(1, "Your thought cannot be empty").max(1000, "Thought is too long (max 1000 characters)"),
-  emotion: (schema) => schema.optional(),
+  emotions: (schema) => schema.optional(),
   visibility: (schema) => schema.refine(val => ['personal', 'social'].includes(val), "Visibility must be personal or social"),
 });
 
