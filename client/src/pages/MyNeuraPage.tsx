@@ -6,7 +6,7 @@ import {
   Menu, User, LogOut, Settings, TrendingUp, Heart,
   Share2, Eye, MoreHorizontal, Maximize, Minimize, Clock,
   Grid3x3, List, Bookmark, Fingerprint, Hash, Lightbulb, MessageCircle, Zap, Info, Cog,
-  PenTool, Linkedin, MessageCircleMore, RefreshCw
+  PenTool, Linkedin, MessageCircleMore, RefreshCw, FileText
 } from "lucide-react";
 import { SiWhatsapp, SiLinkedin, SiOpenai } from 'react-icons/si';
 import { useAuth } from "@/hooks/use-auth-new";
@@ -915,9 +915,25 @@ export default function MyNeuraPage() {
               {/* Left Column: Thought Details */}
               <div className="flex flex-col h-full min-h-0 border-r border-gray-200">
                 {/* Header */}
-                <div className="flex-shrink-0 p-6 border-b border-gray-200">
-                  <DialogHeader>
-                  <div className="flex items-center gap-3 mb-4">
+                <div className="flex-shrink-0 p-4 border-b border-gray-200">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <FileText className="h-5 w-5 text-amber-600" />
+                      <h3 className="text-lg font-semibold text-gray-900">
+                        {selectedThought.isSaved 
+                          ? `${selectedThought.user?.fullName || 'Community'}'s Thought`
+                          : 'My Thought'
+                        }
+                      </h3>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Main Content - Scrollable */}
+                <div className="flex-1 min-h-0 overflow-y-auto p-6 bg-gray-50">
+                  <div className="space-y-6">
+                  {/* Author/Source Info */}
+                  <div className="flex items-center gap-3">
                     {selectedThought.isSaved ? (
                       <>
                         <div className="h-12 w-12 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center border-2 border-purple-200">
@@ -946,16 +962,14 @@ export default function MyNeuraPage() {
                       </>
                     )}
                   </div>
-                  
-                    <DialogTitle className="text-2xl font-bold text-gray-900 mt-4">
-                      {selectedThought.heading}
-                    </DialogTitle>
-                  </DialogHeader>
-                </div>
 
-                {/* Main Content - Scrollable */}
-                <div className="flex-1 min-h-0 overflow-y-auto p-6">
-                  <div className="space-y-6">
+                  {/* Thought Heading */}
+                  <div>
+                    <h2 className="text-2xl font-bold text-gray-900 mb-4">
+                      {selectedThought.heading}
+                    </h2>
+                  </div>
+
                   {/* Image - if present */}
                   {selectedThought.imageUrl && (
                     <div className="space-y-2">
