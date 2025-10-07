@@ -729,4 +729,258 @@ router.post('/:thoughtId/perspectives', async (req, res) => {
   }
 });
 
+/**
+ * GET /api/thoughts/:thoughtId/perspectives/personal
+ * Fetch personal perspectives (self-reflections) for a thought in MyNeura
+ * Returns messages from the user's personal thread
+ * REQUIRES AUTHENTICATION
+ */
+router.get('/:thoughtId/perspectives/personal', async (req, res) => {
+  try {
+    const userId = (req as any).user?.id;
+
+    if (!userId) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+
+    const thoughtId = parseInt(req.params.thoughtId);
+
+    if (!thoughtId || isNaN(thoughtId)) {
+      return res.status(400).json({ error: 'Invalid thought ID' });
+    }
+
+    // Check if thought exists and belongs to user or is saved by user
+    const thought = await db.query.thoughts.findFirst({
+      where: eq(thoughts.id, thoughtId),
+    });
+
+    if (!thought) {
+      return res.status(404).json({ error: 'Thought not found' });
+    }
+
+    // Check if it's user's own thought or a saved thought
+    const isSaved = await db.query.savedThoughts.findFirst({
+      where: and(
+        eq(savedThoughts.userId, userId),
+        eq(savedThoughts.thoughtId, thoughtId)
+      ),
+    });
+
+    if (thought.userId !== userId && !isSaved) {
+      return res.status(403).json({ error: 'Not authorized to view personal perspectives' });
+    }
+
+    // Get or create personal thread for this thought and user
+    let thread = await db.query.perspectivesThreads.findFirst({
+      where: and(
+        eq(perspectivesThreads.thoughtId, thoughtId),
+        eq(perspectivesThreads.threadType, 'personal'),
+        eq(perspectivesThreads.userId, userId)
+      ),
+    });
+
+    // Create thread if it doesn't exist
+    if (!thread) {
+      const [newThread] = await db.insert(perspectivesThreads).values({
+        thoughtId,
+        threadType: 'personal',
+        userId,
+      }).returning();
+      thread = newThread;
+    }
+
+    // Get all messages for this thread with user info
+    const messages = await db.query.perspectivesMessages.findMany({
+      where: and(
+        eq(perspectivesMessages.threadId, thread.id),
+        eq(perspectivesMessages.isDeleted, false)
+      ),
+      orderBy: perspectivesMessages.createdAt,
+      with: {
+        user: {
+          columns: {
+            id: true,
+            fullName: true,
+            avatar: true,
+          }
+        }
+      }
+    });
+
+    res.json({
+      success: true,
+      threadId: thread.id,
+      messages,
+    });
+
+  } catch (error) {
+    console.error('Fetch personal perspectives error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to fetch personal perspectives',
+      details: error instanceof Error ? error.message : 'Unknown error'
+    });
+  }
+});
+
+/**
+ * POST /api/thoughts/:thoughtId/perspectives/personal
+ * Add a personal perspective (self-reflection) to a thought in MyNeura
+ * Creates personal thread if needed
+ * REQUIRES AUTHENTICATION
+ */
+router.post('/:thoughtId/perspectives/personal', async (req, res) => {
+  try {
+    const userId = (req as any).user?.id;
+
+    if (!userId) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+
+    const thoughtId = parseInt(req.params.thoughtId);
+
+    if (!thoughtId || isNaN(thoughtId)) {
+      return res.status(400).json({ error: 'Invalid thought ID' });
+    }
+
+    // Validate message body
+    const validatedData = perspectivesMessagesInsertSchema.parse({
+      messageBody: req.body.messageBody,
+      userId,
+      threadId: 0, // Will be set below
+    });
+
+    // Check if thought exists and belongs to user or is saved by user
+    const thought = await db.query.thoughts.findFirst({
+      where: eq(thoughts.id, thoughtId),
+    });
+
+    if (!thought) {
+      return res.status(404).json({ error: 'Thought not found' });
+    }
+
+    // Check if it's user's own thought or a saved thought
+    const isSaved = await db.query.savedThoughts.findFirst({
+      where: and(
+        eq(savedThoughts.userId, userId),
+        eq(savedThoughts.thoughtId, thoughtId)
+      ),
+    });
+
+    if (thought.userId !== userId && !isSaved) {
+      return res.status(403).json({ error: 'Not authorized to add personal perspectives' });
+    }
+
+    // Get or create personal thread for this thought and user
+    let thread = await db.query.perspectivesThreads.findFirst({
+      where: and(
+        eq(perspectivesThreads.thoughtId, thoughtId),
+        eq(perspectivesThreads.threadType, 'personal'),
+        eq(perspectivesThreads.userId, userId)
+      ),
+    });
+
+    if (!thread) {
+      const [newThread] = await db.insert(perspectivesThreads).values({
+        thoughtId,
+        threadType: 'personal',
+        userId,
+      }).returning();
+      thread = newThread;
+    }
+
+    // Insert the message
+    const [newMessage] = await db.insert(perspectivesMessages).values({
+      threadId: thread.id,
+      userId,
+      messageBody: validatedData.messageBody,
+      visibilityScope: 'personal',
+    }).returning();
+
+    // Update thread's last activity
+    await db.update(perspectivesThreads)
+      .set({ lastActivityAt: new Date() })
+      .where(eq(perspectivesThreads.id, thread.id));
+
+    // Get the message with user info to return
+    const messageWithUser = await db.query.perspectivesMessages.findFirst({
+      where: eq(perspectivesMessages.id, newMessage.id),
+      with: {
+        user: {
+          columns: {
+            id: true,
+            fullName: true,
+            avatar: true,
+          }
+        }
+      }
+    });
+
+    res.status(201).json({
+      success: true,
+      message: messageWithUser,
+    });
+
+  } catch (error) {
+    console.error('Post personal perspective error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to post personal perspective',
+      details: error instanceof Error ? error.message : 'Unknown error'
+    });
+  }
+});
+
+/**
+ * GET /api/thoughts/:thoughtId/social-thread-status
+ * Check if a thought has a social thread (for showing "Social Perspective" button)
+ * REQUIRES AUTHENTICATION
+ */
+router.get('/:thoughtId/social-thread-status', async (req, res) => {
+  try {
+    const userId = (req as any).user?.id;
+
+    if (!userId) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+
+    const thoughtId = parseInt(req.params.thoughtId);
+
+    if (!thoughtId || isNaN(thoughtId)) {
+      return res.status(400).json({ error: 'Invalid thought ID' });
+    }
+
+    // Check if thought has a social thread
+    const socialThread = await db.query.perspectivesThreads.findFirst({
+      where: and(
+        eq(perspectivesThreads.thoughtId, thoughtId),
+        eq(perspectivesThreads.threadType, 'social')
+      ),
+    });
+
+    // Also check if thought is shared to social or was imported from social
+    const thought = await db.query.thoughts.findFirst({
+      where: eq(thoughts.id, thoughtId),
+    });
+
+    const hasSocialThread = !!socialThread;
+    const isSharedOrImported = thought?.sharedToSocial || thought?.visibility === 'social';
+
+    res.json({
+      success: true,
+      hasSocialThread,
+      isSharedOrImported,
+      shouldShowSocialButton: hasSocialThread || isSharedOrImported,
+    });
+
+  } catch (error) {
+    console.error('Check social thread status error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to check social thread status',
+      details: error instanceof Error ? error.message : 'Unknown error'
+    });
+  }
+});
+
 export default router;
