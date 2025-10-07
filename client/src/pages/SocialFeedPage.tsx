@@ -739,7 +739,7 @@ export default function SocialFeedPage() {
                         <h4 className="text-sm font-semibold text-gray-900 mb-3">My Sparks ({userSparks.length})</h4>
                         
                         {/* Sparks List */}
-                        <div className="space-y-2 mb-4 max-h-[200px] overflow-y-auto">
+                        <div className="space-y-2 max-h-[200px] overflow-y-auto">
                           {sparksLoading ? (
                             <div className="text-center py-4">
                               <RefreshCw className="h-4 w-4 animate-spin mx-auto text-gray-400" />
@@ -761,26 +761,26 @@ export default function SocialFeedPage() {
                             ))
                           )}
                         </div>
+                      </div>
+                    </div>
 
-                        {/* Add Spark Input */}
-                        <div className="flex gap-2">
-                          <input
-                            type="text"
-                            value={sparkNote}
-                            onChange={(e) => setSparkNote(e.target.value)}
-                            onKeyDown={(e) => e.key === 'Enter' && handleSaveSpark()}
-                            placeholder="Capture your spark..."
-                            className="flex-1 text-sm border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-yellow-500"
-                          />
-                          <Button
-                            onClick={handleSaveSpark}
-                            disabled={!sparkNote.trim() || addSparkMutation.isPending}
-                            className="bg-gradient-to-r from-yellow-500 to-amber-500 hover:from-yellow-600 hover:to-amber-600"
-                            size="sm"
-                          >
-                            <Zap className="h-4 w-4" />
-                          </Button>
-                        </div>
+                    {/* Footer - Input Area */}
+                    <div className="flex-shrink-0 p-4 border-t border-gray-200 bg-white">
+                      <div className="flex gap-2">
+                        <Input
+                          value={sparkNote}
+                          onChange={(e) => setSparkNote(e.target.value)}
+                          onKeyPress={(e) => e.key === 'Enter' && handleSaveSpark()}
+                          placeholder="Capture your spark..."
+                          className="flex-1"
+                        />
+                        <Button
+                          onClick={handleSaveSpark}
+                          disabled={!sparkNote.trim() || addSparkMutation.isPending}
+                          className="bg-gradient-to-r from-yellow-500 to-amber-500 hover:from-yellow-600 hover:to-amber-600"
+                        >
+                          <Zap className="h-4 w-4" />
+                        </Button>
                       </div>
                     </div>
                   </div>
