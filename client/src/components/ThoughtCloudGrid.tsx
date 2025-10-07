@@ -192,12 +192,23 @@ export default function ThoughtCloudGrid({
           const channelConfig = getChannelConfig(dot.channel || 'write');
           const ChannelIcon = channelConfig.icon;
           
+          // Scale positions to actual container width (positions are generated for 1200px)
+          const containerWidth = scrollContainerRef.current?.offsetWidth || 1200;
+          const scaleFactor = containerWidth / 1200;
+          const scaledX = (dot.x || 0) * scaleFactor;
+          
+          // Clamp positions to prevent overflow (with dot radius buffer)
+          const dotRadius = (dot.size || 120) / 2;
+          const minX = dotRadius + 32; // 32px padding
+          const maxX = containerWidth - dotRadius - 32;
+          const clampedX = Math.max(minX, Math.min(maxX, scaledX));
+          
           return (
             <div
               key={dot.id}
               className="absolute transition-all duration-300 hover:z-50 group"
               style={{
-                left: `${dot.x}px`,
+                left: `${clampedX}px`,
                 top: `${dot.y}px`,
                 transform: `translate(-50%, -50%)`,
               }}
