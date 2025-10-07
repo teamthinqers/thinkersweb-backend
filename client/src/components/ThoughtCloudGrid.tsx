@@ -199,22 +199,16 @@ export default function ThoughtCloudGrid({
           
           // Clamp positions to prevent overflow (with dot radius buffer)
           const dotRadius = (dot.size || 120) / 2;
-          const identityCardOffset = 60; // Distance of identity card above dot center
-          const identityCardHeight = 50; // Approximate height of identity card
-          const paddingBuffer = 32; // Extra padding for safety
+          const identityCardHeight = 60; // Height of identity card above dot
           
           // X-axis clamping
-          const minX = dotRadius + paddingBuffer;
-          const maxX = containerWidth - dotRadius - paddingBuffer;
+          const minX = dotRadius + 32; // 32px padding
+          const maxX = containerWidth - dotRadius - 32;
           const clampedX = Math.max(minX, Math.min(maxX, scaledX));
           
-          // Y-axis clamping (prevent cutoff at top and bottom)
-          // Top: identity card offset + identity card height + padding
-          const minY = identityCardOffset + identityCardHeight + paddingBuffer;
-          // Bottom: leave space for dot radius + padding
-          const containerHeight = scrollContainerRef.current?.offsetHeight || 600;
-          const maxY = containerHeight - dotRadius - paddingBuffer;
-          const clampedY = Math.max(minY, Math.min(maxY, dot.y || 0));
+          // Y-axis clamping (account for identity card above and dot radius below)
+          const minY = identityCardHeight + dotRadius + 20; // 20px top padding
+          const clampedY = Math.max(minY, dot.y || 0);
           
           return (
             <div
