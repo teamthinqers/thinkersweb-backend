@@ -541,8 +541,8 @@ export default function MyNeuraPage() {
                 </div>
 
                 {/* Footer - Action Button */}
-                {!selectedThought.isSaved && (
-                  <div className="flex-shrink-0 p-4 border-t border-gray-200 bg-white">
+                <div className="flex-shrink-0 p-4 border-t border-gray-200 bg-white">
+                  {!selectedThought.isSaved && (
                     <Button
                       onClick={() => shareToSocialMutation.mutate(selectedThought.id)}
                       disabled={shareToSocialMutation.isPending || selectedThought.sharedToSocial}
@@ -551,8 +551,8 @@ export default function MyNeuraPage() {
                       <Share2 className="h-4 w-4 mr-2" />
                       {selectedThought.sharedToSocial ? 'Already Shared to Social' : 'Share to Social'}
                     </Button>
-                  </div>
-                )}
+                  )}
+                </div>
               </div>
 
               {/* Middle Column: Perspectives (Chat) */}
