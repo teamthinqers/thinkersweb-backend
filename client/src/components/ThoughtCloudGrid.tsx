@@ -5,6 +5,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { RefreshCw, Maximize, Minimize } from 'lucide-react';
 import { GRID_CONSTANTS, getFixedPosition, getChannelConfig } from '@/lib/gridConstants';
+import { useLocation } from 'wouter';
 
 export interface ThoughtDot {
   id: number;
@@ -64,6 +65,7 @@ export default function ThoughtCloudGrid({
   const [page, setPage] = useState(0);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const sentinelRef = useRef<HTMLDivElement>(null);
+  const [, setLocation] = useLocation();
 
   // Position thoughts using fixed grid (no collision detection needed)
   useEffect(() => {
@@ -241,33 +243,53 @@ export default function ThoughtCloudGrid({
                 }}
               >
                 <div className="flex items-center justify-center gap-0">
-                  {/* Author avatar */}
-                  <Avatar className="h-10 w-10 border-2 border-amber-300 shadow-lg">
-                    {dot.user?.avatar ? (
-                      <AvatarImage src={dot.user.avatar} alt={dot.user.fullName || 'User'} />
-                    ) : (
-                      <AvatarFallback className="bg-gradient-to-r from-amber-500 to-orange-500 text-white text-sm">
-                        {dot.user?.fullName?.charAt(0).toUpperCase() || 'U'}
-                      </AvatarFallback>
-                    )}
-                  </Avatar>
+                  {/* Author avatar - clickable */}
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      if (dot.user?.id) {
+                        setLocation(`/user/${dot.user.id}`);
+                      }
+                    }}
+                    className="focus:outline-none focus:ring-2 focus:ring-amber-500 rounded-full"
+                  >
+                    <Avatar className="h-10 w-10 border-2 border-amber-300 shadow-lg hover:border-amber-400 hover:scale-110 transition-all cursor-pointer">
+                      {dot.user?.avatar ? (
+                        <AvatarImage src={dot.user.avatar} alt={dot.user.fullName || 'User'} />
+                      ) : (
+                        <AvatarFallback className="bg-gradient-to-r from-amber-500 to-orange-500 text-white text-sm">
+                          {dot.user?.fullName?.charAt(0).toUpperCase() || 'U'}
+                        </AvatarFallback>
+                      )}
+                    </Avatar>
+                  </button>
 
-                  {/* Contributor avatars (up to 2) - only show on /social */}
+                  {/* Contributor avatars (up to 2) - only show on /social - clickable */}
                   {dot.contributors && dot.contributors.length > 0 && (
                     <>
                       {dot.contributors.slice(0, 2).map((contributor) => (
-                        <Avatar 
-                          key={contributor.id} 
-                          className="h-8 w-8 border-2 border-red-400 shadow-lg -ml-3"
+                        <button
+                          key={contributor.id}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            if (contributor.id) {
+                              setLocation(`/user/${contributor.id}`);
+                            }
+                          }}
+                          className="focus:outline-none focus:ring-2 focus:ring-red-500 rounded-full"
                         >
-                          {contributor.avatar ? (
-                            <AvatarImage src={contributor.avatar} alt={contributor.fullName || 'Contributor'} />
-                          ) : (
-                            <AvatarFallback className="bg-gradient-to-r from-red-500 to-orange-500 text-white text-xs">
-                              {contributor.fullName?.charAt(0).toUpperCase() || 'C'}
-                            </AvatarFallback>
-                          )}
-                        </Avatar>
+                          <Avatar 
+                            className="h-8 w-8 border-2 border-red-400 shadow-lg -ml-3 hover:border-red-500 hover:scale-110 transition-all cursor-pointer"
+                          >
+                            {contributor.avatar ? (
+                              <AvatarImage src={contributor.avatar} alt={contributor.fullName || 'Contributor'} />
+                            ) : (
+                              <AvatarFallback className="bg-gradient-to-r from-red-500 to-orange-500 text-white text-xs">
+                                {contributor.fullName?.charAt(0).toUpperCase() || 'C'}
+                              </AvatarFallback>
+                            )}
+                          </Avatar>
+                        </button>
                       ))}
 
                       {/* +X indicator if more than 2 contributors - slight gap */}

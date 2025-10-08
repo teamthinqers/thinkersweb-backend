@@ -920,29 +920,63 @@ export default function MyNeuraPage() {
                   <div className="flex items-center gap-3 mb-4">
                     {selectedThought.isSaved ? (
                       <>
-                        <div className="h-12 w-12 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center border-2 border-purple-200">
+                        <button
+                          onClick={() => {
+                            if (selectedThought.user?.id) {
+                              setSelectedThought(null);
+                              setLocation(`/user/${selectedThought.user.id}`);
+                            }
+                          }}
+                          className="h-12 w-12 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center border-2 border-purple-200 hover:border-purple-300 hover:scale-110 transition-all cursor-pointer focus:outline-none focus:ring-2 focus:ring-purple-500"
+                        >
                           <Bookmark className="h-6 w-6 text-white" />
-                        </div>
-                        <div>
+                        </button>
+                        <button
+                          onClick={() => {
+                            if (selectedThought.user?.id) {
+                              setSelectedThought(null);
+                              setLocation(`/user/${selectedThought.user.id}`);
+                            }
+                          }}
+                          className="text-left hover:opacity-80 transition-opacity cursor-pointer focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 rounded-md p-1"
+                        >
                           <p className="font-semibold text-gray-900">Saved from {selectedThought.user?.fullName || 'Community'}</p>
                           <p className="text-sm text-gray-500">{selectedThought.user?.email}</p>
-                        </div>
+                        </button>
                       </>
                     ) : (
                       <>
-                        <Avatar className="h-12 w-12 border-2 border-amber-200">
-                          {selectedThought.user?.avatar ? (
-                            <AvatarImage src={selectedThought.user.avatar} alt={selectedThought.user.fullName || 'User'} />
-                          ) : (
-                            <AvatarFallback className="bg-gradient-to-r from-amber-500 to-orange-500 text-white">
-                              {selectedThought.user?.fullName?.charAt(0).toUpperCase() || 'U'}
-                            </AvatarFallback>
-                          )}
-                        </Avatar>
-                        <div>
+                        <button
+                          onClick={() => {
+                            if (selectedThought.user?.id) {
+                              setSelectedThought(null);
+                              setLocation(`/user/${selectedThought.user.id}`);
+                            }
+                          }}
+                          className="focus:outline-none focus:ring-2 focus:ring-amber-500 rounded-full"
+                        >
+                          <Avatar className="h-12 w-12 border-2 border-amber-200 hover:border-amber-400 hover:scale-110 transition-all cursor-pointer">
+                            {selectedThought.user?.avatar ? (
+                              <AvatarImage src={selectedThought.user.avatar} alt={selectedThought.user.fullName || 'User'} />
+                            ) : (
+                              <AvatarFallback className="bg-gradient-to-r from-amber-500 to-orange-500 text-white">
+                                {selectedThought.user?.fullName?.charAt(0).toUpperCase() || 'U'}
+                              </AvatarFallback>
+                            )}
+                          </Avatar>
+                        </button>
+                        <button
+                          onClick={() => {
+                            if (selectedThought.user?.id) {
+                              setSelectedThought(null);
+                              setLocation(`/user/${selectedThought.user.id}`);
+                            }
+                          }}
+                          className="text-left hover:opacity-80 transition-opacity cursor-pointer focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2 rounded-md p-1"
+                        >
                           <p className="font-semibold text-gray-900">My Thought</p>
                           <p className="text-sm text-gray-500">Created {new Date(selectedThought.createdAt).toLocaleString()}</p>
-                        </div>
+                        </button>
                       </>
                     )}
                   </div>
