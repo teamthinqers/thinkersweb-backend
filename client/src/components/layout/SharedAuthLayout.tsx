@@ -261,14 +261,14 @@ export default function SharedAuthLayout({ children }: SharedAuthLayoutProps) {
                 size="sm" 
                 className="flex items-center gap-2 px-4 py-2 rounded-xl transition-all duration-300 hover:scale-105 shadow-lg"
                 style={{
-                  backgroundColor: '#8B6F47',
-                  backgroundImage: 'linear-gradient(to bottom right, #9B7E54, #8B6F47, #7B5F37)'
+                  backgroundColor: '#B85C3A',
+                  backgroundImage: 'linear-gradient(to bottom right, #C06A42, #B85C3A, #A04E2E)'
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.backgroundImage = 'linear-gradient(to bottom right, #8B6F47, #7B5F37, #6B4F27)';
+                  e.currentTarget.style.backgroundImage = 'linear-gradient(to bottom right, #A04E2E, #904428, #803A22)';
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.backgroundImage = 'linear-gradient(to bottom right, #9B7E54, #8B6F47, #7B5F37)';
+                  e.currentTarget.style.backgroundImage = 'linear-gradient(to bottom right, #C06A42, #B85C3A, #A04E2E)';
                 }}
                 title="My DotSpark"
               >
