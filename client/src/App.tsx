@@ -21,6 +21,7 @@ import AuthPage from "@/pages/auth-page";
 import Settings from "@/pages/Settings";
 import Profile from "@/pages/Profile";
 import PublicProfile from "@/pages/PublicProfile";
+import MyDotSparkPage from "@/pages/MyDotSparkPage";
 import WhatsAppAdmin from "@/pages/WhatsAppAdmin";
 import WhatsAppTest from "@/pages/WhatsAppTest";
 import WhatsAppEntries from "@/pages/WhatsAppEntries";
@@ -194,6 +195,7 @@ function Router() {
       <Route path="/preview" component={PreviewPage} />
       <Route path="/social" component={SocialFeedPage} />
       <Route path="/myneura" component={MyNeuraPage} />
+      <Route path="/my-dotspark" component={MyDotSparkPage} />
       <Route path="/cognitive-identity" component={CognitiveIdentityPage} />
       <Route path="/learning-engine" component={LearningEnginePage} />
       <Route path="/auth" component={AuthPage} />

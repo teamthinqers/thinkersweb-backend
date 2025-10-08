@@ -252,8 +252,21 @@ export default function SharedAuthLayout({ children }: SharedAuthLayoutProps) {
             )}
           </div>
 
-          {/* Right: Navigation Buttons with Icons and Text */}
-          <div className="flex items-center gap-3">
+          {/* Right: Navigation Buttons with Icons and Text + User Avatar */}
+          <div className="flex items-center gap-2">
+            {/* My DotSpark Button with Logo Icon */}
+            <Link href="/my-dotspark">
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                className="flex items-center gap-2 px-4 py-2 bg-gradient-to-br from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 rounded-xl transition-all duration-300 hover:scale-105 shadow-lg"
+                title="My DotSpark"
+              >
+                <Sparkles className="h-5 w-5 text-white" />
+                <span className="text-white font-medium">My DotSpark</span>
+              </Button>
+            </Link>
+
             {/* Social Button with Brain Icon and Text */}
             <Link href="/social">
               <Button 
@@ -282,10 +295,8 @@ export default function SharedAuthLayout({ children }: SharedAuthLayoutProps) {
                 )}
               </Button>
             </Link>
-          </div>
 
-          {/* User Avatar */}
-          <div className="flex items-center gap-2 ml-4">
+            {/* User Avatar */}
             {user && (
               <Sheet>
                 <SheetTrigger asChild>
