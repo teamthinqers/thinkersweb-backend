@@ -272,11 +272,13 @@ export default function SharedAuthLayout({ children }: SharedAuthLayoutProps) {
                 }}
                 title="My DotSpark"
               >
-                <img 
-                  src="/dotspark-logo-transparent.png?v=1" 
-                  alt="DotSpark" 
-                  className="h-5 w-5"
-                />
+                <div className="relative h-5 w-5 flex items-center justify-center bg-white rounded-full p-0.5">
+                  <img 
+                    src="/dotspark-logo-transparent.png?v=1" 
+                    alt="DotSpark" 
+                    className="h-full w-full"
+                  />
+                </div>
                 <span className="text-white font-medium">My DotSpark</span>
               </Button>
             </Link>
