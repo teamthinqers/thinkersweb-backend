@@ -38,6 +38,7 @@ export default function SharedAuthLayout({ children }: SharedAuthLayoutProps) {
 
   const isOnSocial = location === '/social';
   const isOnMyNeura = location === '/myneura';
+  const isOnMyDotSpark = location === '/my-dotspark';
 
   // Debounced search
   useEffect(() => {
@@ -136,6 +137,36 @@ export default function SharedAuthLayout({ children }: SharedAuthLayoutProps) {
 
           {/* Navigation Items */}
           <div className={`flex flex-col space-y-3 flex-1 py-4 ${isSidebarOpen ? 'px-2' : 'items-center'}`}>
+            <Link href="/my-dotspark">
+              <Button 
+                variant="ghost" 
+                title="My DotSpark"
+                className={`${isSidebarOpen ? 'w-full justify-start h-10' : 'w-10 h-10'} rounded-xl transition-all duration-300 ${
+                  isOnMyDotSpark 
+                    ? 'text-white hover:opacity-90' 
+                    : 'hover:opacity-80'
+                }`}
+                style={{
+                  backgroundColor: isOnMyDotSpark ? '#B85C3A' : 'transparent',
+                  backgroundImage: isOnMyDotSpark 
+                    ? 'linear-gradient(to bottom right, #C06A42, #B85C3A, #A04E2E)' 
+                    : 'none',
+                  color: isOnMyDotSpark ? 'white' : '#B85C3A'
+                }}
+              >
+                <div className={`${isSidebarOpen ? '' : 'flex items-center justify-center'}`}>
+                  <div className={`flex items-center justify-center bg-white rounded-full ${isSidebarOpen ? 'h-5 w-5 p-0.5' : 'h-8 w-8 p-1'}`}>
+                    <img 
+                      src="/dotspark-logo-transparent.png?v=1" 
+                      alt="DotSpark" 
+                      className="h-full w-full"
+                    />
+                  </div>
+                </div>
+                {isSidebarOpen && <span className="ml-3 text-sm font-medium">My DotSpark</span>}
+              </Button>
+            </Link>
+
             <Link href="/social">
               <Button 
                 variant="ghost" 
