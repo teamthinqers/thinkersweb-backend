@@ -1,11 +1,12 @@
-import { useState, ReactNode } from 'react';
+import { useState, ReactNode, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Menu, Brain, Users, User, Settings, LogOut, Sparkles, UsersRound } from 'lucide-react';
+import { Menu, Brain, Users, User, Settings, LogOut, Sparkles, UsersRound, Search } from 'lucide-react';
 import { Link, useLocation } from 'wouter';
 import { useAuth } from '@/hooks/use-auth-new';
 import { useToast } from '@/hooks/use-toast';
 import FloatingDot from '@/components/FloatingDot';
+import { Input } from '@/components/ui/input';
 import {
   Sheet,
   SheetContent,
@@ -16,14 +17,100 @@ interface SharedAuthLayoutProps {
   children: ReactNode;
 }
 
+type SearchResult = {
+  id: number;
+  fullName: string | null;
+  linkedinHeadline: string | null;
+  linkedinPhotoUrl: string | null;
+  avatar: string | null;
+};
+
 export default function SharedAuthLayout({ children }: SharedAuthLayoutProps) {
   const { user, logout } = useAuth();
   const [location, setLocation] = useLocation();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const { toast } = useToast();
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
+  const [showSearchResults, setShowSearchResults] = useState(false);
+  const [selectedIndex, setSelectedIndex] = useState(-1);
+  const searchRef = useRef<HTMLDivElement>(null);
 
   const isOnSocial = location === '/social';
   const isOnMyNeura = location === '/myneura';
+
+  // Debounced search
+  useEffect(() => {
+    if (!searchQuery.trim() || searchQuery.length < 2) {
+      setSearchResults([]);
+      setShowSearchResults(false);
+      setSelectedIndex(-1);
+      return;
+    }
+
+    const timer = setTimeout(async () => {
+      try {
+        const response = await fetch(`/api/users/search?q=${encodeURIComponent(searchQuery)}`, {
+          credentials: 'include',
+        });
+        const data = await response.json();
+        if (data.success) {
+          setSearchResults(data.users || []);
+          setShowSearchResults(true);
+          setSelectedIndex(-1);
+        }
+      } catch (error) {
+        console.error('Search error:', error);
+      }
+    }, 300);
+
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
+
+  // Close search results when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
+        setShowSearchResults(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const handleProfileClick = (userId: number) => {
+    setLocation(`/user/${userId}`);
+    setSearchQuery('');
+    setShowSearchResults(false);
+    setSelectedIndex(-1);
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (!showSearchResults || searchResults.length === 0) return;
+
+    switch (e.key) {
+      case 'ArrowDown':
+        e.preventDefault();
+        setSelectedIndex((prev) => (prev < searchResults.length - 1 ? prev + 1 : prev));
+        break;
+      case 'ArrowUp':
+        e.preventDefault();
+        setSelectedIndex((prev) => (prev > 0 ? prev - 1 : -1));
+        break;
+      case 'Enter':
+        e.preventDefault();
+        if (selectedIndex >= 0 && searchResults[selectedIndex]) {
+          handleProfileClick(searchResults[selectedIndex].id);
+        }
+        break;
+      case 'Escape':
+        e.preventDefault();
+        setShowSearchResults(false);
+        setSelectedIndex(-1);
+        break;
+    }
+  };
 
   return (
     <div className="flex h-screen bg-gray-50">
@@ -110,8 +197,60 @@ export default function SharedAuthLayout({ children }: SharedAuthLayoutProps) {
             </Link>
           </div>
           
-          {/* Center: Empty space */}
-          <div className="flex-1"></div>
+          {/* Center: Search Bar (only visible when user is authenticated) */}
+          <div className="flex-1 max-w-md mx-4 relative" ref={searchRef}>
+            {user && (
+              <>
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                  <Input
+                    type="text"
+                    placeholder="Search profiles..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    onKeyDown={handleKeyDown}
+                    className="pl-10 bg-white border-amber-200 focus:border-amber-400 rounded-lg"
+                  />
+                </div>
+                
+                {/* Search Results Dropdown */}
+                {showSearchResults && (
+                  <div className="absolute top-full mt-2 w-full bg-white rounded-lg shadow-lg border border-gray-200 max-h-96 overflow-y-auto z-50">
+                    {searchResults.length > 0 ? (
+                      <div className="py-1">
+                        {searchResults.map((result, index) => (
+                          <button
+                            key={result.id}
+                            onClick={() => handleProfileClick(result.id)}
+                            className={`w-full px-4 py-3 flex items-center gap-3 transition-colors ${
+                              selectedIndex === index ? 'bg-amber-50' : 'hover:bg-gray-50'
+                            }`}
+                          >
+                            <Avatar className="h-10 w-10">
+                              <AvatarImage src={result.linkedinPhotoUrl || result.avatar || undefined} />
+                              <AvatarFallback className="bg-gradient-to-br from-amber-400 to-orange-500 text-white">
+                                {result.fullName?.[0]?.toUpperCase() || '?'}
+                              </AvatarFallback>
+                            </Avatar>
+                            <div className="flex-1 text-left">
+                              <p className="font-medium text-sm text-gray-900">{result.fullName || 'Unknown'}</p>
+                              {result.linkedinHeadline && (
+                                <p className="text-xs text-gray-500 truncate">{result.linkedinHeadline}</p>
+                              )}
+                            </div>
+                          </button>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="px-4 py-6 text-center text-sm text-gray-500">
+                        No profiles found
+                      </div>
+                    )}
+                  </div>
+                )}
+              </>
+            )}
+          </div>
 
           {/* Right: Navigation Buttons with Icons and Text */}
           <div className="flex items-center gap-3">

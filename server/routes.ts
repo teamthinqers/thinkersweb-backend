@@ -158,6 +158,35 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Search users by name (authenticated endpoint)
+  app.get(`${apiPrefix}/users/search`, requireAuth, async (req: AuthenticatedRequest, res: Response) => {
+    try {
+      const query = req.query.q as string;
+      
+      if (!query || query.trim().length < 2) {
+        return res.json({ success: true, users: [] });
+      }
+      
+      // Search users by name (case-insensitive, partial match)
+      const searchResults = await db.query.users.findMany({
+        where: sql`LOWER(${users.fullName}) LIKE LOWER(${`%${query}%`})`,
+        columns: {
+          id: true,
+          fullName: true,
+          linkedinHeadline: true,
+          linkedinPhotoUrl: true,
+          avatar: true,
+        },
+        limit: 10,
+      });
+      
+      res.json({ success: true, users: searchResults });
+    } catch (error) {
+      console.error('Error searching users:', error);
+      res.status(500).json({ error: 'Failed to search users' });
+    }
+  });
+
   // Get user profile by ID (public endpoint for viewing other users' profiles)
   app.get(`${apiPrefix}/users/:userId`, async (req: Request, res: Response) => {
     try {
