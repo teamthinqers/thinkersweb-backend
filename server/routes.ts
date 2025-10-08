@@ -157,6 +157,39 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ error: 'Failed to update profile' });
     }
   });
+
+  // Get user profile by ID (public endpoint for viewing other users' profiles)
+  app.get(`${apiPrefix}/users/:userId`, async (req: Request, res: Response) => {
+    try {
+      const userId = parseInt(req.params.userId);
+      
+      if (isNaN(userId)) {
+        return res.status(400).json({ error: 'Invalid user ID' });
+      }
+      
+      // Fetch user profile (only public fields - no email or sensitive data)
+      const userProfile = await db.query.users.findFirst({
+        where: eq(users.id, userId),
+        columns: {
+          id: true,
+          fullName: true,
+          linkedinHeadline: true,
+          linkedinProfileUrl: true,
+          linkedinPhotoUrl: true,
+          avatar: true,
+        }
+      });
+      
+      if (!userProfile) {
+        return res.status(404).json({ error: 'User not found' });
+      }
+      
+      res.json({ success: true, user: userProfile });
+    } catch (error) {
+      console.error('Error fetching user profile:', error);
+      res.status(500).json({ error: 'Failed to fetch user profile' });
+    }
+  });
   
   // Setup DotSpark activation routes
   setupDotSparkRoutes(app);

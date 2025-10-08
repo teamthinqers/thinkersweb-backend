@@ -20,6 +20,7 @@ import LogoPage from "@/pages/LogoPage";
 import AuthPage from "@/pages/auth-page";
 import Settings from "@/pages/Settings";
 import Profile from "@/pages/Profile";
+import PublicProfile from "@/pages/PublicProfile";
 import WhatsAppAdmin from "@/pages/WhatsAppAdmin";
 import WhatsAppTest from "@/pages/WhatsAppTest";
 import WhatsAppEntries from "@/pages/WhatsAppEntries";
@@ -204,6 +205,7 @@ function Router() {
       <Route path="/network" component={AppWithLayout} />
       <Route path="/settings" component={AppWithLayout} />
       <Route path="/profile" component={Profile} />
+      <Route path="/user/:userId" component={PublicProfile} />
       <Route path="/social" component={Social} />
       <Route path="/sparktest" component={SparkTest} />
       <Route path="/spark" component={Spark} />
