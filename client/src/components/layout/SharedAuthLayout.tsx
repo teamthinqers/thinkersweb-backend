@@ -259,14 +259,20 @@ export default function SharedAuthLayout({ children }: SharedAuthLayoutProps) {
               <Button 
                 variant="ghost" 
                 size="sm" 
-                className="flex items-center gap-2 px-4 py-2 bg-gradient-to-br from-amber-700 via-orange-700 to-amber-800 hover:from-amber-800 hover:via-orange-800 hover:to-amber-900 rounded-xl transition-all duration-300 hover:scale-105 shadow-lg"
+                className="flex items-center gap-2 px-4 py-2 rounded-xl transition-all duration-300 hover:scale-105 shadow-lg"
+                style={{
+                  backgroundColor: '#8B6F47',
+                  backgroundImage: 'linear-gradient(to bottom right, #9B7E54, #8B6F47, #7B5F37)'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundImage = 'linear-gradient(to bottom right, #8B6F47, #7B5F37, #6B4F27)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundImage = 'linear-gradient(to bottom right, #9B7E54, #8B6F47, #7B5F37)';
+                }}
                 title="My DotSpark"
               >
-                <img 
-                  src="/dotspark-logo-transparent.png?v=1" 
-                  alt="DotSpark" 
-                  className="h-5 w-5 rounded"
-                />
+                <Sparkles className="h-5 w-5 text-white" />
                 <span className="text-white font-medium">My DotSpark</span>
               </Button>
             </Link>
