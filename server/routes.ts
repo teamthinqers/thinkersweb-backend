@@ -55,6 +55,7 @@ import indexingRouter from './routes/indexing';
 import userContentRouter from './routes/user-content';
 import socialRouter from './routes/social';
 import thoughtsRouter from './routes/thoughts';
+import notificationsRouter from './routes/notifications';
 import { initializeVectorDB } from './vector-db';
 import { vectorIntegration } from './vector-integration';
 import { setupVectorAPI } from './routes/vector-api';
@@ -1933,6 +1934,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   
   // Mount new thoughts system routes - PUBLIC for social feed, protected endpoints handle auth internally
   app.use(`${apiPrefix}/thoughts`, thoughtsRouter);
+  
+  // Mount notifications system routes - requires authentication
+  app.use(`${apiPrefix}/notifications`, requireAuth, notificationsRouter);
 
   // ===========================
   // MAPPING ROUTES
