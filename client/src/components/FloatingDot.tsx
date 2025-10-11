@@ -59,6 +59,20 @@ export default function FloatingDot({ onClick, currentPage }: FloatingDotProps) 
   const { user } = useAuth();
   const { toast } = useToast();
 
+  // Reset all form fields to initial state
+  const resetForm = () => {
+    setHeading('');
+    setSummary('');
+    setEmotion('');
+    setKeywords('');
+    setAnchor('');
+    setAnalogies('');
+    setShowWriteForm(false);
+    setShowLayersScreen(false);
+    setEditMode(false);
+    setEditThoughtId(null);
+  };
+
   // Update targetNeura when page changes OR when dialog opens
   useEffect(() => {
     if (isOpen) {
@@ -137,17 +151,8 @@ export default function FloatingDot({ onClick, currentPage }: FloatingDotProps) 
       await queryClient.invalidateQueries({ queryKey: ['/api/thoughts/neural-strength'] });
 
       // Reset form and close dialog
-      setHeading('');
-      setSummary('');
-      setEmotion('');
-      setShowLayersScreen(false);
-      setKeywords('');
-      setAnchor('');
-      setAnalogies('');
-      setShowWriteForm(false);
+      resetForm();
       setIsOpen(false);
-      setEditMode(false);
-      setEditThoughtId(null);
     } catch (error: any) {
       console.error('Error creating thought:', error);
       
@@ -375,7 +380,10 @@ export default function FloatingDot({ onClick, currentPage }: FloatingDotProps) 
           {/* Backdrop */}
           <div 
             className="fixed inset-0 bg-black/30 z-[60]"
-            onClick={() => setIsOpen(false)}
+            onClick={() => {
+              resetForm();
+              setIsOpen(false);
+            }}
           />
           
           {/* Dialog */}
@@ -438,7 +446,10 @@ export default function FloatingDot({ onClick, currentPage }: FloatingDotProps) 
 
                     {/* Close Button */}
                     <button
-                      onClick={() => setIsOpen(false)}
+                      onClick={() => {
+                        resetForm();
+                        setIsOpen(false);
+                      }}
                       className="p-2 hover:bg-gray-100 rounded-full transition-colors"
                     >
                       <X className="h-5 w-5 text-gray-500" />
@@ -485,14 +496,7 @@ export default function FloatingDot({ onClick, currentPage }: FloatingDotProps) 
                       <div className="flex items-center gap-2">
                         <Button
                           onClick={() => {
-                            setShowWriteForm(false);
-                            setSummary('');
-                            setHeading('');
-                            setEmotion('');
-                            setShowLayersScreen(false);
-                            setKeywords('');
-                            setAnchor('');
-                            setAnalogies('');
+                            resetForm();
                           }}
                           variant="ghost"
                           disabled={isSubmitting}
