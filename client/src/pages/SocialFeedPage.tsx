@@ -83,6 +83,12 @@ export default function SocialFeedPage() {
     enabled: !!user, // Only fetch if user is logged in
   });
 
+  // Fetch collective stats (total thoughts, sparks, perspectives from all users)
+  const { data: statsData } = useQuery<{ success: boolean; stats: { thoughtsCount: number; savedSparksCount: number; perspectivesCount: number } }>({
+    queryKey: ['/api/thoughts/stats'],
+    // No auth required - this is public collective data
+  });
+
   // Save thought to MyNeura
   const saveToMyNeuraMutation = useMutation({
     mutationFn: async (thoughtId: number) => {
@@ -122,6 +128,7 @@ export default function SocialFeedPage() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [`/api/thoughts/${selectedDot?.id}/perspectives`] });
+      queryClient.invalidateQueries({ queryKey: ['/api/thoughts/stats'] });
       setPerspectiveInput('');
       // Scroll to bottom after posting
       setTimeout(() => {
@@ -180,6 +187,7 @@ export default function SocialFeedPage() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [`/api/thoughts/${selectedDot?.id}/sparks`] });
       queryClient.invalidateQueries({ queryKey: ['/api/thoughts/user/sparks-count'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/thoughts/stats'] });
       setSparkNote("");
       toast({
         title: "Spark saved!",
@@ -206,12 +214,11 @@ export default function SocialFeedPage() {
 
   const userSparks = sparksData?.sparks || [];
 
-  // Calculate collective growth from visible data on the page
+  // Calculate collective growth from platform-wide stats
   const collectiveGrowth = useMemo(() => {
-    const thoughtsCount = (publicDots as any)?.thoughts?.length || 0;
-    // For sparks and perspectives, use selected thought data if available
-    const sparksCount = sparksData?.sparks?.length || 0;
-    const perspectivesCount = perspectivesData?.messages?.length || 0;
+    const thoughtsCount = statsData?.stats?.thoughtsCount || 0;
+    const sparksCount = statsData?.stats?.savedSparksCount || 0;
+    const perspectivesCount = statsData?.stats?.perspectivesCount || 0;
     
     // Calculate growth percentage: 0.5% per item
     const totalItems = thoughtsCount + sparksCount + perspectivesCount;
@@ -223,7 +230,7 @@ export default function SocialFeedPage() {
       sparksCount,
       perspectivesCount,
     };
-  }, [publicDots, sparksData, perspectivesData]);
+  }, [statsData]);
 
   // Delete thought mutation
   const deleteThoughtMutation = useMutation({
@@ -232,6 +239,7 @@ export default function SocialFeedPage() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/thoughts'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/thoughts/stats'] });
       setSelectedDot(null);
       toast({
         title: "Thought deleted",
@@ -277,6 +285,7 @@ export default function SocialFeedPage() {
   // Refresh handler - only refreshes thought data, not entire page
   const handleRefreshThoughts = () => {
     queryClient.invalidateQueries({ queryKey: ['/api/thoughts?limit=50'] });
+    queryClient.invalidateQueries({ queryKey: ['/api/thoughts/stats'] });
     toast({
       title: "Refreshed!",
       description: "Thought cloud updated with latest data",
