@@ -1073,12 +1073,13 @@ export default function MyNeuraPage() {
                           size="sm"
                           className="text-amber-600 hover:text-amber-700 hover:bg-amber-50 p-2"
                           onClick={() => {
-                            setEditFormData({
-                              heading: selectedThought.heading,
-                              summary: selectedThought.summary,
-                              anchor: selectedThought.anchor || ''
-                            });
-                            setIsEditDialogOpen(true);
+                            setSelectedThought(null);
+                            window.dispatchEvent(new CustomEvent('openFloatingDot', {
+                              detail: {
+                                thought: selectedThought,
+                                targetNeura: 'myneura'
+                              }
+                            }));
                           }}
                           title="Edit thought"
                         >
