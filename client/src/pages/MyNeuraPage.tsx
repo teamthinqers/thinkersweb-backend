@@ -570,8 +570,7 @@ export default function MyNeuraPage() {
   const [editFormData, setEditFormData] = useState({
     heading: '',
     summary: '',
-    anchor: '',
-    pulse: ''
+    anchor: ''
   });
 
   const { toast } = useToast();
@@ -1077,8 +1076,7 @@ export default function MyNeuraPage() {
                             setEditFormData({
                               heading: selectedThought.heading,
                               summary: selectedThought.summary,
-                              anchor: selectedThought.anchor || '',
-                              pulse: selectedThought.pulse || ''
+                              anchor: selectedThought.anchor || ''
                             });
                             setIsEditDialogOpen(true);
                           }}
@@ -1351,15 +1349,6 @@ export default function MyNeuraPage() {
                 value={editFormData.anchor}
                 onChange={(e) => setEditFormData({ ...editFormData, anchor: e.target.value })}
                 placeholder="Core truth or insight"
-                className="w-full min-h-[80px] px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500"
-              />
-            </div>
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-700">Pulse (Optional)</label>
-              <textarea
-                value={editFormData.pulse}
-                onChange={(e) => setEditFormData({ ...editFormData, pulse: e.target.value })}
-                placeholder="Action or next steps"
                 className="w-full min-h-[80px] px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500"
               />
             </div>
