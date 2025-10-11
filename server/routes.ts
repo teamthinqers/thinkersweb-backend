@@ -2452,5 +2452,80 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Get user dashboard data (landing page)
+  app.get(`${apiPrefix}/dashboard`, requireAuth, async (req: AuthenticatedRequest, res: Response) => {
+    try {
+      const userId = req.user?.id || req.session?.userId;
+
+      if (!userId) {
+        return res.status(401).json({ error: 'Authentication required' });
+      }
+
+      const { calculateNeuralStrength } = await import('./neural-strength');
+
+      // Get neural strength data
+      const neuralStrength = await calculateNeuralStrength(userId);
+
+      // Get counts for dots, wheels, chakras
+      const [dotsCount] = await db.select({ count: count() }).from(dots).where(eq(dots.userId, userId));
+      const [wheelsCount] = await db.select({ count: count() }).from(wheels).where(eq(wheels.userId, userId));
+      const [chakrasCount] = await db.select({ count: count() }).from(chakras).where(eq(chakras.userId, userId));
+
+      // Get recent activity (last 5 items across all types)
+      const recentDots = await db.query.dots.findMany({
+        where: eq(dots.userId, userId),
+        orderBy: desc(dots.createdAt),
+        limit: 5,
+      });
+
+      const recentWheels = await db.query.wheels.findMany({
+        where: eq(wheels.userId, userId),
+        orderBy: desc(wheels.createdAt),
+        limit: 5,
+      });
+
+      const recentThoughts = await db.query.thoughts.findMany({
+        where: and(
+          eq(thoughts.userId, userId),
+          eq(thoughts.visibility, 'social')
+        ),
+        orderBy: desc(thoughts.createdAt),
+        limit: 5,
+      });
+
+      // Combine and sort all recent activity
+      const recentActivity = [
+        ...recentDots.map(d => ({ type: 'dot', data: d, timestamp: d.createdAt })),
+        ...recentWheels.map(w => ({ type: 'wheel', data: w, timestamp: w.createdAt })),
+        ...recentThoughts.map(t => ({ type: 'thought', data: t, timestamp: t.createdAt })),
+      ]
+        .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
+        .slice(0, 5);
+
+      res.json({
+        success: true,
+        data: {
+          neuralStrength,
+          stats: {
+            dots: dotsCount?.count || 0,
+            wheels: wheelsCount?.count || 0,
+            chakras: chakrasCount?.count || 0,
+            thoughts: neuralStrength.stats.thoughtsCount,
+            savedSparks: neuralStrength.stats.savedSparksCount,
+            perspectives: neuralStrength.stats.perspectivesCount,
+          },
+          recentActivity,
+        },
+      });
+
+    } catch (error) {
+      console.error('Dashboard data error:', error);
+      res.status(500).json({ 
+        error: 'Failed to fetch dashboard data',
+        details: error instanceof Error ? error.message : 'Unknown error'
+      });
+    }
+  });
+
   return httpServer;
 }
