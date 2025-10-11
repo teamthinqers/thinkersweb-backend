@@ -14,6 +14,7 @@ import { eq, desc, and, or, sql } from 'drizzle-orm';
 import { insertThoughtSchema, perspectivesMessagesInsertSchema } from '@shared/schema';
 import { storeVectorEmbedding } from '../vector-db';
 import { calculateNeuralStrength } from '../neural-strength';
+import { notifyNewThought, notifyNewPerspective, notifySparkSaved } from '../notification-helpers';
 
 const router = Router();
 
@@ -200,6 +201,13 @@ router.post('/', async (req, res) => {
         }
       }
     });
+
+    // Send notifications if this is a social thought
+    if (newThought.visibility === 'social') {
+      notifyNewThought(userId, newThought.id, newThought.heading).catch(err => 
+        console.error('Notification error:', err)
+      );
+    }
 
     res.status(201).json({
       success: true,
@@ -922,6 +930,21 @@ router.post('/:thoughtId/perspectives', async (req, res) => {
       }
     });
 
+    // Get thought owner and send notification
+    const thought = await db.query.thoughts.findFirst({
+      where: eq(thoughts.id, thoughtId),
+      columns: {
+        userId: true,
+        heading: true,
+      }
+    });
+
+    if (thought) {
+      notifyNewPerspective(userId, thoughtId, thought.heading, thought.userId).catch(err =>
+        console.error('Notification error:', err)
+      );
+    }
+
     res.status(201).json({
       success: true,
       message: messageWithUser,
@@ -1402,6 +1425,21 @@ router.post('/:thoughtId/sparks', async (req, res) => {
     });
 
     const [newSpark] = await db.insert(sparks).values(validatedData).returning();
+
+    // Get thought owner and send notification
+    const thought = await db.query.thoughts.findFirst({
+      where: eq(thoughts.id, thoughtId),
+      columns: {
+        userId: true,
+        heading: true,
+      }
+    });
+
+    if (thought) {
+      notifySparkSaved(userId, thoughtId, thought.heading, thought.userId).catch(err =>
+        console.error('Notification error:', err)
+      );
+    }
 
     res.status(201).json({
       success: true,
