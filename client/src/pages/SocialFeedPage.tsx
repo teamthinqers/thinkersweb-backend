@@ -282,6 +282,18 @@ export default function SocialFeedPage() {
     setDots((publicDots as any).thoughts);
   }, [publicDots]);
 
+  // Auto-open thought from notification
+  useEffect(() => {
+    const thoughtIdToOpen = sessionStorage.getItem('openThoughtId');
+    if (thoughtIdToOpen && dots.length > 0) {
+      const thoughtToOpen = dots.find(dot => dot.id === parseInt(thoughtIdToOpen));
+      if (thoughtToOpen) {
+        setSelectedDot(thoughtToOpen);
+        sessionStorage.removeItem('openThoughtId'); // Clear after opening
+      }
+    }
+  }, [dots]);
+
   // Refresh handler - only refreshes thought data, not entire page
   const handleRefreshThoughts = () => {
     queryClient.invalidateQueries({ queryKey: ['/api/thoughts?limit=50'] });

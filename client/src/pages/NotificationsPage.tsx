@@ -63,7 +63,9 @@ export default function NotificationsPage() {
     if (!notification.isRead) {
       markAsReadMutation.mutate(notification.id);
     }
-    // Navigate to the thought
+    // Navigate to the thought and open full view modal
+    // Store the thought ID to open the modal on social page
+    sessionStorage.setItem('openThoughtId', notification.thoughtId.toString());
     setLocation(`/social`);
   };
 
