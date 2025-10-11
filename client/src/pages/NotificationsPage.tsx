@@ -100,9 +100,9 @@ export default function NotificationsPage() {
       case 'new_thought':
         return `${message} shared a new thought`;
       case 'new_perspective':
-        return `${message} shared a perspective on your thought`;
+        return `${message} shared a perspective`;
       case 'spark_saved':
-        return `${message} saved your thought as a spark`;
+        return `${message} saved a thought as a spark`;
       default:
         return message;
     }
@@ -152,7 +152,7 @@ export default function NotificationsPage() {
             <Bell className="h-16 w-16 text-gray-300 mx-auto mb-4" />
             <p className="text-gray-500 text-lg">No notifications yet</p>
             <p className="text-gray-400 text-sm mt-2">
-              You'll be notified when others interact with your thoughts
+              You'll be notified of all social engagement and activity
             </p>
           </div>
         ) : (

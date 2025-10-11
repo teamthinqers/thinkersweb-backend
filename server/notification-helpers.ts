@@ -106,39 +106,60 @@ export async function notifyNewThought(actorId: number, thoughtId: number, thoug
 }
 
 /**
- * Notify thought owner and thread participants about a new perspective
+ * Notify ALL users about a new perspective (social feed engagement)
  */
 export async function notifyNewPerspective(actorId: number, thoughtId: number, thoughtHeading: string, ownerId: number) {
   try {
-    // Notify thought owner
-    await createOrUpdateNotification({
-      recipientId: ownerId,
-      actorId,
-      notificationType: 'new_perspective',
-      thoughtId,
-      thoughtHeading,
+    // Get all registered users except the actor
+    const allUsers = await db.query.users.findMany({
+      columns: { id: true },
     });
 
-    console.log(`✅ Created notification for new perspective on thought ${thoughtId} by user ${actorId}`);
+    // Create notifications for all users except the actor
+    const notificationPromises = allUsers
+      .filter(user => user.id !== actorId)
+      .map(user => 
+        createOrUpdateNotification({
+          recipientId: user.id,
+          actorId,
+          notificationType: 'new_perspective',
+          thoughtId,
+          thoughtHeading,
+        })
+      );
+
+    await Promise.all(notificationPromises);
+    console.log(`✅ Created notifications for new perspective on thought ${thoughtId} by user ${actorId} (all users notified)`);
   } catch (error) {
     console.error('Error notifying new perspective:', error);
   }
 }
 
 /**
- * Notify thought owner when someone saves their thought as a spark
+ * Notify ALL users when someone saves a thought as a spark (social feed engagement)
  */
 export async function notifySparkSaved(actorId: number, thoughtId: number, thoughtHeading: string, ownerId: number) {
   try {
-    await createOrUpdateNotification({
-      recipientId: ownerId,
-      actorId,
-      notificationType: 'spark_saved',
-      thoughtId,
-      thoughtHeading,
+    // Get all registered users except the actor
+    const allUsers = await db.query.users.findMany({
+      columns: { id: true },
     });
 
-    console.log(`✅ Created notification for spark saved on thought ${thoughtId} by user ${actorId}`);
+    // Create notifications for all users except the actor
+    const notificationPromises = allUsers
+      .filter(user => user.id !== actorId)
+      .map(user => 
+        createOrUpdateNotification({
+          recipientId: user.id,
+          actorId,
+          notificationType: 'spark_saved',
+          thoughtId,
+          thoughtHeading,
+        })
+      );
+
+    await Promise.all(notificationPromises);
+    console.log(`✅ Created notifications for spark saved on thought ${thoughtId} by user ${actorId} (all users notified)`);
   } catch (error) {
     console.error('Error notifying spark saved:', error);
   }
