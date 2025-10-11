@@ -11,7 +11,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 const Profile = () => {
-  const { user } = useAuth();
+  const { user, checkAuth } = useAuth();
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [isEditing, setIsEditing] = useState(false);
@@ -41,7 +41,9 @@ const Profile = () => {
       
       return await response.json();
     },
-    onSuccess: () => {
+    onSuccess: async () => {
+      // Refresh auth state to get updated user data
+      await checkAuth();
       queryClient.invalidateQueries({ queryKey: ['/api/auth/me'] });
       setIsEditing(false);
       setImagePreview(null);

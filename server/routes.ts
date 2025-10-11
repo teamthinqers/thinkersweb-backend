@@ -153,7 +153,28 @@ export async function registerRoutes(app: Express): Promise<Server> {
         .set(updates)
         .where(eq(users.id, userId));
       
-      res.json({ success: true, message: 'Profile updated successfully' });
+      // Fetch updated user data and refresh session
+      const updatedUser = await db.query.users.findFirst({
+        where: eq(users.id, userId),
+      });
+      
+      if (updatedUser && req.user) {
+        // Update session with fresh user data
+        req.user.fullName = updatedUser.fullName;
+        req.user.linkedinHeadline = updatedUser.linkedinHeadline;
+        req.user.linkedinProfileUrl = updatedUser.linkedinProfileUrl;
+        req.user.avatar = updatedUser.avatar;
+        req.user.linkedinPhotoUrl = updatedUser.linkedinPhotoUrl;
+        
+        // Save the updated session
+        req.session.save((err) => {
+          if (err) {
+            console.error('Session save error:', err);
+          }
+        });
+      }
+      
+      res.json({ success: true, message: 'Profile updated successfully', user: updatedUser });
     } catch (error) {
       console.error('Profile update error:', error);
       res.status(500).json({ error: 'Failed to update profile' });

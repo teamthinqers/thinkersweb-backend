@@ -79,9 +79,7 @@ export default function MyDotSparkPage() {
               <h1 className="text-3xl font-bold bg-gradient-to-r from-amber-700 to-orange-700 bg-clip-text text-transparent">
                 Welcome back, {(user as any)?.displayName || (user as any)?.fullName || 'there'}!
               </h1>
-              <p className="text-amber-700 mt-1">
-                {(user as any)?.linkedinHeadline || 'Your Personal Intelligence Hub'}
-              </p>
+              <p className="text-amber-700 mt-1">Your Personal Intelligence Hub</p>
             </div>
           </div>
 
