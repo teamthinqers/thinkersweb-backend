@@ -621,7 +621,7 @@ export default function SocialFeedPage() {
                     </div>
 
                     {/* Main Content - Scrollable */}
-                    <div className="flex-1 min-h-0 overflow-y-auto p-6">
+                    <div className="flex-1 min-h-0 overflow-y-auto px-6 pt-6 pb-4">
                       <div className="space-y-6">
                       {/* Image - if present */}
                       {selectedDot.imageUrl && (
@@ -737,11 +737,11 @@ export default function SocialFeedPage() {
                     </div>
 
                     {/* Footer - Action Button */}
-                    <div className="flex-shrink-0 p-4 border-t border-gray-200 bg-white">
+                    <div className="flex-shrink-0 px-6 py-3 border-t border-gray-200 bg-white">
                       <Button
                         onClick={() => saveToMyNeuraMutation.mutate(selectedDot.id)}
                         disabled={saveToMyNeuraMutation.isPending}
-                        className="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600"
+                        className="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 h-10"
                       >
                         <Bookmark className="h-4 w-4 mr-2" />
                         Save to MyNeura
@@ -819,7 +819,7 @@ export default function SocialFeedPage() {
                     </div>
 
                     {/* Footer - Input Area */}
-                    <div className="flex-shrink-0 p-4 border-t border-gray-200 bg-white">
+                    <div className="flex-shrink-0 px-4 py-3 border-t border-gray-200 bg-white">
                       <div className="flex gap-2">
                         <Input
                           value={perspectiveInput}
@@ -831,14 +831,14 @@ export default function SocialFeedPage() {
                             }
                           }}
                           placeholder="Share your perspective..."
-                          className="flex-1"
+                          className="flex-1 h-10"
                           disabled={postPerspectiveMutation.isPending}
                         />
                         <Button
                           onClick={handleSendPerspective}
                           disabled={!perspectiveInput.trim() || postPerspectiveMutation.isPending}
                           size="icon"
-                          className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600"
+                          className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 h-10 w-10"
                         >
                           <Send className="h-4 w-4" />
                         </Button>
@@ -863,7 +863,7 @@ export default function SocialFeedPage() {
                     </div>
                     
                     {/* Main Content - Scrollable */}
-                    <div className="flex-1 min-h-0 overflow-y-auto p-6 bg-gray-50 space-y-6">
+                    <div className="flex-1 min-h-0 overflow-y-auto px-6 pt-6 pb-4 bg-gray-50 space-y-6">
                       
                       {/* Section 1: Smart Summary (Evolved Thought) */}
                       <div className="bg-white rounded-lg border border-gray-200 p-4">
@@ -957,19 +957,19 @@ export default function SocialFeedPage() {
                     </div>
 
                     {/* Footer - Input Area */}
-                    <div className="flex-shrink-0 p-4 border-t border-gray-200 bg-white">
+                    <div className="flex-shrink-0 px-6 py-3 border-t border-gray-200 bg-white">
                       <div className="flex gap-2">
                         <Input
                           value={sparkNote}
                           onChange={(e) => setSparkNote(e.target.value)}
                           onKeyPress={(e) => e.key === 'Enter' && handleSaveSpark()}
                           placeholder="Capture your spark..."
-                          className="flex-1"
+                          className="flex-1 h-10"
                         />
                         <Button
                           onClick={handleSaveSpark}
                           disabled={!sparkNote.trim() || addSparkMutation.isPending}
-                          className="bg-gradient-to-r from-yellow-500 to-amber-500 hover:from-yellow-600 hover:to-amber-600"
+                          className="bg-gradient-to-r from-yellow-500 to-amber-500 hover:from-yellow-600 hover:to-amber-600 h-10"
                         >
                           <Zap className="h-4 w-4" />
                         </Button>
