@@ -81,6 +81,45 @@ router.get('/', async (req, res) => {
 });
 
 /**
+ * PATCH /api/notifications/read-all
+ * Mark all notifications as read for the authenticated user
+ * NOTE: Must be defined BEFORE /:id/read to avoid route matching issues
+ */
+router.patch('/read-all', async (req, res) => {
+  try {
+    const userId = (req as any).user?.id;
+
+    if (!userId) {
+      return res.status(401).json({ error: 'Authentication required' });
+    }
+
+    // Mark all user's notifications as read
+    await db.update(notifications)
+      .set({
+        isRead: true,
+        updatedAt: new Date(),
+      })
+      .where(and(
+        eq(notifications.recipientId, userId),
+        eq(notifications.isRead, false)
+      ));
+
+    res.json({
+      success: true,
+      message: 'All notifications marked as read',
+    });
+
+  } catch (error) {
+    console.error('Mark all read error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to mark all notifications as read',
+      details: error instanceof Error ? error.message : 'Unknown error'
+    });
+  }
+});
+
+/**
  * PATCH /api/notifications/:id/read
  * Mark a specific notification as read
  */
@@ -128,44 +167,6 @@ router.patch('/:id/read', async (req, res) => {
     res.status(500).json({
       success: false,
       error: 'Failed to mark notification as read',
-      details: error instanceof Error ? error.message : 'Unknown error'
-    });
-  }
-});
-
-/**
- * PATCH /api/notifications/read-all
- * Mark all notifications as read for the authenticated user
- */
-router.patch('/read-all', async (req, res) => {
-  try {
-    const userId = (req as any).user?.id;
-
-    if (!userId) {
-      return res.status(401).json({ error: 'Authentication required' });
-    }
-
-    // Mark all user's notifications as read
-    await db.update(notifications)
-      .set({
-        isRead: true,
-        updatedAt: new Date(),
-      })
-      .where(and(
-        eq(notifications.recipientId, userId),
-        eq(notifications.isRead, false)
-      ));
-
-    res.json({
-      success: true,
-      message: 'All notifications marked as read',
-    });
-
-  } catch (error) {
-    console.error('Mark all read error:', error);
-    res.status(500).json({
-      success: false,
-      error: 'Failed to mark all notifications as read',
       details: error instanceof Error ? error.message : 'Unknown error'
     });
   }

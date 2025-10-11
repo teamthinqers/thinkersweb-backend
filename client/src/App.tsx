@@ -18,6 +18,7 @@ import CognitiveIdentityPage from "@/pages/CognitiveIdentityPage";
 import LearningEnginePage from "@/pages/LearningEnginePage";
 import LogoPage from "@/pages/LogoPage";
 import AuthPage from "@/pages/auth-page";
+import NotificationsPage from "@/pages/NotificationsPage";
 import Settings from "@/pages/Settings";
 import Profile from "@/pages/Profile";
 import PublicProfile from "@/pages/PublicProfile";
@@ -199,6 +200,7 @@ function Router() {
       <Route path="/cognitive-identity" component={CognitiveIdentityPage} />
       <Route path="/learning-engine" component={LearningEnginePage} />
       <Route path="/auth" component={AuthPage} />
+      <Route path="/notifications" component={NotificationsPage} />
       
       {/* All routes now public - no authentication required */}
       <Route path="/entries" component={AppWithLayout} />
