@@ -264,6 +264,16 @@ export default function SocialFeedPage() {
     setDots((publicDots as any).thoughts);
   }, [publicDots]);
 
+  // Refresh handler - only refreshes thought data, not entire page
+  const handleRefreshThoughts = () => {
+    queryClient.invalidateQueries({ queryKey: ['/api/thoughts?limit=50'] });
+    queryClient.invalidateQueries({ queryKey: ['/api/thoughts/stats'] });
+    toast({
+      title: "Refreshed!",
+      description: "Thought cloud updated with latest data",
+    });
+  };
+
   // Show loading while checking authentication
   if (authLoading) {
     return (
@@ -466,6 +476,7 @@ export default function SocialFeedPage() {
                 onFullscreenToggle={() => setIsFullscreen(!isFullscreen)}
                 onDotClick={(dot) => setSelectedDot(dot)}
                 patternId="social-pattern"
+                onRefresh={handleRefreshThoughts}
               />
             )}
           </>

@@ -630,6 +630,16 @@ export default function MyNeuraPage() {
     },
   });
 
+  // Refresh handler - only refreshes thought data, not entire page
+  const handleRefreshThoughts = () => {
+    queryClient.invalidateQueries({ queryKey: ['/api/thoughts/myneura'] });
+    queryClient.invalidateQueries({ queryKey: ['/api/thoughts/user/sparks-count'] });
+    toast({
+      title: "Refreshed!",
+      description: "Your thoughts updated with latest data",
+    });
+  };
+
   // Load and filter thoughts
   useEffect(() => {
     if (myNeuraThoughts && (myNeuraThoughts as any).thoughts) {
@@ -832,6 +842,7 @@ export default function MyNeuraPage() {
                     onFullscreenToggle={() => setIsFullscreen(!isFullscreen)}
                     onDotClick={(dot) => setSelectedThought(dot)}
                     patternId="myneura-pattern"
+                    onRefresh={handleRefreshThoughts}
                   />
                 )}
               </>
