@@ -213,6 +213,155 @@ router.post('/', async (req, res) => {
 });
 
 /**
+ * PATCH /api/thoughts/:id
+ * Edit/update a thought
+ * Requires user to be the owner
+ */
+router.patch('/:id', async (req, res) => {
+  try {
+    const userId = (req as any).user?.id;
+    
+    if (!userId) {
+      return res.status(401).json({ error: 'Authentication required' });
+    }
+
+    const thoughtId = parseInt(req.params.id);
+
+    if (isNaN(thoughtId)) {
+      return res.status(400).json({ error: 'Invalid thought ID' });
+    }
+
+    // Check if thought exists and belongs to user
+    const thought = await db.query.thoughts.findFirst({
+      where: eq(thoughts.id, thoughtId),
+    });
+
+    if (!thought) {
+      return res.status(404).json({ error: 'Thought not found' });
+    }
+
+    if (thought.userId !== userId) {
+      return res.status(403).json({ error: 'You can only edit your own thoughts' });
+    }
+
+    // Update the thought
+    const updateData: any = {
+      updatedAt: new Date(),
+    };
+
+    if (req.body.heading !== undefined) updateData.heading = req.body.heading;
+    if (req.body.summary !== undefined) updateData.summary = req.body.summary;
+    if (req.body.anchor !== undefined) updateData.anchor = req.body.anchor;
+    if (req.body.pulse !== undefined) updateData.pulse = req.body.pulse;
+    if (req.body.emotions !== undefined) updateData.emotions = req.body.emotions;
+    if (req.body.keywords !== undefined) updateData.keywords = req.body.keywords;
+
+    const [updated] = await db.update(thoughts)
+      .set(updateData)
+      .where(eq(thoughts.id, thoughtId))
+      .returning();
+
+    // Fetch with user info
+    const updatedWithUser = await db.query.thoughts.findFirst({
+      where: eq(thoughts.id, thoughtId),
+      with: {
+        user: {
+          columns: {
+            id: true,
+            fullName: true,
+            avatar: true,
+            email: true,
+          }
+        }
+      }
+    });
+
+    res.json({
+      success: true,
+      thought: updatedWithUser,
+    });
+
+  } catch (error) {
+    console.error('Update thought error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to update thought',
+      details: error instanceof Error ? error.message : 'Unknown error'
+    });
+  }
+});
+
+/**
+ * DELETE /api/thoughts/:id
+ * Delete a thought
+ * Requires user to be the owner
+ */
+router.delete('/:id', async (req, res) => {
+  try {
+    const userId = (req as any).user?.id;
+    
+    if (!userId) {
+      return res.status(401).json({ error: 'Authentication required' });
+    }
+
+    const thoughtId = parseInt(req.params.id);
+
+    if (isNaN(thoughtId)) {
+      return res.status(400).json({ error: 'Invalid thought ID' });
+    }
+
+    // Check if thought exists and belongs to user
+    const thought = await db.query.thoughts.findFirst({
+      where: eq(thoughts.id, thoughtId),
+    });
+
+    if (!thought) {
+      return res.status(404).json({ error: 'Thought not found' });
+    }
+
+    if (thought.userId !== userId) {
+      return res.status(403).json({ error: 'You can only delete your own thoughts' });
+    }
+
+    // Delete associated data in order (foreign key constraints)
+    // 1. Delete sparks
+    await db.delete(sparks).where(eq(sparks.thoughtId, thoughtId));
+    
+    // 2. Delete perspective messages
+    const threads = await db.query.perspectivesThreads.findMany({
+      where: eq(perspectivesThreads.thoughtId, thoughtId),
+    });
+    
+    for (const thread of threads) {
+      await db.delete(perspectivesMessages).where(eq(perspectivesMessages.threadId, thread.id));
+      await db.delete(perspectivesParticipants).where(eq(perspectivesParticipants.threadId, thread.id));
+    }
+    
+    // 3. Delete perspective threads
+    await db.delete(perspectivesThreads).where(eq(perspectivesThreads.thoughtId, thoughtId));
+    
+    // 4. Delete saved thoughts
+    await db.delete(savedThoughts).where(eq(savedThoughts.thoughtId, thoughtId));
+    
+    // 5. Finally delete the thought
+    await db.delete(thoughts).where(eq(thoughts.id, thoughtId));
+
+    res.json({
+      success: true,
+      message: 'Thought deleted successfully',
+    });
+
+  } catch (error) {
+    console.error('Delete thought error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to delete thought',
+      details: error instanceof Error ? error.message : 'Unknown error'
+    });
+  }
+});
+
+/**
  * GET /api/myneura/thoughts
  * Get user's personal thoughts + saved social thoughts for /myneura page
  */
@@ -772,6 +921,58 @@ router.post('/:thoughtId/perspectives', async (req, res) => {
     res.status(500).json({
       success: false,
       error: 'Failed to post perspective',
+      details: error instanceof Error ? error.message : 'Unknown error'
+    });
+  }
+});
+
+/**
+ * DELETE /api/thoughts/:thoughtId/perspectives/:messageId
+ * Delete a perspective message
+ * Requires user to be the message owner
+ */
+router.delete('/:thoughtId/perspectives/:messageId', async (req, res) => {
+  try {
+    const userId = (req as any).user?.id;
+
+    if (!userId) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+
+    const messageId = parseInt(req.params.messageId);
+
+    if (!messageId || isNaN(messageId)) {
+      return res.status(400).json({ error: 'Invalid message ID' });
+    }
+
+    // Check if message exists and belongs to user
+    const message = await db.query.perspectivesMessages.findFirst({
+      where: eq(perspectivesMessages.id, messageId),
+    });
+
+    if (!message) {
+      return res.status(404).json({ error: 'Message not found' });
+    }
+
+    if (message.userId !== userId) {
+      return res.status(403).json({ error: 'You can only delete your own messages' });
+    }
+
+    // Soft delete the message (set isDeleted flag)
+    await db.update(perspectivesMessages)
+      .set({ isDeleted: true })
+      .where(eq(perspectivesMessages.id, messageId));
+
+    res.json({
+      success: true,
+      message: 'Perspective deleted successfully',
+    });
+
+  } catch (error) {
+    console.error('Delete perspective error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to delete perspective',
       details: error instanceof Error ? error.message : 'Unknown error'
     });
   }
