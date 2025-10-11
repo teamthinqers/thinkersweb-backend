@@ -637,7 +637,7 @@ export default function SocialFeedPage() {
                     </div>
 
                     {/* Main Content - Scrollable */}
-                    <div className="flex-1 min-h-0 overflow-y-auto px-6 pt-6 pb-4">
+                    <div className="flex-1 min-h-0 overflow-y-scroll px-6 pt-6 pb-4">
                       <div className="space-y-6">
                       {/* Image - if present */}
                       {selectedDot.imageUrl && (
@@ -777,7 +777,7 @@ export default function SocialFeedPage() {
                     </div>
                     
                     {/* Main Content - Messages Area (Scrollable) */}
-                    <div className="flex-1 min-h-0 overflow-y-auto p-4 bg-gray-50 space-y-3">
+                    <div className="flex-1 min-h-0 overflow-y-scroll p-4 bg-gray-50 space-y-3">
                       {perspectivesData?.messages && perspectivesData.messages.length > 0 ? (
                         <>
                           {perspectivesData.messages.map((message) => (
@@ -879,7 +879,7 @@ export default function SocialFeedPage() {
                     </div>
                     
                     {/* Main Content - Scrollable */}
-                    <div className="flex-1 min-h-0 overflow-y-auto px-6 pt-6 pb-4 bg-gray-50 space-y-6">
+                    <div className="flex-1 min-h-0 overflow-y-scroll px-6 pt-6 pb-4 bg-gray-50 space-y-6">
                       
                       {/* Section 1: Smart Summary (Evolved Thought) */}
                       <div className="bg-white rounded-lg border border-gray-200 p-4">
