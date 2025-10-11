@@ -360,10 +360,10 @@ export default function SharedAuthLayout({ children }: SharedAuthLayoutProps) {
               <Button
                 variant="ghost"
                 size="sm"
-                className="relative p-2 bg-white/80 hover:bg-white border border-amber-200 rounded-lg transition-all duration-300 shadow-sm hover:shadow-md"
+                className="relative p-2 hover:bg-amber-100/50 border border-amber-300 rounded-lg transition-all duration-300 shadow-sm hover:shadow-md"
                 title="Notifications"
               >
-                <Bell className="h-5 w-5 text-amber-700" />
+                <Bell className="h-5 w-5 text-amber-800" />
                 {notificationsData && notificationsData.unreadCount > 0 && (
                   <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-semibold">
                     {notificationsData.unreadCount > 9 ? '9+' : notificationsData.unreadCount}
