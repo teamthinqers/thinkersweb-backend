@@ -19,8 +19,8 @@ export default function AuthPage() {
       if (redirect) {
         setLocation(`/${redirect}`);
       } else {
-        // Default redirect to /myneura after successful login
-        setLocation('/myneura');
+        // Default redirect to /my-dotspark after successful login (landing page)
+        setLocation('/my-dotspark');
       }
     }
   };

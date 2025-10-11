@@ -60,22 +60,22 @@ export default function MyDotSparkPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-red-50">
+    <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-amber-100">
       <div className="container mx-auto px-4 py-8 max-w-7xl">
         {/* Welcome Section */}
         <div className="mb-8">
           <div className="flex items-center gap-4 mb-6">
-            <Avatar className="h-16 w-16 border-4 border-white shadow-lg">
+            <Avatar className="h-16 w-16 border-4 border-amber-200 shadow-xl">
               <AvatarImage src={(user as any)?.avatar || (user as any)?.linkedinPhotoUrl || (user as any)?.photoURL || undefined} />
               <AvatarFallback className="bg-gradient-to-br from-amber-500 to-orange-600 text-white text-2xl">
                 {(user as any)?.displayName?.[0]?.toUpperCase() || (user as any)?.fullName?.[0]?.toUpperCase() || 'U'}
               </AvatarFallback>
             </Avatar>
             <div>
-              <h1 className="text-3xl font-bold text-gray-900">
+              <h1 className="text-3xl font-bold bg-gradient-to-r from-amber-700 to-orange-700 bg-clip-text text-transparent">
                 Welcome back, {(user as any)?.displayName || (user as any)?.fullName || 'there'}!
               </h1>
-              <p className="text-gray-600 mt-1">Your Personal Intelligence Hub</p>
+              <p className="text-amber-700 mt-1">Your Personal Intelligence Hub</p>
             </div>
           </div>
 
@@ -288,10 +288,10 @@ export default function MyDotSparkPage() {
 
         {/* AI Insights Section */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-          <Card className="border-purple-200">
+          <Card className="border-amber-200 bg-white/80 backdrop-blur">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <Lightbulb className="h-5 w-5 text-purple-500" />
+                <Lightbulb className="h-5 w-5 text-amber-600" />
                 AI Insights
               </CardTitle>
               <CardDescription>Personalized recommendations for your growth</CardDescription>
@@ -299,8 +299,8 @@ export default function MyDotSparkPage() {
             <CardContent>
               <div className="space-y-4">
                 {dashboard?.neuralStrength.percentage === 0 ? (
-                  <div className="p-4 bg-gradient-to-br from-purple-50 to-indigo-50 rounded-lg border border-purple-200">
-                    <p className="text-sm font-medium text-purple-900 mb-2">🎯 Get Started</p>
+                  <div className="p-4 bg-gradient-to-br from-amber-50 to-orange-50 rounded-lg border border-amber-200">
+                    <p className="text-sm font-medium text-amber-900 mb-2">🎯 Get Started</p>
                     <p className="text-sm text-gray-700">
                       Welcome to DotSpark! Start by creating your first dot to capture an insight, or share a thought on Social Neura to connect with the community.
                     </p>
@@ -329,8 +329,8 @@ export default function MyDotSparkPage() {
                 )}
                 
                 {!dashboard?.neuralStrength.milestones.cognitiveIdentityCompleted && (
-                  <div className="p-4 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-lg border border-blue-200">
-                    <p className="text-sm font-medium text-blue-900 mb-2">📋 Complete Your Profile</p>
+                  <div className="p-4 bg-gradient-to-br from-amber-50 to-yellow-50 rounded-lg border border-amber-200">
+                    <p className="text-sm font-medium text-amber-900 mb-2">📋 Complete Your Profile</p>
                     <p className="text-sm text-gray-700">
                       Complete your cognitive identity to boost your neural strength and unlock personalized recommendations.
                     </p>
@@ -349,10 +349,10 @@ export default function MyDotSparkPage() {
             </CardContent>
           </Card>
 
-          <Card className="border-indigo-200">
+          <Card className="border-orange-200 bg-white/80 backdrop-blur">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <Target className="h-5 w-5 text-indigo-500" />
+                <Target className="h-5 w-5 text-orange-600" />
                 Next Steps
               </CardTitle>
               <CardDescription>Actions to accelerate your growth</CardDescription>
@@ -384,7 +384,7 @@ export default function MyDotSparkPage() {
                 </Link>
 
                 {dashboard && dashboard.stats.dots > 0 && dashboard.stats.wheels === 0 && (
-                  <div className="p-4 bg-gradient-to-r from-orange-50 to-red-50 rounded-lg border border-orange-200">
+                  <div className="p-4 bg-gradient-to-r from-orange-50 to-amber-50 rounded-lg border border-orange-200">
                     <div className="flex items-center justify-between">
                       <div>
                         <p className="text-sm font-medium text-orange-900">Create Your First Wheel</p>
@@ -396,13 +396,13 @@ export default function MyDotSparkPage() {
                 )}
 
                 {dashboard && dashboard.stats.thoughts === 0 && (
-                  <div className="p-4 bg-gradient-to-r from-purple-50 to-indigo-50 rounded-lg border border-purple-200">
+                  <div className="p-4 bg-gradient-to-r from-amber-50 to-orange-50 rounded-lg border border-amber-200">
                     <div className="flex items-center justify-between">
                       <div>
-                        <p className="text-sm font-medium text-purple-900">Share Your First Thought</p>
+                        <p className="text-sm font-medium text-amber-900">Share Your First Thought</p>
                         <p className="text-xs text-gray-600 mt-1">Contribute to collective intelligence on Social Neura</p>
                       </div>
-                      <Users className="h-4 w-4 text-purple-500" />
+                      <Users className="h-4 w-4 text-amber-600" />
                     </div>
                   </div>
                 )}
