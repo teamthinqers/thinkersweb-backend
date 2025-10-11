@@ -360,12 +360,30 @@ export default function SharedAuthLayout({ children }: SharedAuthLayoutProps) {
               <Button
                 variant="ghost"
                 size="sm"
-                className="relative p-2 hover:bg-amber-50 border border-amber-500 rounded-lg transition-all duration-300 shadow-sm hover:shadow-md"
+                className="relative p-2.5 hover:bg-gradient-to-br hover:from-amber-50 hover:to-yellow-50 border-2 border-yellow-500 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl"
+                style={{
+                  background: 'linear-gradient(145deg, #fef3c7, #fde68a)',
+                }}
                 title="Notifications"
               >
-                <Bell className="h-5 w-5 text-amber-600 fill-amber-600" />
+                <Bell 
+                  className="h-6 w-6 drop-shadow-md" 
+                  style={{
+                    fill: 'url(#goldGradient)',
+                    filter: 'drop-shadow(0 2px 4px rgba(202, 138, 4, 0.4))'
+                  }}
+                />
+                <svg width="0" height="0" style={{ position: 'absolute' }}>
+                  <defs>
+                    <linearGradient id="goldGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" style={{ stopColor: '#fbbf24', stopOpacity: 1 }} />
+                      <stop offset="50%" style={{ stopColor: '#f59e0b', stopOpacity: 1 }} />
+                      <stop offset="100%" style={{ stopColor: '#d97706', stopOpacity: 1 }} />
+                    </linearGradient>
+                  </defs>
+                </svg>
                 {notificationsData && notificationsData.unreadCount > 0 && (
-                  <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-semibold">
+                  <span className="absolute -top-1 -right-1 bg-gradient-to-br from-red-500 to-red-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-bold shadow-lg border-2 border-white">
                     {notificationsData.unreadCount > 9 ? '9+' : notificationsData.unreadCount}
                   </span>
                 )}
