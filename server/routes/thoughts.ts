@@ -621,6 +621,87 @@ router.post('/:thoughtId/share-to-social', async (req, res) => {
 });
 
 /**
+ * GET /api/thoughts/stats
+ * Get statistics for collective social activity (all users)
+ * PUBLIC ENDPOINT - No authentication required (counts public data)
+ */
+router.get('/stats', async (req, res) => {
+  try {
+    // Count total social thoughts (visibility='social' OR sharedToSocial=true)
+    const [{ count: thoughtsCount }] = await db.select({ count: sql<number>`count(*)` })
+      .from(thoughts)
+      .where(or(
+        eq(thoughts.visibility, 'social'),
+        eq(thoughts.sharedToSocial, true)
+      ));
+
+    // Count total sparks (all users, all social thoughts)
+    const [{ count: savedSparksCount }] = await db.select({ count: sql<number>`count(*)` })
+      .from(sparks);
+
+    // Count total perspectives (all users, all social threads)
+    const [{ count: perspectivesCount }] = await db.select({ count: sql<number>`count(*)` })
+      .from(perspectivesMessages)
+      .innerJoin(perspectivesThreads, eq(perspectivesMessages.threadId, perspectivesThreads.id))
+      .where(eq(perspectivesThreads.threadType, 'social'));
+
+    console.log('📊 Collective Growth Stats:', { 
+      thoughtsCount, 
+      savedSparksCount, 
+      perspectivesCount,
+      totalGrowth: (Number(thoughtsCount) + Number(savedSparksCount) + Number(perspectivesCount)) * 0.5
+    });
+
+    res.json({
+      success: true,
+      stats: {
+        thoughtsCount: Number(thoughtsCount),
+        savedSparksCount: Number(savedSparksCount),
+        perspectivesCount: Number(perspectivesCount),
+      },
+    });
+
+  } catch (error) {
+    console.error('Stats fetch error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to fetch stats',
+      details: error instanceof Error ? error.message : 'Unknown error'
+    });
+  }
+});
+
+/**
+ * GET /api/thoughts/neural-strength
+ * Get user's neural strength percentage based on their progress
+ * Requires authentication
+ */
+router.get('/neural-strength', async (req, res) => {
+  try {
+    const userId = (req as any).user?.id;
+
+    if (!userId) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+
+    const neuralStrength = await calculateNeuralStrength(userId);
+
+    res.json({
+      success: true,
+      ...neuralStrength,
+    });
+
+  } catch (error) {
+    console.error('Neural strength calculation error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to calculate neural strength',
+      details: error instanceof Error ? error.message : 'Unknown error'
+    });
+  }
+});
+
+/**
  * GET /api/thoughts/:id
  * Get detailed view of a specific thought
  * PUBLIC ENDPOINT - No authentication required (for social thoughts)
@@ -679,87 +760,6 @@ router.get('/:id', async (req, res) => {
     res.status(500).json({
       success: false,
       error: 'Failed to fetch thought details',
-      details: error instanceof Error ? error.message : 'Unknown error'
-    });
-  }
-});
-
-/**
- * GET /api/thoughts/neural-strength
- * Get user's neural strength percentage based on their progress
- * Requires authentication
- */
-router.get('/neural-strength', async (req, res) => {
-  try {
-    const userId = (req as any).user?.id;
-
-    if (!userId) {
-      return res.status(401).json({ error: 'Unauthorized' });
-    }
-
-    const neuralStrength = await calculateNeuralStrength(userId);
-
-    res.json({
-      success: true,
-      ...neuralStrength,
-    });
-
-  } catch (error) {
-    console.error('Neural strength calculation error:', error);
-    res.status(500).json({
-      success: false,
-      error: 'Failed to calculate neural strength',
-      details: error instanceof Error ? error.message : 'Unknown error'
-    });
-  }
-});
-
-/**
- * GET /api/thoughts/stats
- * Get statistics for collective social activity (all users)
- * PUBLIC ENDPOINT - No authentication required (counts public data)
- */
-router.get('/stats', async (req, res) => {
-  try {
-    // Count total social thoughts (visibility='social' OR sharedToSocial=true)
-    const [{ count: thoughtsCount }] = await db.select({ count: sql<number>`count(*)` })
-      .from(thoughts)
-      .where(or(
-        eq(thoughts.visibility, 'social'),
-        eq(thoughts.sharedToSocial, true)
-      ));
-
-    // Count total sparks (all users, all social thoughts)
-    const [{ count: savedSparksCount }] = await db.select({ count: sql<number>`count(*)` })
-      .from(sparks);
-
-    // Count total perspectives (all users, all social threads)
-    const [{ count: perspectivesCount }] = await db.select({ count: sql<number>`count(*)` })
-      .from(perspectivesMessages)
-      .innerJoin(perspectivesThreads, eq(perspectivesMessages.threadId, perspectivesThreads.id))
-      .where(eq(perspectivesThreads.threadType, 'social'));
-
-    console.log('📊 Collective Growth Stats:', { 
-      thoughtsCount, 
-      savedSparksCount, 
-      perspectivesCount,
-      totalGrowth: (Number(thoughtsCount) + Number(savedSparksCount) + Number(perspectivesCount)) * 0.5
-    });
-
-    res.json({
-      success: true,
-      stats: {
-        thoughtsCount,
-        savedSparksCount,
-        perspectivesCount,
-      },
-    });
-
-  } catch (error) {
-    console.error('Stats fetch error:', error);
-    res.status(500).json({
-      success: false,
-      error: 'Failed to fetch stats',
       details: error instanceof Error ? error.message : 'Unknown error'
     });
   }
