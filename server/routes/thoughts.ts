@@ -562,6 +562,50 @@ router.get('/neural-strength', async (req, res) => {
 });
 
 /**
+ * GET /api/thoughts/stats
+ * Get statistics for social thoughts and saved sparks
+ * REQUIRES AUTHENTICATION
+ */
+router.get('/stats', async (req, res) => {
+  try {
+    const userId = (req as any).user?.id;
+
+    if (!userId) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+
+    // Count total social thoughts (visibility='social' OR sharedToSocial=true)
+    const [{ count: thoughtsCount }] = await db.select({ count: sql<number>`count(*)` })
+      .from(thoughts)
+      .where(or(
+        eq(thoughts.visibility, 'social'),
+        eq(thoughts.sharedToSocial, true)
+      ));
+
+    // Count total saved sparks for this user
+    const [{ count: savedSparksCount }] = await db.select({ count: sql<number>`count(*)` })
+      .from(sparks)
+      .where(eq(sparks.userId, userId));
+
+    res.json({
+      success: true,
+      stats: {
+        thoughtsCount,
+        savedSparksCount,
+      },
+    });
+
+  } catch (error) {
+    console.error('Stats fetch error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to fetch stats',
+      details: error instanceof Error ? error.message : 'Unknown error'
+    });
+  }
+});
+
+/**
  * GET /api/thoughts/:thoughtId/perspectives
  * Get all perspective messages for a thought
  * Creates a social thread if it doesn't exist
