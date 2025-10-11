@@ -717,16 +717,10 @@ router.get('/neural-strength', async (req, res) => {
 /**
  * GET /api/thoughts/stats
  * Get statistics for collective social activity (all users)
- * REQUIRES AUTHENTICATION
+ * PUBLIC ENDPOINT - No authentication required (counts public data)
  */
 router.get('/stats', async (req, res) => {
   try {
-    const userId = (req as any).user?.id;
-
-    if (!userId) {
-      return res.status(401).json({ error: 'Unauthorized' });
-    }
-
     // Count total social thoughts (visibility='social' OR sharedToSocial=true)
     const [{ count: thoughtsCount }] = await db.select({ count: sql<number>`count(*)` })
       .from(thoughts)

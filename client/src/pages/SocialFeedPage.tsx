@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
@@ -83,12 +83,6 @@ export default function SocialFeedPage() {
     enabled: !!user, // Only fetch if user is logged in
   });
 
-  // Fetch stats for social thoughts
-  const { data: statsData } = useQuery<{ success: boolean; stats: { thoughtsCount: number; savedSparksCount: number; perspectivesCount: number } }>({
-    queryKey: ['/api/thoughts/stats'],
-    enabled: !!user,
-  });
-
   // Save thought to MyNeura
   const saveToMyNeuraMutation = useMutation({
     mutationFn: async (thoughtId: number) => {
@@ -128,7 +122,6 @@ export default function SocialFeedPage() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [`/api/thoughts/${selectedDot?.id}/perspectives`] });
-      queryClient.invalidateQueries({ queryKey: ['/api/thoughts/stats'] });
       setPerspectiveInput('');
       // Scroll to bottom after posting
       setTimeout(() => {
@@ -187,7 +180,6 @@ export default function SocialFeedPage() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [`/api/thoughts/${selectedDot?.id}/sparks`] });
       queryClient.invalidateQueries({ queryKey: ['/api/thoughts/user/sparks-count'] });
-      queryClient.invalidateQueries({ queryKey: ['/api/thoughts/stats'] });
       setSparkNote("");
       toast({
         title: "Spark saved!",
@@ -214,6 +206,25 @@ export default function SocialFeedPage() {
 
   const userSparks = sparksData?.sparks || [];
 
+  // Calculate collective growth from visible data on the page
+  const collectiveGrowth = useMemo(() => {
+    const thoughtsCount = (publicDots as any)?.thoughts?.length || 0;
+    // For sparks and perspectives, use selected thought data if available
+    const sparksCount = sparksData?.sparks?.length || 0;
+    const perspectivesCount = perspectivesData?.messages?.length || 0;
+    
+    // Calculate growth percentage: 0.5% per item
+    const totalItems = thoughtsCount + sparksCount + perspectivesCount;
+    const percentage = Math.min(100, totalItems * 0.5);
+    
+    return {
+      percentage: Math.round(percentage),
+      thoughtsCount,
+      sparksCount,
+      perspectivesCount,
+    };
+  }, [publicDots, sparksData, perspectivesData]);
+
   // Delete thought mutation
   const deleteThoughtMutation = useMutation({
     mutationFn: async (thoughtId: number) => {
@@ -221,7 +232,6 @@ export default function SocialFeedPage() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/thoughts'] });
-      queryClient.invalidateQueries({ queryKey: ['/api/thoughts/stats'] });
       setSelectedDot(null);
       toast({
         title: "Thought deleted",
@@ -267,7 +277,6 @@ export default function SocialFeedPage() {
   // Refresh handler - only refreshes thought data, not entire page
   const handleRefreshThoughts = () => {
     queryClient.invalidateQueries({ queryKey: ['/api/thoughts?limit=50'] });
-    queryClient.invalidateQueries({ queryKey: ['/api/thoughts/stats'] });
     toast({
       title: "Refreshed!",
       description: "Thought cloud updated with latest data",
@@ -353,7 +362,7 @@ export default function SocialFeedPage() {
                         </span>
                       </Button>
                       <div className="px-2.5 py-1 bg-gradient-to-br from-orange-50 to-amber-50 rounded-lg border border-orange-200/50">
-                        <span className="text-sm font-semibold text-orange-700">{statsData?.stats?.thoughtsCount || 0}</span>
+                        <span className="text-sm font-semibold text-orange-700">{collectiveGrowth.thoughtsCount}</span>
                       </div>
                     </div>
 
@@ -397,14 +406,14 @@ export default function SocialFeedPage() {
                             <div 
                               className="absolute inset-y-0 left-0 bg-gradient-to-r from-red-500 via-orange-500 to-amber-500 rounded-full transition-all duration-1000 ease-out"
                               style={{ 
-                                width: `${Math.min(100, ((statsData?.stats?.thoughtsCount || 0) + (statsData?.stats?.savedSparksCount || 0) + (statsData?.stats?.perspectivesCount || 0)) * 0.5)}%` 
+                                width: `${collectiveGrowth.percentage}%` 
                               }}
                             >
                               <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-pulse"></div>
                             </div>
                           </div>
                           <span className="text-sm font-bold bg-gradient-to-r from-red-600 to-orange-600 bg-clip-text text-transparent">
-                            {Math.min(100, Math.round(((statsData?.stats?.thoughtsCount || 0) + (statsData?.stats?.savedSparksCount || 0) + (statsData?.stats?.perspectivesCount || 0)) * 0.5))}%
+                            {collectiveGrowth.percentage}%
                           </span>
                         </div>
                       </div>
