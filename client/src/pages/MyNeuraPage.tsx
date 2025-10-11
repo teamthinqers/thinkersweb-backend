@@ -53,6 +53,8 @@ type NeuralStrengthData = {
   stats: {
     thoughtsCount: number;
     savedSparksCount: number;
+    userSparksCount: number;
+    perspectivesCount: number;
   };
 };
 
@@ -89,6 +91,7 @@ function PersonalPerspectives({ thoughtId }: { thoughtId: number }) {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [`/api/thoughts/${thoughtId}/perspectives/personal`] });
+      queryClient.invalidateQueries({ queryKey: ['/api/thoughts/neural-strength'] });
       setPersonalMessage("");
     },
     onError: () => {
@@ -232,6 +235,7 @@ function SparksSection({ thoughtId, thought, user }: { thoughtId: number; though
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [`/api/thoughts/${thoughtId}/sparks`] });
       queryClient.invalidateQueries({ queryKey: ['/api/thoughts/user/sparks-count'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/thoughts/neural-strength'] });
       setSparkNote("");
       toast({
         title: "Spark saved!",
@@ -248,6 +252,7 @@ function SparksSection({ thoughtId, thought, user }: { thoughtId: number; though
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [`/api/thoughts/${thoughtId}/sparks`] });
       queryClient.invalidateQueries({ queryKey: ['/api/thoughts/user/sparks-count'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/thoughts/neural-strength'] });
     },
   });
 
@@ -597,6 +602,7 @@ export default function MyNeuraPage() {
       });
       queryClient.invalidateQueries({ queryKey: ['/api/thoughts/myneura'] });
       queryClient.invalidateQueries({ queryKey: ['/api/thoughts'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/thoughts/stats'] });
     },
     onError: (error: Error) => {
       toast({
@@ -615,6 +621,7 @@ export default function MyNeuraPage() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/thoughts/myneura'] });
       queryClient.invalidateQueries({ queryKey: ['/api/thoughts/user/sparks-count'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/thoughts/neural-strength'] });
       setSelectedThought(null);
       toast({
         title: "Thought deleted",

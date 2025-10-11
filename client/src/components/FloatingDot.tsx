@@ -107,6 +107,7 @@ export default function FloatingDot({ onClick, currentPage }: FloatingDotProps) 
       await queryClient.invalidateQueries({ queryKey: ['/api/thoughts/myneura'] });
       await queryClient.invalidateQueries({ queryKey: ['/api/thoughts'] });
       await queryClient.invalidateQueries({ queryKey: ['/api/thoughts/stats'] });
+      await queryClient.invalidateQueries({ queryKey: ['/api/thoughts/neural-strength'] });
 
       toast({
         title: "Thought saved!",
