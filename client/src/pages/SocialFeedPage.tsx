@@ -603,28 +603,28 @@ export default function SocialFeedPage() {
                             <Button
                               variant="outline"
                               size="sm"
-                              className="flex items-center gap-2"
+                              className="text-amber-600 hover:text-amber-700 hover:bg-amber-50 p-2"
                               onClick={() => {
                                 // TODO: Open edit dialog
                                 console.log('Edit thought:', selectedDot.id);
                               }}
+                              title="Edit thought"
                             >
                               <Pencil className="h-4 w-4" />
-                              Edit
                             </Button>
                             <Button
                               variant="outline"
                               size="sm"
-                              className="flex items-center gap-2 text-red-600 hover:text-red-700 hover:bg-red-50"
+                              className="text-red-600 hover:text-red-700 hover:bg-red-50 p-2"
                               onClick={() => {
                                 if (confirm('Are you sure you want to delete this thought? This action cannot be undone.')) {
                                   deleteThoughtMutation.mutate(selectedDot.id);
                                 }
                               }}
                               disabled={deleteThoughtMutation.isPending}
+                              title={deleteThoughtMutation.isPending ? 'Deleting...' : 'Delete thought'}
                             >
                               <Trash2 className="h-4 w-4" />
-                              {deleteThoughtMutation.isPending ? 'Deleting...' : 'Delete'}
                             </Button>
                           </div>
                         )}
@@ -796,7 +796,7 @@ export default function SocialFeedPage() {
                                     })}
                                   </span>
                                   {/* Delete button for own messages */}
-                                  {user && message.userId === user.id && (
+                                  {user && message.user.id === user.id && (
                                     <button
                                       onClick={() => {
                                         if (confirm('Delete this perspective?')) {
