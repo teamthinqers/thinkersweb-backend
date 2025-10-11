@@ -17,6 +17,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/use-auth-new";
 import { Link, useLocation } from "wouter";
+import { useQuery } from "@tanstack/react-query";
 // signOut import removed - using logout from useAuth hook instead
 import {
   DropdownMenu,
@@ -60,6 +61,17 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
     simulateActivation, 
     forceStatusRefresh 
   } = useWhatsAppStatus();
+  
+  // Fetch notifications unread count
+  const { data: notificationsData } = useQuery<{ 
+    success: boolean; 
+    notifications: any[]; 
+    unreadCount: number 
+  }>({
+    queryKey: ['/api/notifications'],
+    enabled: !!user, // Only fetch if user is logged in
+    refetchInterval: 30000, // Refetch every 30 seconds
+  });
   
   // Update activation status when component mounts
   useEffect(() => {
@@ -343,7 +355,7 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
               <Button
                 variant="ghost"
                 size="sm"
-                className="mr-2 bg-gradient-to-r from-red-500 to-orange-600 text-white shadow-md hover:bg-gradient-to-r hover:from-red-600 hover:to-orange-700 transition-all duration-300"
+                className="mr-3 bg-gradient-to-r from-red-500 to-orange-600 text-white shadow-md hover:bg-gradient-to-r hover:from-red-600 hover:to-orange-700 transition-all duration-300"
                 onClick={() => setLocation("/social-neura")}
               >
                 <div className="flex items-center gap-2">
@@ -355,6 +367,21 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
                   </div>
                   <span className="text-sm font-medium">Social</span>
                 </div>
+              </Button>
+              
+              {/* Notifications Bell */}
+              <Button
+                variant="ghost"
+                size="icon"
+                className="mr-3 relative text-gray-600 hover:text-primary"
+                onClick={() => setLocation("/notifications")}
+              >
+                <BellIcon className="h-5 w-5" />
+                {notificationsData && notificationsData.unreadCount > 0 && (
+                  <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-semibold">
+                    {notificationsData.unreadCount > 9 ? '9+' : notificationsData.unreadCount}
+                  </span>
+                )}
               </Button>
               
               {/* Profile button - Desktop */}
