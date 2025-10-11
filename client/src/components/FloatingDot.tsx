@@ -46,6 +46,8 @@ export default function FloatingDot({ onClick, currentPage }: FloatingDotProps) 
   const [keywords, setKeywords] = useState('');
   const [anchor, setAnchor] = useState('');
   const [analogies, setAnalogies] = useState('');
+  const [editMode, setEditMode] = useState(false);
+  const [editThoughtId, setEditThoughtId] = useState<number | null>(null);
 
   // 10 predefined emotions for quick selection
   const emotionOptions = [
@@ -92,29 +94,47 @@ export default function FloatingDot({ onClick, currentPage }: FloatingDotProps) 
 
     setIsSubmitting(true);
     try {
-      await apiRequest('POST', '/api/thoughts', {
-        heading: heading.trim(),
-        summary: summary.trim(),
-        emotion: emotion.trim() || null,
-        visibility: targetNeura === 'social' ? 'social' : 'personal',
-        channel: 'write',
-        keywords: keywords.trim() || null,
-        anchor: anchor.trim() || null,
-        analogies: analogies.trim() || null,
-      });
+      if (editMode && editThoughtId) {
+        // Update existing thought
+        await apiRequest('PATCH', `/api/thoughts/${editThoughtId}`, {
+          heading: heading.trim(),
+          summary: summary.trim(),
+          emotions: emotion.trim() || null,
+          keywords: keywords.trim() || null,
+          anchor: anchor.trim() || null,
+          analogies: analogies.trim() || null,
+        });
+
+        toast({
+          title: "Thought updated!",
+          description: "Your changes have been saved.",
+        });
+      } else {
+        // Create new thought
+        await apiRequest('POST', '/api/thoughts', {
+          heading: heading.trim(),
+          summary: summary.trim(),
+          emotion: emotion.trim() || null,
+          visibility: targetNeura === 'social' ? 'social' : 'personal',
+          channel: 'write',
+          keywords: keywords.trim() || null,
+          anchor: anchor.trim() || null,
+          analogies: analogies.trim() || null,
+        });
+
+        toast({
+          title: "Thought saved!",
+          description: targetNeura === 'social' 
+            ? "Your thought has been shared to Social Neura." 
+            : "Your thought has been saved to My Neura.",
+        });
+      }
 
       // Invalidate queries to refresh the data
       await queryClient.invalidateQueries({ queryKey: ['/api/thoughts/myneura'] });
       await queryClient.invalidateQueries({ queryKey: ['/api/thoughts'] });
       await queryClient.invalidateQueries({ queryKey: ['/api/thoughts/stats'] });
       await queryClient.invalidateQueries({ queryKey: ['/api/thoughts/neural-strength'] });
-
-      toast({
-        title: "Thought saved!",
-        description: targetNeura === 'social' 
-          ? "Your thought has been shared to Social Neura." 
-          : "Your thought has been saved to My Neura.",
-      });
 
       // Reset form and close dialog
       setHeading('');
@@ -126,6 +146,8 @@ export default function FloatingDot({ onClick, currentPage }: FloatingDotProps) 
       setAnalogies('');
       setShowWriteForm(false);
       setIsOpen(false);
+      setEditMode(false);
+      setEditThoughtId(null);
     } catch (error: any) {
       console.error('Error creating thought:', error);
       
@@ -165,6 +187,31 @@ export default function FloatingDot({ onClick, currentPage }: FloatingDotProps) 
   useEffect(() => {
     const handleOpenDialog = (e: CustomEvent) => {
       setIsOpen(true);
+      
+      // Check if this is an edit request
+      if (e.detail?.thought) {
+        const thought = e.detail.thought;
+        setEditMode(true);
+        setEditThoughtId(thought.id);
+        setHeading(thought.heading || '');
+        setSummary(thought.summary || '');
+        setEmotion(thought.emotions || '');
+        setKeywords(thought.keywords || '');
+        setAnchor(thought.anchor || '');
+        setAnalogies(thought.analogies || '');
+        setShowWriteForm(true); // Open directly to write form
+      } else {
+        // Reset for new thought
+        setEditMode(false);
+        setEditThoughtId(null);
+        setHeading('');
+        setSummary('');
+        setEmotion('');
+        setKeywords('');
+        setAnchor('');
+        setAnalogies('');
+      }
+      
       if (e.detail?.targetNeura) {
         setTargetNeura(e.detail.targetNeura);
       }
@@ -483,10 +530,10 @@ export default function FloatingDot({ onClick, currentPage }: FloatingDotProps) 
                         {isSubmitting ? (
                           <>
                             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                            Saving...
+                            {editMode ? 'Updating...' : 'Saving...'}
                           </>
                         ) : (
-                          'Post Thought'
+                          editMode ? 'Update Thought' : 'Post Thought'
                         )}
                       </Button>
                     </div>
@@ -596,10 +643,10 @@ export default function FloatingDot({ onClick, currentPage }: FloatingDotProps) 
                         {isSubmitting ? (
                           <>
                             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                            Saving...
+                            {editMode ? 'Updating...' : 'Saving...'}
                           </>
                         ) : (
-                          'Post Thought'
+                          editMode ? 'Update Thought' : 'Post Thought'
                         )}
                       </Button>
                     </div>
