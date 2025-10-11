@@ -286,6 +286,131 @@ export default function MyDotSparkPage() {
           </CardContent>
         </Card>
 
+        {/* AI Insights Section */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+          <Card className="border-purple-200">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Lightbulb className="h-5 w-5 text-purple-500" />
+                AI Insights
+              </CardTitle>
+              <CardDescription>Personalized recommendations for your growth</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                {dashboard?.neuralStrength.percentage === 0 ? (
+                  <div className="p-4 bg-gradient-to-br from-purple-50 to-indigo-50 rounded-lg border border-purple-200">
+                    <p className="text-sm font-medium text-purple-900 mb-2">🎯 Get Started</p>
+                    <p className="text-sm text-gray-700">
+                      Welcome to DotSpark! Start by creating your first dot to capture an insight, or share a thought on Social Neura to connect with the community.
+                    </p>
+                  </div>
+                ) : dashboard?.stats.dots === 0 ? (
+                  <div className="p-4 bg-gradient-to-br from-amber-50 to-orange-50 rounded-lg border border-amber-200">
+                    <p className="text-sm font-medium text-amber-900 mb-2">💡 Capture Your Insights</p>
+                    <p className="text-sm text-gray-700">
+                      You haven't created any dots yet. Dots are powerful tools for capturing single insights and building your personal knowledge base.
+                    </p>
+                  </div>
+                ) : dashboard?.stats.wheels === 0 ? (
+                  <div className="p-4 bg-gradient-to-br from-orange-50 to-red-50 rounded-lg border border-orange-200">
+                    <p className="text-sm font-medium text-orange-900 mb-2">🎯 Set Your Goals</p>
+                    <p className="text-sm text-gray-700">
+                      You have {dashboard?.stats.dots} dots. Consider creating a wheel to organize them around a specific goal or learning objective.
+                    </p>
+                  </div>
+                ) : (
+                  <div className="p-4 bg-gradient-to-br from-green-50 to-emerald-50 rounded-lg border border-green-200">
+                    <p className="text-sm font-medium text-green-900 mb-2">🚀 Great Progress!</p>
+                    <p className="text-sm text-gray-700">
+                      You're building a strong knowledge network! Keep connecting your insights and engaging with the community to grow your neural strength.
+                    </p>
+                  </div>
+                )}
+                
+                {!dashboard?.neuralStrength.milestones.cognitiveIdentityCompleted && (
+                  <div className="p-4 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-lg border border-blue-200">
+                    <p className="text-sm font-medium text-blue-900 mb-2">📋 Complete Your Profile</p>
+                    <p className="text-sm text-gray-700">
+                      Complete your cognitive identity to boost your neural strength and unlock personalized recommendations.
+                    </p>
+                  </div>
+                )}
+                
+                {dashboard && dashboard.stats.savedSparks > 0 && (
+                  <div className="p-4 bg-gradient-to-br from-red-50 to-pink-50 rounded-lg border border-red-200">
+                    <p className="text-sm font-medium text-red-900 mb-2">✨ Sparks to Explore</p>
+                    <p className="text-sm text-gray-700">
+                      You have {dashboard.stats.savedSparks} saved sparks from the community. Review them in My Neura and integrate the insights into your knowledge base.
+                    </p>
+                  </div>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="border-indigo-200">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Target className="h-5 w-5 text-indigo-500" />
+                Next Steps
+              </CardTitle>
+              <CardDescription>Actions to accelerate your growth</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3">
+                <Link href="/social">
+                  <div className="p-4 bg-gradient-to-r from-red-50 to-orange-50 rounded-lg border border-red-200 hover:border-red-300 transition-colors cursor-pointer">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-sm font-medium text-red-900">Explore Social Neura</p>
+                        <p className="text-xs text-gray-600 mt-1">Discover collective intelligence and shared thoughts</p>
+                      </div>
+                      <ArrowRight className="h-4 w-4 text-red-500" />
+                    </div>
+                  </div>
+                </Link>
+
+                <Link href="/myneura">
+                  <div className="p-4 bg-gradient-to-r from-amber-50 to-yellow-50 rounded-lg border border-amber-200 hover:border-amber-300 transition-colors cursor-pointer">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-sm font-medium text-amber-900">Review My Neura</p>
+                        <p className="text-xs text-gray-600 mt-1">Organize personal thoughts and saved insights</p>
+                      </div>
+                      <ArrowRight className="h-4 w-4 text-amber-500" />
+                    </div>
+                  </div>
+                </Link>
+
+                {dashboard && dashboard.stats.dots > 0 && dashboard.stats.wheels === 0 && (
+                  <div className="p-4 bg-gradient-to-r from-orange-50 to-red-50 rounded-lg border border-orange-200">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-sm font-medium text-orange-900">Create Your First Wheel</p>
+                        <p className="text-xs text-gray-600 mt-1">Organize your {dashboard.stats.dots} dots into goal-oriented projects</p>
+                      </div>
+                      <Target className="h-4 w-4 text-orange-500" />
+                    </div>
+                  </div>
+                )}
+
+                {dashboard && dashboard.stats.thoughts === 0 && (
+                  <div className="p-4 bg-gradient-to-r from-purple-50 to-indigo-50 rounded-lg border border-purple-200">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-sm font-medium text-purple-900">Share Your First Thought</p>
+                        <p className="text-xs text-gray-600 mt-1">Contribute to collective intelligence on Social Neura</p>
+                      </div>
+                      <Users className="h-4 w-4 text-purple-500" />
+                    </div>
+                  </div>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
         {/* Quick Actions Banner */}
         <div className="mt-8 p-6 bg-gradient-to-r from-amber-500 via-orange-500 to-red-500 rounded-2xl shadow-xl text-white">
           <div className="text-center mb-4">
@@ -293,20 +418,6 @@ export default function MyDotSparkPage() {
             <p className="text-amber-50">Capture insights, set goals, and connect with the community</p>
           </div>
           <div className="flex flex-wrap justify-center gap-3">
-            <Button 
-              variant="secondary" 
-              className="bg-white text-amber-600 hover:bg-amber-50"
-            >
-              <Plus className="h-4 w-4 mr-2" />
-              Create Dot
-            </Button>
-            <Button 
-              variant="secondary" 
-              className="bg-white text-orange-600 hover:bg-orange-50"
-            >
-              <Plus className="h-4 w-4 mr-2" />
-              Start Wheel
-            </Button>
             <Link href="/social">
               <Button 
                 variant="secondary" 
@@ -314,6 +425,15 @@ export default function MyDotSparkPage() {
               >
                 <Brain className="h-4 w-4 mr-2" />
                 Share Thought
+              </Button>
+            </Link>
+            <Link href="/myneura">
+              <Button 
+                variant="secondary" 
+                className="bg-white text-amber-600 hover:bg-amber-50"
+              >
+                <Lightbulb className="h-4 w-4 mr-2" />
+                My Neura
               </Button>
             </Link>
           </div>
