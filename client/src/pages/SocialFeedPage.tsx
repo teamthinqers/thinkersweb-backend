@@ -383,7 +383,7 @@ export default function SocialFeedPage() {
                         </span>
                       </Button>
                       <div className="px-2.5 py-1 bg-gradient-to-br from-yellow-50 to-amber-50 rounded-lg border border-yellow-200/50">
-                        <span className="text-sm font-semibold text-yellow-700">{statsData?.stats?.savedSparksCount || 0}</span>
+                        <span className="text-sm font-semibold text-yellow-700">{collectiveGrowth.sparksCount}</span>
                       </div>
                     </div>
                   </div>
