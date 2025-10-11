@@ -360,7 +360,7 @@ export default function SharedAuthLayout({ children }: SharedAuthLayoutProps) {
               <Button
                 variant="ghost"
                 size="sm"
-                className="relative p-2 hover:bg-amber-100/70 rounded-lg transition-all duration-300"
+                className="relative p-2 bg-white/80 hover:bg-white border border-amber-200 rounded-lg transition-all duration-300 shadow-sm hover:shadow-md"
                 title="Notifications"
               >
                 <Bell className="h-5 w-5 text-amber-700" />
