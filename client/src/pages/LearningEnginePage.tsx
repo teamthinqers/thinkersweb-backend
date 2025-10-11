@@ -3,8 +3,18 @@ import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Cog } from "lucide-react";
 import SharedAuthLayout from "@/components/layout/SharedAuthLayout";
+import { useToast } from "@/hooks/use-toast";
 
 export default function LearningEnginePage() {
+  const { toast } = useToast();
+
+  const handleConfigureClick = () => {
+    toast({
+      title: "Coming Soon",
+      description: "Learning Engine configuration will be available soon!",
+    });
+  };
+
   return (
     <SharedAuthLayout>
       <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-amber-100">
@@ -64,6 +74,7 @@ export default function LearningEnginePage() {
               <div className="pt-8">
                 <Button 
                   size="lg"
+                  onClick={handleConfigureClick}
                   className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white px-8 py-6 text-lg"
                 >
                   Configure Learning Engine
