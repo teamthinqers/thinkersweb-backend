@@ -82,6 +82,12 @@ export default function SocialFeedPage() {
     enabled: !!user, // Only fetch if user is logged in
   });
 
+  // Fetch stats for social thoughts
+  const { data: statsData } = useQuery<{ success: boolean; stats: { thoughtsCount: number; savedSparksCount: number } }>({
+    queryKey: ['/api/thoughts/stats'],
+    enabled: !!user,
+  });
+
   // Save thought to MyNeura
   const saveToMyNeuraMutation = useMutation({
     mutationFn: async (thoughtId: number) => {
@@ -268,6 +274,50 @@ export default function SocialFeedPage() {
                   <h1 className="text-2xl font-bold bg-gradient-to-r from-red-600 to-orange-600 bg-clip-text text-transparent">
                     Social Neura
                   </h1>
+                </div>
+
+                {/* Center: Dots and Sparks Count */}
+                <div className="flex items-center gap-3">
+                  {/* Dots - button and count */}
+                  <div className="flex items-center gap-2">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="group flex items-center gap-2 rounded-lg px-3 py-2 bg-gradient-to-br from-orange-50 to-amber-50 hover:from-orange-100 hover:to-amber-100 border-l-2 border-orange-500 transition-all duration-300 relative"
+                      title="Dots"
+                    >
+                      <div className="relative">
+                        <Lightbulb className="h-4 w-4 text-orange-600 group-hover:scale-110 transition-transform" />
+                      </div>
+                      <span className="text-sm font-medium text-orange-700">
+                        Dots
+                      </span>
+                    </Button>
+                    <div className="px-2.5 py-1 bg-gradient-to-br from-orange-50 to-amber-50 rounded-lg border border-orange-200/50">
+                      <span className="text-sm font-semibold text-orange-700">{statsData?.stats?.thoughtsCount || 0}</span>
+                    </div>
+                  </div>
+
+                  {/* Sparks - button and count */}
+                  <div className="flex items-center gap-2">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="group flex items-center gap-2 rounded-lg px-3 py-2 bg-gradient-to-br from-yellow-50 to-amber-50 hover:from-yellow-100 hover:to-amber-100 border-l-2 border-yellow-500 transition-all duration-300 relative"
+                      title="Sparks"
+                    >
+                      <div className="relative">
+                        <Zap className="h-4 w-4 text-yellow-600 group-hover:scale-110 transition-transform" />
+                        <Sparkles className="h-2.5 w-2.5 text-yellow-500 absolute -top-0.5 -right-0.5 animate-pulse opacity-0 group-hover:opacity-100 transition-opacity" />
+                      </div>
+                      <span className="text-sm font-medium text-yellow-700">
+                        Sparks
+                      </span>
+                    </Button>
+                    <div className="px-2.5 py-1 bg-gradient-to-br from-yellow-50 to-amber-50 rounded-lg border border-yellow-200/50">
+                      <span className="text-sm font-semibold text-yellow-700">{statsData?.stats?.savedSparksCount || 0}</span>
+                    </div>
+                  </div>
                 </div>
 
                 {/* Right: Cloud/Feed Toggle */}
