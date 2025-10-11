@@ -1074,7 +1074,7 @@ export default function MyNeuraPage() {
                 </div>
 
                 {/* Main Content - Scrollable */}
-                <div className="flex-1 min-h-0 overflow-y-scroll p-6">
+                <div className="flex-1 min-h-0 overflow-y-scroll px-6 pt-6 pb-8">
                   <div className="space-y-6">
                   {/* Image - if present */}
                   {selectedThought.imageUrl && (
