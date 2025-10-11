@@ -566,12 +566,6 @@ export default function MyNeuraPage() {
   const [showRecentOnly, setShowRecentOnly] = useState(false);
   const [viewMode, setViewMode] = useState<'cloud' | 'feed'>('cloud');
   const [showStrengthInfo, setShowStrengthInfo] = useState(false);
-  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
-  const [editFormData, setEditFormData] = useState({
-    heading: '',
-    summary: '',
-    anchor: ''
-  });
 
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -609,31 +603,6 @@ export default function MyNeuraPage() {
       queryClient.invalidateQueries({ queryKey: ['/api/thoughts/myneura'] });
       queryClient.invalidateQueries({ queryKey: ['/api/thoughts'] });
       queryClient.invalidateQueries({ queryKey: ['/api/thoughts/stats'] });
-    },
-    onError: (error: Error) => {
-      toast({
-        title: "Error",
-        description: error.message,
-        variant: "destructive",
-      });
-    },
-  });
-
-  // Edit thought mutation
-  const editThoughtMutation = useMutation({
-    mutationFn: async ({ id, data }: { id: number; data: any }) => {
-      const response = await apiRequest("PATCH", `/api/thoughts/${id}`, data);
-      return response.json();
-    },
-    onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ['/api/thoughts/myneura'] });
-      queryClient.invalidateQueries({ queryKey: ['/api/thoughts'] });
-      setIsEditDialogOpen(false);
-      setSelectedThought(null);
-      toast({
-        title: "Thought updated",
-        description: "Your changes have been saved",
-      });
     },
     onError: (error: Error) => {
       toast({
@@ -1315,67 +1284,6 @@ export default function MyNeuraPage() {
                 </div>
               </div>
             </div>
-          </div>
-        </DialogContent>
-      </Dialog>
-
-      {/* Edit Thought Dialog */}
-      <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
-        <DialogContent className="max-w-2xl">
-          <DialogHeader>
-            <DialogTitle className="text-2xl font-bold text-amber-600">Edit Thought</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4 py-4">
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-700">Heading</label>
-              <Input
-                value={editFormData.heading}
-                onChange={(e) => setEditFormData({ ...editFormData, heading: e.target.value })}
-                placeholder="Enter thought heading"
-                className="w-full"
-              />
-            </div>
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-700">Summary</label>
-              <textarea
-                value={editFormData.summary}
-                onChange={(e) => setEditFormData({ ...editFormData, summary: e.target.value })}
-                placeholder="Enter thought summary"
-                className="w-full min-h-[120px] px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500"
-              />
-            </div>
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-700">Anchor (Optional)</label>
-              <textarea
-                value={editFormData.anchor}
-                onChange={(e) => setEditFormData({ ...editFormData, anchor: e.target.value })}
-                placeholder="Core truth or insight"
-                className="w-full min-h-[80px] px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500"
-              />
-            </div>
-          </div>
-          <div className="flex justify-end gap-2">
-            <Button
-              variant="outline"
-              onClick={() => setIsEditDialogOpen(false)}
-              disabled={editThoughtMutation.isPending}
-            >
-              Cancel
-            </Button>
-            <Button
-              onClick={() => {
-                if (selectedThought) {
-                  editThoughtMutation.mutate({
-                    id: selectedThought.id,
-                    data: editFormData
-                  });
-                }
-              }}
-              disabled={editThoughtMutation.isPending || !editFormData.heading || !editFormData.summary}
-              className="bg-amber-600 hover:bg-amber-700 text-white"
-            >
-              {editThoughtMutation.isPending ? 'Saving...' : 'Save Changes'}
-            </Button>
           </div>
         </DialogContent>
       </Dialog>
