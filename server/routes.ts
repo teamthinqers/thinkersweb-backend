@@ -1935,8 +1935,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Mount new thoughts system routes - PUBLIC for social feed, protected endpoints handle auth internally
   app.use(`${apiPrefix}/thoughts`, thoughtsRouter);
   
-  // Mount notifications system routes - requires authentication
-  app.use(`${apiPrefix}/notifications`, requireAuth, notificationsRouter);
+  // Mount notifications system routes - authentication handled internally like thoughts
+  app.use(`${apiPrefix}/notifications`, notificationsRouter);
 
   // ===========================
   // MAPPING ROUTES
