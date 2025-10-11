@@ -6,7 +6,7 @@ import {
   Menu, User, LogOut, Settings, TrendingUp, Heart,
   Share2, Eye, MoreHorizontal, Maximize, Minimize, Clock,
   Grid3x3, List, Bookmark, Fingerprint, Hash, Lightbulb, MessageCircle, Zap, Info, Cog,
-  PenTool, Linkedin, MessageCircleMore, RefreshCw
+  PenTool, Linkedin, MessageCircleMore, RefreshCw, Pencil, Trash2
 } from "lucide-react";
 import { SiWhatsapp, SiLinkedin, SiOpenai } from 'react-icons/si';
 import { useAuth } from "@/hooks/use-auth-new";
@@ -199,7 +199,7 @@ function PersonalPerspectives({ thoughtId }: { thoughtId: number }) {
 }
 
 // Sparks Section Component
-function SparksSection({ thoughtId, thought }: { thoughtId: number; thought: ThoughtDot }) {
+function SparksSection({ thoughtId, thought, user }: { thoughtId: number; thought: ThoughtDot; user: any }) {
   const [viewMode, setViewMode] = useState<'text' | 'visual'>('text');
   const [sparkNote, setSparkNote] = useState('');
   const [showSocialSparks, setShowSocialSparks] = useState(false);
@@ -361,12 +361,20 @@ function SparksSection({ thoughtId, thought }: { thoughtId: number; thought: Tho
               userSparks.map((spark: any) => (
                 <div key={spark.id} className="bg-yellow-50 rounded-lg p-3 border border-yellow-100 group relative">
                   <p className="text-sm text-gray-800 pr-6">{spark.content}</p>
-                  <button
-                    onClick={() => deleteSparkMutation.mutate(spark.id)}
-                    className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity"
-                  >
-                    <MoreHorizontal className="h-4 w-4 text-gray-400 hover:text-red-500" />
-                  </button>
+                  {/* Delete button for own sparks */}
+                  {user && spark.userId === user.id && (
+                    <button
+                      onClick={() => {
+                        if (confirm('Delete this spark?')) {
+                          deleteSparkMutation.mutate(spark.id);
+                        }
+                      }}
+                      className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity text-red-500 hover:text-red-700"
+                      disabled={deleteSparkMutation.isPending}
+                    >
+                      <Trash2 className="h-3 w-3" />
+                    </button>
+                  )}
                   <p className="text-xs text-gray-400 mt-1">{new Date(spark.createdAt).toLocaleString()}</p>
                 </div>
               ))
@@ -589,6 +597,29 @@ export default function MyNeuraPage() {
       });
       queryClient.invalidateQueries({ queryKey: ['/api/thoughts/myneura'] });
       queryClient.invalidateQueries({ queryKey: ['/api/thoughts'] });
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
+
+  // Delete thought mutation
+  const deleteThoughtMutation = useMutation({
+    mutationFn: async (thoughtId: number) => {
+      return apiRequest("DELETE", `/api/thoughts/${thoughtId}`, {});
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/thoughts/myneura'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/thoughts/user/sparks-count'] });
+      setSelectedThought(null);
+      toast({
+        title: "Thought deleted",
+        description: "Your thought has been removed",
+      });
     },
     onError: (error: Error) => {
       toast({
@@ -984,6 +1015,38 @@ export default function MyNeuraPage() {
                     <DialogTitle className="text-2xl font-bold text-gray-900 mt-4">
                       {selectedThought.heading}
                     </DialogTitle>
+
+                    {/* Edit/Delete buttons for owner - only show for own thoughts, not saved ones */}
+                    {!selectedThought.isSaved && user && selectedThought.userId === user.id && (
+                      <div className="flex gap-2 mt-4">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="flex items-center gap-2 text-amber-600 hover:text-amber-700 hover:bg-amber-50"
+                          onClick={() => {
+                            // TODO: Add edit functionality
+                            console.log('Edit thought:', selectedThought.id);
+                          }}
+                        >
+                          <Pencil className="h-4 w-4" />
+                          Edit
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="flex items-center gap-2 text-red-600 hover:text-red-700 hover:bg-red-50"
+                          onClick={() => {
+                            if (confirm('Are you sure you want to delete this thought? This action cannot be undone.')) {
+                              deleteThoughtMutation.mutate(selectedThought.id);
+                            }
+                          }}
+                          disabled={deleteThoughtMutation.isPending}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                          {deleteThoughtMutation.isPending ? 'Deleting...' : 'Delete'}
+                        </Button>
+                      </div>
+                    )}
                   </DialogHeader>
                 </div>
 
@@ -1122,7 +1185,7 @@ export default function MyNeuraPage() {
               <PersonalPerspectives thoughtId={selectedThought.id} />
 
               {/* Right Column: Sparks */}
-              <SparksSection thoughtId={selectedThought.id} thought={selectedThought} />
+              <SparksSection thoughtId={selectedThought.id} thought={selectedThought} user={user} />
             </div>
           )}
         </DialogContent>
