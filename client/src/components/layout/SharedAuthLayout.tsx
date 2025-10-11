@@ -296,7 +296,7 @@ export default function SharedAuthLayout({ children }: SharedAuthLayoutProps) {
           </div>
 
           {/* Right: Navigation Buttons with Icons and Text + User Avatar */}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-4">
             {/* My DotSpark Button with Logo Icon */}
             <Link href="/my-dotspark">
               <Button 
