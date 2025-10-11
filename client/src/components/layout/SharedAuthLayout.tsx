@@ -44,7 +44,7 @@ export default function SharedAuthLayout({ children }: SharedAuthLayoutProps) {
 
   const isOnSocial = location === '/social';
   const isOnMyNeura = location === '/myneura';
-  const isOnMyDotSpark = location === '/my-dotspark';
+  const isOnMyDotSpark = location === '/mydotspark';
 
   // Fetch notifications unread count
   const { data: notificationsData } = useQuery<{ 
@@ -241,7 +241,7 @@ export default function SharedAuthLayout({ children }: SharedAuthLayoutProps) {
 
           {/* Navigation Items */}
           <div className={`flex flex-col space-y-3 flex-1 py-4 ${isSidebarOpen ? 'px-2' : 'items-center'}`}>
-            <Link href="/my-dotspark">
+            <Link href="/mydotspark">
               <Button 
                 variant="ghost" 
                 title="My DotSpark"
@@ -390,7 +390,7 @@ export default function SharedAuthLayout({ children }: SharedAuthLayoutProps) {
           {/* Right: Navigation Buttons with Icons and Text + User Avatar */}
           <div className="flex items-center gap-4">
             {/* My DotSpark Button with Logo Icon */}
-            <Link href="/my-dotspark">
+            <Link href="/mydotspark">
               <Button 
                 variant="ghost" 
                 size="sm" 

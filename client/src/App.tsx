@@ -196,7 +196,7 @@ function Router() {
       <Route path="/preview" component={PreviewPage} />
       <Route path="/social" component={SocialFeedPage} />
       <Route path="/myneura" component={MyNeuraPage} />
-      <Route path="/my-dotspark" component={MyDotSparkPage} />
+      <Route path="/mydotspark" component={MyDotSparkPage} />
       <Route path="/cognitive-identity" component={CognitiveIdentityPage} />
       <Route path="/learning-engine" component={LearningEnginePage} />
       <Route path="/auth" component={AuthPage} />

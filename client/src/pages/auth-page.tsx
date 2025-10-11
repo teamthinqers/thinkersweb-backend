@@ -19,8 +19,8 @@ export default function AuthPage() {
       if (redirect) {
         setLocation(`/${redirect}`);
       } else {
-        // Default redirect to /my-dotspark after successful login (landing page)
-        setLocation('/my-dotspark');
+        // Default redirect to /mydotspark after successful login (landing page)
+        setLocation('/mydotspark');
       }
     }
   };
