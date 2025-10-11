@@ -156,9 +156,13 @@ router.post('/', async (req, res) => {
       userId,
     });
 
+    console.log('💭 Creating thought with visibility:', validatedData.visibility, 'for user:', userId);
+
     const [newThought] = await db.insert(thoughts)
       .values(validatedData)
       .returning();
+    
+    console.log('✅ Thought created with ID:', newThought.id, 'visibility:', newThought.visibility);
 
     // Store vector embedding for semantic search
     try {
@@ -740,6 +744,13 @@ router.get('/stats', async (req, res) => {
       .from(perspectivesMessages)
       .innerJoin(perspectivesThreads, eq(perspectivesMessages.threadId, perspectivesThreads.id))
       .where(eq(perspectivesThreads.threadType, 'social'));
+
+    console.log('📊 Collective Growth Stats:', { 
+      thoughtsCount, 
+      savedSparksCount, 
+      perspectivesCount,
+      totalGrowth: (Number(thoughtsCount) + Number(savedSparksCount) + Number(perspectivesCount)) * 0.5
+    });
 
     res.json({
       success: true,
