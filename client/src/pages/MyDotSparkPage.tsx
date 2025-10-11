@@ -7,6 +7,7 @@ import { Link } from 'wouter';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useAuth } from '@/hooks/use-auth-new';
 import { formatDistanceToNow } from 'date-fns';
+import SharedAuthLayout from '@/components/layout/SharedAuthLayout';
 
 interface DashboardData {
   neuralStrength: {
@@ -50,18 +51,21 @@ export default function MyDotSparkPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-red-50 flex items-center justify-center">
-        <div className="text-center">
-          <Sparkles className="h-12 w-12 text-amber-500 mx-auto mb-4 animate-pulse" />
-          <p className="text-gray-600">Loading your DotSpark...</p>
+      <SharedAuthLayout>
+        <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-red-50 flex items-center justify-center">
+          <div className="text-center">
+            <Sparkles className="h-12 w-12 text-amber-500 mx-auto mb-4 animate-pulse" />
+            <p className="text-gray-600">Loading your DotSpark...</p>
+          </div>
         </div>
-      </div>
+      </SharedAuthLayout>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-amber-100">
-      <div className="container mx-auto px-4 py-8 max-w-7xl">
+    <SharedAuthLayout>
+      <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-amber-100">
+        <div className="container mx-auto px-4 py-8 max-w-7xl">
         {/* Welcome Section */}
         <div className="mb-8">
           <div className="flex items-center gap-4 mb-6">
@@ -438,7 +442,8 @@ export default function MyDotSparkPage() {
             </Link>
           </div>
         </div>
+        </div>
       </div>
-    </div>
+    </SharedAuthLayout>
   );
 }
