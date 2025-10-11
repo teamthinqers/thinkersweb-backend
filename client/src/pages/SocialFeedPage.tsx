@@ -397,14 +397,14 @@ export default function SocialFeedPage() {
                             <div 
                               className="absolute inset-y-0 left-0 bg-gradient-to-r from-red-500 via-orange-500 to-amber-500 rounded-full transition-all duration-1000 ease-out"
                               style={{ 
-                                width: `${Math.min(100, ((statsData?.stats?.thoughtsCount || 0) + (statsData?.stats?.savedSparksCount || 0) + (statsData?.stats?.perspectivesCount || 0)) / 3)}%` 
+                                width: `${Math.min(100, ((statsData?.stats?.thoughtsCount || 0) + (statsData?.stats?.savedSparksCount || 0) + (statsData?.stats?.perspectivesCount || 0)) * 0.5)}%` 
                               }}
                             >
                               <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-pulse"></div>
                             </div>
                           </div>
                           <span className="text-sm font-bold bg-gradient-to-r from-red-600 to-orange-600 bg-clip-text text-transparent">
-                            {Math.min(100, Math.round(((statsData?.stats?.thoughtsCount || 0) + (statsData?.stats?.savedSparksCount || 0) + (statsData?.stats?.perspectivesCount || 0)) / 3))}%
+                            {Math.min(100, Math.round(((statsData?.stats?.thoughtsCount || 0) + (statsData?.stats?.savedSparksCount || 0) + (statsData?.stats?.perspectivesCount || 0)) * 0.5))}%
                           </span>
                         </div>
                       </div>
