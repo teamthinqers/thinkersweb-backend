@@ -14,6 +14,7 @@ import {
   categories,
   vectorEmbeddings,
   conversationSessions,
+  thoughts,
   insertDotSchema,
   insertWheelSchema,
   insertChakraSchema
@@ -41,7 +42,7 @@ import {
   unregisterWhatsAppUser,
   getWhatsAppStatus,
 } from "./whatsapp";
-import { eq, inArray, and, lt, desc, sql } from "drizzle-orm";
+import { eq, inArray, and, lt, desc, sql, count } from "drizzle-orm";
 import twilio from "twilio";
 import multer from "multer";
 import path from "path";
