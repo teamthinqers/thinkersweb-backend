@@ -628,7 +628,16 @@ export default function FloatingDot({ onClick, currentPage }: FloatingDotProps) 
                       <span className="text-xs font-semibold text-white">Import</span>
                     </button>
 
-                    {/* 3. WhatsApp */}
+                    {/* 3. ChatGPT Import - White bg, Black icon */}
+                    <button
+                      onClick={() => toast({ title: "Coming Soon", description: "ChatGPT import will be available soon!" })}
+                      className="flex flex-col items-center gap-2 p-4 rounded-xl border-2 border-gray-300 bg-white hover:bg-gray-50 transition-all group shadow-sm hover:shadow-md"
+                    >
+                      <SiOpenai className="h-6 w-6 text-black" />
+                      <span className="text-xs font-semibold text-black">Import</span>
+                    </button>
+
+                    {/* 4. WhatsApp */}
                     <button
                       onClick={() => toast({ title: "Coming Soon", description: "WhatsApp integration will be available soon!" })}
                       className="flex flex-col items-center gap-2 p-4 rounded-xl border-2 border-[#25D366] bg-[#25D366] hover:bg-[#1EBE5B] transition-all group shadow-sm hover:shadow-md"
@@ -637,7 +646,7 @@ export default function FloatingDot({ onClick, currentPage }: FloatingDotProps) 
                       <span className="text-xs font-semibold text-white">WhatsApp</span>
                     </button>
 
-                    {/* 4. AI Help - Lighter Purple */}
+                    {/* 5. AI Help - Lighter Purple */}
                     <button
                       onClick={() => toast({ title: "Coming Soon", description: "AI assistance will be available soon!" })}
                       className="flex flex-col items-center gap-2 p-4 rounded-xl border-2 border-[#A855F7] bg-[#A855F7] hover:bg-[#9333EA] transition-all group shadow-sm hover:shadow-md"
@@ -647,15 +656,6 @@ export default function FloatingDot({ onClick, currentPage }: FloatingDotProps) 
                         <div className="absolute inset-0 bg-purple-300 rounded-full blur-md opacity-30 group-hover:opacity-50 transition-opacity"></div>
                       </div>
                       <span className="text-xs font-semibold text-white">AI Help</span>
-                    </button>
-
-                    {/* 5. ChatGPT Import - White bg, Black icon */}
-                    <button
-                      onClick={() => toast({ title: "Coming Soon", description: "ChatGPT import will be available soon!" })}
-                      className="flex flex-col items-center gap-2 p-4 rounded-xl border-2 border-gray-300 bg-white hover:bg-gray-50 transition-all group shadow-sm hover:shadow-md"
-                    >
-                      <SiOpenai className="h-6 w-6 text-black" />
-                      <span className="text-xs font-semibold text-black">Import</span>
                     </button>
                   </div>
                 )}
