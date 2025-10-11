@@ -1,7 +1,7 @@
 import { useState, ReactNode, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Menu, Brain, Users, User, Settings, LogOut, Sparkles, UsersRound, Search, Bell } from 'lucide-react';
+import { Menu, Brain, Users, User, Settings, LogOut, Sparkles, UsersRound, Search, Bell, CheckCheck, MessageSquare, FileText } from 'lucide-react';
 import { Link, useLocation } from 'wouter';
 import { useAuth } from '@/hooks/use-auth-new';
 import { useToast } from '@/hooks/use-toast';
@@ -12,7 +12,10 @@ import {
   SheetContent,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation } from '@tanstack/react-query';
+import { queryClient, apiRequest } from '@/lib/queryClient';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { formatDistanceToNow } from 'date-fns';
 
 interface SharedAuthLayoutProps {
   children: ReactNode;
@@ -36,6 +39,8 @@ export default function SharedAuthLayout({ children }: SharedAuthLayoutProps) {
   const [showSearchResults, setShowSearchResults] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(-1);
   const searchRef = useRef<HTMLDivElement>(null);
+  const [showNotifications, setShowNotifications] = useState(false);
+  const notificationsRef = useRef<HTMLDivElement>(null);
 
   const isOnSocial = location === '/social';
   const isOnMyNeura = location === '/myneura';
@@ -91,6 +96,93 @@ export default function SharedAuthLayout({ children }: SharedAuthLayoutProps) {
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
+
+  // Close notifications when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (notificationsRef.current && !notificationsRef.current.contains(event.target as Node)) {
+        setShowNotifications(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  // Mutation to mark notification as read
+  const markAsReadMutation = useMutation({
+    mutationFn: async (notificationId: number) => {
+      return apiRequest(`/api/notifications/${notificationId}/read`, {
+        method: 'PATCH',
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/notifications'] });
+    },
+  });
+
+  // Mutation to mark all notifications as read
+  const markAllAsReadMutation = useMutation({
+    mutationFn: async () => {
+      return apiRequest('/api/notifications/read-all', {
+        method: 'PATCH',
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/notifications'] });
+    },
+  });
+
+  const handleNotificationClick = (notification: any) => {
+    // Mark as read
+    if (!notification.isRead) {
+      markAsReadMutation.mutate(notification.id);
+    }
+    
+    // Store thoughtId in sessionStorage and navigate to social page
+    sessionStorage.setItem('openThoughtId', notification.thoughtId.toString());
+    setLocation('/social');
+    setShowNotifications(false);
+  };
+
+  const getNotificationMessage = (notification: any) => {
+    const actorIds = JSON.parse(notification.actorIds);
+    const actorNames = notification.actors.map((actor: any) => actor.fullName || 'Someone');
+    
+    let message = '';
+    if (actorNames.length === 1) {
+      message = actorNames[0];
+    } else if (actorNames.length === 2) {
+      message = `${actorNames[0]} and ${actorNames[1]}`;
+    } else {
+      const remainingCount = actorNames.length - 1;
+      message = `${actorNames[0]} and ${remainingCount} other${remainingCount > 1 ? 's' : ''}`;
+    }
+
+    switch (notification.notificationType) {
+      case 'new_thought':
+        return `${message} shared a new thought`;
+      case 'new_perspective':
+        return `${message} shared a perspective`;
+      case 'spark_saved':
+        return `${message} saved a thought as a spark`;
+      default:
+        return message;
+    }
+  };
+
+  const getNotificationIcon = (type: string) => {
+    switch (type) {
+      case 'new_thought':
+        return <FileText className="w-4 h-4" />;
+      case 'new_perspective':
+        return <MessageSquare className="w-4 h-4" />;
+      case 'spark_saved':
+        return <Sparkles className="w-4 h-4" />;
+      default:
+        return <Bell className="w-4 h-4" />;
+    }
+  };
 
   const handleProfileClick = (userId: number) => {
     setLocation(`/user/${userId}`);
@@ -355,11 +447,12 @@ export default function SharedAuthLayout({ children }: SharedAuthLayoutProps) {
               </Button>
             </Link>
 
-            {/* Notifications Bell */}
-            <Link href="/notifications">
+            {/* Notifications Bell with Dropdown */}
+            <div className="relative" ref={notificationsRef}>
               <Button
                 variant="ghost"
                 size="sm"
+                onClick={() => setShowNotifications(!showNotifications)}
                 className="relative p-2.5 hover:bg-gradient-to-br hover:from-amber-50 hover:to-yellow-50 border-2 border-yellow-500 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl"
                 style={{
                   background: 'linear-gradient(145deg, #fef3c7, #fde68a)',
@@ -388,7 +481,77 @@ export default function SharedAuthLayout({ children }: SharedAuthLayoutProps) {
                   </span>
                 )}
               </Button>
-            </Link>
+
+              {/* Notifications Dropdown Panel */}
+              {showNotifications && (
+                <div className="absolute right-0 top-full mt-2 w-96 bg-white rounded-lg shadow-2xl border border-gray-200 z-[9999]">
+                  {/* Header */}
+                  <div className="flex items-center justify-between p-4 border-b border-gray-200">
+                    <h3 className="font-semibold text-gray-900">Notifications</h3>
+                    {notificationsData && notificationsData.unreadCount > 0 && (
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => markAllAsReadMutation.mutate()}
+                        className="text-xs text-amber-600 hover:text-amber-700 hover:bg-amber-50 h-7"
+                      >
+                        <CheckCheck className="w-3 h-3 mr-1" />
+                        Mark all read
+                      </Button>
+                    )}
+                  </div>
+
+                  {/* Notifications List */}
+                  <ScrollArea className="h-[400px]">
+                    {notificationsData && notificationsData.notifications.length > 0 ? (
+                      <div className="divide-y divide-gray-100">
+                        {notificationsData.notifications.map((notification: any) => (
+                          <button
+                            key={notification.id}
+                            onClick={() => handleNotificationClick(notification)}
+                            className={`w-full p-4 text-left transition-colors hover:bg-gray-50 ${
+                              !notification.isRead ? 'bg-amber-50/30' : ''
+                            }`}
+                          >
+                            <div className="flex items-start gap-3">
+                              <div className={`flex-shrink-0 p-2 rounded-full ${
+                                notification.notificationType === 'new_thought' ? 'bg-blue-100 text-blue-600' :
+                                notification.notificationType === 'new_perspective' ? 'bg-purple-100 text-purple-600' :
+                                'bg-amber-100 text-amber-600'
+                              }`}>
+                                {getNotificationIcon(notification.notificationType)}
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                <p className="text-sm text-gray-900 mb-1">
+                                  {getNotificationMessage(notification)}
+                                </p>
+                                <p className="text-xs text-gray-500 truncate mb-1">
+                                  "{notification.thoughtHeading}"
+                                </p>
+                                <p className="text-xs text-gray-400">
+                                  {formatDistanceToNow(new Date(notification.createdAt), { addSuffix: true })}
+                                </p>
+                              </div>
+                              {!notification.isRead && (
+                                <div className="flex-shrink-0 w-2 h-2 bg-amber-500 rounded-full mt-2"></div>
+                              )}
+                            </div>
+                          </button>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="text-center py-12">
+                        <Bell className="h-12 w-12 text-gray-300 mx-auto mb-3" />
+                        <p className="text-gray-500 text-sm">No notifications yet</p>
+                        <p className="text-gray-400 text-xs mt-1">
+                          You'll be notified of all social engagement and activity
+                        </p>
+                      </div>
+                    )}
+                  </ScrollArea>
+                </div>
+              )}
+            </div>
 
             {/* User Avatar */}
             {user && (
