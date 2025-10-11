@@ -1,7 +1,7 @@
 import { useState, ReactNode, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Menu, Brain, Users, User, Settings, LogOut, Sparkles, UsersRound, Search } from 'lucide-react';
+import { Menu, Brain, Users, User, Settings, LogOut, Sparkles, UsersRound, Search, Bell } from 'lucide-react';
 import { Link, useLocation } from 'wouter';
 import { useAuth } from '@/hooks/use-auth-new';
 import { useToast } from '@/hooks/use-toast';
@@ -12,6 +12,7 @@ import {
   SheetContent,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import { useQuery } from '@tanstack/react-query';
 
 interface SharedAuthLayoutProps {
   children: ReactNode;
@@ -39,6 +40,17 @@ export default function SharedAuthLayout({ children }: SharedAuthLayoutProps) {
   const isOnSocial = location === '/social';
   const isOnMyNeura = location === '/myneura';
   const isOnMyDotSpark = location === '/my-dotspark';
+
+  // Fetch notifications unread count
+  const { data: notificationsData } = useQuery<{ 
+    success: boolean; 
+    notifications: any[]; 
+    unreadCount: number 
+  }>({
+    queryKey: ['/api/notifications'],
+    enabled: !!user,
+    refetchInterval: 30000, // Refetch every 30 seconds
+  });
 
   // Debounced search
   useEffect(() => {
@@ -339,6 +351,23 @@ export default function SharedAuthLayout({ children }: SharedAuthLayoutProps) {
                 <span className="text-white font-medium">My Neura</span>
                 {isOnMyNeura && (
                   <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-400 rounded-full animate-pulse shadow-lg border-2 border-white"></div>
+                )}
+              </Button>
+            </Link>
+
+            {/* Notifications Bell */}
+            <Link href="/notifications">
+              <Button
+                variant="ghost"
+                size="sm"
+                className="relative p-2 hover:bg-amber-100/70 rounded-lg transition-all duration-300"
+                title="Notifications"
+              >
+                <Bell className="h-5 w-5 text-amber-700" />
+                {notificationsData && notificationsData.unreadCount > 0 && (
+                  <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-semibold">
+                    {notificationsData.unreadCount > 9 ? '9+' : notificationsData.unreadCount}
+                  </span>
                 )}
               </Button>
             </Link>
