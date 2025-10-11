@@ -133,6 +133,21 @@ export const sparks = pgTable("sparks", {
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
+// === NOTIFICATIONS SYSTEM (LinkedIn-style activity notifications) ===
+
+// Notifications - Track social activity and updates
+export const notifications = pgTable("notifications", {
+  id: serial("id").primaryKey(),
+  recipientId: integer("recipient_id").references(() => users.id).notNull(), // Who receives the notification
+  actorIds: text("actor_ids").notNull(), // JSON array of user IDs who triggered this (for grouping)
+  notificationType: text("notification_type").notNull(), // 'new_thought', 'new_perspective', 'spark_saved'
+  thoughtId: integer("thought_id").references(() => thoughts.id).notNull(), // Related thought
+  thoughtHeading: text("thought_heading").notNull(), // Cached for display
+  isRead: boolean("is_read").default(false).notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(), // For grouping updates
+});
+
 // === SEPARATE TABLES FOR VECTOR DB MIGRATION ===
 
 // 1. DOTS table - Individual insights with three-layer structure
@@ -349,6 +364,17 @@ export const sparksRelations = relations(sparks, ({ one }) => ({
   }),
 }));
 
+export const notificationsRelations = relations(notifications, ({ one }) => ({
+  recipient: one(users, {
+    fields: [notifications.recipientId],
+    references: [users.id],
+  }),
+  thought: one(thoughts, {
+    fields: [notifications.thoughtId],
+    references: [thoughts.id],
+  }),
+}));
+
 // === VALIDATION SCHEMAS ===
 
 // New thought system schemas
@@ -437,6 +463,20 @@ export const sparksSelectSchema = createSelectSchema(sparks);
 export type Spark = z.infer<typeof sparksSelectSchema>;
 export type SparkInsert = z.infer<typeof sparksInsertSchema>;
 export const perspectivesParticipantsSelectSchema = createSelectSchema(perspectivesParticipants);
+
+// Notifications schemas
+export const notificationsInsertSchema = createInsertSchema(notifications, {
+  actorIds: (schema) => schema.min(1, "Actor IDs required"),
+  thoughtHeading: (schema) => schema.min(1, "Thought heading required"),
+  notificationType: (schema) => schema.refine(
+    val => ['new_thought', 'new_perspective', 'spark_saved'].includes(val),
+    "Invalid notification type"
+  ),
+});
+
+export const notificationsSelectSchema = createSelectSchema(notifications);
+export type Notification = z.infer<typeof notificationsSelectSchema>;
+export type NotificationInsert = z.infer<typeof notificationsInsertSchema>;
 
 // Legacy tables for backward compatibility (keeping minimal structure)
 export const entries = pgTable("entries", {
