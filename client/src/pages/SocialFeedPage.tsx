@@ -84,7 +84,7 @@ export default function SocialFeedPage() {
   });
 
   // Fetch stats for social thoughts
-  const { data: statsData } = useQuery<{ success: boolean; stats: { thoughtsCount: number; savedSparksCount: number } }>({
+  const { data: statsData } = useQuery<{ success: boolean; stats: { thoughtsCount: number; savedSparksCount: number; perspectivesCount: number } }>({
     queryKey: ['/api/thoughts/stats'],
     enabled: !!user,
   });
@@ -128,6 +128,7 @@ export default function SocialFeedPage() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [`/api/thoughts/${selectedDot?.id}/perspectives`] });
+      queryClient.invalidateQueries({ queryKey: ['/api/thoughts/stats'] });
       setPerspectiveInput('');
       // Scroll to bottom after posting
       setTimeout(() => {
@@ -186,6 +187,7 @@ export default function SocialFeedPage() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [`/api/thoughts/${selectedDot?.id}/sparks`] });
       queryClient.invalidateQueries({ queryKey: ['/api/thoughts/user/sparks-count'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/thoughts/stats'] });
       setSparkNote("");
       toast({
         title: "Spark saved!",
@@ -385,14 +387,14 @@ export default function SocialFeedPage() {
                             <div 
                               className="absolute inset-y-0 left-0 bg-gradient-to-r from-red-500 via-orange-500 to-amber-500 rounded-full transition-all duration-1000 ease-out"
                               style={{ 
-                                width: `${Math.min(100, ((statsData?.stats?.thoughtsCount || 0) + (statsData?.stats?.savedSparksCount || 0)) / 2)}%` 
+                                width: `${Math.min(100, ((statsData?.stats?.thoughtsCount || 0) + (statsData?.stats?.savedSparksCount || 0) + (statsData?.stats?.perspectivesCount || 0)) / 3)}%` 
                               }}
                             >
                               <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-pulse"></div>
                             </div>
                           </div>
                           <span className="text-sm font-bold bg-gradient-to-r from-red-600 to-orange-600 bg-clip-text text-transparent">
-                            {Math.min(100, ((statsData?.stats?.thoughtsCount || 0) + (statsData?.stats?.savedSparksCount || 0)) / 2)}%
+                            {Math.min(100, Math.round(((statsData?.stats?.thoughtsCount || 0) + (statsData?.stats?.savedSparksCount || 0) + (statsData?.stats?.perspectivesCount || 0)) / 3))}%
                           </span>
                         </div>
                       </div>

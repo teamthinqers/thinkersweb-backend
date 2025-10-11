@@ -712,7 +712,7 @@ router.get('/neural-strength', async (req, res) => {
 
 /**
  * GET /api/thoughts/stats
- * Get statistics for social thoughts and saved sparks
+ * Get statistics for collective social activity (all users)
  * REQUIRES AUTHENTICATION
  */
 router.get('/stats', async (req, res) => {
@@ -731,16 +731,22 @@ router.get('/stats', async (req, res) => {
         eq(thoughts.sharedToSocial, true)
       ));
 
-    // Count total saved sparks for this user
+    // Count total sparks (all users, all social thoughts)
     const [{ count: savedSparksCount }] = await db.select({ count: sql<number>`count(*)` })
-      .from(sparks)
-      .where(eq(sparks.userId, userId));
+      .from(sparks);
+
+    // Count total perspectives (all users, all social threads)
+    const [{ count: perspectivesCount }] = await db.select({ count: sql<number>`count(*)` })
+      .from(perspectivesMessages)
+      .innerJoin(perspectivesThreads, eq(perspectivesMessages.threadId, perspectivesThreads.id))
+      .where(eq(perspectivesThreads.threadType, 'social'));
 
     res.json({
       success: true,
       stats: {
         thoughtsCount,
         savedSparksCount,
+        perspectivesCount,
       },
     });
 

@@ -106,6 +106,7 @@ export default function FloatingDot({ onClick, currentPage }: FloatingDotProps) 
       // Invalidate queries to refresh the data
       await queryClient.invalidateQueries({ queryKey: ['/api/thoughts/myneura'] });
       await queryClient.invalidateQueries({ queryKey: ['/api/thoughts'] });
+      await queryClient.invalidateQueries({ queryKey: ['/api/thoughts/stats'] });
 
       toast({
         title: "Thought saved!",
