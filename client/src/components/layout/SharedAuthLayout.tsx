@@ -246,7 +246,7 @@ export default function SharedAuthLayout({ children }: SharedAuthLayoutProps) {
                 
                 {/* Search Results Dropdown */}
                 {showSearchResults && (
-                  <div className="absolute top-full mt-2 w-full bg-white rounded-lg shadow-lg border border-gray-200 max-h-96 overflow-y-auto z-50">
+                  <div className="absolute top-full mt-2 w-full bg-white rounded-lg shadow-lg border border-gray-200 max-h-96 overflow-y-auto z-[9999]">
                     {searchResults.length > 0 ? (
                       <div className="py-1">
                         {searchResults.map((result, index) => (
