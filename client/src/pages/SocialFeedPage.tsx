@@ -636,12 +636,13 @@ export default function SocialFeedPage() {
                               size="sm"
                               className="text-amber-600 hover:text-amber-700 hover:bg-amber-50 p-2"
                               onClick={() => {
-                                setEditFormData({
-                                  heading: selectedDot.heading,
-                                  summary: selectedDot.summary,
-                                  anchor: selectedDot.anchor || ''
-                                });
-                                setIsEditDialogOpen(true);
+                                setSelectedDot(null);
+                                window.dispatchEvent(new CustomEvent('openFloatingDot', {
+                                  detail: {
+                                    thought: selectedDot,
+                                    targetNeura: 'social'
+                                  }
+                                }));
                               }}
                               title="Edit thought"
                             >
