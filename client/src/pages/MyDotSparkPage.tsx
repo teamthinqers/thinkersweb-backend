@@ -146,10 +146,15 @@ export default function MyDotSparkPage() {
               </Avatar>
             </Link>
             <div className="flex-1">
-              <div className="flex items-center gap-3">
-                <h1 className="text-3xl font-bold bg-gradient-to-r from-amber-700 to-orange-700 bg-clip-text text-transparent">
-                  {(user as any)?.displayName || (user as any)?.fullName || 'User'}
-                </h1>
+              <div className="flex items-start gap-3">
+                <div>
+                  <h1 className="text-3xl font-bold bg-gradient-to-r from-amber-700 to-orange-700 bg-clip-text text-transparent leading-tight">
+                    {(user as any)?.displayName || (user as any)?.fullName || 'User'}
+                  </h1>
+                  <p className="text-amber-700 text-base mt-0.5">
+                    {(user as any)?.linkedinHeadline || 'Professional Headline'}
+                  </p>
+                </div>
                 <Link href="/profile">
                   <Button variant="ghost" size="icon" className="h-8 w-8 text-amber-600 hover:text-amber-700 hover:bg-amber-100">
                     <Pencil className="h-4 w-4" />
@@ -160,9 +165,6 @@ export default function MyDotSparkPage() {
                   <BadgeDisplay badges={allBadgesForDisplay} />
                 )}
               </div>
-              <p className="text-amber-700 text-base">
-                {(user as any)?.linkedinHeadline || 'Professional Headline'}
-              </p>
             </div>
           </div>
 
