@@ -630,6 +630,27 @@ router.post('/:thoughtId/share-to-social', async (req, res) => {
       .where(eq(thoughts.id, thoughtId))
       .returning();
 
+    // Award Thought Investor badge on first share to social
+    try {
+      const sharedCount = await db.select({ count: sql`count(*)::int` })
+        .from(thoughts)
+        .where(and(
+          eq(thoughts.userId, userId),
+          eq(thoughts.sharedToSocial, true)
+        ));
+
+      const count = sharedCount[0]?.count || 0;
+
+      // If this is the user's first shared thought, award Thought Investor badge
+      if (count === 1 && (req.app as any).awardBadge) {
+        await (req.app as any).awardBadge(userId, 'thought_investor');
+        console.log(`🏆 Thought Investor badge awarded to user ${userId} for first shared thought`);
+      }
+    } catch (error) {
+      console.error('Error awarding Thought Investor badge:', error);
+      // Non-fatal error, continue
+    }
+
     res.json({
       success: true,
       thought: updated,

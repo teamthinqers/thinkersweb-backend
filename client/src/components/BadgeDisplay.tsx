@@ -1,4 +1,4 @@
-import { Info, Lock, Shield, Crown, Award, Star } from 'lucide-react';
+import { Info, Lock, Shield, Crown, Award, Star, Gem } from 'lucide-react';
 import { Badge, UserBadge } from '@shared/schema';
 import {
   Popover,
@@ -39,6 +39,16 @@ function EliteBadgeIcon({ badge, earned }: { badge: BadgeWithStatus; earned: boo
             <Crown className="w-full h-full" strokeWidth={1.5} />
             <div className="absolute inset-0 flex items-center justify-center">
               <SparkIcon className="w-5 h-5 mt-2" fill={earned ? '#f59e0b' : '#9ca3af'} />
+            </div>
+          </div>
+        );
+      case 'thought_investor':
+        return (
+          <div className="relative w-full h-full flex items-center justify-center">
+            {/* Thought Investor: Precious Gem/Diamond */}
+            <Gem className="w-full h-full" strokeWidth={1.5} />
+            <div className="absolute inset-0 flex items-center justify-center">
+              <SparkIcon className="w-4 h-4 mt-1" fill={earned ? '#f59e0b' : '#9ca3af'} />
             </div>
           </div>
         );
