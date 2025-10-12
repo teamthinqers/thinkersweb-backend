@@ -2716,7 +2716,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
             wheels: wheelsCount?.count || 0,
             chakras: chakrasCount?.count || 0,
             thoughts: neuralStrength.stats.thoughtsCount,
-            savedSparks: neuralStrength.stats.savedSparksCount,
+            savedSparks: neuralStrength.stats.userSparksCount, // Fixed: use userSparksCount for actual sparks
             perspectives: neuralStrength.stats.perspectivesCount,
           },
           recentActivity,
