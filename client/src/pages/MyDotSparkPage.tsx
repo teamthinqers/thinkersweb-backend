@@ -54,11 +54,14 @@ export default function MyDotSparkPage() {
     enabled: !!user,
   });
 
-  // Fetch user's badges with status
+  // Fetch ALL badges with earned/locked status for gamification
   const { data: badgesData } = useQuery<{ success: boolean; badges: any[] }>({
     queryKey: ['/api/users', (user as any)?.id, 'badges'],
     enabled: !!(user as any)?.id,
   });
+
+  // Always show all badges (earned and locked) for gamification
+  const allBadgesForDisplay = badgesData?.badges || [];
 
   // Fetch pending badge notifications
   const { data: pendingBadgesData } = useQuery<{ success: boolean; badges: any[] }>({
@@ -70,9 +73,14 @@ export default function MyDotSparkPage() {
   // Mark badge as notified mutation
   const markBadgeNotified = useMutation({
     mutationFn: async (userBadgeId: number) => {
-      return apiRequest(`/api/badges/${userBadgeId}/notified`, {
+      const response = await fetch(`/api/badges/${userBadgeId}/notified`, {
         method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
       });
+      if (!response.ok) throw new Error('Failed to mark badge as notified');
+      return response.json();
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/badges/pending'] });
@@ -145,9 +153,9 @@ export default function MyDotSparkPage() {
                     <Pencil className="h-4 w-4" />
                   </Button>
                 </Link>
-                {/* Badges Display */}
-                {badgesData?.badges && badgesData.badges.length > 0 && (
-                  <BadgeDisplay badges={badgesData.badges} />
+                {/* Badges Display - Always show all badges for gamification */}
+                {allBadgesForDisplay.length > 0 && (
+                  <BadgeDisplay badges={allBadgesForDisplay} />
                 )}
               </div>
               <p className="text-amber-700 mt-1">
