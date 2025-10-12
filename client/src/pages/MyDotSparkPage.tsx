@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
-import { Sparkles, Trophy, Target, Lightbulb, TrendingUp, ArrowRight, Brain, Users, Plus, FileText, Circle, Hexagon } from 'lucide-react';
+import { Sparkles, Trophy, Target, Lightbulb, TrendingUp, ArrowRight, Brain, Users, Plus, FileText, Circle, Hexagon, Pencil } from 'lucide-react';
 import { Link } from 'wouter';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useAuth } from '@/hooks/use-auth-new';
@@ -66,7 +66,7 @@ export default function MyDotSparkPage() {
     <SharedAuthLayout>
       <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-amber-100">
         <div className="container mx-auto px-4 py-8 max-w-7xl">
-        {/* Welcome Section */}
+        {/* Profile Section */}
         <div className="mb-8">
           <div className="flex items-center gap-4 mb-6">
             <Avatar className="h-16 w-16 border-4 border-amber-200 shadow-xl">
@@ -75,12 +75,19 @@ export default function MyDotSparkPage() {
                 {(user as any)?.displayName?.[0]?.toUpperCase() || (user as any)?.fullName?.[0]?.toUpperCase() || 'U'}
               </AvatarFallback>
             </Avatar>
-            <div>
+            <div className="flex-1">
               <h1 className="text-3xl font-bold bg-gradient-to-r from-amber-700 to-orange-700 bg-clip-text text-transparent">
-                Welcome back, {(user as any)?.displayName || (user as any)?.fullName || 'there'}!
+                {(user as any)?.displayName || (user as any)?.fullName || 'User'}
               </h1>
-              <p className="text-amber-700 mt-1">Your Personal Intelligence Hub</p>
+              <p className="text-amber-700 mt-1">
+                {(user as any)?.linkedinHeadline || 'Professional Headline'}
+              </p>
             </div>
+            <Link href="/profile">
+              <Button variant="ghost" size="icon" className="text-amber-600 hover:text-amber-700 hover:bg-amber-100">
+                <Pencil className="h-5 w-5" />
+              </Button>
+            </Link>
           </div>
 
           {/* Neural Strength Progress */}
