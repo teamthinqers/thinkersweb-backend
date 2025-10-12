@@ -8,7 +8,7 @@ import {
   Brain, Users, Heart,
   Cloud, List as ListIcon, Loader2, Maximize, Minimize, RefreshCw,
   PenTool, Bookmark, Sparkles, Send, Zap, Lightbulb, MoreHorizontal,
-  Pencil, Trash2
+  Pencil, Trash2, Eye
 } from "lucide-react";
 import { SiWhatsapp, SiLinkedin, SiOpenai } from 'react-icons/si';
 import { useAuth } from "@/hooks/use-auth-new";
@@ -410,6 +410,26 @@ export default function SocialFeedPage() {
                       </Button>
                       <div className="px-2.5 py-1 bg-gradient-to-br from-yellow-50 to-amber-50 rounded-lg border border-yellow-200/50">
                         <span className="text-sm font-semibold text-yellow-700">{collectiveGrowth.sparksCount}</span>
+                      </div>
+                    </div>
+
+                    {/* Perspectives - button and count */}
+                    <div className="flex items-center gap-2">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="group flex items-center gap-2 rounded-lg px-3 py-2 bg-gradient-to-br from-purple-50 to-indigo-50 hover:from-purple-100 hover:to-indigo-100 border-l-2 border-purple-500 transition-all duration-300 relative"
+                        title="Perspectives"
+                      >
+                        <div className="relative">
+                          <Eye className="h-4 w-4 text-purple-600 group-hover:scale-110 transition-transform" />
+                        </div>
+                        <span className="text-sm font-medium text-purple-700">
+                          Perspectives
+                        </span>
+                      </Button>
+                      <div className="px-2.5 py-1 bg-gradient-to-br from-purple-50 to-indigo-50 rounded-lg border border-purple-200/50">
+                        <span className="text-sm font-semibold text-purple-700">{collectiveGrowth.perspectivesCount}</span>
                       </div>
                     </div>
                   </div>
