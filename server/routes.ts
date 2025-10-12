@@ -17,7 +17,9 @@ import {
   thoughts,
   insertDotSchema,
   insertWheelSchema,
-  insertChakraSchema
+  insertChakraSchema,
+  badges,
+  userBadges
 } from "@shared/schema";
 import { processEntryFromChat, generateChatResponse, type Message } from "./chat";
 import { connectionsService } from "./connections";
@@ -242,6 +244,161 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ error: 'Failed to fetch user profile' });
     }
   });
+
+  // === BADGE SYSTEM ROUTES ===
+
+  // Get all available badges
+  app.get(`${apiPrefix}/badges`, async (req: Request, res: Response) => {
+    try {
+      const allBadges = await db.query.badges.findMany({
+        orderBy: (badges, { asc }) => [asc(badges.tier), asc(badges.createdAt)],
+      });
+      
+      res.json({ success: true, badges: allBadges });
+    } catch (error) {
+      console.error('Error fetching badges:', error);
+      res.status(500).json({ error: 'Failed to fetch badges' });
+    }
+  });
+
+  // Get user's badges with status (earned/locked)
+  app.get(`${apiPrefix}/users/:userId/badges`, async (req: Request, res: Response) => {
+    try {
+      const userId = parseInt(req.params.userId);
+      
+      if (isNaN(userId)) {
+        return res.status(400).json({ error: 'Invalid user ID' });
+      }
+
+      // Get all badges
+      const allBadges = await db.query.badges.findMany({
+        orderBy: (badges, { asc }) => [asc(badges.tier), asc(badges.createdAt)],
+      });
+
+      // Get user's earned badges
+      const earnedBadges = await db.query.userBadges.findMany({
+        where: eq(userBadges.userId, userId),
+        with: {
+          badge: true,
+        },
+      });
+
+      // Create a map of earned badge IDs
+      const earnedBadgeIds = new Set(earnedBadges.map(ub => ub.badgeId));
+      const earnedBadgeMap = new Map(earnedBadges.map(ub => [ub.badgeId, ub.earnedAt]));
+
+      // Combine all badges with earned status
+      const badgesWithStatus = allBadges.map(badge => ({
+        ...badge,
+        earned: earnedBadgeIds.has(badge.id),
+        earnedAt: earnedBadgeMap.get(badge.id) || null,
+      }));
+
+      res.json({ success: true, badges: badgesWithStatus });
+    } catch (error) {
+      console.error('Error fetching user badges:', error);
+      res.status(500).json({ error: 'Failed to fetch user badges' });
+    }
+  });
+
+  // Get user's pending badge notifications
+  app.get(`${apiPrefix}/badges/pending`, requireAuth, async (req: AuthenticatedRequest, res: Response) => {
+    try {
+      const userId = req.user?.id;
+      
+      if (!userId) {
+        return res.status(401).json({ error: 'Authentication required' });
+      }
+
+      // Get unnotified badges
+      const pendingBadges = await db.query.userBadges.findMany({
+        where: and(
+          eq(userBadges.userId, userId),
+          eq(userBadges.notified, false)
+        ),
+        with: {
+          badge: true,
+        },
+      });
+
+      res.json({ success: true, badges: pendingBadges });
+    } catch (error) {
+      console.error('Error fetching pending badges:', error);
+      res.status(500).json({ error: 'Failed to fetch pending badges' });
+    }
+  });
+
+  // Mark badge as notified
+  app.patch(`${apiPrefix}/badges/:userBadgeId/notified`, requireAuth, async (req: AuthenticatedRequest, res: Response) => {
+    try {
+      const userId = req.user?.id;
+      const userBadgeId = parseInt(req.params.userBadgeId);
+      
+      if (!userId) {
+        return res.status(401).json({ error: 'Authentication required' });
+      }
+
+      if (isNaN(userBadgeId)) {
+        return res.status(400).json({ error: 'Invalid badge ID' });
+      }
+
+      // Update badge notification status
+      await db.update(userBadges)
+        .set({ notified: true })
+        .where(and(
+          eq(userBadges.id, userBadgeId),
+          eq(userBadges.userId, userId)
+        ));
+
+      res.json({ success: true });
+    } catch (error) {
+      console.error('Error marking badge as notified:', error);
+      res.status(500).json({ error: 'Failed to update badge status' });
+    }
+  });
+
+  // Award a badge to a user (internal helper function, can also be used via API)
+  async function awardBadge(userId: number, badgeKey: string): Promise<boolean> {
+    try {
+      // Find the badge by key
+      const badge = await db.query.badges.findFirst({
+        where: eq(badges.badgeKey, badgeKey),
+      });
+
+      if (!badge) {
+        console.error(`Badge with key "${badgeKey}" not found`);
+        return false;
+      }
+
+      // Check if user already has this badge
+      const existing = await db.query.userBadges.findFirst({
+        where: and(
+          eq(userBadges.userId, userId),
+          eq(userBadges.badgeId, badge.id)
+        ),
+      });
+
+      if (existing) {
+        return false; // Already has badge
+      }
+
+      // Award the badge
+      await db.insert(userBadges).values({
+        userId,
+        badgeId: badge.id,
+        notified: false,
+      });
+
+      console.log(`Badge "${badgeKey}" awarded to user ${userId}`);
+      return true;
+    } catch (error) {
+      console.error(`Error awarding badge "${badgeKey}" to user ${userId}:`, error);
+      return false;
+    }
+  }
+
+  // Expose awardBadge function for use in other routes
+  (app as any).awardBadge = awardBadge;
   
   // Setup DotSpark activation routes
   setupDotSparkRoutes(app);
