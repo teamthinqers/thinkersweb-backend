@@ -566,6 +566,7 @@ export default function MyNeuraPage() {
   const [showRecentOnly, setShowRecentOnly] = useState(false);
   const [viewMode, setViewMode] = useState<'cloud' | 'feed'>('cloud');
   const [showStrengthInfo, setShowStrengthInfo] = useState(false);
+  const [cognitiveIdentityConfigured, setCognitiveIdentityConfigured] = useState(false);
 
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -647,6 +648,12 @@ export default function MyNeuraPage() {
     });
   };
 
+  // Check if cognitive identity is configured
+  useEffect(() => {
+    const isConfigured = localStorage.getItem('cognitiveIdentityConfigured') === 'true';
+    setCognitiveIdentityConfigured(isConfigured);
+  }, []);
+
   // Load and filter thoughts
   useEffect(() => {
     if (myNeuraThoughts && (myNeuraThoughts as any).thoughts) {
@@ -692,7 +699,7 @@ export default function MyNeuraPage() {
                 </Button>
                 <div className="relative px-2.5 py-2.5 bg-gradient-to-br from-purple-50 to-violet-50 rounded-lg border border-purple-200/50 transition-all duration-300 hover:border-purple-300 hover:shadow-md cursor-pointer">
                   {/* Status Indicator */}
-                  <div className={`absolute -top-1 -right-1 h-3 w-3 rounded-full border-2 border-white ${neuralStrength?.milestones?.cognitiveIdentityCompleted ? 'bg-green-500' : 'bg-red-500'}`}></div>
+                  <div className={`absolute -top-1 -right-1 h-3 w-3 rounded-full border-2 border-white ${cognitiveIdentityConfigured ? 'bg-green-500' : 'bg-red-500'}`}></div>
                   <Fingerprint className="h-5 w-5 text-purple-600" />
                 </div>
               </Link>
