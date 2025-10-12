@@ -114,20 +114,13 @@ export default function BadgeDisplay({ badges }: BadgeDisplayProps) {
                   
                   {/* Badge Title */}
                   <div className="text-center">
-                    <p className={`text-xs font-bold uppercase tracking-wider transition-colors ${
+                    <p className={`text-xs font-bold transition-colors ${
                       badge.earned 
                         ? 'text-amber-700 group-hover:text-amber-800' 
                         : 'text-gray-500 group-hover:text-gray-600'
                     }`}>
                       {badge.name}
                     </p>
-                    {badge.earned && (
-                      <div className="flex items-center justify-center gap-1 mt-0.5">
-                        <div className="w-1 h-1 rounded-full bg-amber-500"></div>
-                        <div className="w-1 h-1 rounded-full bg-orange-500"></div>
-                        <div className="w-1 h-1 rounded-full bg-amber-500"></div>
-                      </div>
-                    )}
                   </div>
                 </div>
               </TooltipTrigger>
