@@ -136,24 +136,24 @@ export default function MyDotSparkPage() {
   return (
     <SharedAuthLayout>
       <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-amber-100">
-        <div className="container mx-auto px-4 py-8 max-w-7xl">
+        <div className="container mx-auto px-4 py-4 max-w-7xl">
         {/* Profile Section */}
-        <div className="mb-8">
-          <div className="flex items-center gap-4 mb-6">
+        <div className="mb-4">
+          <div className="flex items-center gap-3 mb-4">
             <Link href={`/user/${(user as any)?.id}`}>
-              <Avatar className="h-16 w-16 border-4 border-amber-200 shadow-xl cursor-pointer hover:border-amber-300 transition-colors">
+              <Avatar className="h-12 w-12 border-3 border-amber-200 shadow-lg cursor-pointer hover:border-amber-300 transition-colors">
                 <AvatarImage src={(user as any)?.avatar || (user as any)?.linkedinPhotoUrl || (user as any)?.photoURL || undefined} />
-                <AvatarFallback className="bg-gradient-to-br from-amber-500 to-orange-600 text-white text-2xl">
+                <AvatarFallback className="bg-gradient-to-br from-amber-500 to-orange-600 text-white text-lg">
                   {(user as any)?.displayName?.[0]?.toUpperCase() || (user as any)?.fullName?.[0]?.toUpperCase() || 'U'}
                 </AvatarFallback>
               </Avatar>
             </Link>
             <div className="flex-1 flex items-center gap-3">
               <div>
-                <h1 className="text-3xl font-bold bg-gradient-to-r from-amber-700 to-orange-700 bg-clip-text text-transparent leading-tight">
+                <h1 className="text-2xl font-bold bg-gradient-to-r from-amber-700 to-orange-700 bg-clip-text text-transparent leading-tight">
                   {(user as any)?.displayName || (user as any)?.fullName || 'User'}
                 </h1>
-                <p className="text-amber-700 text-base mt-0.5">
+                <p className="text-amber-700 text-sm mt-0.5">
                   {(user as any)?.linkedinHeadline || 'Professional Headline'}
                 </p>
               </div>
@@ -187,80 +187,80 @@ export default function MyDotSparkPage() {
         
         {/* Cognitive Identity Box - Full Width */}
         <Link href="/cognitive-identity">
-          <Card className="group cursor-pointer border-0 transition-all duration-300 hover:scale-[1.01] bg-gradient-to-br from-[#a78bfa] via-[#9575cd] to-[#8b5cf6] relative overflow-hidden rounded-[32px] shadow-[0_8px_30px_rgba(139,92,246,0.2)] hover:shadow-[0_20px_60px_rgba(139,92,246,0.3)] mb-8">
+          <Card className="group cursor-pointer border-0 transition-all duration-300 hover:scale-[1.01] bg-gradient-to-br from-[#a78bfa] via-[#9575cd] to-[#8b5cf6] relative overflow-hidden rounded-[32px] shadow-[0_8px_30px_rgba(139,92,246,0.2)] hover:shadow-[0_20px_60px_rgba(139,92,246,0.3)] mb-4">
             
             {/* Icon Badge */}
-            <div className="absolute top-6 left-8">
-              <div className="px-4 py-2 bg-white/20 backdrop-blur-sm rounded-full flex items-center gap-2">
-                <Fingerprint className="h-5 w-5 text-white" />
-                <Sparkles className="h-4 w-4 text-white/90" />
+            <div className="absolute top-4 left-6">
+              <div className="px-3 py-1.5 bg-white/20 backdrop-blur-sm rounded-full flex items-center gap-2">
+                <Fingerprint className="h-4 w-4 text-white" />
+                <Sparkles className="h-3.5 w-3.5 text-white/90" />
               </div>
             </div>
             
             {/* Content */}
-            <div className="pt-20 pb-8 px-8">
-              <h3 className="text-2xl font-bold text-white mb-2">Cognitive Identity</h3>
-              <p className="text-white/80 text-sm mb-6">Your unique thought patterns and intellectual fingerprint</p>
+            <div className="pt-14 pb-5 px-6">
+              <h3 className="text-xl font-bold text-white mb-1">Cognitive Identity</h3>
+              <p className="text-white/80 text-xs mb-4">Your unique thought patterns and intellectual fingerprint</p>
               
               {/* Word Cloud Placeholder */}
-              <div className="flex flex-wrap gap-3 items-center justify-center md:justify-start">
-                <span className="px-4 py-2 bg-white/20 backdrop-blur-sm rounded-full text-white text-sm font-medium">Analytical</span>
-                <span className="px-5 py-2.5 bg-white/25 backdrop-blur-sm rounded-full text-white text-base font-semibold">Creative</span>
-                <span className="px-4 py-2 bg-white/20 backdrop-blur-sm rounded-full text-white text-sm font-medium">Strategic</span>
-                <span className="px-6 py-3 bg-white/30 backdrop-blur-sm rounded-full text-white text-lg font-bold">Innovative</span>
-                <span className="px-4 py-2 bg-white/20 backdrop-blur-sm rounded-full text-white text-sm font-medium">Curious</span>
-                <span className="px-5 py-2.5 bg-white/25 backdrop-blur-sm rounded-full text-white text-base font-semibold">Empathetic</span>
-                <span className="px-4 py-2 bg-white/20 backdrop-blur-sm rounded-full text-white text-sm font-medium">Visionary</span>
-                <span className="px-4 py-2 bg-white/20 backdrop-blur-sm rounded-full text-white text-sm font-medium">Detail-oriented</span>
+              <div className="flex flex-wrap gap-2 items-center justify-center md:justify-start">
+                <span className="px-3 py-1 bg-white/20 backdrop-blur-sm rounded-full text-white text-xs font-medium">Analytical</span>
+                <span className="px-3.5 py-1.5 bg-white/25 backdrop-blur-sm rounded-full text-white text-sm font-semibold">Creative</span>
+                <span className="px-3 py-1 bg-white/20 backdrop-blur-sm rounded-full text-white text-xs font-medium">Strategic</span>
+                <span className="px-4 py-1.5 bg-white/30 backdrop-blur-sm rounded-full text-white text-sm font-bold">Innovative</span>
+                <span className="px-3 py-1 bg-white/20 backdrop-blur-sm rounded-full text-white text-xs font-medium">Curious</span>
+                <span className="px-3.5 py-1.5 bg-white/25 backdrop-blur-sm rounded-full text-white text-sm font-semibold">Empathetic</span>
+                <span className="px-3 py-1 bg-white/20 backdrop-blur-sm rounded-full text-white text-xs font-medium">Visionary</span>
+                <span className="px-3 py-1 bg-white/20 backdrop-blur-sm rounded-full text-white text-xs font-medium">Detail-oriented</span>
               </div>
             </div>
             
             {/* Arrow indicator */}
-            <div className="absolute top-8 right-8">
-              <ArrowRight className="h-5 w-5 text-white/80 group-hover:translate-x-1 transition-transform" />
+            <div className="absolute top-5 right-6">
+              <ArrowRight className="h-4 w-4 text-white/80 group-hover:translate-x-1 transition-transform" />
             </div>
           </Card>
         </Link>
 
         {/* 4 Main Dashboard Boxes */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
           
           {/* 1. My Neura Box */}
           <Link href="/myneura">
             <Card className="group cursor-pointer border-0 transition-all duration-300 hover:scale-[1.02] bg-gradient-to-br from-[#fbbf24] via-[#f59e0b] to-[#f97316] relative overflow-hidden rounded-[32px] shadow-[0_8px_30px_rgba(251,146,60,0.2)] hover:shadow-[0_20px_60px_rgba(251,146,60,0.3)]">
               
               {/* Icon Badge */}
-              <div className="absolute top-6 left-1/2 -translate-x-1/2">
-                <div className="px-4 py-2 bg-white/20 backdrop-blur-sm rounded-full flex items-center gap-2">
-                  <Brain className="h-5 w-5 text-white" />
-                  <Zap className="h-4 w-4 text-white/90" />
+              <div className="absolute top-4 left-1/2 -translate-x-1/2">
+                <div className="px-3 py-1.5 bg-white/20 backdrop-blur-sm rounded-full flex items-center gap-1.5">
+                  <Brain className="h-4 w-4 text-white" />
+                  <Zap className="h-3.5 w-3.5 text-white/90" />
                 </div>
               </div>
               
               {/* Content */}
-              <div className="pt-24 pb-8 px-8 text-center">
-                <h3 className="text-2xl font-bold text-white mb-2">My Neura</h3>
-                <p className="text-white/80 text-sm mb-6">Personal thoughts & saved insights</p>
+              <div className="pt-16 pb-5 px-6 text-center">
+                <h3 className="text-xl font-bold text-white mb-1">My Neura</h3>
+                <p className="text-white/80 text-xs mb-4">Personal thoughts & saved insights</p>
                 
                 {/* Stats */}
-                <div className="flex items-center justify-center gap-4 mb-6">
-                  <div className="flex items-center gap-1.5 px-3 py-1.5 bg-white/20 backdrop-blur-sm rounded-full">
-                    <Circle className="h-3.5 w-3.5 text-white" />
-                    <span className="text-white font-semibold text-sm">{dashboard?.stats.dots || 0}</span>
+                <div className="flex items-center justify-center gap-3 mb-4">
+                  <div className="flex items-center gap-1.5 px-2.5 py-1 bg-white/20 backdrop-blur-sm rounded-full">
+                    <Circle className="h-3 w-3 text-white" />
+                    <span className="text-white font-semibold text-xs">{dashboard?.stats.dots || 0}</span>
                   </div>
-                  <div className="flex items-center gap-1.5 px-3 py-1.5 bg-white/20 backdrop-blur-sm rounded-full">
-                    <Zap className="h-3.5 w-3.5 text-white" />
-                    <span className="text-white font-semibold text-sm">{dashboard?.stats.savedSparks || 0}</span>
+                  <div className="flex items-center gap-1.5 px-2.5 py-1 bg-white/20 backdrop-blur-sm rounded-full">
+                    <Zap className="h-3 w-3 text-white" />
+                    <span className="text-white font-semibold text-xs">{dashboard?.stats.savedSparks || 0}</span>
                   </div>
                 </div>
                 
                 {/* Neural Strength Meter */}
-                <div className="space-y-2">
+                <div className="space-y-1.5">
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-semibold text-white/90">Neural Strength</span>
-                    <span className="text-sm font-bold text-white">{dashboard?.neuralStrength.percentage || 0}%</span>
+                    <span className="text-[10px] font-semibold text-white/90">Neural Strength</span>
+                    <span className="text-xs font-bold text-white">{dashboard?.neuralStrength.percentage || 0}%</span>
                   </div>
-                  <div className="h-2 bg-white/20 rounded-full overflow-hidden backdrop-blur-sm">
+                  <div className="h-1.5 bg-white/20 rounded-full overflow-hidden backdrop-blur-sm">
                     <div 
                       className="h-full bg-white rounded-full transition-all duration-1000 ease-out"
                       style={{ width: `${dashboard?.neuralStrength.percentage || 0}%` }}
@@ -270,8 +270,8 @@ export default function MyDotSparkPage() {
               </div>
               
               {/* Arrow indicator */}
-              <div className="absolute bottom-6 right-6">
-                <ArrowRight className="h-5 w-5 text-white/80 group-hover:translate-x-1 transition-transform" />
+              <div className="absolute bottom-4 right-4">
+                <ArrowRight className="h-4 w-4 text-white/80 group-hover:translate-x-1 transition-transform" />
               </div>
             </Card>
           </Link>
@@ -281,41 +281,41 @@ export default function MyDotSparkPage() {
             <Card className="group cursor-pointer border-0 transition-all duration-300 hover:scale-[1.02] bg-gradient-to-br from-[#fb923c] via-[#f97316] to-[#ea580c] relative overflow-hidden rounded-[32px] shadow-[0_8px_30px_rgba(239,68,68,0.2)] hover:shadow-[0_20px_60px_rgba(239,68,68,0.3)]">
               
               {/* Icon Badge */}
-              <div className="absolute top-6 left-1/2 -translate-x-1/2">
-                <div className="px-4 py-2 bg-white/20 backdrop-blur-sm rounded-full flex items-center gap-2">
-                  <Users className="h-5 w-5 text-white" />
-                  <Zap className="h-4 w-4 text-white/90" />
+              <div className="absolute top-4 left-1/2 -translate-x-1/2">
+                <div className="px-3 py-1.5 bg-white/20 backdrop-blur-sm rounded-full flex items-center gap-1.5">
+                  <Users className="h-4 w-4 text-white" />
+                  <Zap className="h-3.5 w-3.5 text-white/90" />
                 </div>
               </div>
               
               {/* Content */}
-              <div className="pt-24 pb-8 px-8 text-center">
-                <h3 className="text-2xl font-bold text-white mb-2">Social Neura</h3>
-                <p className="text-white/80 text-sm mb-6">Collective intelligence & shared thoughts</p>
+              <div className="pt-16 pb-5 px-6 text-center">
+                <h3 className="text-xl font-bold text-white mb-1">Social Neura</h3>
+                <p className="text-white/80 text-xs mb-4">Collective intelligence & shared thoughts</p>
                 
                 {/* Stats */}
-                <div className="flex items-center justify-center gap-3 mb-6">
-                  <div className="flex items-center gap-1.5 px-3 py-1.5 bg-white/20 backdrop-blur-sm rounded-full">
-                    <FileText className="h-3.5 w-3.5 text-white" />
-                    <span className="text-white font-semibold text-sm">{dashboard?.stats.thoughts || 0}</span>
+                <div className="flex items-center justify-center gap-2 mb-4">
+                  <div className="flex items-center gap-1 px-2 py-1 bg-white/20 backdrop-blur-sm rounded-full">
+                    <FileText className="h-3 w-3 text-white" />
+                    <span className="text-white font-semibold text-xs">{dashboard?.stats.thoughts || 0}</span>
                   </div>
-                  <div className="flex items-center gap-1.5 px-3 py-1.5 bg-white/20 backdrop-blur-sm rounded-full">
-                    <Users className="h-3.5 w-3.5 text-white" />
-                    <span className="text-white font-semibold text-sm">{dashboard?.stats.perspectives || 0}</span>
+                  <div className="flex items-center gap-1 px-2 py-1 bg-white/20 backdrop-blur-sm rounded-full">
+                    <Users className="h-3 w-3 text-white" />
+                    <span className="text-white font-semibold text-xs">{dashboard?.stats.perspectives || 0}</span>
                   </div>
-                  <div className="flex items-center gap-1.5 px-3 py-1.5 bg-white/20 backdrop-blur-sm rounded-full">
-                    <Zap className="h-3.5 w-3.5 text-white" />
-                    <span className="text-white font-semibold text-sm">{dashboard?.stats.savedSparks || 0}</span>
+                  <div className="flex items-center gap-1 px-2 py-1 bg-white/20 backdrop-blur-sm rounded-full">
+                    <Zap className="h-3 w-3 text-white" />
+                    <span className="text-white font-semibold text-xs">{dashboard?.stats.savedSparks || 0}</span>
                   </div>
                 </div>
                 
                 {/* Collective Growth Meter */}
-                <div className="space-y-2">
+                <div className="space-y-1.5">
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-semibold text-white/90">Collective Growth</span>
-                    <span className="text-sm font-bold text-white">{dashboard?.collectiveGrowth?.percentage || 0}%</span>
+                    <span className="text-[10px] font-semibold text-white/90">Collective Growth</span>
+                    <span className="text-xs font-bold text-white">{dashboard?.collectiveGrowth?.percentage || 0}%</span>
                   </div>
-                  <div className="h-2 bg-white/20 rounded-full overflow-hidden backdrop-blur-sm">
+                  <div className="h-1.5 bg-white/20 rounded-full overflow-hidden backdrop-blur-sm">
                     <div 
                       className="h-full bg-white rounded-full transition-all duration-1000 ease-out"
                       style={{ width: `${dashboard?.collectiveGrowth?.percentage || 0}%` }}
@@ -325,8 +325,8 @@ export default function MyDotSparkPage() {
               </div>
               
               {/* Arrow indicator */}
-              <div className="absolute bottom-6 right-6">
-                <ArrowRight className="h-5 w-5 text-white/80 group-hover:translate-x-1 transition-transform" />
+              <div className="absolute bottom-4 right-4">
+                <ArrowRight className="h-4 w-4 text-white/80 group-hover:translate-x-1 transition-transform" />
               </div>
             </Card>
           </Link>
@@ -336,21 +336,21 @@ export default function MyDotSparkPage() {
             <Card className="group cursor-pointer border-0 transition-all duration-300 hover:scale-[1.02] bg-gradient-to-br from-[#c084fc] via-[#a78bfa] to-[#f0abfc] relative overflow-hidden rounded-[32px] shadow-[0_8px_30px_rgba(168,85,247,0.2)] hover:shadow-[0_20px_60px_rgba(168,85,247,0.3)]">
               
               {/* Icon Badge */}
-              <div className="absolute top-6 left-1/2 -translate-x-1/2">
-                <div className="px-4 py-2 bg-white/20 backdrop-blur-sm rounded-full">
-                  <Target className="h-5 w-5 text-white" />
+              <div className="absolute top-4 left-1/2 -translate-x-1/2">
+                <div className="px-3 py-1.5 bg-white/20 backdrop-blur-sm rounded-full">
+                  <Target className="h-4 w-4 text-white" />
                 </div>
               </div>
               
               {/* Content */}
-              <div className="pt-24 pb-8 px-8 text-center">
-                <h3 className="text-2xl font-bold text-white mb-2">My Thought Circle</h3>
-                <p className="text-white/80 text-sm">Connect with your thinking network</p>
+              <div className="pt-16 pb-5 px-6 text-center">
+                <h3 className="text-xl font-bold text-white mb-1">My Thought Circle</h3>
+                <p className="text-white/80 text-xs">Connect with your thinking network</p>
               </div>
               
               {/* Arrow indicator */}
-              <div className="absolute bottom-6 right-6">
-                <ArrowRight className="h-5 w-5 text-white/80 group-hover:translate-x-1 transition-transform" />
+              <div className="absolute bottom-4 right-4">
+                <ArrowRight className="h-4 w-4 text-white/80 group-hover:translate-x-1 transition-transform" />
               </div>
             </Card>
           </Link>
@@ -360,21 +360,21 @@ export default function MyDotSparkPage() {
             <Card className="group cursor-pointer border-0 transition-all duration-300 hover:scale-[1.02] bg-gradient-to-br from-[#93c5fd] via-[#60a5fa] to-[#818cf8] relative overflow-hidden rounded-[32px] shadow-[0_8px_30px_rgba(59,130,246,0.2)] hover:shadow-[0_20px_60px_rgba(59,130,246,0.3)]">
               
               {/* Icon Badge */}
-              <div className="absolute top-6 left-1/2 -translate-x-1/2">
-                <div className="px-4 py-2 bg-white/20 backdrop-blur-sm rounded-full">
-                  <Lightbulb className="h-5 w-5 text-white" />
+              <div className="absolute top-4 left-1/2 -translate-x-1/2">
+                <div className="px-3 py-1.5 bg-white/20 backdrop-blur-sm rounded-full">
+                  <Lightbulb className="h-4 w-4 text-white" />
                 </div>
               </div>
               
               {/* Content */}
-              <div className="pt-24 pb-8 px-8 text-center">
-                <h3 className="text-2xl font-bold text-white mb-2">Learning Engine</h3>
-                <p className="text-white/80 text-sm">Optimize your learning journey</p>
+              <div className="pt-16 pb-5 px-6 text-center">
+                <h3 className="text-xl font-bold text-white mb-1">Learning Engine</h3>
+                <p className="text-white/80 text-xs">Optimize your learning journey</p>
               </div>
               
               {/* Arrow indicator */}
-              <div className="absolute bottom-6 right-6">
-                <ArrowRight className="h-5 w-5 text-white/80 group-hover:translate-x-1 transition-transform" />
+              <div className="absolute bottom-4 right-4">
+                <ArrowRight className="h-4 w-4 text-white/80 group-hover:translate-x-1 transition-transform" />
               </div>
             </Card>
           </Link>
