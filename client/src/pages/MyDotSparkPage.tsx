@@ -160,7 +160,7 @@ export default function MyDotSparkPage() {
                   <BadgeDisplay badges={allBadgesForDisplay} />
                 )}
               </div>
-              <p className="text-amber-700 mt-1">
+              <p className="text-amber-700">
                 {(user as any)?.linkedinHeadline || 'Professional Headline'}
               </p>
             </div>
