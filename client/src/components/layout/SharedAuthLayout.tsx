@@ -41,6 +41,7 @@ export default function SharedAuthLayout({ children }: SharedAuthLayoutProps) {
   const searchRef = useRef<HTMLDivElement>(null);
   const [showNotifications, setShowNotifications] = useState(false);
   const notificationsRef = useRef<HTMLDivElement>(null);
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
 
   const isOnSocial = location === '/social';
   const isOnMyNeura = location === '/myneura';
@@ -555,7 +556,7 @@ export default function SharedAuthLayout({ children }: SharedAuthLayoutProps) {
 
             {/* User Avatar */}
             {user && (
-              <Sheet>
+              <Sheet open={isProfileOpen} onOpenChange={setIsProfileOpen}>
                 <SheetTrigger asChild>
                   <Button variant="ghost" size="sm" className="p-0">
                     <Avatar className="h-8 w-8">
