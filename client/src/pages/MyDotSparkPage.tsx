@@ -190,144 +190,142 @@ export default function MyDotSparkPage() {
           
           {/* 1. My Neura Box */}
           <Link href="/myneura">
-            <Card className="group cursor-pointer border-amber-200/60 hover:border-amber-400 transition-all duration-300 hover:shadow-2xl bg-gradient-to-br from-amber-50 via-orange-50/80 to-amber-100/60 relative overflow-hidden backdrop-blur-sm">
-              {/* Decorative gradient overlay */}
-              <div className="absolute inset-0 bg-gradient-to-br from-amber-400/5 via-transparent to-orange-400/10 group-hover:from-amber-400/10 group-hover:to-orange-400/20 transition-all duration-300" />
+            <Card className="group cursor-pointer border-0 transition-all duration-300 hover:scale-[1.02] bg-gradient-to-br from-amber-400 via-amber-500 to-orange-500 relative overflow-hidden rounded-[32px] shadow-[0_8px_30px_rgb(251,146,60,0.3)] hover:shadow-[0_20px_60px_rgb(251,146,60,0.4)]">
               
-              <CardHeader className="relative">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="p-3 bg-gradient-to-br from-amber-500 to-orange-600 rounded-xl shadow-xl group-hover:shadow-2xl group-hover:scale-105 transition-all duration-300">
-                      <Brain className="h-6 w-6 text-white" />
-                    </div>
-                    <div>
-                      <CardTitle className="text-xl font-bold bg-gradient-to-r from-amber-700 to-orange-700 bg-clip-text text-transparent">My Neura</CardTitle>
-                      <CardDescription className="text-amber-700/70">Personal thoughts & saved insights</CardDescription>
-                    </div>
-                  </div>
-                  <ArrowRight className="h-5 w-5 text-amber-500 group-hover:translate-x-1 transition-transform" />
+              {/* Icon Badge */}
+              <div className="absolute top-6 left-1/2 -translate-x-1/2">
+                <div className="px-4 py-2 bg-white/20 backdrop-blur-sm rounded-full flex items-center gap-2">
+                  <Brain className="h-5 w-5 text-white" />
+                  <Zap className="h-4 w-4 text-white/90" />
                 </div>
-              </CardHeader>
-              <CardContent className="space-y-4 relative">
+              </div>
+              
+              {/* Content */}
+              <div className="pt-24 pb-8 px-8 text-center">
+                <h3 className="text-2xl font-bold text-white mb-2">My Neura</h3>
+                <p className="text-white/80 text-sm mb-6">Personal thoughts & saved insights</p>
+                
                 {/* Stats */}
-                <div className="flex items-center gap-6 text-sm">
-                  <div className="flex items-center gap-1.5 px-2.5 py-1.5 bg-amber-100/50 rounded-lg">
-                    <Circle className="h-4 w-4 text-orange-600" />
-                    <span className="font-semibold text-orange-800">{dashboard?.stats.dots || 0} dots</span>
+                <div className="flex items-center justify-center gap-4 mb-6">
+                  <div className="flex items-center gap-1.5 px-3 py-1.5 bg-white/20 backdrop-blur-sm rounded-full">
+                    <Circle className="h-3.5 w-3.5 text-white" />
+                    <span className="text-white font-semibold text-sm">{dashboard?.stats.dots || 0}</span>
                   </div>
-                  <div className="flex items-center gap-1.5 px-2.5 py-1.5 bg-yellow-100/50 rounded-lg">
-                    <Zap className="h-4 w-4 text-yellow-600" />
-                    <span className="font-semibold text-yellow-800">{dashboard?.stats.savedSparks || 0} sparks</span>
+                  <div className="flex items-center gap-1.5 px-3 py-1.5 bg-white/20 backdrop-blur-sm rounded-full">
+                    <Zap className="h-3.5 w-3.5 text-white" />
+                    <span className="text-white font-semibold text-sm">{dashboard?.stats.savedSparks || 0}</span>
                   </div>
                 </div>
+                
                 {/* Neural Strength Meter */}
-                <div className="pt-2">
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-xs font-semibold text-amber-800">Neural Strength</span>
-                    <span className="text-sm font-bold bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent">{dashboard?.neuralStrength.percentage || 0}%</span>
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-semibold text-white/90">Neural Strength</span>
+                    <span className="text-sm font-bold text-white">{dashboard?.neuralStrength.percentage || 0}%</span>
                   </div>
-                  <div className="h-2.5 bg-amber-200/50 rounded-full overflow-hidden">
+                  <div className="h-2 bg-white/20 rounded-full overflow-hidden backdrop-blur-sm">
                     <div 
-                      className="h-full bg-gradient-to-r from-amber-500 via-orange-500 to-red-500 transition-all duration-1000 ease-out rounded-full"
+                      className="h-full bg-white rounded-full transition-all duration-1000 ease-out"
                       style={{ width: `${dashboard?.neuralStrength.percentage || 0}%` }}
                     />
                   </div>
                 </div>
-              </CardContent>
+              </div>
+              
+              {/* Arrow indicator */}
+              <div className="absolute bottom-6 right-6">
+                <ArrowRight className="h-5 w-5 text-white/80 group-hover:translate-x-1 transition-transform" />
+              </div>
             </Card>
           </Link>
 
           {/* 2. Social Neura Box */}
           <Link href="/social">
-            <Card className="group cursor-pointer border-red-200/60 hover:border-red-400 transition-all duration-300 hover:shadow-2xl bg-gradient-to-br from-red-50 via-orange-50/80 to-red-100/60 relative overflow-hidden backdrop-blur-sm">
-              {/* Decorative gradient overlay */}
-              <div className="absolute inset-0 bg-gradient-to-br from-red-400/5 via-transparent to-orange-400/10 group-hover:from-red-400/10 group-hover:to-orange-400/20 transition-all duration-300" />
+            <Card className="group cursor-pointer border-0 transition-all duration-300 hover:scale-[1.02] bg-gradient-to-br from-red-400 via-red-500 to-orange-500 relative overflow-hidden rounded-[32px] shadow-[0_8px_30px_rgb(239,68,68,0.3)] hover:shadow-[0_20px_60px_rgb(239,68,68,0.4)]">
               
-              <CardHeader className="relative">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="p-3 bg-gradient-to-br from-red-500 to-orange-600 rounded-xl shadow-xl group-hover:shadow-2xl group-hover:scale-105 transition-all duration-300">
-                      <Users className="h-6 w-6 text-white" />
-                    </div>
-                    <div>
-                      <CardTitle className="text-xl font-bold bg-gradient-to-r from-red-700 to-orange-700 bg-clip-text text-transparent">Social Neura</CardTitle>
-                      <CardDescription className="text-red-700/70">Collective intelligence & shared thoughts</CardDescription>
-                    </div>
-                  </div>
-                  <ArrowRight className="h-5 w-5 text-red-500 group-hover:translate-x-1 transition-transform" />
+              {/* Icon Badge */}
+              <div className="absolute top-6 left-1/2 -translate-x-1/2">
+                <div className="px-4 py-2 bg-white/20 backdrop-blur-sm rounded-full flex items-center gap-2">
+                  <Users className="h-5 w-5 text-white" />
+                  <Zap className="h-4 w-4 text-white/90" />
                 </div>
-              </CardHeader>
-              <CardContent className="space-y-4 relative">
+              </div>
+              
+              {/* Content */}
+              <div className="pt-24 pb-8 px-8 text-center">
+                <h3 className="text-2xl font-bold text-white mb-2">Social Neura</h3>
+                <p className="text-white/80 text-sm mb-6">Collective intelligence & shared thoughts</p>
+                
                 {/* Stats */}
-                <div className="flex items-center gap-4 text-sm">
-                  <div className="flex items-center gap-1.5 px-2.5 py-1.5 bg-red-100/50 rounded-lg">
-                    <FileText className="h-4 w-4 text-red-600" />
-                    <span className="font-semibold text-red-800">{dashboard?.stats.thoughts || 0} dots</span>
+                <div className="flex items-center justify-center gap-3 mb-6">
+                  <div className="flex items-center gap-1.5 px-3 py-1.5 bg-white/20 backdrop-blur-sm rounded-full">
+                    <FileText className="h-3.5 w-3.5 text-white" />
+                    <span className="text-white font-semibold text-sm">{dashboard?.stats.thoughts || 0}</span>
                   </div>
-                  <div className="flex items-center gap-1.5 px-2.5 py-1.5 bg-orange-100/50 rounded-lg">
-                    <Users className="h-4 w-4 text-orange-600" />
-                    <span className="font-semibold text-orange-800">{dashboard?.stats.perspectives || 0} perspectives</span>
+                  <div className="flex items-center gap-1.5 px-3 py-1.5 bg-white/20 backdrop-blur-sm rounded-full">
+                    <Users className="h-3.5 w-3.5 text-white" />
+                    <span className="text-white font-semibold text-sm">{dashboard?.stats.perspectives || 0}</span>
                   </div>
-                  <div className="flex items-center gap-1.5 px-2.5 py-1.5 bg-yellow-100/50 rounded-lg">
-                    <Zap className="h-4 w-4 text-yellow-600" />
-                    <span className="font-semibold text-yellow-800">{dashboard?.stats.savedSparks || 0} sparks</span>
+                  <div className="flex items-center gap-1.5 px-3 py-1.5 bg-white/20 backdrop-blur-sm rounded-full">
+                    <Zap className="h-3.5 w-3.5 text-white" />
+                    <span className="text-white font-semibold text-sm">{dashboard?.stats.savedSparks || 0}</span>
                   </div>
                 </div>
+                
                 {/* Collective Growth Meter */}
-                <div className="pt-2">
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-xs font-semibold text-red-800">Collective Growth</span>
-                    <span className="text-sm font-bold bg-gradient-to-r from-red-600 to-orange-600 bg-clip-text text-transparent">{dashboard?.collectiveGrowth?.percentage || 0}%</span>
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-semibold text-white/90">Collective Growth</span>
+                    <span className="text-sm font-bold text-white">{dashboard?.collectiveGrowth?.percentage || 0}%</span>
                   </div>
-                  <div className="h-2.5 bg-red-200/50 rounded-full overflow-hidden">
+                  <div className="h-2 bg-white/20 rounded-full overflow-hidden backdrop-blur-sm">
                     <div 
-                      className="h-full bg-gradient-to-r from-red-500 via-orange-500 to-yellow-500 transition-all duration-1000 ease-out rounded-full"
+                      className="h-full bg-white rounded-full transition-all duration-1000 ease-out"
                       style={{ width: `${dashboard?.collectiveGrowth?.percentage || 0}%` }}
                     />
                   </div>
                 </div>
-              </CardContent>
+              </div>
+              
+              {/* Arrow indicator */}
+              <div className="absolute bottom-6 right-6">
+                <ArrowRight className="h-5 w-5 text-white/80 group-hover:translate-x-1 transition-transform" />
+              </div>
             </Card>
           </Link>
 
           {/* 3. My Thought Circle Box - PLACEHOLDER */}
-          <Card className="border-purple-200 bg-gradient-to-br from-purple-50 to-pink-50 opacity-60 cursor-not-allowed">
-            <CardHeader>
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="p-3 bg-gradient-to-br from-purple-500 to-pink-600 rounded-xl shadow-lg">
-                    <Target className="h-6 w-6 text-white" />
-                  </div>
-                  <div>
-                    <CardTitle className="text-xl">My Thought Circle</CardTitle>
-                    <CardDescription>Coming soon...</CardDescription>
-                  </div>
-                </div>
+          <Card className="border-0 cursor-not-allowed bg-gradient-to-br from-purple-400 via-purple-500 to-pink-500 relative overflow-hidden rounded-[32px] shadow-[0_8px_30px_rgb(168,85,247,0.2)] opacity-50">
+            
+            {/* Icon Badge */}
+            <div className="absolute top-6 left-1/2 -translate-x-1/2">
+              <div className="px-4 py-2 bg-white/20 backdrop-blur-sm rounded-full">
+                <Target className="h-5 w-5 text-white" />
               </div>
-            </CardHeader>
-            <CardContent>
-              <p className="text-sm text-gray-500">Placeholder - Details to be defined</p>
-            </CardContent>
+            </div>
+            
+            {/* Content */}
+            <div className="pt-24 pb-8 px-8 text-center">
+              <h3 className="text-2xl font-bold text-white mb-2">My Thought Circle</h3>
+              <p className="text-white/80 text-sm">Coming soon...</p>
+            </div>
           </Card>
 
           {/* 4. Learning Engine Box - PLACEHOLDER */}
-          <Card className="border-blue-200 bg-gradient-to-br from-blue-50 to-indigo-50 opacity-60 cursor-not-allowed">
-            <CardHeader>
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="p-3 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl shadow-lg">
-                    <Lightbulb className="h-6 w-6 text-white" />
-                  </div>
-                  <div>
-                    <CardTitle className="text-xl">Learning Engine</CardTitle>
-                    <CardDescription>Coming soon...</CardDescription>
-                  </div>
-                </div>
+          <Card className="border-0 cursor-not-allowed bg-gradient-to-br from-blue-400 via-blue-500 to-indigo-500 relative overflow-hidden rounded-[32px] shadow-[0_8px_30px_rgb(59,130,246,0.2)] opacity-50">
+            
+            {/* Icon Badge */}
+            <div className="absolute top-6 left-1/2 -translate-x-1/2">
+              <div className="px-4 py-2 bg-white/20 backdrop-blur-sm rounded-full">
+                <Lightbulb className="h-5 w-5 text-white" />
               </div>
-            </CardHeader>
-            <CardContent>
-              <p className="text-sm text-gray-500">Placeholder - Details to be defined</p>
-            </CardContent>
+            </div>
+            
+            {/* Content */}
+            <div className="pt-24 pb-8 px-8 text-center">
+              <h3 className="text-2xl font-bold text-white mb-2">Learning Engine</h3>
+              <p className="text-white/80 text-sm">Coming soon...</p>
+            </div>
           </Card>
         </div>
 
