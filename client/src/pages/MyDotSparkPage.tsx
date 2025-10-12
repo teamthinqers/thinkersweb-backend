@@ -150,10 +150,10 @@ export default function MyDotSparkPage() {
             </Link>
             <div className="flex-1 flex items-center gap-3">
               <div>
-                <h1 className="text-2xl font-bold bg-gradient-to-r from-amber-700 to-orange-700 bg-clip-text text-transparent leading-tight">
+                <h1 className="text-2xl font-black bg-gradient-to-r from-amber-700 to-orange-700 bg-clip-text text-transparent leading-tight">
                   {(user as any)?.displayName || (user as any)?.fullName || 'User'}
                 </h1>
-                <p className="text-amber-700 text-sm mt-0.5">
+                <p className="text-amber-700 text-sm mt-0.5 font-semibold">
                   {(user as any)?.linkedinHeadline || 'Professional Headline'}
                 </p>
               </div>
