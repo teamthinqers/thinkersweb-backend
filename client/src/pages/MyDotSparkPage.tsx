@@ -232,7 +232,7 @@ export default function MyDotSparkPage() {
               {/* Icon Badge */}
               <div className="absolute top-4 left-1/2 -translate-x-1/2">
                 <div className="px-3 py-1.5 bg-white/20 backdrop-blur-sm rounded-full flex items-center gap-1.5">
-                  <Brain className="h-4 w-4 text-white" />
+                  <Brain className="h-4 w-4 text-white animate-pulse" />
                   <Zap className="h-3.5 w-3.5 text-white/90" />
                 </div>
               </div>
@@ -283,7 +283,7 @@ export default function MyDotSparkPage() {
               {/* Icon Badge */}
               <div className="absolute top-4 left-1/2 -translate-x-1/2">
                 <div className="px-3 py-1.5 bg-white/20 backdrop-blur-sm rounded-full flex items-center gap-1.5">
-                  <Brain className="h-4 w-4 text-white" />
+                  <Brain className="h-4 w-4 text-white animate-pulse" />
                   <Zap className="h-3.5 w-3.5 text-white/90" />
                 </div>
               </div>
