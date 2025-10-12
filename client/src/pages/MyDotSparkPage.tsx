@@ -331,39 +331,53 @@ export default function MyDotSparkPage() {
             </Card>
           </Link>
 
-          {/* 3. My Thought Circle Box - PLACEHOLDER */}
-          <Card className="border-0 cursor-not-allowed bg-gradient-to-br from-[#c084fc] via-[#a78bfa] to-[#f0abfc] relative overflow-hidden rounded-[32px] shadow-[0_8px_30px_rgba(168,85,247,0.15)] opacity-50">
-            
-            {/* Icon Badge */}
-            <div className="absolute top-6 left-1/2 -translate-x-1/2">
-              <div className="px-4 py-2 bg-white/20 backdrop-blur-sm rounded-full">
-                <Target className="h-5 w-5 text-white" />
+          {/* 3. My Thought Circle Box */}
+          <Link href="/thought-circle">
+            <Card className="group cursor-pointer border-0 transition-all duration-300 hover:scale-[1.02] bg-gradient-to-br from-[#c084fc] via-[#a78bfa] to-[#f0abfc] relative overflow-hidden rounded-[32px] shadow-[0_8px_30px_rgba(168,85,247,0.2)] hover:shadow-[0_20px_60px_rgba(168,85,247,0.3)]">
+              
+              {/* Icon Badge */}
+              <div className="absolute top-6 left-1/2 -translate-x-1/2">
+                <div className="px-4 py-2 bg-white/20 backdrop-blur-sm rounded-full">
+                  <Target className="h-5 w-5 text-white" />
+                </div>
               </div>
-            </div>
-            
-            {/* Content */}
-            <div className="pt-24 pb-8 px-8 text-center">
-              <h3 className="text-2xl font-bold text-white mb-2">My Thought Circle</h3>
-              <p className="text-white/80 text-sm">Coming soon...</p>
-            </div>
-          </Card>
+              
+              {/* Content */}
+              <div className="pt-24 pb-8 px-8 text-center">
+                <h3 className="text-2xl font-bold text-white mb-2">My Thought Circle</h3>
+                <p className="text-white/80 text-sm">Connect with your thinking network</p>
+              </div>
+              
+              {/* Arrow indicator */}
+              <div className="absolute bottom-6 right-6">
+                <ArrowRight className="h-5 w-5 text-white/80 group-hover:translate-x-1 transition-transform" />
+              </div>
+            </Card>
+          </Link>
 
-          {/* 4. Learning Engine Box - PLACEHOLDER */}
-          <Card className="border-0 cursor-not-allowed bg-gradient-to-br from-[#93c5fd] via-[#60a5fa] to-[#818cf8] relative overflow-hidden rounded-[32px] shadow-[0_8px_30px_rgba(59,130,246,0.15)] opacity-50">
-            
-            {/* Icon Badge */}
-            <div className="absolute top-6 left-1/2 -translate-x-1/2">
-              <div className="px-4 py-2 bg-white/20 backdrop-blur-sm rounded-full">
-                <Lightbulb className="h-5 w-5 text-white" />
+          {/* 4. Learning Engine Box */}
+          <Link href="/learning-engine">
+            <Card className="group cursor-pointer border-0 transition-all duration-300 hover:scale-[1.02] bg-gradient-to-br from-[#93c5fd] via-[#60a5fa] to-[#818cf8] relative overflow-hidden rounded-[32px] shadow-[0_8px_30px_rgba(59,130,246,0.2)] hover:shadow-[0_20px_60px_rgba(59,130,246,0.3)]">
+              
+              {/* Icon Badge */}
+              <div className="absolute top-6 left-1/2 -translate-x-1/2">
+                <div className="px-4 py-2 bg-white/20 backdrop-blur-sm rounded-full">
+                  <Lightbulb className="h-5 w-5 text-white" />
+                </div>
               </div>
-            </div>
-            
-            {/* Content */}
-            <div className="pt-24 pb-8 px-8 text-center">
-              <h3 className="text-2xl font-bold text-white mb-2">Learning Engine</h3>
-              <p className="text-white/80 text-sm">Coming soon...</p>
-            </div>
-          </Card>
+              
+              {/* Content */}
+              <div className="pt-24 pb-8 px-8 text-center">
+                <h3 className="text-2xl font-bold text-white mb-2">Learning Engine</h3>
+                <p className="text-white/80 text-sm">Optimize your learning journey</p>
+              </div>
+              
+              {/* Arrow indicator */}
+              <div className="absolute bottom-6 right-6">
+                <ArrowRight className="h-5 w-5 text-white/80 group-hover:translate-x-1 transition-transform" />
+              </div>
+            </Card>
+          </Link>
         </div>
 
         {/* Recent Activity */}

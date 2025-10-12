@@ -89,6 +89,12 @@ export default function SocialFeedPage() {
     // No auth required - this is public collective data
   });
 
+  // Fetch collective growth from dashboard (platform-wide metric - same as /mydotspark)
+  const { data: dashboardData } = useQuery<{ success: boolean; data: { collectiveGrowth: { percentage: number } } }>({
+    queryKey: ['/api/dashboard'],
+    enabled: !!user, // Only fetch if user is authenticated
+  });
+
   // Save thought to MyNeura
   const saveToMyNeuraMutation = useMutation({
     mutationFn: async (thoughtId: number) => {
@@ -214,23 +220,22 @@ export default function SocialFeedPage() {
 
   const userSparks = sparksData?.sparks || [];
 
-  // Calculate collective growth from platform-wide stats
+  // Get collective growth from dashboard (uses same platform-wide calculation as /mydotspark)
   const collectiveGrowth = useMemo(() => {
     const thoughtsCount = statsData?.stats?.thoughtsCount || 0;
     const sparksCount = statsData?.stats?.savedSparksCount || 0;
     const perspectivesCount = statsData?.stats?.perspectivesCount || 0;
     
-    // Calculate growth percentage: 0.5% per item
-    const totalItems = thoughtsCount + sparksCount + perspectivesCount;
-    const percentage = Math.min(100, totalItems * 0.5);
+    // Use dashboard's collective growth percentage (same metric as /mydotspark)
+    const percentage = dashboardData?.data?.collectiveGrowth?.percentage || 0;
     
     return {
-      percentage: Math.round(percentage),
+      percentage,
       thoughtsCount,
       sparksCount,
       perspectivesCount,
     };
-  }, [statsData]);
+  }, [statsData, dashboardData]);
 
   // Delete thought mutation
   const deleteThoughtMutation = useMutation({

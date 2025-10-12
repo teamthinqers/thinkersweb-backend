@@ -23,6 +23,7 @@ import Settings from "@/pages/Settings";
 import Profile from "@/pages/Profile";
 import PublicProfile from "@/pages/PublicProfile";
 import MyDotSparkPage from "@/pages/MyDotSparkPage";
+import ThoughtCirclePage from "@/pages/ThoughtCirclePage";
 import WhatsAppAdmin from "@/pages/WhatsAppAdmin";
 import WhatsAppTest from "@/pages/WhatsAppTest";
 import WhatsAppEntries from "@/pages/WhatsAppEntries";
@@ -198,6 +199,7 @@ function Router() {
       <Route path="/myneura" component={MyNeuraPage} />
       <Route path="/mydotspark" component={MyDotSparkPage} />
       <Route path="/cognitive-identity" component={CognitiveIdentityPage} />
+      <Route path="/thought-circle" component={ThoughtCirclePage} />
       <Route path="/learning-engine" component={LearningEnginePage} />
       <Route path="/auth" component={AuthPage} />
       <Route path="/notifications" component={NotificationsPage} />
