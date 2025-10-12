@@ -381,13 +381,13 @@ export default function MyDotSparkPage() {
         </div>
 
         {/* Recent Activity */}
-        <Card className="border-gray-200">
-          <CardHeader>
+        <Card className="border-amber-200 bg-gradient-to-br from-amber-50/50 to-orange-50/50">
+          <CardHeader className="bg-gradient-to-r from-amber-100/80 to-orange-100/80 border-b border-amber-200/50">
             <CardTitle className="flex items-center gap-2">
-              <TrendingUp className="h-5 w-5 text-amber-500" />
+              <TrendingUp className="h-5 w-5 text-amber-600" />
               Recent Activity
             </CardTitle>
-            <CardDescription>Your latest actions and creations</CardDescription>
+            <CardDescription className="text-amber-700/70">Your latest actions and creations</CardDescription>
           </CardHeader>
           <CardContent>
             {dashboard?.recentActivity && dashboard.recentActivity.length > 0 ? (
