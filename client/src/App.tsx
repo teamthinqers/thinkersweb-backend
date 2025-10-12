@@ -246,7 +246,6 @@ function Router() {
       <Route path="/neura-tuning/expertise" component={NeuraTuningExpertise} />
       <Route path="/neura-tuning-cognitive" component={CognitiveIdentityConfig} />
       <Route path="/cognitive-identity-config" component={CognitiveIdentityConfig} />
-      <Route path="/cognitive-shield-config" component={CognitiveIdentityConfig} />
 
       {/* Legacy routes - all redirecting to My Neura page */}
       <Route path="/dotspark-tuning">

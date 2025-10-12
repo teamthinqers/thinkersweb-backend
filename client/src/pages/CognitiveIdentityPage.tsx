@@ -46,12 +46,14 @@ export default function CognitiveIdentityPage() {
               </p>
 
               <div className="pt-8">
-                <Button 
-                  size="lg"
-                  className="bg-gradient-to-r from-[#a78bfa] via-[#9575cd] to-[#8b5cf6] hover:from-[#9575cd] hover:to-[#7c3aed] text-white px-8 py-6 text-lg shadow-[0_8px_30px_rgba(139,92,246,0.3)] hover:shadow-[0_12px_40px_rgba(139,92,246,0.4)]"
-                >
-                  Start Building Your Identity
-                </Button>
+                <Link href="/cognitive-identity-config">
+                  <Button 
+                    size="lg"
+                    className="bg-gradient-to-r from-[#a78bfa] via-[#9575cd] to-[#8b5cf6] hover:from-[#9575cd] hover:to-[#7c3aed] text-white px-8 py-6 text-lg shadow-[0_8px_30px_rgba(139,92,246,0.3)] hover:shadow-[0_12px_40px_rgba(139,92,246,0.4)]"
+                  >
+                    Start Building Your Identity
+                  </Button>
+                </Link>
               </div>
             </div>
           </div>

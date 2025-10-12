@@ -173,11 +173,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
         req.user.linkedinPhotoUrl = updatedUser.linkedinPhotoUrl;
         req.user.bio = updatedUser.bio;
         
-        // Save the updated session
-        req.session.save((err) => {
-          if (err) {
-            console.error('Session save error:', err);
-          }
+        // Save the updated session and wait for it to complete
+        await new Promise<void>((resolve, reject) => {
+          req.session.save((err) => {
+            if (err) {
+              console.error('Session save error:', err);
+              reject(err);
+            } else {
+              resolve();
+            }
+          });
         });
       }
       

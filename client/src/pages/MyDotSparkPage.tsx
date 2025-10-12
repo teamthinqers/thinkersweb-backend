@@ -191,8 +191,8 @@ export default function MyDotSparkPage() {
             4. Learning Engine - TODO: To be built
             ======================================== */}
         
-        {/* Cognitive Identity Box - Full Width - Links to both identity page and config */}
-        <Link href="/cognitive-identity-config">
+        {/* Cognitive Identity Box - Full Width - Links to cognitive identity page first */}
+        <Link href="/cognitive-identity">
           <Card className="group cursor-pointer border-0 transition-all duration-300 hover:scale-[1.01] bg-gradient-to-br from-[#a78bfa] via-[#9575cd] to-[#8b5cf6] relative overflow-hidden rounded-[32px] shadow-[0_8px_30px_rgba(139,92,246,0.2)] hover:shadow-[0_20px_60px_rgba(139,92,246,0.3)] mb-4">
             
             {/* Icon Badge */}
@@ -355,7 +355,7 @@ export default function MyDotSparkPage() {
 
           {/* 3. My Thought Circles Box */}
           <Link href="/thought-circle">
-            <Card className="group cursor-pointer border-0 transition-all duration-300 hover:scale-[1.02] bg-gradient-to-br from-purple-400 to-purple-500 relative overflow-hidden rounded-[32px] shadow-[0_8px_30px_rgba(168,85,247,0.25)] hover:shadow-[0_20px_60px_rgba(168,85,247,0.35)]">
+            <Card className="group cursor-pointer border-0 transition-all duration-300 hover:scale-[1.02] bg-gradient-to-br from-purple-500 to-purple-600 relative overflow-hidden rounded-[32px] shadow-[0_8px_30px_rgba(168,85,247,0.3)] hover:shadow-[0_20px_60px_rgba(168,85,247,0.4)]">
               
               {/* Icon Badge */}
               <div className="absolute top-4 left-1/2 -translate-x-1/2">
@@ -379,7 +379,7 @@ export default function MyDotSparkPage() {
 
           {/* 4. Learning Engine Box */}
           <Link href="/learning-engine">
-            <Card className="group cursor-pointer border-0 transition-all duration-300 hover:scale-[1.02] bg-gradient-to-br from-blue-400 to-indigo-400 relative overflow-hidden rounded-[32px] shadow-[0_8px_30px_rgba(59,130,246,0.25)] hover:shadow-[0_20px_60px_rgba(59,130,246,0.35)]">
+            <Card className="group cursor-pointer border-0 transition-all duration-300 hover:scale-[1.02] bg-gradient-to-br from-blue-500 to-indigo-600 relative overflow-hidden rounded-[32px] shadow-[0_8px_30px_rgba(59,130,246,0.3)] hover:shadow-[0_20px_60px_rgba(59,130,246,0.4)]">
               
               {/* Icon Badge */}
               <div className="absolute top-4 left-1/2 -translate-x-1/2">

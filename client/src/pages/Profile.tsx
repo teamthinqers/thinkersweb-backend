@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -26,6 +26,19 @@ const Profile = () => {
     bio: (user as any)?.bio || '',
     avatarFile: null as File | null,
   });
+
+  // Update formData when user changes
+  useEffect(() => {
+    if (user && !isEditing) {
+      setFormData({
+        fullName: (user as any)?.fullName || '',
+        headline: (user as any)?.linkedinHeadline || '',
+        linkedinUrl: (user as any)?.linkedinProfileUrl || '',
+        bio: (user as any)?.bio || '',
+        avatarFile: null,
+      });
+    }
+  }, [user, isEditing]);
 
   // Update profile mutation
   const updateProfileMutation = useMutation({
@@ -108,7 +121,8 @@ const Profile = () => {
 
   return (
     <SharedAuthLayout>
-      <div className="container mx-auto px-4 py-8 max-w-2xl">
+      <div className="container mx-auto px-4 py-8 max-w-2xl space-y-6">
+        {/* Main Profile Card */}
         <Card className="border border-gray-200 shadow-sm">
           <CardContent className="p-6">
             {/* Edit/Save Buttons */}
@@ -265,31 +279,6 @@ const Profile = () => {
                 )}
               </div>
 
-              {/* About Section */}
-              <div>
-                <Label htmlFor="bio" className="text-sm font-medium text-gray-700">
-                  About
-                </Label>
-                {isEditing ? (
-                  <Textarea
-                    id="bio"
-                    value={formData.bio}
-                    onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
-                    className="mt-1 min-h-[120px]"
-                    placeholder="Share your professional story, achievements, and what drives you..."
-                    maxLength={2600}
-                  />
-                ) : (
-                  <div className="mt-1">
-                    {(user as any)?.bio ? (
-                      <p className="text-sm text-gray-600 whitespace-pre-wrap">{(user as any)?.bio}</p>
-                    ) : (
-                      <p className="text-sm text-gray-400 italic">No summary added yet</p>
-                    )}
-                  </div>
-                )}
-              </div>
-
               {/* Email (Read-only) */}
               <div>
                 <Label htmlFor="email" className="text-sm font-medium text-gray-700">
@@ -298,6 +287,44 @@ const Profile = () => {
                 <p className="mt-1 text-sm text-gray-600">{user?.email}</p>
               </div>
             </div>
+          </CardContent>
+        </Card>
+
+        {/* About Section - Separate Card */}
+        <Card className="border border-gray-200 shadow-sm">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-semibold text-gray-900">About</h3>
+              {!isEditing && (
+                <Button
+                  onClick={() => setIsEditing(true)}
+                  variant="ghost"
+                  size="sm"
+                  className="flex items-center gap-2"
+                >
+                  <Pencil className="h-3 w-3" />
+                </Button>
+              )}
+            </div>
+            
+            {isEditing ? (
+              <Textarea
+                id="bio"
+                value={formData.bio}
+                onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
+                className="min-h-[120px]"
+                placeholder="Share your professional story, achievements, and what drives you..."
+                maxLength={2600}
+              />
+            ) : (
+              <div>
+                {(user as any)?.bio ? (
+                  <p className="text-sm text-gray-700 whitespace-pre-wrap leading-relaxed">{(user as any)?.bio}</p>
+                ) : (
+                  <p className="text-sm text-gray-400 italic">No summary added yet. Click the edit icon to add your professional story.</p>
+                )}
+              </div>
+            )}
           </CardContent>
         </Card>
       </div>

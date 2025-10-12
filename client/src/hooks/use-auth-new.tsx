@@ -11,6 +11,7 @@ export interface User {
   firebaseUid?: string | null;
   fullName?: string | null;
   avatarUrl?: string | null;
+  bio?: string | null;
   createdAt: Date;
   updatedAt: Date;
 }
