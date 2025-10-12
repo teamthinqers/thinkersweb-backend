@@ -199,19 +199,19 @@ export default function MyDotSparkPage() {
             
             {/* Content */}
             <div className="pt-14 pb-5 px-6">
-              <h3 className="text-xl font-bold text-white mb-1">Cognitive Identity</h3>
-              <p className="text-white/80 text-xs mb-4">Your unique thought patterns and intellectual fingerprint</p>
+              <h3 className="text-xl font-bold text-white mb-1 drop-shadow-lg">Cognitive Identity</h3>
+              <p className="text-white text-xs mb-4 drop-shadow-md">Your unique thought patterns and intellectual fingerprint</p>
               
               {/* Word Cloud Placeholder */}
               <div className="flex flex-wrap gap-2 items-center justify-center md:justify-start">
-                <span className="px-3 py-1 bg-white/20 backdrop-blur-sm rounded-full text-white text-xs font-medium">Analytical</span>
-                <span className="px-3.5 py-1.5 bg-white/25 backdrop-blur-sm rounded-full text-white text-sm font-semibold">Creative</span>
-                <span className="px-3 py-1 bg-white/20 backdrop-blur-sm rounded-full text-white text-xs font-medium">Strategic</span>
-                <span className="px-4 py-1.5 bg-white/30 backdrop-blur-sm rounded-full text-white text-sm font-bold">Innovative</span>
-                <span className="px-3 py-1 bg-white/20 backdrop-blur-sm rounded-full text-white text-xs font-medium">Curious</span>
-                <span className="px-3.5 py-1.5 bg-white/25 backdrop-blur-sm rounded-full text-white text-sm font-semibold">Empathetic</span>
-                <span className="px-3 py-1 bg-white/20 backdrop-blur-sm rounded-full text-white text-xs font-medium">Visionary</span>
-                <span className="px-3 py-1 bg-white/20 backdrop-blur-sm rounded-full text-white text-xs font-medium">Detail-oriented</span>
+                <span className="px-3 py-1 bg-white/30 backdrop-blur-sm rounded-full text-white text-xs font-semibold drop-shadow-md">Analytical</span>
+                <span className="px-3.5 py-1.5 bg-white/35 backdrop-blur-sm rounded-full text-white text-sm font-bold drop-shadow-md">Creative</span>
+                <span className="px-3 py-1 bg-white/30 backdrop-blur-sm rounded-full text-white text-xs font-semibold drop-shadow-md">Strategic</span>
+                <span className="px-4 py-1.5 bg-white/40 backdrop-blur-sm rounded-full text-white text-sm font-bold drop-shadow-md">Innovative</span>
+                <span className="px-3 py-1 bg-white/30 backdrop-blur-sm rounded-full text-white text-xs font-semibold drop-shadow-md">Curious</span>
+                <span className="px-3.5 py-1.5 bg-white/35 backdrop-blur-sm rounded-full text-white text-sm font-bold drop-shadow-md">Empathetic</span>
+                <span className="px-3 py-1 bg-white/30 backdrop-blur-sm rounded-full text-white text-xs font-semibold drop-shadow-md">Visionary</span>
+                <span className="px-3 py-1 bg-white/30 backdrop-blur-sm rounded-full text-white text-xs font-semibold drop-shadow-md">Detail-oriented</span>
               </div>
             </div>
             
