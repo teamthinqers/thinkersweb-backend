@@ -14,7 +14,6 @@ export default function CognitiveIdentityPage() {
             <Link href="/mydotspark">
               <Button variant="ghost" size="sm" className="gap-2 text-white hover:bg-white/20 backdrop-blur-sm">
                 <ArrowLeft className="h-4 w-4" />
-                Back to MyDotSpark
               </Button>
             </Link>
             <div className="flex items-center gap-3">
