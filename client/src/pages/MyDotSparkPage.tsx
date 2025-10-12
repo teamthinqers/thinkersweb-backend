@@ -173,6 +173,12 @@ export default function MyDotSparkPage() {
             onOpenChange={handleBadgeModalClose}
           />
 
+          {/* ========================================
+              PLACEHOLDER: Neural Strength Section
+              TODO: Build out Cognitive Identity & Learning Engine features
+              Current: Basic progress tracking with milestones
+              Future: Full gamification with detailed progress metrics
+              ======================================== */}
           {/* Neural Strength Progress */}
           <Card className="border-amber-200 bg-gradient-to-br from-amber-50 to-orange-50">
             <CardHeader>
