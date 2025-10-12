@@ -7,7 +7,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { Badge } from '@shared/schema';
-import { Sparkles } from 'lucide-react';
+import SparkIcon from '@/components/ui/spark-icon';
 
 interface BadgeUnlockModalProps {
   badge: Badge | null;
@@ -34,12 +34,12 @@ export default function BadgeUnlockModal({ badge, open, onOpenChange }: BadgeUnl
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md border-2 border-amber-200">
         <div className="relative">
-          {/* Sparkle Animation */}
+          {/* DotSpark Logo Animation */}
           <div className="absolute -top-4 -right-4 text-amber-500 animate-pulse">
-            <Sparkles className="h-8 w-8" />
+            <SparkIcon className="h-8 w-8" fill="#f59e0b" />
           </div>
           <div className="absolute -bottom-4 -left-4 text-amber-400 animate-pulse animation-delay-300">
-            <Sparkles className="h-6 w-6" />
+            <SparkIcon className="h-6 w-6" fill="#fbbf24" />
           </div>
 
           <DialogHeader className="text-center space-y-4">
