@@ -154,7 +154,7 @@ export default function MyDotSparkPage() {
         <div className="mb-4">
           <div className="flex items-center gap-3 mb-4">
             <Link href={`/user/${(user as any)?.id}`}>
-              <Avatar className="h-12 w-12 border-3 border-amber-200 shadow-lg cursor-pointer hover:border-amber-300 transition-colors">
+              <Avatar className="h-12 w-12 border-3 border-amber-200 shadow-lg cursor-pointer hover:border-amber-400 hover:scale-110 hover:shadow-xl transition-all duration-200">
                 <AvatarImage src={(user as any)?.avatar || (user as any)?.linkedinPhotoUrl || (user as any)?.photoURL || undefined} />
                 <AvatarFallback className="bg-gradient-to-br from-amber-500 to-orange-600 text-white text-lg">
                   {(user as any)?.displayName?.[0]?.toUpperCase() || (user as any)?.fullName?.[0]?.toUpperCase() || 'U'}
