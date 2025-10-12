@@ -53,6 +53,7 @@ export default function MyDotSparkPage() {
   const { user } = useAuth();
   const [badgeToShow, setBadgeToShow] = useState<Badge | null>(null);
   const [showBadgeModal, setShowBadgeModal] = useState(false);
+  const [cognitiveIdentityConfigured, setCognitiveIdentityConfigured] = useState(false);
 
   const { data: dashboardData, isLoading } = useQuery<{ success: boolean; data: DashboardData }>({
     queryKey: ['/api/dashboard'],
@@ -62,6 +63,12 @@ export default function MyDotSparkPage() {
   // Get cognitive tuning parameters for identity tags
   const { tuning } = useDotSparkTuning();
   const cognitiveIdentityTags = generateCognitiveIdentityTags(tuning || {});
+
+  // Check if cognitive identity is already configured
+  useEffect(() => {
+    const isConfigured = localStorage.getItem('cognitiveIdentityConfigured') === 'true';
+    setCognitiveIdentityConfigured(isConfigured);
+  }, []);
 
   // Fetch ALL badges with earned/locked status for gamification
   const { data: badgesData } = useQuery<{ success: boolean; badges: any[] }>({
@@ -191,8 +198,8 @@ export default function MyDotSparkPage() {
             4. Learning Engine - TODO: To be built
             ======================================== */}
         
-        {/* Cognitive Identity Box - Full Width - Links to cognitive identity page first */}
-        <Link href="/cognitive-identity">
+        {/* Cognitive Identity Box - Full Width - Links conditionally based on config status */}
+        <Link href={cognitiveIdentityConfigured ? "/cognitive-identity-config" : "/cognitive-identity"}>
           <Card className="group cursor-pointer border-0 transition-all duration-300 hover:scale-[1.01] bg-gradient-to-br from-[#a78bfa] via-[#9575cd] to-[#8b5cf6] relative overflow-hidden rounded-[32px] shadow-[0_8px_30px_rgba(139,92,246,0.2)] hover:shadow-[0_20px_60px_rgba(139,92,246,0.3)] mb-4">
             
             {/* Icon Badge */}

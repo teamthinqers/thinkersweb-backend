@@ -27,7 +27,7 @@ export function generateCognitiveIdentityTags(params: CognitiveParameters): stri
     } else if (params.cognitivePace > 0.7) {
       tags.push('Quick-Thinking');
     } else {
-      tags.push('Balanced Pace');
+      tags.push('Balanced Cognitive Pace');
     }
   }
   
@@ -38,7 +38,7 @@ export function generateCognitiveIdentityTags(params: CognitiveParameters): stri
     } else if (params.signalFocus > 0.7) {
       tags.push('Broad Scanner');
     } else {
-      tags.push('Adaptive Focus');
+      tags.push('Balanced Signal Focus');
     }
   }
   
@@ -49,7 +49,7 @@ export function generateCognitiveIdentityTags(params: CognitiveParameters): stri
     } else if (params.impulseControl > 0.7) {
       tags.push('Methodical');
     } else {
-      tags.push('Balanced Response');
+      tags.push('Balanced Impulse Control');
     }
   }
   
@@ -60,7 +60,7 @@ export function generateCognitiveIdentityTags(params: CognitiveParameters): stri
     } else if (params.mentalEnergyFlow > 0.7) {
       tags.push('Reflective');
     } else {
-      tags.push('Action-Reflection Balance');
+      tags.push('Balanced Energy Flow');
     }
   }
   
@@ -85,7 +85,7 @@ export function generateCognitiveIdentityTags(params: CognitiveParameters): stri
     } else if (params.contextualThinking > 0.7) {
       tags.push('Universal Thinker');
     } else {
-      tags.push('Flexible Thinking');
+      tags.push('Balanced Contextual Thinking');
     }
   }
   
@@ -96,7 +96,7 @@ export function generateCognitiveIdentityTags(params: CognitiveParameters): stri
     } else if (params.memoryBandwidth > 0.7) {
       tags.push('Deep Retainer');
     } else {
-      tags.push('Adaptive Memory');
+      tags.push('Balanced Memory Bandwidth');
     }
   }
   
@@ -107,7 +107,7 @@ export function generateCognitiveIdentityTags(params: CognitiveParameters): stri
     } else if (params.thoughtComplexity > 0.7) {
       tags.push('Complex Thinker');
     } else {
-      tags.push('Balanced Complexity');
+      tags.push('Balanced Thought Complexity');
     }
   }
   
@@ -118,7 +118,7 @@ export function generateCognitiveIdentityTags(params: CognitiveParameters): stri
     } else if (params.mentalModelDensity > 0.7) {
       tags.push('Model Architect');
     } else {
-      tags.push('Adaptive Models');
+      tags.push('Balanced Mental Models');
     }
   }
   
@@ -129,7 +129,7 @@ export function generateCognitiveIdentityTags(params: CognitiveParameters): stri
     } else if (params.patternDetectionSensitivity > 0.7) {
       tags.push('System Scanner');
     } else {
-      tags.push('Pattern Explorer');
+      tags.push('Balanced Pattern Detection');
     }
   }
   
@@ -140,7 +140,7 @@ export function generateCognitiveIdentityTags(params: CognitiveParameters): stri
     } else if (params.decisionMakingIndex > 0.7) {
       tags.push('Logical Decider');
     } else {
-      tags.push('Balanced Decider');
+      tags.push('Balanced Decision Making');
     }
   }
   
