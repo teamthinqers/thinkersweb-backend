@@ -478,6 +478,55 @@ export const notificationsSelectSchema = createSelectSchema(notifications);
 export type Notification = z.infer<typeof notificationsSelectSchema>;
 export type NotificationInsert = z.infer<typeof notificationsInsertSchema>;
 
+// === BADGE SYSTEM ===
+
+// Badges table - Defines available badges
+export const badges = pgTable("badges", {
+  id: serial("id").primaryKey(),
+  badgeKey: text("badge_key").notNull().unique(), // e.g., 'explorer', 'thinqer', 'connector'
+  name: text("name").notNull(), // Display name: 'Explorer', 'ThinQer'
+  description: text("description").notNull(), // What the badge represents
+  unlockMessage: text("unlock_message").notNull(), // Message shown when badge is unlocked
+  lockedHint: text("locked_hint"), // Hint shown when badge is locked
+  icon: text("icon"), // Icon or emoji for the badge
+  category: text("category").notNull().default("achievement"), // 'achievement', 'milestone', 'social', etc.
+  tier: integer("tier").notNull().default(1), // Badge importance/rarity (1-5)
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+// User Badges - Tracks which users have earned which badges
+export const userBadges = pgTable("user_badges", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").references(() => users.id).notNull(),
+  badgeId: integer("badge_id").references(() => badges.id).notNull(),
+  earnedAt: timestamp("earned_at").defaultNow().notNull(),
+  notified: boolean("notified").default(false).notNull(), // Whether user has seen the unlock notification
+}, (table) => ({
+  // Prevent duplicate badge awards
+  uniqueUserBadge: unique().on(table.userId, table.badgeId),
+}));
+
+// Badge relations
+export const badgesRelations = relations(badges, ({ many }) => ({
+  userBadges: many(userBadges),
+}));
+
+export const userBadgesRelations = relations(userBadges, ({ one }) => ({
+  user: one(users, { fields: [userBadges.userId], references: [users.id] }),
+  badge: one(badges, { fields: [userBadges.badgeId], references: [badges.id] }),
+}));
+
+// Badge schemas
+export const badgesInsertSchema = createInsertSchema(badges);
+export const badgesSelectSchema = createSelectSchema(badges);
+export type Badge = z.infer<typeof badgesSelectSchema>;
+export type BadgeInsert = z.infer<typeof badgesInsertSchema>;
+
+export const userBadgesInsertSchema = createInsertSchema(userBadges);
+export const userBadgesSelectSchema = createSelectSchema(userBadges);
+export type UserBadge = z.infer<typeof userBadgesSelectSchema>;
+export type UserBadgeInsert = z.infer<typeof userBadgesInsertSchema>;
+
 // Legacy tables for backward compatibility (keeping minimal structure)
 export const entries = pgTable("entries", {
   id: serial("id").primaryKey(),
