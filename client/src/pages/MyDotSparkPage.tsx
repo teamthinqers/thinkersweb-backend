@@ -56,12 +56,14 @@ export default function MyDotSparkPage() {
 
   // Fetch ALL badges with earned/locked status for gamification
   const { data: badgesData } = useQuery<{ success: boolean; badges: any[] }>({
-    queryKey: ['/api/users', (user as any)?.id, 'badges'],
+    queryKey: [`/api/users/${(user as any)?.id}/badges`],
     enabled: !!(user as any)?.id,
   });
 
   // Always show all badges (earned and locked) for gamification
   const allBadgesForDisplay = badgesData?.badges || [];
+  
+  console.log('Badges data:', badgesData, 'User ID:', (user as any)?.id);
 
   // Fetch pending badge notifications
   const { data: pendingBadgesData } = useQuery<{ success: boolean; badges: any[] }>({
@@ -84,7 +86,7 @@ export default function MyDotSparkPage() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/badges/pending'] });
-      queryClient.invalidateQueries({ queryKey: ['/api/users', (user as any)?.id, 'badges'] });
+      queryClient.invalidateQueries({ queryKey: [`/api/users/${(user as any)?.id}/badges`] });
     },
   });
 
