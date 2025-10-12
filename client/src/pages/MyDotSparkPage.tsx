@@ -145,24 +145,26 @@ export default function MyDotSparkPage() {
                 </AvatarFallback>
               </Avatar>
             </Link>
-            <div className="flex-1">
-              <div className="flex items-center gap-3">
-                <h1 className="text-3xl font-bold bg-gradient-to-r from-amber-700 to-orange-700 bg-clip-text text-transparent">
-                  {(user as any)?.displayName || (user as any)?.fullName || 'User'}
-                </h1>
-                <Link href="/profile">
-                  <Button variant="ghost" size="icon" className="h-8 w-8 text-amber-600 hover:text-amber-700 hover:bg-amber-100">
-                    <Pencil className="h-4 w-4" />
-                  </Button>
-                </Link>
-                {/* Badges Display - Always show all badges for gamification */}
-                {allBadgesForDisplay.length > 0 && (
-                  <BadgeDisplay badges={allBadgesForDisplay} />
-                )}
+            <div className="flex-1 flex items-center justify-between">
+              <div>
+                <div className="flex items-center gap-2">
+                  <h1 className="text-3xl font-bold bg-gradient-to-r from-amber-700 to-orange-700 bg-clip-text text-transparent">
+                    {(user as any)?.displayName || (user as any)?.fullName || 'User'}
+                  </h1>
+                  <Link href="/profile">
+                    <Button variant="ghost" size="icon" className="h-8 w-8 text-amber-600 hover:text-amber-700 hover:bg-amber-100">
+                      <Pencil className="h-4 w-4" />
+                    </Button>
+                  </Link>
+                </div>
+                <p className="text-amber-700">
+                  {(user as any)?.linkedinHeadline || 'Professional Headline'}
+                </p>
               </div>
-              <p className="text-amber-700">
-                {(user as any)?.linkedinHeadline || 'Professional Headline'}
-              </p>
+              {/* Badges Display - Always show all badges for gamification */}
+              {allBadgesForDisplay.length > 0 && (
+                <BadgeDisplay badges={allBadgesForDisplay} />
+              )}
             </div>
           </div>
 
