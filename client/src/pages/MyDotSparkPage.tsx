@@ -2,7 +2,7 @@ import { useQuery, useMutation } from '@tanstack/react-query';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
-import { Sparkles, Trophy, Target, Lightbulb, TrendingUp, ArrowRight, Brain, Users, Plus, FileText, Circle, Hexagon, Pencil, Zap } from 'lucide-react';
+import { Sparkles, Trophy, Target, Lightbulb, TrendingUp, ArrowRight, Brain, Users, Plus, FileText, Circle, Hexagon, Pencil, Zap, Fingerprint } from 'lucide-react';
 import { Link } from 'wouter';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useAuth } from '@/hooks/use-auth-new';
@@ -185,6 +185,43 @@ export default function MyDotSparkPage() {
             4. Learning Engine - TODO: To be built
             ======================================== */}
         
+        {/* Cognitive Identity Box - Full Width */}
+        <Link href="/cognitive-identity">
+          <Card className="group cursor-pointer border-0 transition-all duration-300 hover:scale-[1.01] bg-gradient-to-br from-purple-400 via-purple-500 to-indigo-500 relative overflow-hidden rounded-[32px] shadow-[0_8px_30px_rgb(168,85,247,0.3)] hover:shadow-[0_20px_60px_rgb(168,85,247,0.4)] mb-8">
+            
+            {/* Icon Badge */}
+            <div className="absolute top-6 left-8">
+              <div className="px-4 py-2 bg-white/20 backdrop-blur-sm rounded-full flex items-center gap-2">
+                <Fingerprint className="h-5 w-5 text-white" />
+                <Sparkles className="h-4 w-4 text-white/90" />
+              </div>
+            </div>
+            
+            {/* Content */}
+            <div className="pt-20 pb-8 px-8">
+              <h3 className="text-2xl font-bold text-white mb-2">Cognitive Identity</h3>
+              <p className="text-white/80 text-sm mb-6">Your unique thought patterns and intellectual fingerprint</p>
+              
+              {/* Word Cloud Placeholder */}
+              <div className="flex flex-wrap gap-3 items-center justify-center md:justify-start">
+                <span className="px-4 py-2 bg-white/20 backdrop-blur-sm rounded-full text-white text-sm font-medium">Analytical</span>
+                <span className="px-5 py-2.5 bg-white/25 backdrop-blur-sm rounded-full text-white text-base font-semibold">Creative</span>
+                <span className="px-4 py-2 bg-white/20 backdrop-blur-sm rounded-full text-white text-sm font-medium">Strategic</span>
+                <span className="px-6 py-3 bg-white/30 backdrop-blur-sm rounded-full text-white text-lg font-bold">Innovative</span>
+                <span className="px-4 py-2 bg-white/20 backdrop-blur-sm rounded-full text-white text-sm font-medium">Curious</span>
+                <span className="px-5 py-2.5 bg-white/25 backdrop-blur-sm rounded-full text-white text-base font-semibold">Empathetic</span>
+                <span className="px-4 py-2 bg-white/20 backdrop-blur-sm rounded-full text-white text-sm font-medium">Visionary</span>
+                <span className="px-4 py-2 bg-white/20 backdrop-blur-sm rounded-full text-white text-sm font-medium">Detail-oriented</span>
+              </div>
+            </div>
+            
+            {/* Arrow indicator */}
+            <div className="absolute top-8 right-8">
+              <ArrowRight className="h-5 w-5 text-white/80 group-hover:translate-x-1 transition-transform" />
+            </div>
+          </Card>
+        </Link>
+
         {/* 4 Main Dashboard Boxes */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
           
