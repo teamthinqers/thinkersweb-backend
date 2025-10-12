@@ -2,7 +2,7 @@ import { useQuery, useMutation } from '@tanstack/react-query';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
-import { Sparkles, Trophy, Target, Lightbulb, TrendingUp, ArrowRight, Brain, Users, Plus, FileText, Circle, Hexagon, Pencil, Zap, Fingerprint, Search } from 'lucide-react';
+import { Sparkles, Trophy, Target, Lightbulb, TrendingUp, ArrowRight, Brain, Users, Plus, FileText, Circle, Hexagon, Pencil, Zap, Fingerprint, Search, Settings } from 'lucide-react';
 import { Link } from 'wouter';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useAuth } from '@/hooks/use-auth-new';
@@ -200,7 +200,7 @@ export default function MyDotSparkPage() {
             {/* Content */}
             <div className="pt-14 pb-5 px-6">
               <h3 className="text-xl font-bold text-white mb-1 drop-shadow-lg">Cognitive Identity</h3>
-              <p className="text-white text-xs mb-4 drop-shadow-md">Your unique thought patterns and intellectual fingerprint</p>
+              <p className="text-white/90 text-sm font-medium mb-4 drop-shadow-md">Your unique thought patterns and intellectual fingerprint</p>
               
               {/* Word Cloud Placeholder */}
               <div className="flex flex-wrap gap-2 items-center justify-center md:justify-start">
@@ -240,7 +240,7 @@ export default function MyDotSparkPage() {
               {/* Content */}
               <div className="pt-16 pb-5 px-6 text-center">
                 <h3 className="text-xl font-bold text-white mb-1">My Neura</h3>
-                <p className="text-white/80 text-xs mb-4">Personal thoughts & saved insights</p>
+                <p className="text-white/90 text-sm font-medium mb-4">Personal thoughts & saved insights</p>
                 
                 {/* Stats */}
                 <div className="flex items-center justify-center gap-3 mb-4">
@@ -291,7 +291,7 @@ export default function MyDotSparkPage() {
               {/* Content */}
               <div className="pt-16 pb-5 px-6 text-center">
                 <h3 className="text-xl font-bold text-white mb-1">Social Neura</h3>
-                <p className="text-white/80 text-xs mb-4">Collective intelligence & shared thoughts</p>
+                <p className="text-white/90 text-sm font-medium mb-4">Collective intelligence & shared thoughts</p>
                 
                 {/* Stats */}
                 <div className="flex items-center justify-center gap-2 mb-4">
@@ -333,19 +333,19 @@ export default function MyDotSparkPage() {
 
           {/* 3. My Thought Circle Box */}
           <Link href="/thought-circle">
-            <Card className="group cursor-pointer border-0 transition-all duration-300 hover:scale-[1.02] bg-gradient-to-br from-purple-500 to-purple-600 relative overflow-hidden rounded-[32px] shadow-[0_8px_30px_rgba(168,85,247,0.25)] hover:shadow-[0_20px_60px_rgba(168,85,247,0.35)]">
+            <Card className="group cursor-pointer border-0 transition-all duration-300 hover:scale-[1.02] bg-gradient-to-br from-amber-500 to-orange-500 relative overflow-hidden rounded-[32px] shadow-[0_8px_30px_rgba(251,191,36,0.25)] hover:shadow-[0_20px_60px_rgba(251,191,36,0.35)]">
               
               {/* Icon Badge */}
               <div className="absolute top-4 left-1/2 -translate-x-1/2">
                 <div className="px-3 py-1.5 bg-white/20 backdrop-blur-sm rounded-full">
-                  <Target className="h-4 w-4 text-white" />
+                  <Fingerprint className="h-4 w-4 text-white" />
                 </div>
               </div>
               
               {/* Content */}
               <div className="pt-16 pb-5 px-6 text-center">
                 <h3 className="text-xl font-bold text-white mb-1">My Thought Circle</h3>
-                <p className="text-white/80 text-xs">Connect with your thinking network</p>
+                <p className="text-white/90 text-sm font-medium">Connect with your thinking network</p>
               </div>
               
               {/* Arrow indicator */}
@@ -357,19 +357,19 @@ export default function MyDotSparkPage() {
 
           {/* 4. Learning Engine Box */}
           <Link href="/learning-engine">
-            <Card className="group cursor-pointer border-0 transition-all duration-300 hover:scale-[1.02] bg-gradient-to-br from-blue-500 to-indigo-500 relative overflow-hidden rounded-[32px] shadow-[0_8px_30px_rgba(59,130,246,0.25)] hover:shadow-[0_20px_60px_rgba(59,130,246,0.35)]">
+            <Card className="group cursor-pointer border-0 transition-all duration-300 hover:scale-[1.02] bg-gradient-to-br from-purple-500 to-indigo-600 relative overflow-hidden rounded-[32px] shadow-[0_8px_30px_rgba(168,85,247,0.25)] hover:shadow-[0_20px_60px_rgba(168,85,247,0.35)]">
               
               {/* Icon Badge */}
               <div className="absolute top-4 left-1/2 -translate-x-1/2">
                 <div className="px-3 py-1.5 bg-white/20 backdrop-blur-sm rounded-full">
-                  <Lightbulb className="h-4 w-4 text-white" />
+                  <Settings className="h-4 w-4 text-white group-hover:rotate-180 transition-transform duration-700" />
                 </div>
               </div>
               
               {/* Content */}
               <div className="pt-16 pb-5 px-6 text-center">
                 <h3 className="text-xl font-bold text-white mb-1">Learning Engine</h3>
-                <p className="text-white/80 text-xs">Optimize your learning journey</p>
+                <p className="text-white/90 text-sm font-medium">Optimize your learning journey</p>
               </div>
               
               {/* Arrow indicator */}
