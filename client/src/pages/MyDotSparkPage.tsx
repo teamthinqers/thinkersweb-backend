@@ -13,6 +13,8 @@ import BadgeUnlockModal from '@/components/BadgeUnlockModal';
 import { useState, useEffect } from 'react';
 import { apiRequest, queryClient } from '@/lib/queryClient';
 import type { Badge } from '@shared/schema';
+import { useDotSparkTuning } from '@/hooks/useDotSparkTuning';
+import { generateCognitiveIdentityTags } from '@/lib/cognitiveIdentityTags';
 
 interface DashboardData {
   neuralStrength: {
@@ -56,6 +58,10 @@ export default function MyDotSparkPage() {
     queryKey: ['/api/dashboard'],
     enabled: !!user,
   });
+
+  // Get cognitive tuning parameters for identity tags
+  const { tuning } = useDotSparkTuning();
+  const cognitiveIdentityTags = generateCognitiveIdentityTags(tuning || {});
 
   // Fetch ALL badges with earned/locked status for gamification
   const { data: badgesData } = useQuery<{ success: boolean; badges: any[] }>({
@@ -202,16 +208,32 @@ export default function MyDotSparkPage() {
               <h3 className="text-xl font-bold text-white mb-1 drop-shadow-lg">Cognitive Identity</h3>
               <p className="text-white/90 text-sm font-medium mb-4 drop-shadow-md">Your unique thought patterns and intellectual fingerprint</p>
               
-              {/* Word Cloud Placeholder */}
+              {/* Cognitive Identity Tags - Dynamic based on user settings */}
               <div className="flex flex-wrap gap-2 items-center justify-center md:justify-start">
-                <span className="px-3 py-1 bg-white/30 backdrop-blur-sm rounded-full text-white text-xs font-semibold drop-shadow-md">Analytical</span>
-                <span className="px-3.5 py-1.5 bg-white/35 backdrop-blur-sm rounded-full text-white text-sm font-bold drop-shadow-md">Creative</span>
-                <span className="px-3 py-1 bg-white/30 backdrop-blur-sm rounded-full text-white text-xs font-semibold drop-shadow-md">Strategic</span>
-                <span className="px-4 py-1.5 bg-white/40 backdrop-blur-sm rounded-full text-white text-sm font-bold drop-shadow-md">Innovative</span>
-                <span className="px-3 py-1 bg-white/30 backdrop-blur-sm rounded-full text-white text-xs font-semibold drop-shadow-md">Curious</span>
-                <span className="px-3.5 py-1.5 bg-white/35 backdrop-blur-sm rounded-full text-white text-sm font-bold drop-shadow-md">Empathetic</span>
-                <span className="px-3 py-1 bg-white/30 backdrop-blur-sm rounded-full text-white text-xs font-semibold drop-shadow-md">Visionary</span>
-                <span className="px-3 py-1 bg-white/30 backdrop-blur-sm rounded-full text-white text-xs font-semibold drop-shadow-md">Detail-oriented</span>
+                {cognitiveIdentityTags.length > 0 ? (
+                  cognitiveIdentityTags.map((tag, index) => {
+                    const sizeVariants = ['text-xs px-3 py-1', 'text-sm px-3.5 py-1.5', 'text-xs px-3 py-1', 'text-sm px-4 py-1.5'];
+                    const opacityVariants = ['bg-white/30', 'bg-white/35', 'bg-white/30', 'bg-white/40'];
+                    const fontVariants = ['font-semibold', 'font-bold', 'font-semibold', 'font-bold'];
+                    
+                    const sizeClass = sizeVariants[index % sizeVariants.length];
+                    const opacityClass = opacityVariants[index % opacityVariants.length];
+                    const fontClass = fontVariants[index % fontVariants.length];
+                    
+                    return (
+                      <span 
+                        key={index} 
+                        className={`${sizeClass} ${opacityClass} ${fontClass} backdrop-blur-sm rounded-full text-white drop-shadow-md`}
+                      >
+                        {tag}
+                      </span>
+                    );
+                  })
+                ) : (
+                  <span className="px-3 py-1 bg-white/30 backdrop-blur-sm rounded-full text-white text-xs font-semibold drop-shadow-md">
+                    Configure your identity to see tags
+                  </span>
+                )}
               </div>
             </div>
             
