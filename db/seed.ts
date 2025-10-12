@@ -217,6 +217,57 @@ async function seed() {
       }
     }
 
+    // Badges seeding
+    console.log("Creating badges...");
+    const badgesData = [
+      {
+        badgeKey: 'explorer',
+        name: 'Explorer',
+        description: 'Welcome to DotSpark! Your journey begins here.',
+        unlockMessage: 'Welcome to the DotSpark community! You\'ve taken your first step in collective intelligence.',
+        lockedHint: 'Join DotSpark to unlock',
+        category: 'milestone',
+        tier: 1,
+      },
+      {
+        badgeKey: 'thinqer',
+        name: 'ThinQer',
+        description: 'Active thinker contributing valuable insights',
+        unlockMessage: 'You\'ve proven yourself as a valuable contributor to collective intelligence!',
+        lockedHint: 'Share meaningful thoughts to unlock',
+        category: 'achievement',
+        tier: 2,
+      },
+      {
+        badgeKey: 'thought_investor',
+        name: 'Thought Investor',
+        description: 'Shares personal insights with the collective',
+        unlockMessage: 'You\'ve invested your thoughts into collective intelligence!',
+        lockedHint: 'Share your first personal thought to Social to unlock',
+        category: 'social',
+        tier: 2,
+      },
+      {
+        badgeKey: 'co_creator',
+        name: 'Co-Creator',
+        description: 'Co-Creators of DotSpark',
+        unlockMessage: 'Honored as a Co-Creator of DotSpark - shaping the future of collective intelligence!',
+        lockedHint: 'By invitation only - for early contributors',
+        category: 'special',
+        tier: 5,
+      },
+    ];
+
+    for (const badgeData of badgesData) {
+      const existing = await db.query.badges.findFirst({
+        where: eq(schema.badges.badgeKey, badgeData.badgeKey),
+      });
+
+      if (!existing) {
+        await db.insert(schema.badges).values(badgeData);
+      }
+    }
+
     console.log("✅ Database seeded successfully!");
   } catch (error) {
     console.error("❌ Error seeding database:", error);
