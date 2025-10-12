@@ -192,7 +192,7 @@ export function useDotSparkTuning() {
       
       toast({
         title: "Configuration Saved",
-        description: "Your DotSpark Add On parameters have been updated.",
+        description: "Your DotSpark cognitive identity parameters have been updated.",
       });
     },
     onError: (error) => {

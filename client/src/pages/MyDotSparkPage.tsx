@@ -219,26 +219,16 @@ export default function MyDotSparkPage() {
               {/* Cognitive Identity Tags - Dynamic based on user settings */}
               <div className="flex flex-wrap gap-2 items-center justify-center md:justify-start">
                 {cognitiveIdentityTags.length > 0 ? (
-                  cognitiveIdentityTags.map((tag, index) => {
-                    const sizeVariants = ['text-xs px-3 py-1', 'text-sm px-3.5 py-1.5', 'text-xs px-3 py-1', 'text-sm px-4 py-1.5'];
-                    const opacityVariants = ['bg-white/30', 'bg-white/35', 'bg-white/30', 'bg-white/40'];
-                    const fontVariants = ['font-semibold', 'font-bold', 'font-semibold', 'font-bold'];
-                    
-                    const sizeClass = sizeVariants[index % sizeVariants.length];
-                    const opacityClass = opacityVariants[index % opacityVariants.length];
-                    const fontClass = fontVariants[index % fontVariants.length];
-                    
-                    return (
-                      <span 
-                        key={index} 
-                        className={`${sizeClass} ${opacityClass} ${fontClass} backdrop-blur-sm rounded-full text-white drop-shadow-md`}
-                      >
-                        {tag}
-                      </span>
-                    );
-                  })
+                  cognitiveIdentityTags.map((tag, index) => (
+                    <span 
+                      key={index} 
+                      className="text-sm px-4 py-1.5 bg-white/35 font-bold backdrop-blur-sm rounded-full text-white drop-shadow-md"
+                    >
+                      {tag}
+                    </span>
+                  ))
                 ) : (
-                  <span className="px-3 py-1 bg-white/30 backdrop-blur-sm rounded-full text-white text-xs font-semibold drop-shadow-md">
+                  <span className="text-sm px-4 py-1.5 bg-white/35 font-bold backdrop-blur-sm rounded-full text-white drop-shadow-md">
                     Configure your identity to see tags
                   </span>
                 )}
