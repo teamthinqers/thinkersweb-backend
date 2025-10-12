@@ -195,13 +195,7 @@ export default function CognitiveIdentityConfig() {
             <div className="p-2 bg-purple-100 dark:bg-purple-900 rounded-full">
               <BrainCog className="h-6 w-6 text-purple-600 dark:text-purple-400" />
             </div>
-            <div>
-              <CardTitle>Cognitive Identity</CardTitle>
-              <CardDescription>
-                Configure your Cognitive Identity to define your unique thinking patterns.
-                These settings help personalize your AI interactions based on your cognitive profile.
-              </CardDescription>
-            </div>
+            <CardTitle>Cognitive Identity</CardTitle>
           </div>
         </CardHeader>
         
