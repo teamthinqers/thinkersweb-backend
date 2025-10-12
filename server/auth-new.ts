@@ -332,13 +332,24 @@ export function setupNewAuth(app: Express) {
       req.user = sessionUser;
 
       // Save session
-      req.session.save((err) => {
+      req.session.save(async (err) => {
         if (err) {
           console.error("Session save error:", err);
           return res.status(500).json({ error: "Failed to save session" });
         }
         
         console.log(`✅ Session created for user ${user.id}`);
+        
+        // Award Explorer badge to new users
+        if (isNewUser && (app as any).awardBadge) {
+          try {
+            await (app as any).awardBadge(user.id, 'explorer');
+            console.log(`🏆 Explorer badge awarded to new user ${user.id}`);
+          } catch (error) {
+            console.error('Error awarding Explorer badge:', error);
+          }
+        }
+        
         res.status(isNewUser ? 201 : 200).json({ user: sessionUser, isNewUser });
       });
 

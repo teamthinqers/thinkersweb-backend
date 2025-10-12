@@ -209,6 +209,24 @@ router.post('/', async (req, res) => {
       );
     }
 
+    // Award ThinQer badge on first thought creation
+    try {
+      const thoughtCount = await db.select({ count: sql`count(*)::int` })
+        .from(thoughts)
+        .where(eq(thoughts.userId, userId));
+      
+      const count = thoughtCount[0]?.count || 0;
+      
+      // If this is the user's first thought, award ThinQer badge
+      if (count === 1 && (req.app as any).awardBadge) {
+        await (req.app as any).awardBadge(userId, 'thinqer');
+        console.log(`🏆 ThinQer badge awarded to user ${userId} for first thought`);
+      }
+    } catch (error) {
+      console.error('Error awarding ThinQer badge:', error);
+      // Non-fatal error, continue
+    }
+
     res.status(201).json({
       success: true,
       thought: thoughtWithUser,

@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation } from '@tanstack/react-query';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
@@ -8,6 +8,11 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useAuth } from '@/hooks/use-auth-new';
 import { formatDistanceToNow } from 'date-fns';
 import SharedAuthLayout from '@/components/layout/SharedAuthLayout';
+import BadgeDisplay from '@/components/BadgeDisplay';
+import BadgeUnlockModal from '@/components/BadgeUnlockModal';
+import { useState, useEffect } from 'react';
+import { apiRequest, queryClient } from '@/lib/queryClient';
+import type { Badge } from '@shared/schema';
 
 interface DashboardData {
   neuralStrength: {
@@ -41,11 +46,64 @@ interface DashboardData {
 
 export default function MyDotSparkPage() {
   const { user } = useAuth();
+  const [badgeToShow, setBadgeToShow] = useState<Badge | null>(null);
+  const [showBadgeModal, setShowBadgeModal] = useState(false);
 
   const { data: dashboardData, isLoading } = useQuery<{ success: boolean; data: DashboardData }>({
     queryKey: ['/api/dashboard'],
     enabled: !!user,
   });
+
+  // Fetch user's badges with status
+  const { data: badgesData } = useQuery<{ success: boolean; badges: any[] }>({
+    queryKey: ['/api/users', (user as any)?.id, 'badges'],
+    enabled: !!(user as any)?.id,
+  });
+
+  // Fetch pending badge notifications
+  const { data: pendingBadgesData } = useQuery<{ success: boolean; badges: any[] }>({
+    queryKey: ['/api/badges/pending'],
+    enabled: !!user,
+    refetchInterval: 5000, // Check every 5 seconds for new badges
+  });
+
+  // Mark badge as notified mutation
+  const markBadgeNotified = useMutation({
+    mutationFn: async (userBadgeId: number) => {
+      return apiRequest(`/api/badges/${userBadgeId}/notified`, {
+        method: 'PATCH',
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/badges/pending'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/users', (user as any)?.id, 'badges'] });
+    },
+  });
+
+  // Show badge unlock modal when new badges are earned
+  useEffect(() => {
+    if (pendingBadgesData?.badges && pendingBadgesData.badges.length > 0) {
+      const nextBadge = pendingBadgesData.badges[0];
+      
+      // Small delay for better UX (3 seconds after page load)
+      const timer = setTimeout(() => {
+        setBadgeToShow(nextBadge.badge);
+        setShowBadgeModal(true);
+      }, 3000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [pendingBadgesData]);
+
+  // Handle badge modal close
+  const handleBadgeModalClose = (open: boolean) => {
+    setShowBadgeModal(open);
+    if (!open && badgeToShow && pendingBadgesData?.badges?.[0]) {
+      // Mark as notified when modal is closed
+      markBadgeNotified.mutate(pendingBadgesData.badges[0].id);
+      setBadgeToShow(null);
+    }
+  };
 
   const dashboard = dashboardData?.data;
 
@@ -78,7 +136,7 @@ export default function MyDotSparkPage() {
               </Avatar>
             </Link>
             <div className="flex-1">
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-3">
                 <h1 className="text-3xl font-bold bg-gradient-to-r from-amber-700 to-orange-700 bg-clip-text text-transparent">
                   {(user as any)?.displayName || (user as any)?.fullName || 'User'}
                 </h1>
@@ -87,12 +145,23 @@ export default function MyDotSparkPage() {
                     <Pencil className="h-4 w-4" />
                   </Button>
                 </Link>
+                {/* Badges Display */}
+                {badgesData?.badges && badgesData.badges.length > 0 && (
+                  <BadgeDisplay badges={badgesData.badges} />
+                )}
               </div>
               <p className="text-amber-700 mt-1">
                 {(user as any)?.linkedinHeadline || 'Professional Headline'}
               </p>
             </div>
           </div>
+
+          {/* Badge Unlock Modal */}
+          <BadgeUnlockModal 
+            badge={badgeToShow}
+            open={showBadgeModal}
+            onOpenChange={handleBadgeModalClose}
+          />
 
           {/* Neural Strength Progress */}
           <Card className="border-amber-200 bg-gradient-to-br from-amber-50 to-orange-50">
