@@ -42,24 +42,8 @@ export default function CognitiveIdentityPage() {
                 Cognitive Identity Builder
               </h2>
               <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-                Your cognitive identity represents your unique thinking patterns, learning preferences, 
-                and mental frameworks. Complete your profile to unlock personalized AI assistance.
+                Your cognitive identity represents your unique thinking patterns and mental frameworks. Setup your identity accordingly
               </p>
-              
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12">
-                <div className="p-6 bg-gradient-to-br from-amber-500 to-amber-600 rounded-xl shadow-[0_4px_20px_rgba(245,158,11,0.2)]">
-                  <h3 className="font-semibold text-white mb-2">Step 1</h3>
-                  <p className="text-sm text-white/90">Define your learning style</p>
-                </div>
-                <div className="p-6 bg-gradient-to-br from-amber-500 to-amber-600 rounded-xl shadow-[0_4px_20px_rgba(245,158,11,0.2)]">
-                  <h3 className="font-semibold text-white mb-2">Step 2</h3>
-                  <p className="text-sm text-white/90">Map your knowledge domains</p>
-                </div>
-                <div className="p-6 bg-gradient-to-br from-amber-500 to-amber-600 rounded-xl shadow-[0_4px_20px_rgba(245,158,11,0.2)]">
-                  <h3 className="font-semibold text-white mb-2">Step 3</h3>
-                  <p className="text-sm text-white/90">Set cognitive preferences</p>
-                </div>
-              </div>
 
               <div className="pt-8">
                 <Button 
