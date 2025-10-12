@@ -418,18 +418,18 @@ export default function SocialFeedPage() {
                       <Button
                         variant="ghost"
                         size="sm"
-                        className="group flex items-center gap-2 rounded-lg px-3 py-2 bg-gradient-to-br from-purple-50 to-indigo-50 hover:from-purple-100 hover:to-indigo-100 border-l-2 border-purple-500 transition-all duration-300 relative"
+                        className="group flex items-center gap-2 rounded-lg px-3 py-2 bg-gradient-to-br from-orange-50 to-amber-50 hover:from-orange-100 hover:to-amber-100 border-l-2 border-orange-500 transition-all duration-300 relative"
                         title="Perspectives"
                       >
                         <div className="relative">
-                          <Search className="h-4 w-4 text-purple-600 group-hover:scale-110 transition-transform" />
+                          <Search className="h-4 w-4 text-orange-600 group-hover:scale-110 transition-transform" />
                         </div>
-                        <span className="text-sm font-medium text-purple-700">
+                        <span className="text-sm font-medium text-orange-700">
                           Perspectives
                         </span>
                       </Button>
-                      <div className="px-2.5 py-1 bg-gradient-to-br from-purple-50 to-indigo-50 rounded-lg border border-purple-200/50">
-                        <span className="text-sm font-semibold text-purple-700">{collectiveGrowth.perspectivesCount}</span>
+                      <div className="px-2.5 py-1 bg-gradient-to-br from-orange-50 to-amber-50 rounded-lg border border-orange-200/50">
+                        <span className="text-sm font-semibold text-orange-700">{collectiveGrowth.perspectivesCount}</span>
                       </div>
                     </div>
                   </div>
