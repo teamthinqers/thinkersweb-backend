@@ -1,11 +1,10 @@
 import { Info, Lock, Shield, Crown, Award, Star } from 'lucide-react';
 import { Badge, UserBadge } from '@shared/schema';
 import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip';
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover';
 import { Card } from '@/components/ui/card';
 import SparkIcon from '@/components/ui/spark-icon';
 
@@ -97,63 +96,61 @@ export default function BadgeDisplay({ badges }: BadgeDisplayProps) {
       
       <div className="h-8 w-px bg-amber-300/50 mx-1"></div>
       
-      <TooltipProvider>
-        <div className="flex items-center gap-6">
-          {badges.map((badge) => (
-            <Tooltip key={badge.id}>
-              <TooltipTrigger asChild>
-                <div className="flex flex-col items-center gap-2 group cursor-pointer">
-                  {/* Elite Badge Icon */}
-                  <div className={`relative transition-all duration-300 ${
+      <div className="flex items-center gap-6">
+        {badges.map((badge) => (
+          <Popover key={badge.id}>
+            <PopoverTrigger asChild>
+              <button className="flex flex-col items-center gap-2 group cursor-pointer focus:outline-none">
+                {/* Elite Badge Icon */}
+                <div className={`relative transition-all duration-300 ${
+                  badge.earned 
+                    ? 'group-hover:scale-110 group-hover:-translate-y-1' 
+                    : 'group-hover:scale-105 opacity-60'
+                }`}>
+                  <EliteBadgeIcon badge={badge} earned={badge.earned} />
+                </div>
+                
+                {/* Badge Title */}
+                <div className="text-center">
+                  <p className={`text-xs font-bold transition-colors ${
                     badge.earned 
-                      ? 'group-hover:scale-110 group-hover:-translate-y-1' 
-                      : 'group-hover:scale-105 opacity-60'
+                      ? 'text-amber-700 group-hover:text-amber-800' 
+                      : 'text-gray-500 group-hover:text-gray-600'
                   }`}>
-                    <EliteBadgeIcon badge={badge} earned={badge.earned} />
-                  </div>
-                  
-                  {/* Badge Title */}
-                  <div className="text-center">
-                    <p className={`text-xs font-bold transition-colors ${
-                      badge.earned 
-                        ? 'text-amber-700 group-hover:text-amber-800' 
-                        : 'text-gray-500 group-hover:text-gray-600'
-                    }`}>
-                      {badge.name}
-                    </p>
-                  </div>
-                </div>
-              </TooltipTrigger>
-              <TooltipContent 
-                side="bottom"
-                align="center"
-                sideOffset={8}
-                className="max-w-xs bg-gradient-to-br from-amber-50 to-orange-50 border-2 border-amber-200 shadow-xl z-50"
-              >
-                <div className="space-y-2 p-1">
-                  <div className="flex items-center gap-2">
-                    <SparkIcon className="w-4 h-4" fill="#f59e0b" />
-                    <p className={`font-bold text-sm ${badge.earned ? 'text-amber-700' : 'text-gray-700'}`}>
-                      {badge.earned ? '✨ ' : '🔒 '}{badge.name}
-                    </p>
-                  </div>
-                  <p className="text-sm text-gray-700 leading-relaxed">
-                    {badge.earned ? badge.description : (badge.lockedHint || badge.description)}
+                    {badge.name}
                   </p>
-                  {!badge.earned && (
-                    <div className="flex items-center gap-2 pt-2 border-t border-gray-200">
-                      <Lock className="w-3 h-3 text-orange-600" />
-                      <p className="text-xs text-orange-700 font-semibold">
-                        Complete challenges to unlock
-                      </p>
-                    </div>
-                  )}
                 </div>
-              </TooltipContent>
-            </Tooltip>
-          ))}
-        </div>
-      </TooltipProvider>
+              </button>
+            </PopoverTrigger>
+            <PopoverContent 
+              side="bottom"
+              align="center"
+              sideOffset={8}
+              className="w-80 bg-gradient-to-br from-amber-50 to-orange-50 border-2 border-amber-200 shadow-xl"
+            >
+              <div className="space-y-2">
+                <div className="flex items-center gap-2">
+                  <SparkIcon className="w-4 h-4" fill="#f59e0b" />
+                  <p className={`font-bold text-sm ${badge.earned ? 'text-amber-700' : 'text-gray-700'}`}>
+                    {badge.earned ? '✨ ' : '🔒 '}{badge.name}
+                  </p>
+                </div>
+                <p className="text-sm text-gray-700 leading-relaxed">
+                  {badge.earned ? badge.description : (badge.lockedHint || badge.description)}
+                </p>
+                {!badge.earned && (
+                  <div className="flex items-center gap-2 pt-2 border-t border-gray-200">
+                    <Lock className="w-3 h-3 text-orange-600" />
+                    <p className="text-xs text-orange-700 font-semibold">
+                      Complete challenges to unlock
+                    </p>
+                  </div>
+                )}
+              </div>
+            </PopoverContent>
+          </Popover>
+        ))}
+      </div>
     </Card>
   );
 }
