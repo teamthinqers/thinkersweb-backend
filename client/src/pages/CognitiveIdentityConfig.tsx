@@ -135,7 +135,7 @@ export default function CognitiveIdentityConfig() {
       <div className="container max-w-3xl mx-auto py-6 px-4">
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-2">
-            <Button variant="ghost" onClick={() => setLocation('/my-neura')} className="p-2">
+            <Button variant="ghost" onClick={() => setLocation('/mydotspark')} className="p-2">
               <ChevronLeft className="h-5 w-5" />
             </Button>
             <h1 className="text-2xl font-bold">Cognitive Identity</h1>
@@ -156,7 +156,7 @@ export default function CognitiveIdentityConfig() {
       {/* Header with back button */}
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-2">
-          <Button variant="ghost" onClick={() => setLocation('/my-neura')} className="p-2">
+          <Button variant="ghost" onClick={() => setLocation('/mydotspark')} className="p-2">
             <ChevronLeft className="h-5 w-5" />
           </Button>
           <h1 className="text-2xl font-bold">Cognitive Identity</h1>
