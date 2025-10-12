@@ -362,7 +362,7 @@ export default function MyDotSparkPage() {
               {/* Icon Badge */}
               <div className="absolute top-4 left-1/2 -translate-x-1/2">
                 <div className="px-3 py-1.5 bg-white/20 backdrop-blur-sm rounded-full">
-                  <Lightbulb className="h-4 w-4 text-white" />
+                  <Settings className="h-4 w-4 text-white animate-spin" style={{ animationDuration: '3s' }} />
                 </div>
               </div>
               
