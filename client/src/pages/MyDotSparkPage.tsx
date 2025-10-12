@@ -165,107 +165,34 @@ export default function MyDotSparkPage() {
               )}
             </div>
           </div>
-
-          {/* Badge Unlock Modal */}
-          <BadgeUnlockModal 
-            badge={badgeToShow}
-            open={showBadgeModal}
-            onOpenChange={handleBadgeModalClose}
-          />
-
-          {/* ========================================
-              PLACEHOLDER: Neural Strength Section
-              TODO: Build out Cognitive Identity & Learning Engine features
-              Current: Basic progress tracking with milestones
-              Future: Full gamification with detailed progress metrics
-              ======================================== */}
-          {/* Neural Strength Progress */}
-          <Card className="border-amber-200 bg-gradient-to-br from-amber-50 to-orange-50">
-            <CardHeader>
-              <div className="flex items-center justify-between">
-                <div>
-                  <CardTitle className="flex items-center gap-2">
-                    <Trophy className="h-5 w-5 text-amber-600" />
-                    Neural Strength
-                  </CardTitle>
-                  <CardDescription>Your cognitive growth and engagement level</CardDescription>
-                </div>
-                <div className="text-3xl font-bold text-amber-600">
-                  {dashboard?.neuralStrength.percentage || 0}%
-                </div>
-              </div>
-            </CardHeader>
-            <CardContent>
-              <Progress value={dashboard?.neuralStrength.percentage || 0} className="h-3 mb-4" />
-              <div className="flex flex-wrap gap-2">
-                <div className={`px-3 py-1 rounded-full text-xs font-medium ${
-                  dashboard?.neuralStrength.milestones.cognitiveIdentityCompleted 
-                    ? 'bg-green-100 text-green-700' 
-                    : 'bg-gray-100 text-gray-500'
-                }`}>
-                  {dashboard?.neuralStrength.milestones.cognitiveIdentityCompleted ? '✓' : '○'} Cognitive Identity
-                </div>
-                <div className={`px-3 py-1 rounded-full text-xs font-medium ${
-                  dashboard?.neuralStrength.milestones.learningEngineCompleted 
-                    ? 'bg-green-100 text-green-700' 
-                    : 'bg-gray-100 text-gray-500'
-                }`}>
-                  {dashboard?.neuralStrength.milestones.learningEngineCompleted ? '✓' : '○'} Learning Engine
-                </div>
-                <div className={`px-3 py-1 rounded-full text-xs font-medium ${
-                  dashboard?.neuralStrength.milestones.hasActivity 
-                    ? 'bg-green-100 text-green-700' 
-                    : 'bg-gray-100 text-gray-500'
-                }`}>
-                  {dashboard?.neuralStrength.milestones.hasActivity ? '✓' : '○'} First Activity
-                </div>
-              </div>
-            </CardContent>
-          </Card>
         </div>
 
-        {/* Navigation Cards - Main Features */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-          {/* Social Neura Card */}
-          <Link href="/social">
-            <Card className="group cursor-pointer border-red-200 hover:border-red-400 transition-all hover:shadow-xl bg-gradient-to-br from-red-50 to-orange-50">
-              <CardHeader>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="p-3 bg-gradient-to-br from-red-500 to-orange-600 rounded-xl shadow-lg">
-                      <Brain className="h-6 w-6 text-white" />
-                    </div>
-                    <div>
-                      <CardTitle className="text-xl">Social Neura</CardTitle>
-                      <CardDescription>Collective intelligence & shared thoughts</CardDescription>
-                    </div>
-                  </div>
-                  <ArrowRight className="h-5 w-5 text-red-500 group-hover:translate-x-1 transition-transform" />
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="flex items-center gap-4 text-sm text-gray-600">
-                  <div className="flex items-center gap-1">
-                    <FileText className="h-4 w-4" />
-                    <span>{dashboard?.stats.thoughts || 0} thoughts</span>
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <Users className="h-4 w-4" />
-                    <span>{dashboard?.stats.perspectives || 0} perspectives</span>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </Link>
+        {/* Badge Unlock Modal */}
+        <BadgeUnlockModal 
+          badge={badgeToShow}
+          open={showBadgeModal}
+          onOpenChange={handleBadgeModalClose}
+        />
 
-          {/* My Neura Card */}
+        {/* ========================================
+            MAIN DASHBOARD: 4 Core Sections
+            1. My Neura - Personal thoughts with Neural Strength meter
+            2. Social Neura - Collective intelligence with Growth meter
+            3. My Thought Circle - TODO: To be built
+            4. Learning Engine - TODO: To be built
+            ======================================== */}
+        
+        {/* 4 Main Dashboard Boxes */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+          
+          {/* 1. My Neura Box */}
           <Link href="/myneura">
-            <Card className="group cursor-pointer border-amber-200 hover:border-amber-400 transition-all hover:shadow-xl bg-gradient-to-br from-amber-50 to-orange-50">
+            <Card className="group cursor-pointer border-amber-200 hover:border-amber-400 transition-all hover:shadow-xl bg-gradient-to-br from-amber-50 to-orange-50 relative overflow-hidden">
               <CardHeader>
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <div className="p-3 bg-gradient-to-br from-amber-500 to-orange-600 rounded-xl shadow-lg">
-                      <Lightbulb className="h-6 w-6 text-white" />
+                      <Brain className="h-6 w-6 text-white" />
                     </div>
                     <div>
                       <CardTitle className="text-xl">My Neura</CardTitle>
@@ -275,62 +202,112 @@ export default function MyDotSparkPage() {
                   <ArrowRight className="h-5 w-5 text-amber-500 group-hover:translate-x-1 transition-transform" />
                 </div>
               </CardHeader>
-              <CardContent>
-                <div className="flex items-center gap-4 text-sm text-gray-600">
+              <CardContent className="space-y-4">
+                {/* Stats */}
+                <div className="flex items-center gap-6 text-sm text-gray-600">
+                  <div className="flex items-center gap-1">
+                    <Circle className="h-4 w-4" />
+                    <span>{dashboard?.stats.dots || 0} dots</span>
+                  </div>
                   <div className="flex items-center gap-1">
                     <Sparkles className="h-4 w-4" />
-                    <span>{dashboard?.stats.savedSparks || 0} saved sparks</span>
+                    <span>{dashboard?.stats.savedSparks || 0} sparks</span>
                   </div>
+                </div>
+                {/* Neural Strength Meter */}
+                <div className="pt-2">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-xs font-medium text-gray-600">Neural Strength</span>
+                    <span className="text-xs font-bold text-amber-600">{dashboard?.neuralStrength.percentage || 0}%</span>
+                  </div>
+                  <Progress value={dashboard?.neuralStrength.percentage || 0} className="h-2" />
                 </div>
               </CardContent>
             </Card>
           </Link>
-        </div>
 
-        {/* Stats Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-6 mb-8">
-          <Card className="border-amber-200 hover:shadow-lg transition-shadow">
-            <CardHeader className="pb-3">
+          {/* 2. Social Neura Box */}
+          <Link href="/social">
+            <Card className="group cursor-pointer border-red-200 hover:border-red-400 transition-all hover:shadow-xl bg-gradient-to-br from-red-50 to-orange-50 relative overflow-hidden">
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="p-3 bg-gradient-to-br from-red-500 to-orange-600 rounded-xl shadow-lg">
+                      <Users className="h-6 w-6 text-white" />
+                    </div>
+                    <div>
+                      <CardTitle className="text-xl">Social Neura</CardTitle>
+                      <CardDescription>Collective intelligence & shared thoughts</CardDescription>
+                    </div>
+                  </div>
+                  <ArrowRight className="h-5 w-5 text-red-500 group-hover:translate-x-1 transition-transform" />
+                </div>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                {/* Stats */}
+                <div className="flex items-center gap-6 text-sm text-gray-600">
+                  <div className="flex items-center gap-1">
+                    <FileText className="h-4 w-4" />
+                    <span>{dashboard?.stats.thoughts || 0} dots</span>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <Users className="h-4 w-4" />
+                    <span>{dashboard?.stats.perspectives || 0} perspectives</span>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <Sparkles className="h-4 w-4" />
+                    <span>{dashboard?.stats.savedSparks || 0} sparks</span>
+                  </div>
+                </div>
+                {/* Collective Growth Meter - TODO: Calculate from backend */}
+                <div className="pt-2">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-xs font-medium text-gray-600">Collective Growth</span>
+                    <span className="text-xs font-bold text-red-600">Coming Soon</span>
+                  </div>
+                  <Progress value={0} className="h-2" />
+                </div>
+              </CardContent>
+            </Card>
+          </Link>
+
+          {/* 3. My Thought Circle Box - PLACEHOLDER */}
+          <Card className="border-purple-200 bg-gradient-to-br from-purple-50 to-pink-50 opacity-60 cursor-not-allowed">
+            <CardHeader>
               <div className="flex items-center justify-between">
-                <CardTitle className="text-lg">Dots</CardTitle>
-                <Circle className="h-5 w-5 text-amber-500" />
+                <div className="flex items-center gap-3">
+                  <div className="p-3 bg-gradient-to-br from-purple-500 to-pink-600 rounded-xl shadow-lg">
+                    <Target className="h-6 w-6 text-white" />
+                  </div>
+                  <div>
+                    <CardTitle className="text-xl">My Thought Circle</CardTitle>
+                    <CardDescription>Coming soon...</CardDescription>
+                  </div>
+                </div>
               </div>
             </CardHeader>
             <CardContent>
-              <div className="text-3xl font-bold bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent">
-                {dashboard?.stats.dots || 0}
-              </div>
-              <p className="text-sm text-gray-500 mt-1">Single insights captured</p>
+              <p className="text-sm text-gray-500">Placeholder - Details to be defined</p>
             </CardContent>
           </Card>
 
-          <Card className="border-orange-200 hover:shadow-lg transition-shadow">
-            <CardHeader className="pb-3">
+          {/* 4. Learning Engine Box - PLACEHOLDER */}
+          <Card className="border-blue-200 bg-gradient-to-br from-blue-50 to-indigo-50 opacity-60 cursor-not-allowed">
+            <CardHeader>
               <div className="flex items-center justify-between">
-                <CardTitle className="text-lg">Wheels</CardTitle>
-                <Target className="h-5 w-5 text-orange-500" />
+                <div className="flex items-center gap-3">
+                  <div className="p-3 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl shadow-lg">
+                    <Lightbulb className="h-6 w-6 text-white" />
+                  </div>
+                  <div>
+                    <CardTitle className="text-xl">Learning Engine</CardTitle>
+                    <CardDescription>Coming soon...</CardDescription>
+                  </div>
+                </div>
               </div>
             </CardHeader>
             <CardContent>
-              <div className="text-3xl font-bold bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent">
-                {dashboard?.stats.wheels || 0}
-              </div>
-              <p className="text-sm text-gray-500 mt-1">Goal-oriented projects</p>
-            </CardContent>
-          </Card>
-
-          <Card className="border-red-200 hover:shadow-lg transition-shadow">
-            <CardHeader className="pb-3">
-              <div className="flex items-center justify-between">
-                <CardTitle className="text-lg">Chakras</CardTitle>
-                <Hexagon className="h-5 w-5 text-red-500" />
-              </div>
-            </CardHeader>
-            <CardContent>
-              <div className="text-3xl font-bold bg-gradient-to-r from-red-600 to-orange-600 bg-clip-text text-transparent">
-                {dashboard?.stats.chakras || 0}
-              </div>
-              <p className="text-sm text-gray-500 mt-1">Life purposes defined</p>
+              <p className="text-sm text-gray-500">Placeholder - Details to be defined</p>
             </CardContent>
           </Card>
         </div>
@@ -385,159 +362,6 @@ export default function MyDotSparkPage() {
             )}
           </CardContent>
         </Card>
-
-        {/* AI Insights Section */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-          <Card className="border-amber-200 bg-white/80 backdrop-blur">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Lightbulb className="h-5 w-5 text-amber-600" />
-                AI Insights
-              </CardTitle>
-              <CardDescription>Personalized recommendations for your growth</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                {dashboard?.neuralStrength.percentage === 0 ? (
-                  <div className="p-4 bg-gradient-to-br from-amber-50 to-orange-50 rounded-lg border border-amber-200">
-                    <p className="text-sm font-medium text-amber-900 mb-2">🎯 Get Started</p>
-                    <p className="text-sm text-gray-700">
-                      Welcome to DotSpark! Start by creating your first dot to capture an insight, or share a thought on Social Neura to connect with the community.
-                    </p>
-                  </div>
-                ) : dashboard?.stats.dots === 0 ? (
-                  <div className="p-4 bg-gradient-to-br from-amber-50 to-orange-50 rounded-lg border border-amber-200">
-                    <p className="text-sm font-medium text-amber-900 mb-2">💡 Capture Your Insights</p>
-                    <p className="text-sm text-gray-700">
-                      You haven't created any dots yet. Dots are powerful tools for capturing single insights and building your personal knowledge base.
-                    </p>
-                  </div>
-                ) : dashboard?.stats.wheels === 0 ? (
-                  <div className="p-4 bg-gradient-to-br from-orange-50 to-red-50 rounded-lg border border-orange-200">
-                    <p className="text-sm font-medium text-orange-900 mb-2">🎯 Set Your Goals</p>
-                    <p className="text-sm text-gray-700">
-                      You have {dashboard?.stats.dots} dots. Consider creating a wheel to organize them around a specific goal or learning objective.
-                    </p>
-                  </div>
-                ) : (
-                  <div className="p-4 bg-gradient-to-br from-green-50 to-emerald-50 rounded-lg border border-green-200">
-                    <p className="text-sm font-medium text-green-900 mb-2">🚀 Great Progress!</p>
-                    <p className="text-sm text-gray-700">
-                      You're building a strong knowledge network! Keep connecting your insights and engaging with the community to grow your neural strength.
-                    </p>
-                  </div>
-                )}
-                
-                {!dashboard?.neuralStrength.milestones.cognitiveIdentityCompleted && (
-                  <div className="p-4 bg-gradient-to-br from-amber-50 to-yellow-50 rounded-lg border border-amber-200">
-                    <p className="text-sm font-medium text-amber-900 mb-2">📋 Complete Your Profile</p>
-                    <p className="text-sm text-gray-700">
-                      Complete your cognitive identity to boost your neural strength and unlock personalized recommendations.
-                    </p>
-                  </div>
-                )}
-                
-                {dashboard && dashboard.stats.savedSparks > 0 && (
-                  <div className="p-4 bg-gradient-to-br from-red-50 to-pink-50 rounded-lg border border-red-200">
-                    <p className="text-sm font-medium text-red-900 mb-2">✨ Sparks to Explore</p>
-                    <p className="text-sm text-gray-700">
-                      You have {dashboard.stats.savedSparks} saved sparks from the community. Review them in My Neura and integrate the insights into your knowledge base.
-                    </p>
-                  </div>
-                )}
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="border-orange-200 bg-white/80 backdrop-blur">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Target className="h-5 w-5 text-orange-600" />
-                Next Steps
-              </CardTitle>
-              <CardDescription>Actions to accelerate your growth</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-3">
-                <Link href="/social">
-                  <div className="p-4 bg-gradient-to-r from-red-50 to-orange-50 rounded-lg border border-red-200 hover:border-red-300 transition-colors cursor-pointer">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="text-sm font-medium text-red-900">Explore Social Neura</p>
-                        <p className="text-xs text-gray-600 mt-1">Discover collective intelligence and shared thoughts</p>
-                      </div>
-                      <ArrowRight className="h-4 w-4 text-red-500" />
-                    </div>
-                  </div>
-                </Link>
-
-                <Link href="/myneura">
-                  <div className="p-4 bg-gradient-to-r from-amber-50 to-yellow-50 rounded-lg border border-amber-200 hover:border-amber-300 transition-colors cursor-pointer">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="text-sm font-medium text-amber-900">Review My Neura</p>
-                        <p className="text-xs text-gray-600 mt-1">Organize personal thoughts and saved insights</p>
-                      </div>
-                      <ArrowRight className="h-4 w-4 text-amber-500" />
-                    </div>
-                  </div>
-                </Link>
-
-                {dashboard && dashboard.stats.dots > 0 && dashboard.stats.wheels === 0 && (
-                  <div className="p-4 bg-gradient-to-r from-orange-50 to-amber-50 rounded-lg border border-orange-200">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="text-sm font-medium text-orange-900">Create Your First Wheel</p>
-                        <p className="text-xs text-gray-600 mt-1">Organize your {dashboard.stats.dots} dots into goal-oriented projects</p>
-                      </div>
-                      <Target className="h-4 w-4 text-orange-500" />
-                    </div>
-                  </div>
-                )}
-
-                {dashboard && dashboard.stats.thoughts === 0 && (
-                  <div className="p-4 bg-gradient-to-r from-amber-50 to-orange-50 rounded-lg border border-amber-200">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="text-sm font-medium text-amber-900">Share Your First Thought</p>
-                        <p className="text-xs text-gray-600 mt-1">Contribute to collective intelligence on Social Neura</p>
-                      </div>
-                      <Users className="h-4 w-4 text-amber-600" />
-                    </div>
-                  </div>
-                )}
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Quick Actions Banner */}
-        <div className="mt-8 p-6 bg-gradient-to-r from-amber-500 via-orange-500 to-red-500 rounded-2xl shadow-xl text-white">
-          <div className="text-center mb-4">
-            <h3 className="text-2xl font-bold mb-2">Ready to grow your intelligence?</h3>
-            <p className="text-amber-50">Capture insights, set goals, and connect with the community</p>
-          </div>
-          <div className="flex flex-wrap justify-center gap-3">
-            <Link href="/social">
-              <Button 
-                variant="secondary" 
-                className="bg-white text-red-600 hover:bg-red-50"
-              >
-                <Brain className="h-4 w-4 mr-2" />
-                Share Thought
-              </Button>
-            </Link>
-            <Link href="/myneura">
-              <Button 
-                variant="secondary" 
-                className="bg-white text-amber-600 hover:bg-amber-50"
-              >
-                <Lightbulb className="h-4 w-4 mr-2" />
-                My Neura
-              </Button>
-            </Link>
-          </div>
-        </div>
         </div>
       </div>
     </SharedAuthLayout>
