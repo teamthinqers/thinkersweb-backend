@@ -525,7 +525,7 @@ export default function SectionedDotSparkTuningPage() {
                 <Button 
                   className="flex items-center justify-center gap-2 w-48 bg-gradient-to-r from-amber-700 to-orange-700 hover:from-amber-800 hover:to-orange-800 text-white group-hover:translate-y-0 translate-y-1 transition-all duration-300 h-10 relative"
                   onClick={() => {
-                    setLocation('/cognitive-shield-config');
+                    setLocation('/cognitive-identity-config');
                   }}
                 >
                   <Shield className="h-4 w-4" />

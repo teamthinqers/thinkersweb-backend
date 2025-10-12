@@ -32,10 +32,9 @@ import ActivateDotSpark from "@/pages/ActivateDotSpark";
 import ActivateNeura from "@/pages/ActivateNeura";
 import MyNeura from "@/pages/MyNeura";
 import NeuraTuningCore from "@/pages/NeuraTuningCore";
-import NeuraTuningCognitive from "@/pages/NeuraTuningCognitive";
+import CognitiveIdentityConfig from "@/pages/CognitiveIdentityConfig";
 import NeuraTuningExpertise from "@/pages/NeuraTuningExpertise";
 import NeuraTuningLearning from "@/pages/NeuraTuningLearning";
-import CognitiveShieldConfig from "@/pages/CognitiveShieldConfig";
 
 import DotSparkTuningPage from "@/pages/DotSparkTuningPage";
 import DotSparkCapacityPage from "@/pages/DotSparkCapacityPage";
@@ -237,16 +236,17 @@ function Router() {
       <Route path="/neura" component={MyNeura} />
       {/* DotSpark tuning section pages - Order: Core, Cognitive, Learning, Expertise */}
       <Route path="/dotspark-tuning/core" component={NeuraTuningCore} />
-      <Route path="/dotspark-tuning/cognitive" component={NeuraTuningCognitive} />
+      <Route path="/dotspark-tuning/cognitive" component={CognitiveIdentityConfig} />
       <Route path="/dotspark-tuning/learning" component={NeuraTuningLearning} />  
       <Route path="/dotspark-tuning/expertise" component={NeuraTuningExpertise} />
       {/* Legacy Neura routes for backwards compatibility */}
       <Route path="/neura-tuning/core" component={NeuraTuningCore} />
-      <Route path="/neura-tuning/cognitive" component={NeuraTuningCognitive} />
+      <Route path="/neura-tuning/cognitive" component={CognitiveIdentityConfig} />
       <Route path="/neura-tuning/learning" component={NeuraTuningLearning} />  
       <Route path="/neura-tuning/expertise" component={NeuraTuningExpertise} />
-      <Route path="/neura-tuning-cognitive" component={NeuraTuningCognitive} />
-      <Route path="/cognitive-shield-config" component={NeuraTuningCognitive} />
+      <Route path="/neura-tuning-cognitive" component={CognitiveIdentityConfig} />
+      <Route path="/cognitive-identity-config" component={CognitiveIdentityConfig} />
+      <Route path="/cognitive-shield-config" component={CognitiveIdentityConfig} />
 
       {/* Legacy routes - all redirecting to My Neura page */}
       <Route path="/dotspark-tuning">
