@@ -626,8 +626,8 @@ export function setupNewAuth(app: Express) {
         }
 
         console.log(`✅ Session created for LinkedIn user ${dbUser.id}`);
-        // Redirect to MyNeura page after successful login
-        res.redirect('/myneura');
+        // Redirect to MyDotSpark page after successful login (landing page)
+        res.redirect('/mydotspark');
       });
 
     } catch (error) {
