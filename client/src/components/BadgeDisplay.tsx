@@ -92,7 +92,7 @@ export default function BadgeDisplay({ badges }: BadgeDisplayProps) {
     <Card className="inline-flex items-center gap-1 px-4 py-3 bg-gradient-to-br from-amber-50/80 via-orange-50/80 to-amber-100/80 border-2 border-amber-200/60 shadow-lg backdrop-blur-sm">
       <div className="flex items-center gap-1 mr-2">
         <Award className="w-4 h-4 text-amber-600" />
-        <span className="text-xs font-semibold text-amber-700 uppercase tracking-wide">Achievements</span>
+        <span className="text-xs font-semibold text-amber-700 uppercase tracking-wide">Badges</span>
       </div>
       
       <div className="h-8 w-px bg-amber-300/50 mx-1"></div>
