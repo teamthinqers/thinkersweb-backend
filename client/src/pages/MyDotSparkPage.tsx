@@ -187,7 +187,7 @@ export default function MyDotSparkPage() {
         
         {/* Cognitive Identity Box - Full Width */}
         <Link href="/cognitive-identity">
-          <Card className="group cursor-pointer border-0 transition-all duration-300 hover:scale-[1.01] bg-gradient-to-br from-purple-400 via-purple-500 to-indigo-500 relative overflow-hidden rounded-[32px] shadow-[0_8px_30px_rgb(168,85,247,0.3)] hover:shadow-[0_20px_60px_rgb(168,85,247,0.4)] mb-8">
+          <Card className="group cursor-pointer border-0 transition-all duration-300 hover:scale-[1.01] bg-gradient-to-br from-[#9b6cfc] via-[#8b5cf6] to-[#7c3aed] relative overflow-hidden rounded-[32px] shadow-[0_8px_30px_rgb(139,92,246,0.35)] hover:shadow-[0_20px_60px_rgb(139,92,246,0.45)] mb-8">
             
             {/* Icon Badge */}
             <div className="absolute top-6 left-8">
