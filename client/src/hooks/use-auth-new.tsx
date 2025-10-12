@@ -88,7 +88,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         idToken,
       });
       
+      console.log("📡 Backend response status:", response.status, response.statusText);
+      
       const data = await response.json() as { user: User; isNewUser: boolean };
+      
+      console.log("📡 Backend response data:", data);
+
+      if (!response.ok) {
+        console.error("❌ Backend returned error:", data);
+        throw new Error((data as any).error || "Failed to create session");
+      }
 
       if (data && data.user) {
         console.log("✅ Backend session created successfully");
