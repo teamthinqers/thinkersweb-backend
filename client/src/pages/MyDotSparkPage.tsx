@@ -2,7 +2,7 @@ import { useQuery, useMutation } from '@tanstack/react-query';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
-import { Sparkles, Trophy, Target, Lightbulb, TrendingUp, ArrowRight, Brain, Users, Plus, FileText, Circle, Hexagon, Pencil, Zap, Fingerprint } from 'lucide-react';
+import { Sparkles, Trophy, Target, Lightbulb, TrendingUp, ArrowRight, Brain, Users, Plus, FileText, Circle, Hexagon, Pencil, Zap, Fingerprint, Eye } from 'lucide-react';
 import { Link } from 'wouter';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useAuth } from '@/hooks/use-auth-new';
@@ -245,7 +245,7 @@ export default function MyDotSparkPage() {
                 {/* Stats */}
                 <div className="flex items-center justify-center gap-3 mb-4">
                   <div className="flex items-center gap-1.5 px-2.5 py-1 bg-white/20 backdrop-blur-sm rounded-full">
-                    <Circle className="h-3 w-3 text-white" />
+                    <Lightbulb className="h-3 w-3 text-white" />
                     <span className="text-white font-semibold text-xs">{dashboard?.stats.dots || 0}</span>
                   </div>
                   <div className="flex items-center gap-1.5 px-2.5 py-1 bg-white/20 backdrop-blur-sm rounded-full">
@@ -296,11 +296,11 @@ export default function MyDotSparkPage() {
                 {/* Stats */}
                 <div className="flex items-center justify-center gap-2 mb-4">
                   <div className="flex items-center gap-1 px-2 py-1 bg-white/20 backdrop-blur-sm rounded-full">
-                    <FileText className="h-3 w-3 text-white" />
+                    <Lightbulb className="h-3 w-3 text-white" />
                     <span className="text-white font-semibold text-xs">{dashboard?.stats.thoughts || 0}</span>
                   </div>
                   <div className="flex items-center gap-1 px-2 py-1 bg-white/20 backdrop-blur-sm rounded-full">
-                    <Users className="h-3 w-3 text-white" />
+                    <Eye className="h-3 w-3 text-white" />
                     <span className="text-white font-semibold text-xs">{dashboard?.stats.perspectives || 0}</span>
                   </div>
                   <div className="flex items-center gap-1 px-2 py-1 bg-white/20 backdrop-blur-sm rounded-full">
@@ -399,9 +399,9 @@ export default function MyDotSparkPage() {
                       activity.type === 'wheel' ? 'bg-orange-100' :
                       'bg-red-100'
                     }`}>
-                      {activity.type === 'dot' ? <Circle className="h-4 w-4 text-amber-600" /> :
+                      {activity.type === 'dot' ? <Lightbulb className="h-4 w-4 text-amber-600" /> :
                        activity.type === 'wheel' ? <Target className="h-4 w-4 text-orange-600" /> :
-                       <FileText className="h-4 w-4 text-red-600" />}
+                       <Lightbulb className="h-4 w-4 text-red-600" />}
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-medium text-gray-900 capitalize">
