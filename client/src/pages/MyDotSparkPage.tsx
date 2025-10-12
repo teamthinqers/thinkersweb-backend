@@ -393,28 +393,44 @@ export default function MyDotSparkPage() {
             {dashboard?.recentActivity && dashboard.recentActivity.length > 0 ? (
               <div className="space-y-3">
                 {dashboard.recentActivity.map((activity, index) => (
-                  <div key={index} className="flex items-start gap-3 p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                  <div key={index} className={`flex items-start gap-3 p-3 rounded-lg border transition-all duration-200 ${
+                    activity.type === 'dot' ? 'bg-gradient-to-r from-amber-50 to-yellow-50 border-amber-200 hover:from-amber-100 hover:to-yellow-100 hover:border-amber-300' :
+                    activity.type === 'wheel' ? 'bg-gradient-to-r from-orange-50 to-amber-50 border-orange-200 hover:from-orange-100 hover:to-amber-100 hover:border-orange-300' :
+                    'bg-gradient-to-r from-red-50 to-orange-50 border-red-200 hover:from-red-100 hover:to-orange-100 hover:border-red-300'
+                  }`}>
                     <div className={`p-2 rounded-lg ${
-                      activity.type === 'dot' ? 'bg-amber-100' :
-                      activity.type === 'wheel' ? 'bg-orange-100' :
-                      'bg-red-100'
+                      activity.type === 'dot' ? 'bg-amber-200' :
+                      activity.type === 'wheel' ? 'bg-orange-200' :
+                      'bg-red-200'
                     }`}>
-                      {activity.type === 'dot' ? <Lightbulb className="h-4 w-4 text-amber-600" /> :
-                       activity.type === 'wheel' ? <Target className="h-4 w-4 text-orange-600" /> :
-                       <Lightbulb className="h-4 w-4 text-red-600" />}
+                      {activity.type === 'dot' ? <Lightbulb className="h-4 w-4 text-amber-700" /> :
+                       activity.type === 'wheel' ? <Target className="h-4 w-4 text-orange-700" /> :
+                       <Lightbulb className="h-4 w-4 text-red-700" />}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-gray-900 capitalize">
+                      <p className={`text-sm font-semibold capitalize ${
+                        activity.type === 'dot' ? 'text-amber-900' :
+                        activity.type === 'wheel' ? 'text-orange-900' :
+                        'text-red-900'
+                      }`}>
                         {activity.type === 'dot' ? 'New Dot Created' :
                          activity.type === 'wheel' ? 'New Wheel Created' :
                          'New Thought Shared'}
                       </p>
-                      <p className="text-sm text-gray-600 truncate">
+                      <p className={`text-sm truncate ${
+                        activity.type === 'dot' ? 'text-amber-700' :
+                        activity.type === 'wheel' ? 'text-orange-700' :
+                        'text-red-700'
+                      }`}>
                         {activity.type === 'dot' ? activity.data.summary :
                          activity.type === 'wheel' ? activity.data.heading :
                          activity.data.heading}
                       </p>
-                      <p className="text-xs text-gray-400 mt-1">
+                      <p className={`text-xs mt-1 ${
+                        activity.type === 'dot' ? 'text-amber-600' :
+                        activity.type === 'wheel' ? 'text-orange-600' :
+                        'text-red-600'
+                      }`}>
                         {formatDistanceToNow(new Date(activity.timestamp), { addSuffix: true })}
                       </p>
                     </div>
