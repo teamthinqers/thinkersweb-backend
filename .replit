@@ -88,8 +88,4 @@ externalPort = 3001
 localPort = 44505
 externalPort = 8081
 
-[[ports]]
-localPort = 45889
-externalPort = 8099
-
 [agent]

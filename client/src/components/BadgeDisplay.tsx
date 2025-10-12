@@ -132,8 +132,10 @@ export default function BadgeDisplay({ badges }: BadgeDisplayProps) {
                 </div>
               </TooltipTrigger>
               <TooltipContent 
-                side="bottom" 
-                className="max-w-xs bg-gradient-to-br from-amber-50 to-orange-50 border-2 border-amber-200 shadow-xl"
+                side="bottom"
+                align="center"
+                sideOffset={8}
+                className="max-w-xs bg-gradient-to-br from-amber-50 to-orange-50 border-2 border-amber-200 shadow-xl z-50"
               >
                 <div className="space-y-2 p-1">
                   <div className="flex items-center gap-2">
