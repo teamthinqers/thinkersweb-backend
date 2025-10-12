@@ -191,8 +191,8 @@ export default function MyDotSparkPage() {
             4. Learning Engine - TODO: To be built
             ======================================== */}
         
-        {/* Cognitive Identity Box - Full Width */}
-        <Link href="/cognitive-identity">
+        {/* Cognitive Identity Box - Full Width - Links to both identity page and config */}
+        <Link href="/cognitive-identity-config">
           <Card className="group cursor-pointer border-0 transition-all duration-300 hover:scale-[1.01] bg-gradient-to-br from-[#a78bfa] via-[#9575cd] to-[#8b5cf6] relative overflow-hidden rounded-[32px] shadow-[0_8px_30px_rgba(139,92,246,0.2)] hover:shadow-[0_20px_60px_rgba(139,92,246,0.3)] mb-4">
             
             {/* Icon Badge */}

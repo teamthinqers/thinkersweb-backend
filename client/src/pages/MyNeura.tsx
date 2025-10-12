@@ -108,14 +108,14 @@ export default function MyNeura() {
   }>({});
   
   // State for tracking configured sections
-  const [cognitiveShieldConfigured, setCognitiveShieldConfigured] = useState(false);
+  const [cognitiveIdentityConfigured, setCognitiveIdentityConfigured] = useState(false);
   const [expertiseLayerConfigured, setExpertiseLayerConfigured] = useState(false);
   
   // Check localStorage for configuration status
   useEffect(() => {
-    const cognitiveConfigured = localStorage.getItem('cognitiveShieldConfigured') === 'true';
+    const cognitiveConfigured = localStorage.getItem('cognitiveIdentityConfigured') === 'true';
     const expertiseConfigured = localStorage.getItem('expertiseLayerConfigured') === 'true';
-    setCognitiveShieldConfigured(cognitiveConfigured);
+    setCognitiveIdentityConfigured(cognitiveConfigured);
     setExpertiseLayerConfigured(expertiseConfigured);
   }, []);
   
@@ -449,7 +449,7 @@ export default function MyNeura() {
       setJustSaved(true);
       
       // Mark the sections as configured after saving
-      setCognitiveShieldConfigured(true);
+      setCognitiveIdentityConfigured(true);
       setExpertiseLayerConfigured(true);
       
       // Reset saved status after 2 seconds
@@ -630,7 +630,7 @@ export default function MyNeura() {
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 auto-rows-fr">
 
-          {/* CogniShield Card */}
+          {/* Cognitive Identity Card */}
           <Card className="overflow-hidden hover:shadow-lg transition-all duration-300 group border-amber-200 dark:border-amber-800 flex flex-col h-full relative">
             <div className="h-48 bg-gradient-to-br from-amber-800 to-orange-900 flex items-center justify-center relative overflow-hidden">
               {/* Subtle organic spark network */}
@@ -649,12 +649,12 @@ export default function MyNeura() {
                 <div className="rounded-full bg-amber-900/40 p-4 backdrop-blur-sm mb-4 border border-amber-600/30">
                   <Shield className="h-12 w-12 text-amber-100" />
                 </div>
-                <h3 className="text-xl font-bold text-amber-50">CogniShield (Coming Soon)</h3>
+                <h3 className="text-xl font-bold text-amber-50">Cognitive Identity</h3>
               </div>
             </div>
             <CardContent className="p-6 bg-gradient-to-b from-amber-50 to-orange-50 dark:from-amber-950/30 dark:to-orange-950/30 flex flex-col justify-between min-h-[120px]">
               <p className="text-muted-foreground mb-4 flex-1">
-                Configure Cogni Shield to retain your cognitive identity while taking help of AI.
+                Configure your Cognitive Identity to define your unique thinking patterns and personalize AI interactions.
               </p>
               <div className="flex justify-center mt-auto">
                 <Button 
@@ -663,10 +663,10 @@ export default function MyNeura() {
                     setLocation('/cognitive-identity-config');
                   }}
                 >
-                  {cognitiveShieldConfigured && (
+                  {cognitiveIdentityConfigured && (
                     <Edit className="h-3 w-3 absolute -top-1 -right-1 bg-white text-amber-700 rounded-full p-0.5" />
                   )}
-                  {cognitiveShieldConfigured ? 'Configured' : 'Configure Shield'}
+                  {cognitiveIdentityConfigured ? 'Configured' : 'Configure Identity'}
                 </Button>
               </div>
             </CardContent>

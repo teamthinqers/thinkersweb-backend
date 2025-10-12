@@ -495,7 +495,7 @@ export default function SectionedDotSparkTuningPage() {
         </p>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-          {/* CogniShield Configuration Card */}
+          {/* Cognitive Identity Configuration Card */}
           <Card className="overflow-hidden hover:shadow-lg transition-all duration-300 group border-amber-200 dark:border-amber-800 flex flex-col h-full relative">
             <div className="h-48 bg-gradient-to-br from-amber-800 to-orange-900 flex items-center justify-center relative overflow-hidden">
               {/* Subtle organic spark network */}
@@ -514,12 +514,12 @@ export default function SectionedDotSparkTuningPage() {
                 <div className="rounded-full bg-amber-900/40 p-4 backdrop-blur-sm mb-4 border border-amber-600/30">
                   <Shield className="h-12 w-12 text-amber-100" />
                 </div>
-                <h3 className="text-xl font-bold text-amber-50">CogniShield (Coming Soon)</h3>
+                <h3 className="text-xl font-bold text-amber-50">Cognitive Identity</h3>
               </div>
             </div>
             <CardContent className="p-6 bg-gradient-to-b from-amber-50 to-orange-50 dark:from-amber-950/30 dark:to-orange-950/30 flex flex-col justify-between min-h-[120px]">
               <p className="text-muted-foreground mb-4 flex-1">
-                Configure Cogni Shield to retain your cognitive identity while taking help of AI.
+                Configure your Cognitive Identity to define your unique thinking patterns and personalize AI interactions.
               </p>
               <div className="flex justify-center mt-auto">
                 <Button 
