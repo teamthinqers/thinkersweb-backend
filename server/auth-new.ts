@@ -246,9 +246,11 @@ export function setupNewAuth(app: Express) {
   // POST /api/auth/login - Exchange Firebase ID token for session
   app.post("/api/auth/login", async (req: Request, res: Response) => {
     try {
+      console.log(`🔐 Login attempt received`);
       const { idToken } = req.body;
       
       if (!idToken) {
+        console.error("❌ No idToken in request body");
         return res.status(400).json({ error: "Firebase ID token is required" });
       }
 
@@ -350,6 +352,7 @@ export function setupNewAuth(app: Express) {
           }
         }
         
+        console.log(`✅ Sending response with user:`, { userId: sessionUser.id, isNewUser });
         res.status(isNewUser ? 201 : 200).json({ user: sessionUser, isNewUser });
       });
 
