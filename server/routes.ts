@@ -20,7 +20,9 @@ import {
   insertChakraSchema,
   badges,
   userBadges,
-  notifications
+  notifications,
+  sparks,
+  perspectivesMessages
 } from "@shared/schema";
 import { processEntryFromChat, generateChatResponse, type Message } from "./chat";
 import { connectionsService } from "./connections";
@@ -2660,6 +2662,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const [wheelsCount] = await db.select({ count: count() }).from(wheels).where(eq(wheels.userId, userId));
       const [chakrasCount] = await db.select({ count: count() }).from(chakras).where(eq(chakras.userId, userId));
 
+      // Calculate collective growth percentage (platform-wide)
+      // Formula: Each item (thoughts + sparks + perspectives) contributes 0.5% towards growth, capped at 100%
+      const [platformThoughtsCount] = await db.select({ count: count() }).from(thoughts);
+      const [platformSparksCount] = await db.select({ count: count() }).from(sparks);
+      const [platformPerspectivesCount] = await db.select({ count: count() }).from(perspectivesMessages);
+      
+      const totalPlatformItems = (platformThoughtsCount?.count || 0) + 
+                                  (platformSparksCount?.count || 0) + 
+                                  (platformPerspectivesCount?.count || 0);
+      const collectiveGrowthPercentage = Math.min(100, Math.round(totalPlatformItems * 0.5));
+
       // Get recent activity (last 5 items across all types)
       const recentDots = await db.query.dots.findMany({
         where: eq(dots.userId, userId),
@@ -2695,6 +2708,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         success: true,
         data: {
           neuralStrength,
+          collectiveGrowth: {
+            percentage: collectiveGrowthPercentage,
+          },
           stats: {
             dots: dotsCount?.count || 0,
             wheels: wheelsCount?.count || 0,

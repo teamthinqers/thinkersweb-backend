@@ -2,7 +2,7 @@ import { useQuery, useMutation } from '@tanstack/react-query';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
-import { Sparkles, Trophy, Target, Lightbulb, TrendingUp, ArrowRight, Brain, Users, Plus, FileText, Circle, Hexagon, Pencil } from 'lucide-react';
+import { Sparkles, Trophy, Target, Lightbulb, TrendingUp, ArrowRight, Brain, Users, Plus, FileText, Circle, Hexagon, Pencil, Zap } from 'lucide-react';
 import { Link } from 'wouter';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useAuth } from '@/hooks/use-auth-new';
@@ -28,6 +28,9 @@ interface DashboardData {
       userSparksCount: number;
       perspectivesCount: number;
     };
+  };
+  collectiveGrowth: {
+    percentage: number;
   };
   stats: {
     dots: number;
@@ -187,40 +190,48 @@ export default function MyDotSparkPage() {
           
           {/* 1. My Neura Box */}
           <Link href="/myneura">
-            <Card className="group cursor-pointer border-amber-200 hover:border-amber-400 transition-all hover:shadow-xl bg-gradient-to-br from-amber-50 to-orange-50 relative overflow-hidden">
-              <CardHeader>
+            <Card className="group cursor-pointer border-amber-200/60 hover:border-amber-400 transition-all duration-300 hover:shadow-2xl bg-gradient-to-br from-amber-50 via-orange-50/80 to-amber-100/60 relative overflow-hidden backdrop-blur-sm">
+              {/* Decorative gradient overlay */}
+              <div className="absolute inset-0 bg-gradient-to-br from-amber-400/5 via-transparent to-orange-400/10 group-hover:from-amber-400/10 group-hover:to-orange-400/20 transition-all duration-300" />
+              
+              <CardHeader className="relative">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <div className="p-3 bg-gradient-to-br from-amber-500 to-orange-600 rounded-xl shadow-lg">
+                    <div className="p-3 bg-gradient-to-br from-amber-500 to-orange-600 rounded-xl shadow-xl group-hover:shadow-2xl group-hover:scale-105 transition-all duration-300">
                       <Brain className="h-6 w-6 text-white" />
                     </div>
                     <div>
-                      <CardTitle className="text-xl">My Neura</CardTitle>
-                      <CardDescription>Personal thoughts & saved insights</CardDescription>
+                      <CardTitle className="text-xl font-bold bg-gradient-to-r from-amber-700 to-orange-700 bg-clip-text text-transparent">My Neura</CardTitle>
+                      <CardDescription className="text-amber-700/70">Personal thoughts & saved insights</CardDescription>
                     </div>
                   </div>
                   <ArrowRight className="h-5 w-5 text-amber-500 group-hover:translate-x-1 transition-transform" />
                 </div>
               </CardHeader>
-              <CardContent className="space-y-4">
+              <CardContent className="space-y-4 relative">
                 {/* Stats */}
-                <div className="flex items-center gap-6 text-sm text-gray-600">
-                  <div className="flex items-center gap-1">
-                    <Circle className="h-4 w-4" />
-                    <span>{dashboard?.stats.dots || 0} dots</span>
+                <div className="flex items-center gap-6 text-sm">
+                  <div className="flex items-center gap-1.5 px-2.5 py-1.5 bg-amber-100/50 rounded-lg">
+                    <Circle className="h-4 w-4 text-orange-600" />
+                    <span className="font-semibold text-orange-800">{dashboard?.stats.dots || 0} dots</span>
                   </div>
-                  <div className="flex items-center gap-1">
-                    <Sparkles className="h-4 w-4" />
-                    <span>{dashboard?.stats.savedSparks || 0} sparks</span>
+                  <div className="flex items-center gap-1.5 px-2.5 py-1.5 bg-yellow-100/50 rounded-lg">
+                    <Zap className="h-4 w-4 text-yellow-600" />
+                    <span className="font-semibold text-yellow-800">{dashboard?.stats.savedSparks || 0} sparks</span>
                   </div>
                 </div>
                 {/* Neural Strength Meter */}
                 <div className="pt-2">
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-xs font-medium text-gray-600">Neural Strength</span>
-                    <span className="text-xs font-bold text-amber-600">{dashboard?.neuralStrength.percentage || 0}%</span>
+                    <span className="text-xs font-semibold text-amber-800">Neural Strength</span>
+                    <span className="text-sm font-bold bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent">{dashboard?.neuralStrength.percentage || 0}%</span>
                   </div>
-                  <Progress value={dashboard?.neuralStrength.percentage || 0} className="h-2" />
+                  <div className="h-2.5 bg-amber-200/50 rounded-full overflow-hidden">
+                    <div 
+                      className="h-full bg-gradient-to-r from-amber-500 via-orange-500 to-red-500 transition-all duration-1000 ease-out rounded-full"
+                      style={{ width: `${dashboard?.neuralStrength.percentage || 0}%` }}
+                    />
+                  </div>
                 </div>
               </CardContent>
             </Card>
@@ -228,44 +239,52 @@ export default function MyDotSparkPage() {
 
           {/* 2. Social Neura Box */}
           <Link href="/social">
-            <Card className="group cursor-pointer border-red-200 hover:border-red-400 transition-all hover:shadow-xl bg-gradient-to-br from-red-50 to-orange-50 relative overflow-hidden">
-              <CardHeader>
+            <Card className="group cursor-pointer border-red-200/60 hover:border-red-400 transition-all duration-300 hover:shadow-2xl bg-gradient-to-br from-red-50 via-orange-50/80 to-red-100/60 relative overflow-hidden backdrop-blur-sm">
+              {/* Decorative gradient overlay */}
+              <div className="absolute inset-0 bg-gradient-to-br from-red-400/5 via-transparent to-orange-400/10 group-hover:from-red-400/10 group-hover:to-orange-400/20 transition-all duration-300" />
+              
+              <CardHeader className="relative">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <div className="p-3 bg-gradient-to-br from-red-500 to-orange-600 rounded-xl shadow-lg">
+                    <div className="p-3 bg-gradient-to-br from-red-500 to-orange-600 rounded-xl shadow-xl group-hover:shadow-2xl group-hover:scale-105 transition-all duration-300">
                       <Users className="h-6 w-6 text-white" />
                     </div>
                     <div>
-                      <CardTitle className="text-xl">Social Neura</CardTitle>
-                      <CardDescription>Collective intelligence & shared thoughts</CardDescription>
+                      <CardTitle className="text-xl font-bold bg-gradient-to-r from-red-700 to-orange-700 bg-clip-text text-transparent">Social Neura</CardTitle>
+                      <CardDescription className="text-red-700/70">Collective intelligence & shared thoughts</CardDescription>
                     </div>
                   </div>
                   <ArrowRight className="h-5 w-5 text-red-500 group-hover:translate-x-1 transition-transform" />
                 </div>
               </CardHeader>
-              <CardContent className="space-y-4">
+              <CardContent className="space-y-4 relative">
                 {/* Stats */}
-                <div className="flex items-center gap-6 text-sm text-gray-600">
-                  <div className="flex items-center gap-1">
-                    <FileText className="h-4 w-4" />
-                    <span>{dashboard?.stats.thoughts || 0} dots</span>
+                <div className="flex items-center gap-4 text-sm">
+                  <div className="flex items-center gap-1.5 px-2.5 py-1.5 bg-red-100/50 rounded-lg">
+                    <FileText className="h-4 w-4 text-red-600" />
+                    <span className="font-semibold text-red-800">{dashboard?.stats.thoughts || 0} dots</span>
                   </div>
-                  <div className="flex items-center gap-1">
-                    <Users className="h-4 w-4" />
-                    <span>{dashboard?.stats.perspectives || 0} perspectives</span>
+                  <div className="flex items-center gap-1.5 px-2.5 py-1.5 bg-orange-100/50 rounded-lg">
+                    <Users className="h-4 w-4 text-orange-600" />
+                    <span className="font-semibold text-orange-800">{dashboard?.stats.perspectives || 0} perspectives</span>
                   </div>
-                  <div className="flex items-center gap-1">
-                    <Sparkles className="h-4 w-4" />
-                    <span>{dashboard?.stats.savedSparks || 0} sparks</span>
+                  <div className="flex items-center gap-1.5 px-2.5 py-1.5 bg-yellow-100/50 rounded-lg">
+                    <Zap className="h-4 w-4 text-yellow-600" />
+                    <span className="font-semibold text-yellow-800">{dashboard?.stats.savedSparks || 0} sparks</span>
                   </div>
                 </div>
-                {/* Collective Growth Meter - TODO: Calculate from backend */}
+                {/* Collective Growth Meter */}
                 <div className="pt-2">
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-xs font-medium text-gray-600">Collective Growth</span>
-                    <span className="text-xs font-bold text-red-600">Coming Soon</span>
+                    <span className="text-xs font-semibold text-red-800">Collective Growth</span>
+                    <span className="text-sm font-bold bg-gradient-to-r from-red-600 to-orange-600 bg-clip-text text-transparent">{dashboard?.collectiveGrowth?.percentage || 0}%</span>
                   </div>
-                  <Progress value={0} className="h-2" />
+                  <div className="h-2.5 bg-red-200/50 rounded-full overflow-hidden">
+                    <div 
+                      className="h-full bg-gradient-to-r from-red-500 via-orange-500 to-yellow-500 transition-all duration-1000 ease-out rounded-full"
+                      style={{ width: `${dashboard?.collectiveGrowth?.percentage || 0}%` }}
+                    />
+                  </div>
                 </div>
               </CardContent>
             </Card>
