@@ -87,13 +87,13 @@ export default function NotificationsPage() {
   const getNotificationIcon = (type: string, badge?: Notification['badge']) => {
     switch (type) {
       case 'new_thought':
-        return <FileText className="h-5 w-5 text-orange-500" />;
+        return <FileText className="h-5 w-5 text-blue-500" />;
       case 'new_perspective':
-        return <MessageSquare className="h-5 w-5 text-blue-500" />;
+        return <MessageSquare className="h-5 w-5 text-indigo-500" />;
       case 'spark_saved':
-        return <SparkIcon className="h-5 w-5" fill="#eab308" />;
+        return <SparkIcon className="h-5 w-5" fill="#6366f1" />;
       case 'badge_unlocked':
-        return <Trophy className="h-5 w-5 text-amber-500" />;
+        return <Trophy className="h-5 w-5 text-blue-600" />;
       default:
         return <Bell className="h-5 w-5 text-gray-500" />;
     }
@@ -134,16 +134,18 @@ export default function NotificationsPage() {
   const unreadCount = notificationsData?.unreadCount || 0;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-red-50">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-slate-50 to-gray-100">
       {/* Header */}
-      <div className="sticky top-0 z-10 bg-white border-b border-gray-200 shadow-sm">
+      <div className="sticky top-0 z-10 bg-gradient-to-br from-blue-500 to-indigo-500 shadow-[0_8px_30px_rgba(59,130,246,0.25)]">
         <div className="max-w-4xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <Bell className="h-6 w-6 text-orange-600" />
-              <h1 className="text-2xl font-bold text-gray-900">Notifications</h1>
+              <div className="p-2 bg-white/20 backdrop-blur-sm rounded-full">
+                <Bell className="h-5 w-5 text-white" />
+              </div>
+              <h1 className="text-2xl font-bold text-white">Notifications</h1>
               {unreadCount > 0 && (
-                <span className="bg-red-500 text-white text-sm px-2 py-0.5 rounded-full font-semibold">
+                <span className="bg-white text-blue-600 text-sm px-2 py-0.5 rounded-full font-semibold">
                   {unreadCount}
                 </span>
               )}
@@ -155,7 +157,7 @@ export default function NotificationsPage() {
                 size="sm"
                 onClick={() => markAllAsReadMutation.mutate()}
                 disabled={markAllAsReadMutation.isPending}
-                className="text-orange-600 border-orange-300 hover:bg-orange-50"
+                className="text-white border-white/30 hover:bg-white/20 backdrop-blur-sm"
               >
                 <CheckCheck className="h-4 w-4 mr-2" />
                 Mark all as read
@@ -188,9 +190,9 @@ export default function NotificationsPage() {
                     flex items-start gap-4 p-4 rounded-lg cursor-pointer transition-all
                     ${notification.isRead 
                       ? 'bg-white hover:bg-gray-50' 
-                      : 'bg-gradient-to-r from-orange-50 to-amber-50 hover:from-orange-100 hover:to-amber-100'
+                      : 'bg-gradient-to-r from-blue-50 to-indigo-50 hover:from-blue-100 hover:to-indigo-100'
                     }
-                    border ${notification.isRead ? 'border-gray-200' : 'border-orange-200'}
+                    border ${notification.isRead ? 'border-gray-200' : 'border-blue-200'}
                   `}
                 >
                   {/* Icon */}
@@ -204,7 +206,7 @@ export default function NotificationsPage() {
                       {getNotificationMessage(notification)}
                     </p>
                     {notification.notificationType === 'badge_unlocked' && notification.badge ? (
-                      <p className="text-sm text-amber-600 mt-1 flex items-center gap-1">
+                      <p className="text-sm text-blue-600 mt-1 flex items-center gap-1">
                         <span className="text-lg">{notification.badge.icon}</span>
                         {notification.badge.description}
                       </p>
@@ -221,7 +223,7 @@ export default function NotificationsPage() {
                   {/* Unread Indicator */}
                   {!notification.isRead && (
                     <div className="flex-shrink-0">
-                      <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
+                      <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
                     </div>
                   )}
                 </div>
