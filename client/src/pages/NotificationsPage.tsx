@@ -1,19 +1,21 @@
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useAuth } from "@/hooks/use-auth-new";
 import { queryClient, apiRequest } from "@/lib/queryClient";
-import { Bell, Check, CheckCheck, Sparkles, MessageSquare, FileText } from "lucide-react";
+import { Bell, Check, CheckCheck, MessageSquare, FileText, Trophy } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useLocation } from "wouter";
 import { formatDistanceToNow } from "date-fns";
+import SparkIcon from "@/components/ui/spark-icon";
 
 interface Notification {
   id: number;
   recipientId: number;
   actorIds: string;
   notificationType: string;
-  thoughtId: number;
-  thoughtHeading: string;
+  thoughtId?: number | null;
+  thoughtHeading?: string | null;
+  badgeId?: number | null;
   isRead: boolean;
   createdAt: string;
   actors: Array<{
@@ -22,6 +24,12 @@ interface Notification {
     avatar: string | null;
   }>;
   actorCount: number;
+  badge?: {
+    id: number;
+    name: string;
+    icon: string;
+    description: string;
+  } | null;
 }
 
 export default function NotificationsPage() {
@@ -63,26 +71,40 @@ export default function NotificationsPage() {
     if (!notification.isRead) {
       markAsReadMutation.mutate(notification.id);
     }
+    
+    // Badge notifications don't navigate anywhere
+    if (notification.notificationType === 'badge_unlocked') {
+      return;
+    }
+    
     // Navigate to the thought and open full view modal
-    // Store the thought ID to open the modal on social page
-    sessionStorage.setItem('openThoughtId', notification.thoughtId.toString());
-    setLocation(`/social`);
+    if (notification.thoughtId) {
+      sessionStorage.setItem('openThoughtId', notification.thoughtId.toString());
+      setLocation(`/social`);
+    }
   };
 
-  const getNotificationIcon = (type: string) => {
+  const getNotificationIcon = (type: string, badge?: Notification['badge']) => {
     switch (type) {
       case 'new_thought':
         return <FileText className="h-5 w-5 text-orange-500" />;
       case 'new_perspective':
         return <MessageSquare className="h-5 w-5 text-blue-500" />;
       case 'spark_saved':
-        return <Sparkles className="h-5 w-5 text-yellow-500" />;
+        return <SparkIcon className="h-5 w-5" fill="#eab308" />;
+      case 'badge_unlocked':
+        return <Trophy className="h-5 w-5 text-amber-500" />;
       default:
         return <Bell className="h-5 w-5 text-gray-500" />;
     }
   };
 
   const getNotificationMessage = (notification: Notification) => {
+    // Badge unlock notification
+    if (notification.notificationType === 'badge_unlocked' && notification.badge) {
+      return `You unlocked the ${notification.badge.name} badge!`;
+    }
+
     const actorNames = notification.actors.map(a => a.fullName || 'Someone').slice(0, 2);
     const remainingCount = notification.actorCount - actorNames.length;
 
@@ -181,9 +203,16 @@ export default function NotificationsPage() {
                     <p className="text-sm text-gray-900 font-medium">
                       {getNotificationMessage(notification)}
                     </p>
-                    <p className="text-sm text-gray-600 mt-1 truncate">
-                      "{notification.thoughtHeading}"
-                    </p>
+                    {notification.notificationType === 'badge_unlocked' && notification.badge ? (
+                      <p className="text-sm text-amber-600 mt-1 flex items-center gap-1">
+                        <span className="text-lg">{notification.badge.icon}</span>
+                        {notification.badge.description}
+                      </p>
+                    ) : notification.thoughtHeading && (
+                      <p className="text-sm text-gray-600 mt-1 truncate">
+                        "{notification.thoughtHeading}"
+                      </p>
+                    )}
                     <p className="text-xs text-gray-400 mt-2">
                       {formatDistanceToNow(new Date(notification.createdAt), { addSuffix: true })}
                     </p>

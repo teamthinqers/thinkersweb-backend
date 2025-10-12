@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { db } from '@db';
-import { notifications, users, thoughts } from '@shared/schema';
+import { notifications, users, thoughts, badges } from '@shared/schema';
 import { eq, desc, and, sql } from 'drizzle-orm';
 
 const router = Router();
@@ -8,7 +8,7 @@ const router = Router();
 /**
  * GET /api/notifications
  * Get all notifications for the authenticated user
- * Returns notifications with unread count
+ * Returns notifications with unread count and badge/thought info
  */
 router.get('/', async (req, res) => {
   try {
@@ -28,6 +28,14 @@ router.get('/', async (req, res) => {
           columns: {
             id: true,
             heading: true,
+          }
+        },
+        badge: {
+          columns: {
+            id: true,
+            name: true,
+            icon: true,
+            description: true,
           }
         }
       }

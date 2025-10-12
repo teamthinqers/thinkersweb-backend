@@ -19,7 +19,8 @@ import {
   insertWheelSchema,
   insertChakraSchema,
   badges,
-  userBadges
+  userBadges,
+  notifications
 } from "@shared/schema";
 import { processEntryFromChat, generateChatResponse, type Message } from "./chat";
 import { connectionsService } from "./connections";
@@ -389,7 +390,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
         notified: false,
       });
 
-      console.log(`Badge "${badgeKey}" awarded to user ${userId}`);
+      // Create a notification for the badge unlock
+      await db.insert(notifications).values({
+        recipientId: userId,
+        actorIds: JSON.stringify([userId]), // Self-notification
+        notificationType: 'badge_unlocked',
+        badgeId: badge.id,
+        isRead: false,
+      });
+
+      console.log(`Badge "${badgeKey}" awarded to user ${userId} with notification created`);
       return true;
     } catch (error) {
       console.error(`Error awarding badge "${badgeKey}" to user ${userId}:`, error);

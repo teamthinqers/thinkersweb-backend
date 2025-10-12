@@ -135,14 +135,15 @@ export const sparks = pgTable("sparks", {
 
 // === NOTIFICATIONS SYSTEM (LinkedIn-style activity notifications) ===
 
-// Notifications - Track social activity and updates
+// Notifications - Track social activity, badges, and updates
 export const notifications = pgTable("notifications", {
   id: serial("id").primaryKey(),
   recipientId: integer("recipient_id").references(() => users.id).notNull(), // Who receives the notification
   actorIds: text("actor_ids").notNull(), // JSON array of user IDs who triggered this (for grouping)
-  notificationType: text("notification_type").notNull(), // 'new_thought', 'new_perspective', 'spark_saved'
-  thoughtId: integer("thought_id").references(() => thoughts.id).notNull(), // Related thought
-  thoughtHeading: text("thought_heading").notNull(), // Cached for display
+  notificationType: text("notification_type").notNull(), // 'new_thought', 'new_perspective', 'spark_saved', 'badge_unlocked'
+  thoughtId: integer("thought_id").references(() => thoughts.id), // Related thought (nullable for badge notifications)
+  thoughtHeading: text("thought_heading"), // Cached for display (nullable for badge notifications)
+  badgeId: integer("badge_id").references(() => badges.id), // For badge unlock notifications
   isRead: boolean("is_read").default(false).notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(), // For grouping updates
@@ -372,6 +373,10 @@ export const notificationsRelations = relations(notifications, ({ one }) => ({
   thought: one(thoughts, {
     fields: [notifications.thoughtId],
     references: [thoughts.id],
+  }),
+  badge: one(badges, {
+    fields: [notifications.badgeId],
+    references: [badges.id],
   }),
 }));
 
