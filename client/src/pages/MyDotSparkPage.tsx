@@ -135,7 +135,7 @@ export default function MyDotSparkPage() {
 
   return (
     <SharedAuthLayout>
-      <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-amber-100">
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-slate-50 to-gray-100">
         <div className="container mx-auto px-4 py-4 max-w-7xl">
         {/* Profile Section */}
         <div className="mb-4">
