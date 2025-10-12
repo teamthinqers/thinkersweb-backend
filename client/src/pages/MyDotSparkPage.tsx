@@ -69,25 +69,29 @@ export default function MyDotSparkPage() {
         {/* Profile Section */}
         <div className="mb-8">
           <div className="flex items-center gap-4 mb-6">
-            <Avatar className="h-16 w-16 border-4 border-amber-200 shadow-xl">
-              <AvatarImage src={(user as any)?.avatar || (user as any)?.linkedinPhotoUrl || (user as any)?.photoURL || undefined} />
-              <AvatarFallback className="bg-gradient-to-br from-amber-500 to-orange-600 text-white text-2xl">
-                {(user as any)?.displayName?.[0]?.toUpperCase() || (user as any)?.fullName?.[0]?.toUpperCase() || 'U'}
-              </AvatarFallback>
-            </Avatar>
+            <Link href={`/user/${(user as any)?.id}`}>
+              <Avatar className="h-16 w-16 border-4 border-amber-200 shadow-xl cursor-pointer hover:border-amber-300 transition-colors">
+                <AvatarImage src={(user as any)?.avatar || (user as any)?.linkedinPhotoUrl || (user as any)?.photoURL || undefined} />
+                <AvatarFallback className="bg-gradient-to-br from-amber-500 to-orange-600 text-white text-2xl">
+                  {(user as any)?.displayName?.[0]?.toUpperCase() || (user as any)?.fullName?.[0]?.toUpperCase() || 'U'}
+                </AvatarFallback>
+              </Avatar>
+            </Link>
             <div className="flex-1">
-              <h1 className="text-3xl font-bold bg-gradient-to-r from-amber-700 to-orange-700 bg-clip-text text-transparent">
-                {(user as any)?.displayName || (user as any)?.fullName || 'User'}
-              </h1>
+              <div className="flex items-center gap-2">
+                <h1 className="text-3xl font-bold bg-gradient-to-r from-amber-700 to-orange-700 bg-clip-text text-transparent">
+                  {(user as any)?.displayName || (user as any)?.fullName || 'User'}
+                </h1>
+                <Link href="/profile">
+                  <Button variant="ghost" size="icon" className="h-8 w-8 text-amber-600 hover:text-amber-700 hover:bg-amber-100">
+                    <Pencil className="h-4 w-4" />
+                  </Button>
+                </Link>
+              </div>
               <p className="text-amber-700 mt-1">
                 {(user as any)?.linkedinHeadline || 'Professional Headline'}
               </p>
             </div>
-            <Link href="/profile">
-              <Button variant="ghost" size="icon" className="text-amber-600 hover:text-amber-700 hover:bg-amber-100">
-                <Pencil className="h-5 w-5" />
-              </Button>
-            </Link>
           </div>
 
           {/* Neural Strength Progress */}
