@@ -257,8 +257,8 @@ export default function MyDotSparkPage() {
                 {/* Neural Strength Meter */}
                 <div className="space-y-1.5">
                   <div className="flex items-center justify-between">
-                    <span className="text-[10px] font-semibold text-white/90">Neural Strength</span>
-                    <span className="text-xs font-bold text-white">{dashboard?.neuralStrength.percentage || 0}%</span>
+                    <span className="text-xs font-bold text-white">Neural Strength</span>
+                    <span className="text-sm font-bold text-white">{dashboard?.neuralStrength.percentage || 0}%</span>
                   </div>
                   <div className="h-1.5 bg-white/20 rounded-full overflow-hidden backdrop-blur-sm">
                     <div 
@@ -312,8 +312,8 @@ export default function MyDotSparkPage() {
                 {/* Collective Growth Meter */}
                 <div className="space-y-1.5">
                   <div className="flex items-center justify-between">
-                    <span className="text-[10px] font-semibold text-white/90">Collective Growth</span>
-                    <span className="text-xs font-bold text-white">{dashboard?.collectiveGrowth?.percentage || 0}%</span>
+                    <span className="text-xs font-bold text-white">Collective Growth</span>
+                    <span className="text-sm font-bold text-white">{dashboard?.collectiveGrowth?.percentage || 0}%</span>
                   </div>
                   <div className="h-1.5 bg-white/20 rounded-full overflow-hidden backdrop-blur-sm">
                     <div 
@@ -333,12 +333,12 @@ export default function MyDotSparkPage() {
 
           {/* 3. My Thought Circle Box */}
           <Link href="/thought-circle">
-            <Card className="group cursor-pointer border-0 transition-all duration-300 hover:scale-[1.02] bg-gradient-to-br from-amber-500 to-orange-500 relative overflow-hidden rounded-[32px] shadow-[0_8px_30px_rgba(251,191,36,0.25)] hover:shadow-[0_20px_60px_rgba(251,191,36,0.35)]">
+            <Card className="group cursor-pointer border-0 transition-all duration-300 hover:scale-[1.02] bg-gradient-to-br from-purple-500 to-purple-600 relative overflow-hidden rounded-[32px] shadow-[0_8px_30px_rgba(168,85,247,0.25)] hover:shadow-[0_20px_60px_rgba(168,85,247,0.35)]">
               
               {/* Icon Badge */}
               <div className="absolute top-4 left-1/2 -translate-x-1/2">
                 <div className="px-3 py-1.5 bg-white/20 backdrop-blur-sm rounded-full">
-                  <Fingerprint className="h-4 w-4 text-white" />
+                  <Target className="h-4 w-4 text-white" />
                 </div>
               </div>
               
@@ -357,12 +357,12 @@ export default function MyDotSparkPage() {
 
           {/* 4. Learning Engine Box */}
           <Link href="/learning-engine">
-            <Card className="group cursor-pointer border-0 transition-all duration-300 hover:scale-[1.02] bg-gradient-to-br from-purple-500 to-indigo-600 relative overflow-hidden rounded-[32px] shadow-[0_8px_30px_rgba(168,85,247,0.25)] hover:shadow-[0_20px_60px_rgba(168,85,247,0.35)]">
+            <Card className="group cursor-pointer border-0 transition-all duration-300 hover:scale-[1.02] bg-gradient-to-br from-blue-500 to-indigo-500 relative overflow-hidden rounded-[32px] shadow-[0_8px_30px_rgba(59,130,246,0.25)] hover:shadow-[0_20px_60px_rgba(59,130,246,0.35)]">
               
               {/* Icon Badge */}
               <div className="absolute top-4 left-1/2 -translate-x-1/2">
                 <div className="px-3 py-1.5 bg-white/20 backdrop-blur-sm rounded-full">
-                  <Settings className="h-4 w-4 text-white group-hover:rotate-180 transition-transform duration-700" />
+                  <Lightbulb className="h-4 w-4 text-white" />
                 </div>
               </div>
               
