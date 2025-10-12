@@ -138,14 +138,6 @@ export default function BadgeDisplay({ badges }: BadgeDisplayProps) {
                 <p className="text-sm text-gray-700 leading-relaxed">
                   {badge.earned ? badge.description : (badge.lockedHint || badge.description)}
                 </p>
-                {!badge.earned && (
-                  <div className="flex items-center gap-2 pt-2 border-t border-gray-200">
-                    <Lock className="w-3 h-3 text-orange-600" />
-                    <p className="text-xs text-orange-700 font-semibold">
-                      Complete challenges to unlock
-                    </p>
-                  </div>
-                )}
               </div>
             </PopoverContent>
           </Popover>
