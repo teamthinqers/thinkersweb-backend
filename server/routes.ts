@@ -134,7 +134,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(401).json({ error: 'Authentication required' });
       }
       
-      const { fullName, headline, linkedinUrl } = req.body;
+      const { fullName, headline, linkedinUrl, bio } = req.body;
       const avatarFile = req.file;
       
       // Build update object using Drizzle schema field names
@@ -145,6 +145,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (fullName) updates.fullName = fullName;
       if (headline) updates.linkedinHeadline = headline;
       if (linkedinUrl) updates.linkedinProfileUrl = linkedinUrl;
+      if (bio !== undefined) updates.bio = bio; // Allow empty string to clear bio
       
       if (avatarFile) {
         // Save avatar path to database
@@ -170,6 +171,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         req.user.linkedinProfileUrl = updatedUser.linkedinProfileUrl;
         req.user.avatar = updatedUser.avatar;
         req.user.linkedinPhotoUrl = updatedUser.linkedinPhotoUrl;
+        req.user.bio = updatedUser.bio;
         
         // Save the updated session
         req.session.save((err) => {

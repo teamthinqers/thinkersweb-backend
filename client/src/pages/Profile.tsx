@@ -3,6 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Linkedin, Camera, Pencil, Check, X, Loader2 } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth-new";
@@ -22,6 +23,7 @@ const Profile = () => {
     fullName: (user as any)?.fullName || '',
     headline: (user as any)?.linkedinHeadline || '',
     linkedinUrl: (user as any)?.linkedinProfileUrl || '',
+    bio: (user as any)?.bio || '',
     avatarFile: null as File | null,
   });
 
@@ -78,6 +80,7 @@ const Profile = () => {
     data.append('fullName', formData.fullName);
     data.append('headline', formData.headline);
     data.append('linkedinUrl', formData.linkedinUrl);
+    data.append('bio', formData.bio);
     if (formData.avatarFile) {
       data.append('avatar', formData.avatarFile);
     }
@@ -90,6 +93,7 @@ const Profile = () => {
       fullName: (user as any)?.fullName || '',
       headline: (user as any)?.linkedinHeadline || '',
       linkedinUrl: (user as any)?.linkedinProfileUrl || '',
+      bio: (user as any)?.bio || '',
       avatarFile: null,
     });
     setImagePreview(null);
@@ -258,6 +262,31 @@ const Profile = () => {
                   <p className="mt-1 text-sm text-gray-600">
                     {linkedinProfileUrl || "Not set"}
                   </p>
+                )}
+              </div>
+
+              {/* About Section */}
+              <div>
+                <Label htmlFor="bio" className="text-sm font-medium text-gray-700">
+                  About
+                </Label>
+                {isEditing ? (
+                  <Textarea
+                    id="bio"
+                    value={formData.bio}
+                    onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
+                    className="mt-1 min-h-[120px]"
+                    placeholder="Share your professional story, achievements, and what drives you..."
+                    maxLength={2600}
+                  />
+                ) : (
+                  <div className="mt-1">
+                    {(user as any)?.bio ? (
+                      <p className="text-sm text-gray-600 whitespace-pre-wrap">{(user as any)?.bio}</p>
+                    ) : (
+                      <p className="text-sm text-gray-400 italic">No summary added yet</p>
+                    )}
+                  </div>
                 )}
               </div>
 
