@@ -187,7 +187,7 @@ export default function MyDotSparkPage() {
         
         {/* Cognitive Identity Box - Full Width */}
         <Link href="/cognitive-identity">
-          <Card className="group cursor-pointer border-0 transition-all duration-300 hover:scale-[1.01] bg-gradient-to-br from-[#9b6cfc] via-[#8b5cf6] to-[#7c3aed] relative overflow-hidden rounded-[32px] shadow-[0_8px_30px_rgb(139,92,246,0.35)] hover:shadow-[0_20px_60px_rgb(139,92,246,0.45)] mb-8">
+          <Card className="group cursor-pointer border-0 transition-all duration-300 hover:scale-[1.01] bg-gradient-to-br from-[#a78bfa] via-[#9575cd] to-[#8b5cf6] relative overflow-hidden rounded-[32px] shadow-[0_8px_30px_rgba(139,92,246,0.2)] hover:shadow-[0_20px_60px_rgba(139,92,246,0.3)] mb-8">
             
             {/* Icon Badge */}
             <div className="absolute top-6 left-8">
@@ -227,7 +227,7 @@ export default function MyDotSparkPage() {
           
           {/* 1. My Neura Box */}
           <Link href="/myneura">
-            <Card className="group cursor-pointer border-0 transition-all duration-300 hover:scale-[1.02] bg-gradient-to-br from-amber-400 via-amber-500 to-orange-500 relative overflow-hidden rounded-[32px] shadow-[0_8px_30px_rgb(251,146,60,0.3)] hover:shadow-[0_20px_60px_rgb(251,146,60,0.4)]">
+            <Card className="group cursor-pointer border-0 transition-all duration-300 hover:scale-[1.02] bg-gradient-to-br from-[#fbbf24] via-[#f59e0b] to-[#f97316] relative overflow-hidden rounded-[32px] shadow-[0_8px_30px_rgba(251,146,60,0.2)] hover:shadow-[0_20px_60px_rgba(251,146,60,0.3)]">
               
               {/* Icon Badge */}
               <div className="absolute top-6 left-1/2 -translate-x-1/2">
@@ -278,7 +278,7 @@ export default function MyDotSparkPage() {
 
           {/* 2. Social Neura Box */}
           <Link href="/social">
-            <Card className="group cursor-pointer border-0 transition-all duration-300 hover:scale-[1.02] bg-gradient-to-br from-red-400 via-red-500 to-orange-500 relative overflow-hidden rounded-[32px] shadow-[0_8px_30px_rgb(239,68,68,0.3)] hover:shadow-[0_20px_60px_rgb(239,68,68,0.4)]">
+            <Card className="group cursor-pointer border-0 transition-all duration-300 hover:scale-[1.02] bg-gradient-to-br from-[#fb923c] via-[#f97316] to-[#ea580c] relative overflow-hidden rounded-[32px] shadow-[0_8px_30px_rgba(239,68,68,0.2)] hover:shadow-[0_20px_60px_rgba(239,68,68,0.3)]">
               
               {/* Icon Badge */}
               <div className="absolute top-6 left-1/2 -translate-x-1/2">
@@ -332,7 +332,7 @@ export default function MyDotSparkPage() {
           </Link>
 
           {/* 3. My Thought Circle Box - PLACEHOLDER */}
-          <Card className="border-0 cursor-not-allowed bg-gradient-to-br from-purple-400 via-purple-500 to-pink-500 relative overflow-hidden rounded-[32px] shadow-[0_8px_30px_rgb(168,85,247,0.2)] opacity-50">
+          <Card className="border-0 cursor-not-allowed bg-gradient-to-br from-[#c084fc] via-[#a78bfa] to-[#f0abfc] relative overflow-hidden rounded-[32px] shadow-[0_8px_30px_rgba(168,85,247,0.15)] opacity-50">
             
             {/* Icon Badge */}
             <div className="absolute top-6 left-1/2 -translate-x-1/2">
@@ -349,7 +349,7 @@ export default function MyDotSparkPage() {
           </Card>
 
           {/* 4. Learning Engine Box - PLACEHOLDER */}
-          <Card className="border-0 cursor-not-allowed bg-gradient-to-br from-blue-400 via-blue-500 to-indigo-500 relative overflow-hidden rounded-[32px] shadow-[0_8px_30px_rgb(59,130,246,0.2)] opacity-50">
+          <Card className="border-0 cursor-not-allowed bg-gradient-to-br from-[#93c5fd] via-[#60a5fa] to-[#818cf8] relative overflow-hidden rounded-[32px] shadow-[0_8px_30px_rgba(59,130,246,0.15)] opacity-50">
             
             {/* Icon Badge */}
             <div className="absolute top-6 left-1/2 -translate-x-1/2">
