@@ -11,10 +11,10 @@ export default function CognitiveIdentityPage() {
         {/* Header */}
         <div className="bg-white/80 backdrop-blur-md border-b border-amber-200 px-6 py-4">
           <div className="max-w-5xl mx-auto flex items-center gap-4">
-            <Link href="/myneura">
+            <Link href="/mydotspark">
               <Button variant="ghost" size="sm" className="gap-2">
                 <ArrowLeft className="h-4 w-4" />
-                Back to MyNeura
+                Back to MyDotSpark
               </Button>
             </Link>
             <div className="flex items-center gap-3">
