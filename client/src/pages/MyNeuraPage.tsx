@@ -691,12 +691,8 @@ export default function MyNeuraPage() {
                   </span>
                 </Button>
                 <div className="relative px-2.5 py-2.5 bg-gradient-to-br from-purple-50 to-violet-50 rounded-lg border border-purple-200/50 transition-all duration-300 hover:border-purple-300 hover:shadow-md cursor-pointer">
-                  {!neuralStrength?.milestones?.cognitiveIdentityCompleted && (
-                    <span className="absolute -top-1 -right-1 flex h-3 w-3 z-10">
-                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-500 opacity-75"></span>
-                      <span className="relative inline-flex rounded-full h-3 w-3 bg-red-600"></span>
-                    </span>
-                  )}
+                  {/* Status Indicator */}
+                  <div className={`absolute -top-1 -right-1 h-3 w-3 rounded-full border-2 border-white ${neuralStrength?.milestones?.cognitiveIdentityCompleted ? 'bg-green-500' : 'bg-red-500'}`}></div>
                   <Fingerprint className="h-5 w-5 text-purple-600" />
                 </div>
               </Link>
@@ -714,12 +710,8 @@ export default function MyNeuraPage() {
                   </span>
                 </Button>
                 <div className="relative px-2.5 py-2.5 bg-gradient-to-br from-amber-50 to-orange-50 rounded-lg border border-amber-200/50 transition-all duration-300 hover:border-amber-300 hover:shadow-md cursor-pointer">
-                  {!neuralStrength?.milestones?.learningEngineCompleted && (
-                    <span className="absolute -top-1 -right-1 flex h-3 w-3 z-10">
-                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-500 opacity-75"></span>
-                      <span className="relative inline-flex rounded-full h-3 w-3 bg-red-600"></span>
-                    </span>
-                  )}
+                  {/* Status Indicator */}
+                  <div className={`absolute -top-1 -right-1 h-3 w-3 rounded-full border-2 border-white ${neuralStrength?.milestones?.learningEngineCompleted ? 'bg-green-500' : 'bg-red-500'}`}></div>
                   <Cog 
                     className={`h-5 w-5 text-amber-700 ${
                       neuralStrength?.milestones?.learningEngineCompleted 
