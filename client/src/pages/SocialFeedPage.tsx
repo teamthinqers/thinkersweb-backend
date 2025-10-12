@@ -8,7 +8,7 @@ import {
   Brain, Users, Heart,
   Cloud, List as ListIcon, Loader2, Maximize, Minimize, RefreshCw,
   PenTool, Bookmark, Sparkles, Send, Zap, Lightbulb, MoreHorizontal,
-  Pencil, Trash2, Eye
+  Pencil, Trash2, Search
 } from "lucide-react";
 import { SiWhatsapp, SiLinkedin, SiOpenai } from 'react-icons/si';
 import { useAuth } from "@/hooks/use-auth-new";
@@ -422,7 +422,7 @@ export default function SocialFeedPage() {
                         title="Perspectives"
                       >
                         <div className="relative">
-                          <Eye className="h-4 w-4 text-purple-600 group-hover:scale-110 transition-transform" />
+                          <Search className="h-4 w-4 text-purple-600 group-hover:scale-110 transition-transform" />
                         </div>
                         <span className="text-sm font-medium text-purple-700">
                           Perspectives

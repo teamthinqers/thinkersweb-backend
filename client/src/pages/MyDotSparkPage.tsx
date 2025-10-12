@@ -2,7 +2,7 @@ import { useQuery, useMutation } from '@tanstack/react-query';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
-import { Sparkles, Trophy, Target, Lightbulb, TrendingUp, ArrowRight, Brain, Users, Plus, FileText, Circle, Hexagon, Pencil, Zap, Fingerprint, Eye } from 'lucide-react';
+import { Sparkles, Trophy, Target, Lightbulb, TrendingUp, ArrowRight, Brain, Users, Plus, FileText, Circle, Hexagon, Pencil, Zap, Fingerprint, Search } from 'lucide-react';
 import { Link } from 'wouter';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useAuth } from '@/hooks/use-auth-new';
@@ -300,7 +300,7 @@ export default function MyDotSparkPage() {
                     <span className="text-white font-semibold text-xs">{dashboard?.stats.thoughts || 0}</span>
                   </div>
                   <div className="flex items-center gap-1 px-2 py-1 bg-white/20 backdrop-blur-sm rounded-full">
-                    <Eye className="h-3 w-3 text-white" />
+                    <Search className="h-3 w-3 text-white" />
                     <span className="text-white font-semibold text-xs">{dashboard?.stats.perspectives || 0}</span>
                   </div>
                   <div className="flex items-center gap-1 px-2 py-1 bg-white/20 backdrop-blur-sm rounded-full">
