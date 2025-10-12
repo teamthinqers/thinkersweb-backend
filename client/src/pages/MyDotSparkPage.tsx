@@ -204,9 +204,8 @@ export default function MyDotSparkPage() {
             
             {/* Icon Badge */}
             <div className="absolute top-4 left-6">
-              <div className="relative px-3 py-1.5 bg-white/20 backdrop-blur-sm rounded-full flex items-center gap-2">
+              <div className="relative px-3 py-1.5 bg-white/20 backdrop-blur-sm rounded-full flex items-center">
                 <Fingerprint className="h-4 w-4 text-white" />
-                <Sparkles className="h-3.5 w-3.5 text-white/90" />
                 {/* Status Indicator */}
                 <div className={`absolute -top-1 -right-1 h-3 w-3 rounded-full border-2 border-white ${cognitiveIdentityConfigured ? 'bg-green-500' : 'bg-red-500'}`}></div>
               </div>
@@ -262,9 +261,8 @@ export default function MyDotSparkPage() {
               
               {/* Icon Badge */}
               <div className="absolute top-4 left-1/2 -translate-x-1/2">
-                <div className="relative px-3 py-1.5 bg-white/20 backdrop-blur-sm rounded-full flex items-center gap-1.5">
+                <div className="relative px-3 py-1.5 bg-white/20 backdrop-blur-sm rounded-full flex items-center">
                   <Brain className="h-4 w-4 text-white animate-pulse" />
-                  <Zap className="h-3.5 w-3.5 text-white/90" />
                   {/* Status Indicator - Green if has dots, Red if not */}
                   <div className={`absolute -top-1 -right-1 h-3 w-3 rounded-full border-2 border-white ${(dashboard?.stats.dots || 0) > 0 ? 'bg-green-500' : 'bg-red-500'}`}></div>
                 </div>
@@ -315,9 +313,8 @@ export default function MyDotSparkPage() {
               
               {/* Icon Badge */}
               <div className="absolute top-4 left-1/2 -translate-x-1/2">
-                <div className="relative px-3 py-1.5 bg-white/20 backdrop-blur-sm rounded-full flex items-center gap-1.5">
+                <div className="relative px-3 py-1.5 bg-white/20 backdrop-blur-sm rounded-full flex items-center">
                   <Brain className="h-4 w-4 text-white animate-pulse" />
-                  <Zap className="h-3.5 w-3.5 text-white/90" />
                   {/* Status Indicator - Always Green (Social is always active) */}
                   <div className="absolute -top-1 -right-1 h-3 w-3 rounded-full border-2 border-white bg-green-500"></div>
                 </div>
