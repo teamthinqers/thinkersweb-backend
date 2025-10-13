@@ -53,14 +53,12 @@ export function CognitiveIdentityCard({
     updatePrivacyMutation.mutate(checked);
   };
 
-  // If not own profile and not public, show nothing
-  if (!isOwnProfile && !isPublic) {
-    return null;
-  }
+  // If not own profile and not public, show private message
+  const showPrivateState = !isOwnProfile && !isPublic;
 
   return (
     <div className="space-y-4">
-      {/* Header Card with Toggle */}
+      {/* Header Card with Toggle/Status */}
       <Card className="border-2 border-amber-400/50 bg-gradient-to-br from-amber-50 to-orange-50/50">
         <CardContent className="p-4">
           <div className="flex items-center justify-between">
@@ -70,7 +68,7 @@ export function CognitiveIdentityCard({
                 Cognitive Identity
               </h3>
             </div>
-            {isOwnProfile && (
+            {isOwnProfile ? (
               <div className="flex items-center gap-2">
                 <Label htmlFor="privacy-toggle" className="text-sm text-gray-600 flex items-center gap-1">
                   {isPublic ? <Unlock className="h-3 w-3" /> : <Lock className="h-3 w-3" />}
@@ -84,6 +82,11 @@ export function CognitiveIdentityCard({
                   className="data-[state=checked]:bg-amber-500"
                 />
               </div>
+            ) : (
+              <div className="flex items-center gap-1 text-sm text-gray-600">
+                {showPrivateState ? <Lock className="h-3 w-3" /> : <Unlock className="h-3 w-3" />}
+                <span>{showPrivateState ? 'Private' : 'Public'}</span>
+              </div>
             )}
           </div>
         </CardContent>
@@ -92,6 +95,13 @@ export function CognitiveIdentityCard({
       {/* Identity Tags Card */}
       <Card className="border-2 border-amber-200 bg-gradient-to-br from-amber-50 to-orange-50">
         <CardContent className="p-6 space-y-4">
+        {showPrivateState ? (
+          <div className="text-center py-6">
+            <Lock className="h-12 w-12 text-amber-300 mx-auto mb-3" />
+            <p className="text-sm text-gray-500">User has chosen to keep their cognitive identity private</p>
+          </div>
+        ) : (
+          <>
         {/* Primary Archetype */}
         {cognitiveProfile?.primaryArchetype && (
           <div className="flex items-start gap-3">
@@ -172,6 +182,8 @@ export function CognitiveIdentityCard({
             <Brain className="h-12 w-12 text-amber-300 mx-auto mb-3" />
             <p className="text-sm text-gray-500">Complete your cognitive identity to unlock personalized insights</p>
           </div>
+        )}
+        </>
         )}
         </CardContent>
       </Card>
