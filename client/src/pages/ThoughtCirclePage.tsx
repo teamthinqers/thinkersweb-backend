@@ -154,7 +154,7 @@ export default function ThoughtCirclePage() {
           {!isLoading && circles.length > 0 && (
             <div className="space-y-8">
               <div className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-xl border border-amber-200 p-8">
-                <h2 className="text-2xl font-bold text-gray-800 mb-6">Your Circles</h2>
+                <h2 className="text-2xl font-bold text-gray-800 mb-6">My ThinQ Circles</h2>
                 <div className="flex flex-wrap gap-8 justify-center">
                   {circles.map((circle) => (
                     <div
@@ -174,20 +174,37 @@ export default function ThoughtCirclePage() {
                         </button>
                       )}
                       
-                      {/* Circle Element */}
+                      {/* Circle Element with Animated Pulsing Rings */}
                       <div 
                         onClick={() => setLocation(`/thinq-circle/${circle.id}`)}
-                        className="relative w-32 h-32 rounded-full shadow-lg group-hover:shadow-xl transition-shadow flex items-center justify-center cursor-pointer"
-                        style={{ backgroundColor: '#F59E0B' }}
+                        className="relative w-32 h-32 cursor-pointer"
                       >
-                        <div className="text-center">
-                          <Target className="h-8 w-8 text-white mx-auto mb-1" />
-                          <div className="flex items-center justify-center gap-1 text-white">
-                            <Users className="h-5 w-5" />
-                            <span className="text-sm font-semibold">{circle.memberCount || 1}</span>
+                        {/* Animated pulsing rings - outermost */}
+                        <div className="absolute inset-0 rounded-full border-2 border-amber-400 opacity-30 animate-ping" 
+                             style={{ animationDuration: '2s' }} />
+                        <div className="absolute inset-2 rounded-full border-2 border-amber-400 opacity-40 animate-pulse" 
+                             style={{ animationDuration: '1.5s' }} />
+                        
+                        {/* Main circle with gradient and glow */}
+                        <div 
+                          className="absolute inset-0 rounded-full shadow-lg group-hover:shadow-2xl transition-all duration-300 flex items-center justify-center bg-gradient-to-br from-amber-400 to-amber-600 group-hover:from-amber-500 group-hover:to-amber-700"
+                          style={{ 
+                            boxShadow: '0 0 20px rgba(245, 158, 11, 0.3), inset 0 -2px 10px rgba(0,0,0,0.1)'
+                          }}
+                        >
+                          <div className="text-center relative z-10">
+                            <Target className="h-8 w-8 text-white mx-auto mb-1 drop-shadow-md group-hover:scale-110 transition-transform" />
+                            <div className="flex items-center justify-center gap-1 text-white drop-shadow">
+                              <Users className="h-5 w-5" />
+                              <span className="text-sm font-semibold">{circle.memberCount || 1}</span>
+                            </div>
                           </div>
+                          
+                          {/* Shine effect on hover */}
+                          <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-white/0 via-white/20 to-white/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                         </div>
                       </div>
+                      
                       {/* Circle Name */}
                       <p className="mt-3 font-semibold text-gray-800 max-w-[140px] truncate">{circle.name}</p>
                       {circle.description && (
