@@ -398,33 +398,42 @@ export default function ThinQCirclePage() {
                         </div>
                       </div>
                       
-                      {/* Action Menu - Available to all circle members */}
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" size="icon">
-                            <MoreHorizontal className="h-5 w-5" />
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          <DropdownMenuItem onClick={() => {
-                            // TODO: Implement edit functionality
-                            toast({
-                              title: "Edit feature",
-                              description: "Edit functionality coming soon",
-                            });
-                          }}>
-                            <Pencil className="h-4 w-4 mr-2" />
-                            Edit Thought
-                          </DropdownMenuItem>
-                          <DropdownMenuItem 
-                            onClick={() => deleteThoughtMutation.mutate(selectedThought.id)}
-                            className="text-red-600"
+                      {/* Edit/Delete Actions - Only for thought owner */}
+                      {user && selectedThought.userId === user.id && (
+                        <div className="flex gap-2">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="text-amber-600 hover:text-amber-700 hover:bg-amber-50 p-2"
+                            onClick={() => {
+                              setSelectedThought(null);
+                              window.dispatchEvent(new CustomEvent('openFloatingDot', {
+                                detail: {
+                                  thought: selectedThought,
+                                  targetNeura: 'circle'
+                                }
+                              }));
+                            }}
+                            title="Edit thought"
                           >
-                            <Trash2 className="h-4 w-4 mr-2" />
-                            Delete Thought
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
+                            <Pencil className="h-4 w-4" />
+                          </Button>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="text-red-600 hover:text-red-700 hover:bg-red-50 p-2"
+                            onClick={() => {
+                              if (confirm('Are you sure you want to delete this thought? This action cannot be undone.')) {
+                                deleteThoughtMutation.mutate(selectedThought.id);
+                              }
+                            }}
+                            disabled={deleteThoughtMutation.isPending}
+                            title={deleteThoughtMutation.isPending ? 'Deleting...' : 'Delete thought'}
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      )}
                     </div>
                     
                     <DialogTitle className="text-2xl font-bold text-gray-900 mt-4">
