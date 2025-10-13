@@ -257,6 +257,54 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Update user's About Me
+  app.patch(`${apiPrefix}/users/about-me`, requireAuth, async (req: AuthenticatedRequest, res: Response) => {
+    try {
+      const userId = req.user?.id;
+      if (!userId) {
+        return res.status(401).json({ error: 'Authentication required' });
+      }
+
+      const { aboutMe } = req.body;
+
+      await db.update(users)
+        .set({ 
+          aboutMe, 
+          updatedAt: new Date() 
+        })
+        .where(eq(users.id, userId));
+
+      res.json({ success: true, message: 'About Me updated successfully' });
+    } catch (error) {
+      console.error('Error updating About Me:', error);
+      res.status(500).json({ error: 'Failed to update About Me' });
+    }
+  });
+
+  // Update cognitive identity privacy setting
+  app.patch(`${apiPrefix}/users/cognitive-identity-privacy`, requireAuth, async (req: AuthenticatedRequest, res: Response) => {
+    try {
+      const userId = req.user?.id;
+      if (!userId) {
+        return res.status(401).json({ error: 'Authentication required' });
+      }
+
+      const { isPublic } = req.body;
+
+      await db.update(users)
+        .set({ 
+          cognitiveIdentityPublic: isPublic, 
+          updatedAt: new Date() 
+        })
+        .where(eq(users.id, userId));
+
+      res.json({ success: true, message: 'Privacy setting updated successfully' });
+    } catch (error) {
+      console.error('Error updating privacy setting:', error);
+      res.status(500).json({ error: 'Failed to update privacy setting' });
+    }
+  });
+
   // === BADGE SYSTEM ROUTES ===
 
   // Get all available badges
