@@ -314,7 +314,19 @@ export function setupNewAuth(app: Express) {
           console.log(`✅ Created new user: ${username}`);
         }
       } else {
-        console.log(`✅ Found existing user: ${user.username}`);
+        // SECURITY FIX: Verify email matches when reusing existing Firebase UID
+        if (user.email !== email) {
+          console.error(`🚨 SECURITY: Email mismatch! Firebase UID ${uid.substring(0, 8)}... is linked to ${user.email} but login attempt uses ${email}`);
+          return res.status(403).json({ 
+            error: "Account security error", 
+            message: "This Firebase account is linked to a different email address. Please contact support or use the correct email.",
+            details: {
+              linkedEmail: user.email,
+              attemptedEmail: email
+            }
+          });
+        }
+        console.log(`✅ Found existing user: ${user.username} with matching email`);
       }
 
       // Create session
