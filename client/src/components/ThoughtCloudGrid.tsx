@@ -205,8 +205,8 @@ export default function ThoughtCloudGrid({
           // Calculate complete bounding box accounting for ALL visual elements and transforms
           const dotRadius = (dot.size || 120) / 2; // 60px
           const avatarRadius = 20; // Avatar is h-10 w-10 = 40px, radius = 20px
-          const avatarGap = avatarSpacing === 'compact' ? -30 : 5; // Compact for ThinQ Circles (50px offset), default for others (85px)
-          const identityCardOffset = dotRadius + avatarRadius + avatarGap; // Compact: 50px, Default: 85px
+          const avatarGap = avatarSpacing === 'compact' ? -48 : 5; // Compact for ThinQ Circles (32px offset - very close), default for others (85px)
+          const identityCardOffset = dotRadius + avatarRadius + avatarGap; // Compact: 32px, Default: 85px
           const identityCardHeight = 45; // Actual height of identity card
           const channelBadgeHeight = 24; // Height of channel badge
           const channelBadgeOffset = 2; // Distance from dot bottom (negative in CSS)
@@ -243,7 +243,7 @@ export default function ThoughtCloudGrid({
                 className="absolute z-50 thought-dot-clickable"
                 style={{ 
                   top: `-${identityCardOffset}px`,
-                  left: avatarSpacing === 'compact' ? '40%' : '30%', // Shift right for ThinQ Circles, normal for Social/MyNeura
+                  left: avatarSpacing === 'compact' ? '55%' : '30%', // Shift right for ThinQ Circles, normal for Social/MyNeura
                   transform: 'translate(-50%, -50%)',
                 }}
               >
