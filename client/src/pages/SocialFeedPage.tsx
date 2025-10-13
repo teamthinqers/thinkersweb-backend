@@ -628,8 +628,8 @@ export default function SocialFeedPage() {
           {/* Thought Detail Dialog - Three Column Layout */}
           {selectedDot && (
             <Dialog open={!!selectedDot} onOpenChange={() => setSelectedDot(null)}>
-              <DialogContent className="max-w-7xl h-[85vh] p-0 overflow-hidden flex flex-col">
-                <div className="grid grid-cols-3 h-full overflow-hidden">
+              <DialogContent className="max-w-7xl max-h-[90vh] h-auto p-0 gap-0">
+                <div className="grid grid-cols-3 h-[80vh] max-h-[80vh]">
                   {/* Left Column: Thought Details */}
                   <div className="flex flex-col h-full min-h-0 border-r border-gray-200">
                     {/* Header */}
