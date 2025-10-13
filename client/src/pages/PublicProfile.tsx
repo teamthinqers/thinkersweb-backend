@@ -4,15 +4,25 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Linkedin, Loader2 } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import SharedAuthLayout from "@/components/layout/SharedAuthLayout";
+import { CognitiveIdentityCard } from "@/components/CognitiveIdentityCard";
 
-type UserProfile = {
+interface UserProfile {
   id: number;
   fullName: string | null;
   linkedinHeadline: string | null;
   linkedinProfileUrl: string | null;
   linkedinPhotoUrl: string | null;
   avatar: string | null;
-};
+  email: string;
+  aboutMe: string | null;
+  cognitiveIdentityPublic: boolean;
+  primaryArchetype?: string;
+  secondaryArchetype?: string;
+  thinkingStyle?: string;
+  emotionalPattern?: string;
+  lifePhilosophy?: string;
+  coreValues?: string;
+}
 
 const PublicProfile = () => {
   const params = useParams();
@@ -30,6 +40,16 @@ const PublicProfile = () => {
   const displayHeadline = user?.linkedinHeadline || "Professional Headline";
   const linkedinProfileUrl = user?.linkedinProfileUrl || "";
   const hasLinkedIn = !!linkedinProfileUrl;
+
+  // Get cognitive profile
+  const cognitiveProfile = user ? {
+    primaryArchetype: user.primaryArchetype,
+    secondaryArchetype: user.secondaryArchetype,
+    thinkingStyle: user.thinkingStyle,
+    emotionalPattern: user.emotionalPattern,
+    lifePhilosophy: user.lifePhilosophy,
+    coreValues: user.coreValues ? JSON.parse(user.coreValues) : [],
+  } : undefined;
 
   if (isLoading) {
     return (
@@ -63,77 +83,116 @@ const PublicProfile = () => {
 
   return (
     <SharedAuthLayout>
-      <div className="container mx-auto px-4 py-8 max-w-2xl">
-        <Card className="border border-gray-200 shadow-sm">
-          <CardContent className="p-6">
-            {/* Profile Picture */}
-            <div className="flex justify-center mb-6">
-              <div className="relative">
-                <Avatar className="h-32 w-32 border-4 border-gradient-to-br from-amber-400 to-orange-500">
-                  {profilePhoto ? (
-                    <AvatarImage src={profilePhoto} alt={displayName} />
-                  ) : (
-                    <AvatarFallback className="text-4xl bg-gradient-to-br from-amber-400 to-orange-500 text-white">
-                      {displayName.charAt(0).toUpperCase()}
-                    </AvatarFallback>
-                  )}
-                </Avatar>
-              </div>
-            </div>
+      <div className="container mx-auto px-4 py-8 max-w-7xl">
+        {/* Three-Column Layout */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* LEFT COLUMN - Cognitive Identity Card (only if public) */}
+          <div className="lg:col-span-1">
+            {user.cognitiveIdentityPublic && cognitiveProfile && (
+              <CognitiveIdentityCard
+                userId={user.id}
+                isPublic={user.cognitiveIdentityPublic}
+                cognitiveProfile={cognitiveProfile}
+                isOwnProfile={false}
+              />
+            )}
+            {!user.cognitiveIdentityPublic && (
+              <Card className="border border-gray-200 bg-gray-50">
+                <CardContent className="p-6 text-center">
+                  <p className="text-sm text-gray-500">Cognitive identity is private</p>
+                </CardContent>
+              </Card>
+            )}
+          </div>
 
-            {/* Profile Information */}
-            <div className="space-y-4">
-              {/* Name */}
-              <div className="text-center">
-                <div className="flex items-center justify-center gap-2">
-                  {hasLinkedIn ? (
-                    <a
-                      href={linkedinProfileUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-2xl font-bold text-gray-900 hover:text-[#0A66C2] transition-colors cursor-pointer"
-                    >
-                      {displayName}
-                    </a>
-                  ) : (
-                    <h1 className="text-2xl font-bold text-gray-900">{displayName}</h1>
-                  )}
-                  {hasLinkedIn && (
-                    <a
-                      href={linkedinProfileUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center justify-center rounded-sm w-6 h-6 bg-[#0A66C2] hover:bg-[#004182] transition-colors"
-                      title="View LinkedIn Profile"
-                    >
-                      <Linkedin className="h-4 w-4 text-white" fill="currentColor" />
-                    </a>
+          {/* MIDDLE COLUMN - Profile Details */}
+          <div className="lg:col-span-1">
+            <Card className="border border-gray-200 shadow-sm h-full">
+              <CardContent className="p-6">
+                {/* Profile Picture */}
+                <div className="flex justify-center mb-6">
+                  <Avatar className="h-32 w-32 border-4 border-gradient-to-br from-amber-400 to-orange-500">
+                    {profilePhoto ? (
+                      <AvatarImage src={profilePhoto} alt={displayName} />
+                    ) : (
+                      <AvatarFallback className="text-4xl bg-gradient-to-br from-amber-400 to-orange-500 text-white">
+                        {displayName.charAt(0).toUpperCase()}
+                      </AvatarFallback>
+                    )}
+                  </Avatar>
+                </div>
+
+                {/* Profile Info */}
+                <div className="space-y-4">
+                  {/* Name */}
+                  <div>
+                    <p className="text-sm font-medium text-gray-700">Name</p>
+                    <div className="mt-1 flex items-center gap-2">
+                      {hasLinkedIn ? (
+                        <a
+                          href={linkedinProfileUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-base font-semibold text-gray-900 hover:text-[#0A66C2] transition-colors cursor-pointer"
+                        >
+                          {displayName}
+                        </a>
+                      ) : (
+                        <p className="text-base font-semibold text-gray-900">{displayName}</p>
+                      )}
+                      {hasLinkedIn && (
+                        <a
+                          href={linkedinProfileUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center justify-center rounded-sm w-6 h-6 bg-[#0A66C2] hover:bg-[#004182] transition-colors"
+                          title="View LinkedIn Profile"
+                        >
+                          <Linkedin className="h-4 w-4 text-white" fill="currentColor" />
+                        </a>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Professional Headline */}
+                  <div>
+                    <p className="text-sm font-medium text-gray-700">Professional Headline</p>
+                    <p className="mt-1 text-sm text-gray-600">{displayHeadline}</p>
+                  </div>
+
+                  {/* LinkedIn Profile URL */}
+                  {linkedinProfileUrl && (
+                    <div>
+                      <p className="text-sm font-medium text-gray-700">LinkedIn Profile</p>
+                      <a
+                        href={linkedinProfileUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="mt-1 text-sm text-blue-600 hover:underline"
+                      >
+                        View Profile
+                      </a>
+                    </div>
                   )}
                 </div>
-              </div>
+              </CardContent>
+            </Card>
+          </div>
 
-              {/* Professional Headline */}
-              <div className="text-center">
-                <p className="text-base text-gray-600">{displayHeadline}</p>
-              </div>
-
-              {/* LinkedIn Profile URL */}
-              {linkedinProfileUrl && (
-                <div className="text-center pt-4 border-t border-gray-200">
-                  <p className="text-sm text-gray-500 mb-2">LinkedIn Profile</p>
-                  <a
-                    href={linkedinProfileUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-sm text-[#0A66C2] hover:underline break-all"
-                  >
-                    {linkedinProfileUrl}
-                  </a>
-                </div>
-              )}
-            </div>
-          </CardContent>
-        </Card>
+          {/* RIGHT COLUMN - About Me Section */}
+          <div className="lg:col-span-1">
+            <Card className="border border-gray-200 shadow-sm h-full">
+              <CardContent className="p-6">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">About Me</h3>
+                {user.aboutMe ? (
+                  <p className="text-sm text-gray-700 whitespace-pre-wrap leading-relaxed">{user.aboutMe}</p>
+                ) : (
+                  <p className="text-sm text-gray-400 italic">No professional story added yet.</p>
+                )}
+              </CardContent>
+            </Card>
+          </div>
+        </div>
       </div>
     </SharedAuthLayout>
   );
