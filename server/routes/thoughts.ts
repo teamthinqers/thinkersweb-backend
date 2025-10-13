@@ -674,22 +674,28 @@ router.post('/:thoughtId/share-to-social', async (req, res) => {
  */
 router.get('/stats', async (req, res) => {
   try {
-    // Count total social thoughts (ONLY visibility='social' - must match dashboard logic)
+    // Count total social thoughts (visibility='social' OR sharedToSocial=true - MUST match display logic)
     const [{ count: thoughtsCount }] = await db.select({ count: sql<number>`count(*)` })
       .from(thoughts)
-      .where(eq(thoughts.visibility, 'social'));
+      .where(or(
+        eq(thoughts.visibility, 'social'),
+        eq(thoughts.sharedToSocial, true)
+      ));
 
     // Count total sparks (all users, platform-wide)
     const [{ count: savedSparksCount }] = await db.select({ count: sql<number>`count(*)` })
       .from(sparks);
 
-    // Count total perspectives (ONLY on social thoughts - must match dashboard logic)
+    // Count total perspectives (on social thoughts - visibility='social' OR sharedToSocial=true)
     const platformPerspectivesResult = await db
       .select({ count: sql<number>`count(*)` })
       .from(perspectivesMessages)
       .innerJoin(perspectivesThreads, eq(perspectivesMessages.threadId, perspectivesThreads.id))
       .innerJoin(thoughts, eq(perspectivesThreads.thoughtId, thoughts.id))
-      .where(eq(thoughts.visibility, 'social'));
+      .where(or(
+        eq(thoughts.visibility, 'social'),
+        eq(thoughts.sharedToSocial, true)
+      ));
     const perspectivesCount = platformPerspectivesResult[0]?.count || 0;
 
     console.log('📊 Social Neura Platform Stats (matches dashboard):', { 

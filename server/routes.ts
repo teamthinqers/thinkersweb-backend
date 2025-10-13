@@ -49,7 +49,7 @@ import {
   unregisterWhatsAppUser,
   getWhatsAppStatus,
 } from "./whatsapp";
-import { eq, inArray, and, lt, desc, sql, count } from "drizzle-orm";
+import { eq, inArray, and, or, lt, desc, sql, count } from "drizzle-orm";
 import twilio from "twilio";
 import multer from "multer";
 import path from "path";
@@ -2722,17 +2722,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Calculate collective growth percentage (platform-wide)
       // Formula: Each item (thoughts + sparks + perspectives) contributes 0.5% towards growth, capped at 100%
-      // ONLY count social thoughts and their perspectives, not personal ones
-      const [platformThoughtsCount] = await db.select({ count: count() }).from(thoughts).where(eq(thoughts.visibility, 'social'));
+      // Count social thoughts (visibility='social' OR sharedToSocial=true) - must match display logic
+      const [platformThoughtsCount] = await db.select({ count: count() }).from(thoughts).where(or(
+        eq(thoughts.visibility, 'social'),
+        eq(thoughts.sharedToSocial, true)
+      ));
       const [platformSparksCount] = await db.select({ count: count() }).from(sparks);
       
-      // Count perspectives only on social thoughts
+      // Count perspectives on social thoughts (visibility='social' OR sharedToSocial=true)
       const platformPerspectivesResult = await db
         .select({ count: count() })
         .from(perspectivesMessages)
         .innerJoin(perspectivesThreads, eq(perspectivesMessages.threadId, perspectivesThreads.id))
         .innerJoin(thoughts, eq(perspectivesThreads.thoughtId, thoughts.id))
-        .where(eq(thoughts.visibility, 'social'));
+        .where(or(
+          eq(thoughts.visibility, 'social'),
+          eq(thoughts.sharedToSocial, true)
+        ));
       const platformPerspectivesCount = platformPerspectivesResult[0] || { count: 0 };
       
       const totalPlatformItems = (platformThoughtsCount?.count || 0) + 
