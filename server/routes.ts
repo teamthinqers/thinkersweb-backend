@@ -2815,6 +2815,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
         ));
       const personalSparksCount = personalSparksResult[0]?.count || 0;
 
+      // Count circle contributions
+      const [circleDotsCount] = await db.select({ count: count() })
+        .from(circleDots)
+        .where(eq(circleDots.sharedBy, userId));
+
+      const [circleSparksCount] = await db.select({ count: count() })
+        .from(circleSparks)
+        .where(eq(circleSparks.sharedBy, userId));
+
+      const [circlePerspectivesCount] = await db.select({ count: count() })
+        .from(circlePerspectives)
+        .where(eq(circlePerspectives.sharedBy, userId));
+
       // Combine and sort all recent activity
       const recentActivity = [
         ...recentDots.map(d => ({ type: 'dot', data: d, timestamp: d.createdAt })),
@@ -2835,9 +2848,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
             dots: dotsCount?.count || 0,
             wheels: wheelsCount?.count || 0,
             chakras: chakrasCount?.count || 0,
-            thoughts: neuralStrength.stats.thoughtsCount,
-            savedSparks: neuralStrength.stats.userSparksCount,
-            perspectives: neuralStrength.stats.perspectivesCount,
+            thoughts: neuralStrength.stats.thoughtsCount + (circleDotsCount?.count || 0),
+            savedSparks: neuralStrength.stats.userSparksCount + (circleSparksCount?.count || 0),
+            perspectives: neuralStrength.stats.perspectivesCount + (circlePerspectivesCount?.count || 0),
           },
           // MyNeura-specific stats (for MyNeura box and toolbar)
           myNeuraStats: {
