@@ -194,11 +194,13 @@ const PublicProfile = () => {
         <div className="flex flex-wrap items-center gap-4">
           {/* Badges Card */}
           {allBadgesForDisplay.length > 0 && (
-            <BadgeDisplay badges={allBadgesForDisplay} />
+            <div className="flex-1">
+              <BadgeDisplay badges={allBadgesForDisplay} />
+            </div>
           )}
           
           {/* Contributions Card */}
-          <Card className="inline-flex flex-col gap-2 px-4 py-3 bg-gradient-to-br from-amber-50/80 via-orange-50/80 to-amber-100/80 border-2 border-amber-200/60 shadow-lg backdrop-blur-sm">
+          <Card className="flex-1 inline-flex flex-col gap-2 px-4 py-3 bg-gradient-to-br from-amber-50/80 via-orange-50/80 to-amber-100/80 border-2 border-amber-200/60 shadow-lg backdrop-blur-sm">
             <div className="flex items-center gap-1">
               <Trophy className="h-4 w-4 text-amber-600" />
               <span className="text-xs font-semibold text-amber-700 uppercase tracking-wide">Contributions</span>
@@ -206,7 +208,7 @@ const PublicProfile = () => {
             
             <div className="h-px w-full bg-amber-300/50 my-1"></div>
             
-            <div className="flex items-center gap-6">
+            <div className="flex items-center justify-around">
               {/* Dots */}
               <div className="flex flex-col items-center gap-1">
                 <Lightbulb className="h-5 w-5 text-amber-600" />
