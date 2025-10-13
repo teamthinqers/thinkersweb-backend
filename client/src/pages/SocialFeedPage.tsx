@@ -868,7 +868,7 @@ export default function SocialFeedPage() {
                         <DropdownMenuTrigger asChild>
                           <Button
                             disabled={saveToCircleMutation.isPending || userCircles.length === 0}
-                            className="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 h-11"
+                            className="w-full bg-amber-500 hover:bg-amber-600 text-white h-11"
                           >
                             <Bookmark className="h-4 w-4 mr-2" />
                             {userCircles.length === 0 ? 'No Circles Available' : 'Save to MyCircle'}

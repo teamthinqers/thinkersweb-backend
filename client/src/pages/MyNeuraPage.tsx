@@ -1245,7 +1245,7 @@ export default function MyNeuraPage() {
                     <DropdownMenuTrigger asChild>
                       <Button
                         disabled={shareToCircleMutation.isPending || userCircles.length === 0}
-                        className="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600"
+                        className="w-full bg-amber-500 hover:bg-amber-600 text-white"
                       >
                         <Share2 className="h-4 w-4 mr-2" />
                         {userCircles.length === 0 ? 'No Circles Available' : 'Share to MyCircle'}
