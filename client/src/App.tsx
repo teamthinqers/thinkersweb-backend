@@ -24,6 +24,7 @@ import Profile from "@/pages/Profile";
 import PublicProfile from "@/pages/PublicProfile";
 import MyDotSparkPage from "@/pages/MyDotSparkPage";
 import ThoughtCirclePage from "@/pages/ThoughtCirclePage";
+import ThinQCirclePage from "@/pages/ThinQCirclePage";
 import WhatsAppAdmin from "@/pages/WhatsAppAdmin";
 import WhatsAppTest from "@/pages/WhatsAppTest";
 import WhatsAppEntries from "@/pages/WhatsAppEntries";
@@ -198,7 +199,7 @@ function Router() {
       <Route path="/myneura" component={MyNeuraPage} />
       <Route path="/mydotspark" component={MyDotSparkPage} />
       <Route path="/cognitive-identity" component={CognitiveIdentityPage} />
-      <Route path="/thinq-circle" component={ThoughtCirclePage} />
+      <Route path="/thinq-circle/:circleId" component={ThinQCirclePage} />
       <Route path="/learning-engine" component={LearningEnginePage} />
       <Route path="/auth" component={AuthPage} />
       <Route path="/notifications" component={NotificationsPage} />
