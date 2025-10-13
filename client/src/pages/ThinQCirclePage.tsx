@@ -412,7 +412,8 @@ export default function ThinQCirclePage() {
                               window.dispatchEvent(new CustomEvent('openFloatingDot', {
                                 detail: {
                                   thought: selectedThought,
-                                  targetNeura: 'circle'
+                                  targetNeura: 'circle',
+                                  circleId: circleId
                                 }
                               }));
                             }}

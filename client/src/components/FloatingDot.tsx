@@ -37,6 +37,7 @@ export default function FloatingDot({ onClick, currentPage }: FloatingDotProps) 
   
   const [targetNeura, setTargetNeura] = useState<'social' | 'myneura' | 'circle'>(getDefaultTarget());
   const [selectedCircleId, setSelectedCircleId] = useState<number | null>(null);
+  const [preserveTargetNeura, setPreserveTargetNeura] = useState(false); // Flag to prevent auto-reset when editing from circle
   const [dialogPosition, setDialogPosition] = useState({ x: 0, y: 0 });
   const [isDraggingDialog, setIsDraggingDialog] = useState(false);
   const [showWriteForm, setShowWriteForm] = useState(false);
@@ -88,12 +89,14 @@ export default function FloatingDot({ onClick, currentPage }: FloatingDotProps) 
     setShowLayersScreen(false);
     setEditMode(false);
     setEditThoughtId(null);
+    setSelectedCircleId(null);
+    setPreserveTargetNeura(false);
   };
 
   // Update targetNeura when page changes OR when dialog opens
   useEffect(() => {
-    if (isOpen) {
-      // Reset to page default whenever dialog opens
+    if (isOpen && !preserveTargetNeura) {
+      // Reset to page default whenever dialog opens (unless preserveTargetNeura is true)
       if (currentPage === '/myneura') {
         setTargetNeura('myneura');
       } else if (currentPage === '/social') {
@@ -102,7 +105,11 @@ export default function FloatingDot({ onClick, currentPage }: FloatingDotProps) 
         setTargetNeura('social'); // default fallback
       }
     }
-  }, [currentPage, isOpen]);
+    // Reset the preserve flag after applying
+    if (!isOpen) {
+      setPreserveTargetNeura(false);
+    }
+  }, [currentPage, isOpen, preserveTargetNeura]);
 
   const handleSubmitThought = async () => {
     if (!heading.trim()) {
@@ -273,8 +280,15 @@ export default function FloatingDot({ onClick, currentPage }: FloatingDotProps) 
         setAnalogies('');
       }
       
+      // Handle targetNeura and circleId from event detail
       if (e.detail?.targetNeura) {
         setTargetNeura(e.detail.targetNeura);
+        setPreserveTargetNeura(true); // Prevent auto-reset
+        
+        // If circleId is provided, pre-select it
+        if (e.detail?.targetNeura === 'circle' && e.detail?.circleId) {
+          setSelectedCircleId(e.detail.circleId);
+        }
       }
       // Center the dialog
       setDialogPosition({
