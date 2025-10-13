@@ -572,9 +572,11 @@ export default function ThinQCirclePage() {
                         <Button
                           className="w-full bg-amber-500 hover:bg-amber-600 text-white"
                           onClick={() => saveToMyNeuraMutation.mutate(selectedThought.id)}
-                          disabled={saveToMyNeuraMutation.isPending}
+                          disabled={saveToMyNeuraMutation.isPending || (!!user && selectedThought.userId === user.id)}
                         >
-                          {saveToMyNeuraMutation.isPending ? 'Saving...' : 'Share to MyNeura'}
+                          {user && selectedThought.userId === user.id
+                            ? 'Share to MyNeura (Auto Saved)'
+                            : saveToMyNeuraMutation.isPending ? 'Saving...' : 'Share to MyNeura'}
                         </Button>
                       </div>
                     </div>
