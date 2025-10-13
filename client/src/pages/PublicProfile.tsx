@@ -41,16 +41,6 @@ const PublicProfile = () => {
   const linkedinProfileUrl = user?.linkedinProfileUrl || "";
   const hasLinkedIn = !!linkedinProfileUrl;
 
-  // Get cognitive profile
-  const cognitiveProfile = user ? {
-    primaryArchetype: user.primaryArchetype,
-    secondaryArchetype: user.secondaryArchetype,
-    thinkingStyle: user.thinkingStyle,
-    emotionalPattern: user.emotionalPattern,
-    lifePhilosophy: user.lifePhilosophy,
-    coreValues: user.coreValues ? JSON.parse(user.coreValues) : [],
-  } : undefined;
-
   if (isLoading) {
     return (
       <SharedAuthLayout>
@@ -86,23 +76,13 @@ const PublicProfile = () => {
       <div className="container mx-auto px-4 py-8 max-w-7xl">
         {/* Three-Column Layout */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* LEFT COLUMN - Cognitive Identity Card (only if public) */}
+          {/* LEFT COLUMN - Cognitive Identity Card */}
           <div className="lg:col-span-1">
-            {user.cognitiveIdentityPublic && cognitiveProfile && (
-              <CognitiveIdentityCard
-                userId={user.id}
-                isPublic={user.cognitiveIdentityPublic}
-                cognitiveProfile={cognitiveProfile}
-                isOwnProfile={false}
-              />
-            )}
-            {!user.cognitiveIdentityPublic && (
-              <Card className="border border-gray-200 bg-gray-50">
-                <CardContent className="p-6 text-center">
-                  <p className="text-sm text-gray-500">Cognitive identity is private</p>
-                </CardContent>
-              </Card>
-            )}
+            <CognitiveIdentityCard
+              userId={user.id}
+              isPublic={user.cognitiveIdentityPublic}
+              isOwnProfile={false}
+            />
           </div>
 
           {/* MIDDLE COLUMN - Profile Details */}

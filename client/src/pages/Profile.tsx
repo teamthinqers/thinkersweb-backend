@@ -168,15 +168,6 @@ const Profile = () => {
   const linkedinProfileUrl = (user as any)?.linkedinProfileUrl || "";
   const hasLinkedIn = !!linkedinProfileUrl;
 
-  // Get cognitive profile from user data (if available)
-  const cognitiveProfile = {
-    primaryArchetype: (user as any)?.primaryArchetype,
-    secondaryArchetype: (user as any)?.secondaryArchetype,
-    thinkingStyle: (user as any)?.thinkingStyle,
-    emotionalPattern: (user as any)?.emotionalPattern,
-    lifePhilosophy: (user as any)?.lifePhilosophy,
-    coreValues: (user as any)?.coreValues ? JSON.parse((user as any).coreValues) : [],
-  };
 
   return (
     <SharedAuthLayout>
@@ -188,7 +179,6 @@ const Profile = () => {
             <CognitiveIdentityCard
               userId={(user as any)?.id}
               isPublic={(user as any)?.cognitiveIdentityPublic || false}
-              cognitiveProfile={cognitiveProfile}
               isOwnProfile={true}
             />
           </div>
