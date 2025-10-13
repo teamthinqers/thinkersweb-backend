@@ -201,7 +201,7 @@ export default function MyDotSparkPage() {
                   {/* Sparks */}
                   <div className="flex flex-col items-center gap-1">
                     <SparkIcon className="h-5 w-5" fill="#d97706" />
-                    <span className="text-sm font-bold text-amber-700">{(dashboard?.stats?.savedSparks || 0) + (dashboard?.neuralStrength?.stats?.userSparksCount || 0)}</span>
+                    <span className="text-sm font-bold text-amber-700">{dashboard?.stats?.savedSparks || 0}</span>
                   </div>
                   {/* Perspectives */}
                   <div className="flex flex-col items-center gap-1">

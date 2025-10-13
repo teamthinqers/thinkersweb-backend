@@ -2788,5 +2788,48 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Get public user dashboard data (for public profiles)
+  app.get(`${apiPrefix}/users/:userId/dashboard`, async (req: Request, res: Response) => {
+    try {
+      const userId = parseInt(req.params.userId);
+
+      if (!userId || isNaN(userId)) {
+        return res.status(400).json({ error: 'Invalid user ID' });
+      }
+
+      const { calculateNeuralStrength } = await import('./neural-strength');
+
+      // Get neural strength data for the user
+      const neuralStrength = await calculateNeuralStrength(userId);
+
+      // Get counts for dots, wheels, chakras
+      const [dotsCount] = await db.select({ count: count() }).from(dots).where(eq(dots.userId, userId));
+      const [wheelsCount] = await db.select({ count: count() }).from(wheels).where(eq(wheels.userId, userId));
+      const [chakrasCount] = await db.select({ count: count() }).from(chakras).where(eq(chakras.userId, userId));
+
+      res.json({
+        success: true,
+        data: {
+          neuralStrength,
+          stats: {
+            dots: dotsCount?.count || 0,
+            wheels: wheelsCount?.count || 0,
+            chakras: chakrasCount?.count || 0,
+            thoughts: neuralStrength.stats.thoughtsCount,
+            savedSparks: neuralStrength.stats.userSparksCount,
+            perspectives: neuralStrength.stats.perspectivesCount,
+          },
+        },
+      });
+
+    } catch (error) {
+      console.error('Public dashboard data error:', error);
+      res.status(500).json({ 
+        error: 'Failed to fetch user dashboard data',
+        details: error instanceof Error ? error.message : 'Unknown error'
+      });
+    }
+  });
+
   return httpServer;
 }
