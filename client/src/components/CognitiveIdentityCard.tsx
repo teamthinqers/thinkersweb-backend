@@ -108,12 +108,16 @@ export function CognitiveIdentityCard({
               <p className="text-sm text-white/80">User has chosen to keep their cognitive identity private</p>
             </div>
           ) : (
-            <div className="flex flex-wrap gap-2 items-center justify-center md:justify-start">
+            <div className="flex flex-wrap gap-x-3 gap-y-2.5 items-center justify-center">
               {cognitiveIdentityTags.length > 0 ? (
                 cognitiveIdentityTags.map((tag, index) => (
                   <span 
                     key={index} 
                     className="text-sm px-4 py-1.5 bg-white/35 font-bold backdrop-blur-sm rounded-full text-white drop-shadow-md"
+                    style={{
+                      marginLeft: index % 3 === 1 ? '2rem' : index % 3 === 2 ? '4rem' : '0',
+                      marginTop: index > 0 ? `${(index % 4) * 0.5}rem` : '0'
+                    }}
                   >
                     {tag}
                   </span>
