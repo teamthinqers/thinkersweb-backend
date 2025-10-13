@@ -202,7 +202,9 @@ export default function ThoughtCloudGrid({
           
           // Calculate complete bounding box accounting for ALL visual elements and transforms
           const dotRadius = (dot.size || 120) / 2; // 60px
-          const identityCardOffset = 60; // Distance from dot center to identity card
+          const avatarRadius = 20; // Avatar is h-10 w-10 = 40px, radius = 20px
+          const avatarGap = 5; // Small gap to position avatar slightly outside
+          const identityCardOffset = dotRadius + avatarRadius + avatarGap; // 60 + 20 + 5 = 85px
           const identityCardHeight = 45; // Actual height of identity card
           const channelBadgeHeight = 24; // Height of channel badge
           const channelBadgeOffset = 2; // Distance from dot bottom (negative in CSS)
@@ -238,7 +240,7 @@ export default function ThoughtCloudGrid({
               <div 
                 className="absolute z-50 thought-dot-clickable"
                 style={{ 
-                  top: '-28px',
+                  top: `-${identityCardOffset}px`,
                   left: '30%',
                   transform: 'translate(-50%, -50%)',
                 }}
