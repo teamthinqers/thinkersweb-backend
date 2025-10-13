@@ -2729,15 +2729,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
       ));
       const [platformSparksCount] = await db.select({ count: count() }).from(sparks);
       
-      // Count perspectives on social thoughts (visibility='social' OR sharedToSocial=true)
+      // Count perspectives on social thoughts (visibility='social' OR sharedToSocial=true, excluding soft-deleted)
       const platformPerspectivesResult = await db
         .select({ count: count() })
         .from(perspectivesMessages)
         .innerJoin(perspectivesThreads, eq(perspectivesMessages.threadId, perspectivesThreads.id))
         .innerJoin(thoughts, eq(perspectivesThreads.thoughtId, thoughts.id))
-        .where(or(
-          eq(thoughts.visibility, 'social'),
-          eq(thoughts.sharedToSocial, true)
+        .where(and(
+          or(
+            eq(thoughts.visibility, 'social'),
+            eq(thoughts.sharedToSocial, true)
+          ),
+          eq(perspectivesMessages.isDeleted, false)
         ));
       const platformPerspectivesCount = platformPerspectivesResult[0] || { count: 0 };
       

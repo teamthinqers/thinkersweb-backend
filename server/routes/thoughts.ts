@@ -686,15 +686,18 @@ router.get('/stats', async (req, res) => {
     const [{ count: savedSparksCount }] = await db.select({ count: sql<number>`count(*)` })
       .from(sparks);
 
-    // Count total perspectives (on social thoughts - visibility='social' OR sharedToSocial=true)
+    // Count total perspectives (on social thoughts - visibility='social' OR sharedToSocial=true, excluding soft-deleted)
     const platformPerspectivesResult = await db
       .select({ count: sql<number>`count(*)` })
       .from(perspectivesMessages)
       .innerJoin(perspectivesThreads, eq(perspectivesMessages.threadId, perspectivesThreads.id))
       .innerJoin(thoughts, eq(perspectivesThreads.thoughtId, thoughts.id))
-      .where(or(
-        eq(thoughts.visibility, 'social'),
-        eq(thoughts.sharedToSocial, true)
+      .where(and(
+        or(
+          eq(thoughts.visibility, 'social'),
+          eq(thoughts.sharedToSocial, true)
+        ),
+        eq(perspectivesMessages.isDeleted, false)
       ));
     const perspectivesCount = platformPerspectivesResult[0]?.count || 0;
 
