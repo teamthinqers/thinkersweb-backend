@@ -2721,7 +2721,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Calculate collective growth percentage (platform-wide)
       // Formula: Each item (thoughts + sparks + perspectives) contributes 0.5% towards growth, capped at 100%
-      const [platformThoughtsCount] = await db.select({ count: count() }).from(thoughts);
+      // ONLY count social/public thoughts, not personal ones
+      const [platformThoughtsCount] = await db.select({ count: count() }).from(thoughts).where(eq(thoughts.visibility, 'social'));
       const [platformSparksCount] = await db.select({ count: count() }).from(sparks);
       const [platformPerspectivesCount] = await db.select({ count: count() }).from(perspectivesMessages);
       
