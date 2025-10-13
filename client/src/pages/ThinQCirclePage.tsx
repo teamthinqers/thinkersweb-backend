@@ -551,20 +551,18 @@ export default function ThinQCirclePage() {
                     <div className="mt-6 pt-6 border-t border-gray-200">
                       <div className="flex flex-col gap-3">
                         <Button
-                          variant="outline"
-                          className="w-full border-amber-500 text-amber-700 hover:bg-amber-50"
-                          onClick={() => saveToMyNeuraMutation.mutate(selectedThought.id)}
-                          disabled={saveToMyNeuraMutation.isPending}
-                        >
-                          {saveToMyNeuraMutation.isPending ? 'Saving...' : 'Share to MyNeura'}
-                        </Button>
-                        <Button
-                          variant="outline"
-                          className="w-full border-red-400 text-red-600 hover:bg-red-50"
+                          className="w-full bg-red-500 hover:bg-red-600 text-white"
                           onClick={() => shareToSocialMutation.mutate(selectedThought.id)}
                           disabled={shareToSocialMutation.isPending}
                         >
                           {shareToSocialMutation.isPending ? 'Sharing...' : 'Share to Social'}
+                        </Button>
+                        <Button
+                          className="w-full bg-amber-500 hover:bg-amber-600 text-white"
+                          onClick={() => saveToMyNeuraMutation.mutate(selectedThought.id)}
+                          disabled={saveToMyNeuraMutation.isPending}
+                        >
+                          {saveToMyNeuraMutation.isPending ? 'Saving...' : 'Share to MyNeura'}
                         </Button>
                       </div>
                     </div>
