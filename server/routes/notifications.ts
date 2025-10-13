@@ -12,7 +12,10 @@ const router = Router();
  */
 router.get('/', async (req, res) => {
   try {
-    const userId = (req as any).user?.id;
+    // Check both new auth (req.user) and session formats (userId and passport.user)
+    const userId = (req as any).user?.id || 
+                   (req as any).session?.userId || 
+                   (req as any).session?.passport?.user;
 
     if (!userId) {
       return res.status(401).json({ error: 'Authentication required' });
@@ -95,7 +98,10 @@ router.get('/', async (req, res) => {
  */
 router.patch('/read-all', async (req, res) => {
   try {
-    const userId = (req as any).user?.id;
+    // Check both new auth (req.user) and session formats (userId and passport.user)
+    const userId = (req as any).user?.id || 
+                   (req as any).session?.userId || 
+                   (req as any).session?.passport?.user;
 
     if (!userId) {
       return res.status(401).json({ error: 'Authentication required' });
@@ -133,7 +139,10 @@ router.patch('/read-all', async (req, res) => {
  */
 router.patch('/:id/read', async (req, res) => {
   try {
-    const userId = (req as any).user?.id;
+    // Check both new auth (req.user) and session formats (userId and passport.user)
+    const userId = (req as any).user?.id || 
+                   (req as any).session?.userId || 
+                   (req as any).session?.passport?.user;
     const notificationId = parseInt(req.params.id);
 
     if (!userId) {
