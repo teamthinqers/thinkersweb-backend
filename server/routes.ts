@@ -25,7 +25,13 @@ import {
   savedThoughts,
   perspectivesMessages,
   perspectivesThreads,
-  cognitiveIdentity
+  cognitiveIdentity,
+  thinqCircles,
+  thinqCircleMembers,
+  thinqCircleInvites,
+  circleDots,
+  circleSparks,
+  circlePerspectives
 } from "@shared/schema";
 import { processEntryFromChat, generateChatResponse, type Message } from "./chat";
 import { connectionsService } from "./connections";
@@ -3046,6 +3052,454 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.error('Get user cognitive identity error:', error);
       res.status(500).json({ 
         error: 'Failed to fetch cognitive identity',
+        details: error instanceof Error ? error.message : 'Unknown error'
+      });
+    }
+  });
+
+  // ===== THINQ CIRCLES API ROUTES =====
+
+  // Create a new ThinQ Circle
+  app.post(`${apiPrefix}/thinq-circles`, requireAuth, async (req: AuthenticatedRequest, res: Response) => {
+    try {
+      const userId = req.user?.id || req.session?.userId;
+      if (!userId) {
+        return res.status(401).json({ error: 'Authentication required' });
+      }
+
+      const { name, description } = req.body;
+
+      if (!name || name.trim().length < 3) {
+        return res.status(400).json({ error: 'Circle name must be at least 3 characters' });
+      }
+
+      // Create circle
+      const [circle] = await db.insert(thinqCircles).values({
+        name: name.trim(),
+        description: description?.trim() || null,
+        createdBy: userId,
+      }).returning();
+
+      // Add creator as owner
+      await db.insert(thinqCircleMembers).values({
+        circleId: circle.id,
+        userId: userId,
+        role: 'owner',
+      });
+
+      res.json({
+        success: true,
+        circle,
+      });
+
+    } catch (error) {
+      console.error('Create ThinQ Circle error:', error);
+      res.status(500).json({ 
+        error: 'Failed to create circle',
+        details: error instanceof Error ? error.message : 'Unknown error'
+      });
+    }
+  });
+
+  // Search users (autocomplete for invites)
+  app.get(`${apiPrefix}/users/search`, requireAuth, async (req: AuthenticatedRequest, res: Response) => {
+    try {
+      const query = req.query.q as string;
+      
+      if (!query || query.trim().length < 2) {
+        return res.json({ success: true, users: [] });
+      }
+
+      const searchTerm = `%${query.trim()}%`;
+      
+      const foundUsers = await db.query.users.findMany({
+        where: or(
+          sql`${users.fullName} ILIKE ${searchTerm}`,
+          sql`${users.email} ILIKE ${searchTerm}`
+        ),
+        columns: {
+          id: true,
+          fullName: true,
+          email: true,
+          avatar: true,
+          linkedinPhotoUrl: true,
+        },
+        limit: 10,
+      });
+
+      res.json({
+        success: true,
+        users: foundUsers,
+      });
+
+    } catch (error) {
+      console.error('User search error:', error);
+      res.status(500).json({ 
+        error: 'Failed to search users',
+        details: error instanceof Error ? error.message : 'Unknown error'
+      });
+    }
+  });
+
+  // Invite members to circle (both existing users and email invites)
+  app.post(`${apiPrefix}/thinq-circles/:circleId/invite`, requireAuth, async (req: AuthenticatedRequest, res: Response) => {
+    try {
+      const userId = req.user?.id || req.session?.userId;
+      if (!userId) {
+        return res.status(401).json({ error: 'Authentication required' });
+      }
+
+      const circleId = parseInt(req.params.circleId);
+      const { existingUserIds, emailInvites } = req.body; // existingUserIds: number[], emailInvites: string[]
+
+      // Verify user is circle owner or member
+      const membership = await db.query.thinqCircleMembers.findFirst({
+        where: and(
+          eq(thinqCircleMembers.circleId, circleId),
+          eq(thinqCircleMembers.userId, userId)
+        ),
+      });
+
+      if (!membership) {
+        return res.status(403).json({ error: 'You are not a member of this circle' });
+      }
+
+      const circle = await db.query.thinqCircles.findFirst({
+        where: eq(thinqCircles.id, circleId),
+      });
+
+      if (!circle) {
+        return res.status(404).json({ error: 'Circle not found' });
+      }
+
+      const results = {
+        existingUsers: [] as any[],
+        emailInvites: [] as any[],
+      };
+
+      // Invite existing users
+      if (existingUserIds && existingUserIds.length > 0) {
+        for (const inviteeUserId of existingUserIds) {
+          // Check if already a member
+          const existingMember = await db.query.thinqCircleMembers.findFirst({
+            where: and(
+              eq(thinqCircleMembers.circleId, circleId),
+              eq(thinqCircleMembers.userId, inviteeUserId)
+            ),
+          });
+
+          if (existingMember) {
+            results.existingUsers.push({ userId: inviteeUserId, status: 'already_member' });
+            continue;
+          }
+
+          // Create invite
+          const token = `circle_${circleId}_${inviteeUserId}_${Date.now()}`;
+          const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 days
+
+          const [invite] = await db.insert(thinqCircleInvites).values({
+            circleId,
+            inviterUserId: userId,
+            inviteeEmail: '', // Will be filled from user lookup
+            inviteeUserId: inviteeUserId,
+            token,
+            expiresAt,
+          }).returning();
+
+          // Create notification
+          await db.insert(notifications).values({
+            recipientId: inviteeUserId,
+            actorIds: JSON.stringify([userId]),
+            notificationType: 'circle_invite',
+            circleInviteId: invite.id,
+            circleName: circle.name,
+          });
+
+          results.existingUsers.push({ userId: inviteeUserId, status: 'invited', inviteId: invite.id });
+        }
+      }
+
+      // Email invites for non-users
+      if (emailInvites && emailInvites.length > 0) {
+        for (const email of emailInvites) {
+          // Check if email belongs to existing user
+          const existingUser = await db.query.users.findFirst({
+            where: eq(users.email, email),
+          });
+
+          if (existingUser) {
+            results.emailInvites.push({ email, status: 'user_exists', userId: existingUser.id });
+            continue;
+          }
+
+          // Create invite with token
+          const crypto = await import('crypto');
+          const token = crypto.randomBytes(32).toString('hex');
+          const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 days
+
+          const [invite] = await db.insert(thinqCircleInvites).values({
+            circleId,
+            inviterUserId: userId,
+            inviteeEmail: email,
+            token,
+            expiresAt,
+          }).returning();
+
+          // TODO: Send email with magic link
+          const inviteLink = `${process.env.REPLIT_DEV_DOMAIN || 'http://localhost:5000'}/join-circle?token=${token}`;
+          console.log(`\n🔗 Circle Invite Link for ${email}:\n${inviteLink}\n`);
+
+          results.emailInvites.push({ email, status: 'invited', inviteId: invite.id, inviteLink });
+        }
+      }
+
+      res.json({
+        success: true,
+        results,
+      });
+
+    } catch (error) {
+      console.error('Invite to circle error:', error);
+      res.status(500).json({ 
+        error: 'Failed to send invites',
+        details: error instanceof Error ? error.message : 'Unknown error'
+      });
+    }
+  });
+
+  // Get user's circles
+  app.get(`${apiPrefix}/thinq-circles/my-circles`, requireAuth, async (req: AuthenticatedRequest, res: Response) => {
+    try {
+      const userId = req.user?.id || req.session?.userId;
+      if (!userId) {
+        return res.status(401).json({ error: 'Authentication required' });
+      }
+
+      const circles = await db.query.thinqCircleMembers.findMany({
+        where: eq(thinqCircleMembers.userId, userId),
+        with: {
+          circle: {
+            with: {
+              creator: {
+                columns: {
+                  id: true,
+                  fullName: true,
+                  avatar: true,
+                  linkedinPhotoUrl: true,
+                },
+              },
+            },
+          },
+        },
+      });
+
+      res.json({
+        success: true,
+        circles: circles.map(m => ({
+          ...m.circle,
+          role: m.role,
+        })),
+      });
+
+    } catch (error) {
+      console.error('Get circles error:', error);
+      res.status(500).json({ 
+        error: 'Failed to fetch circles',
+        details: error instanceof Error ? error.message : 'Unknown error'
+      });
+    }
+  });
+
+  // Accept circle invite
+  app.post(`${apiPrefix}/thinq-circles/invites/:inviteId/accept`, requireAuth, async (req: AuthenticatedRequest, res: Response) => {
+    try {
+      const userId = req.user?.id || req.session?.userId;
+      if (!userId) {
+        return res.status(401).json({ error: 'Authentication required' });
+      }
+
+      const inviteId = parseInt(req.params.inviteId);
+
+      const invite = await db.query.thinqCircleInvites.findFirst({
+        where: eq(thinqCircleInvites.id, inviteId),
+      });
+
+      if (!invite) {
+        return res.status(404).json({ error: 'Invite not found' });
+      }
+
+      if (invite.inviteeUserId !== userId) {
+        return res.status(403).json({ error: 'This invite is not for you' });
+      }
+
+      if (invite.status !== 'pending') {
+        return res.status(400).json({ error: 'Invite already processed' });
+      }
+
+      if (new Date() > invite.expiresAt) {
+        await db.update(thinqCircleInvites)
+          .set({ status: 'expired' })
+          .where(eq(thinqCircleInvites.id, inviteId));
+        return res.status(400).json({ error: 'Invite expired' });
+      }
+
+      // Add to circle
+      await db.insert(thinqCircleMembers).values({
+        circleId: invite.circleId,
+        userId: userId,
+        role: 'member',
+      });
+
+      // Update invite status
+      await db.update(thinqCircleInvites)
+        .set({ 
+          status: 'accepted',
+          claimedAt: new Date(),
+        })
+        .where(eq(thinqCircleInvites.id, inviteId));
+
+      // Mark notification as read
+      await db.update(notifications)
+        .set({ isRead: true })
+        .where(eq(notifications.circleInviteId, inviteId));
+
+      res.json({
+        success: true,
+        circleId: invite.circleId,
+      });
+
+    } catch (error) {
+      console.error('Accept invite error:', error);
+      res.status(500).json({ 
+        error: 'Failed to accept invite',
+        details: error instanceof Error ? error.message : 'Unknown error'
+      });
+    }
+  });
+
+  // Reject circle invite
+  app.post(`${apiPrefix}/thinq-circles/invites/:inviteId/reject`, requireAuth, async (req: AuthenticatedRequest, res: Response) => {
+    try {
+      const userId = req.user?.id || req.session?.userId;
+      if (!userId) {
+        return res.status(401).json({ error: 'Authentication required' });
+      }
+
+      const inviteId = parseInt(req.params.inviteId);
+
+      const invite = await db.query.thinqCircleInvites.findFirst({
+        where: eq(thinqCircleInvites.id, inviteId),
+      });
+
+      if (!invite) {
+        return res.status(404).json({ error: 'Invite not found' });
+      }
+
+      if (invite.inviteeUserId !== userId) {
+        return res.status(403).json({ error: 'This invite is not for you' });
+      }
+
+      // Update invite status
+      await db.update(thinqCircleInvites)
+        .set({ status: 'rejected' })
+        .where(eq(thinqCircleInvites.id, inviteId));
+
+      // Mark notification as read
+      await db.update(notifications)
+        .set({ isRead: true })
+        .where(eq(notifications.circleInviteId, inviteId));
+
+      res.json({
+        success: true,
+      });
+
+    } catch (error) {
+      console.error('Reject invite error:', error);
+      res.status(500).json({ 
+        error: 'Failed to reject invite',
+        details: error instanceof Error ? error.message : 'Unknown error'
+      });
+    }
+  });
+
+  // Get circle details with members
+  app.get(`${apiPrefix}/thinq-circles/:circleId`, requireAuth, async (req: AuthenticatedRequest, res: Response) => {
+    try {
+      const userId = req.user?.id || req.session?.userId;
+      if (!userId) {
+        return res.status(401).json({ error: 'Authentication required' });
+      }
+
+      const circleId = parseInt(req.params.circleId);
+
+      // Verify user is a member
+      const membership = await db.query.thinqCircleMembers.findFirst({
+        where: and(
+          eq(thinqCircleMembers.circleId, circleId),
+          eq(thinqCircleMembers.userId, userId)
+        ),
+      });
+
+      if (!membership) {
+        return res.status(403).json({ error: 'You are not a member of this circle' });
+      }
+
+      const circle = await db.query.thinqCircles.findFirst({
+        where: eq(thinqCircles.id, circleId),
+        with: {
+          creator: {
+            columns: {
+              id: true,
+              fullName: true,
+              avatar: true,
+              linkedinPhotoUrl: true,
+            },
+          },
+          members: {
+            with: {
+              user: {
+                columns: {
+                  id: true,
+                  fullName: true,
+                  email: true,
+                  avatar: true,
+                  linkedinPhotoUrl: true,
+                },
+              },
+            },
+          },
+        },
+      });
+
+      if (!circle) {
+        return res.status(404).json({ error: 'Circle not found' });
+      }
+
+      // Get counts
+      const [dotsCount] = await db.select({ count: count() })
+        .from(circleDots)
+        .where(eq(circleDots.circleId, circleId));
+
+      const [sparksCount] = await db.select({ count: count() })
+        .from(circleSparks)
+        .where(eq(circleSparks.circleId, circleId));
+
+      res.json({
+        success: true,
+        circle: {
+          ...circle,
+          stats: {
+            dots: dotsCount?.count || 0,
+            sparks: sparksCount?.count || 0,
+            members: circle.members.length,
+          },
+        },
+      });
+
+    } catch (error) {
+      console.error('Get circle details error:', error);
+      res.status(500).json({ 
+        error: 'Failed to fetch circle details',
         details: error instanceof Error ? error.message : 'Unknown error'
       });
     }
