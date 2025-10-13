@@ -110,6 +110,14 @@ export default function MyDotSparkPage() {
   // Always show all badges (earned and locked) for gamification
   const allBadgesForDisplay = badgesData?.badges || [];
   
+  // Fetch user's ThinQ Circles to determine indicator status
+  const { data: circlesData } = useQuery<{ success: boolean; circles: any[] }>({
+    queryKey: ['/api/thinq-circles/my-circles'],
+    enabled: !!user,
+  });
+
+  const hasCircles = (circlesData?.circles?.length ?? 0) > 0;
+  
   console.log('Badges data:', badgesData, 'User ID:', (user as any)?.id);
 
   // Fetch pending badge notifications
@@ -424,8 +432,8 @@ export default function MyDotSparkPage() {
               <div className="absolute top-4 left-1/2 -translate-x-1/2">
                 <div className="relative px-3 py-1.5 bg-white/20 backdrop-blur-sm rounded-full">
                   <Target className="h-4 w-4 text-white" />
-                  {/* Status Indicator - Red (not yet active) */}
-                  <div className="absolute -top-1 -right-1 h-3 w-3 rounded-full border-2 border-white bg-red-500"></div>
+                  {/* Status Indicator - Green when user has circles, Red otherwise */}
+                  <div className={`absolute -top-1 -right-1 h-3 w-3 rounded-full border-2 border-white ${hasCircles ? 'bg-green-500' : 'bg-red-500'}`}></div>
                 </div>
               </div>
               
