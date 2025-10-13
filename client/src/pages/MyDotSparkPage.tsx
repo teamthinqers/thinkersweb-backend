@@ -16,6 +16,9 @@ import { apiRequest, queryClient } from '@/lib/queryClient';
 import type { Badge } from '@shared/schema';
 import { useDotSparkTuning } from '@/hooks/useDotSparkTuning';
 import { generateCognitiveIdentityTags } from '@/lib/cognitiveIdentityTags';
+import { useToast } from '@/hooks/use-toast';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Check, X } from 'lucide-react';
 
 interface DashboardData {
   neuralStrength: {
@@ -61,6 +64,7 @@ interface DashboardData {
 
 export default function MyDotSparkPage() {
   const { user } = useAuth();
+  const { toast } = useToast();
   const [badgeToShow, setBadgeToShow] = useState<Badge | null>(null);
   const [showBadgeModal, setShowBadgeModal] = useState(false);
 
@@ -117,6 +121,64 @@ export default function MyDotSparkPage() {
   });
 
   const hasCircles = (circlesData?.circles?.length ?? 0) > 0;
+  
+  // Fetch pending circle invites
+  const { data: pendingInvitesData } = useQuery<{ success: boolean; invites: any[] }>({
+    queryKey: ['/api/thinq-circles/pending-invites'],
+    enabled: !!user,
+  });
+  
+  const [showInvitePopup, setShowInvitePopup] = useState(false);
+  
+  // Show popup when there are pending invites
+  useEffect(() => {
+    if (pendingInvitesData?.invites && pendingInvitesData.invites.length > 0) {
+      setShowInvitePopup(true);
+    }
+  }, [pendingInvitesData]);
+  
+  // Accept circle invite mutation
+  const acceptInviteMutation = useMutation({
+    mutationFn: async (inviteId: number) => {
+      return apiRequest("POST", `/api/thinq-circles/invites/${inviteId}/accept`, {});
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/thinq-circles/pending-invites'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/thinq-circles/my-circles'] });
+      toast({
+        title: 'Invite accepted!',
+        description: 'You have joined the circle successfully',
+      });
+    },
+    onError: (error: Error) => {
+      toast({
+        title: 'Error',
+        description: error.message,
+        variant: 'destructive',
+      });
+    },
+  });
+  
+  // Reject circle invite mutation
+  const rejectInviteMutation = useMutation({
+    mutationFn: async (inviteId: number) => {
+      return apiRequest("POST", `/api/thinq-circles/invites/${inviteId}/reject`, {});
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/thinq-circles/pending-invites'] });
+      toast({
+        title: 'Invite declined',
+        description: 'The invitation has been declined',
+      });
+    },
+    onError: (error: Error) => {
+      toast({
+        title: 'Error',
+        description: error.message,
+        variant: 'destructive',
+      });
+    },
+  });
   
   console.log('Badges data:', badgesData, 'User ID:', (user as any)?.id);
 
@@ -258,6 +320,69 @@ export default function MyDotSparkPage() {
           open={showBadgeModal}
           onOpenChange={handleBadgeModalClose}
         />
+
+        {/* Circle Invite Popup Modal */}
+        <Dialog open={showInvitePopup} onOpenChange={setShowInvitePopup}>
+          <DialogContent className="max-w-2xl">
+            <DialogHeader>
+              <DialogTitle className="text-2xl flex items-center gap-2">
+                <Target className="h-6 w-6" style={{ color: '#F59E0B' }} />
+                ThinQ Circle Invitations
+              </DialogTitle>
+              <DialogDescription>
+                You have been invited to join the following circles
+              </DialogDescription>
+            </DialogHeader>
+            <div className="space-y-4 mt-4">
+              {pendingInvitesData?.invites?.map((invite: any) => (
+                <div 
+                  key={invite.id}
+                  className="flex items-center justify-between p-4 bg-gradient-to-r from-amber-50 to-orange-50 rounded-lg border border-amber-200"
+                >
+                  <div className="flex items-center gap-4">
+                    <Avatar className="h-12 w-12">
+                      <AvatarImage src={invite.inviter.linkedinPhotoUrl || invite.inviter.avatar} />
+                      <AvatarFallback className="text-white" style={{ backgroundColor: '#F59E0B' }}>
+                        {invite.inviter.fullName.charAt(0)}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div>
+                      <h3 className="font-semibold text-gray-900">{invite.circle.name}</h3>
+                      <p className="text-sm text-gray-600">
+                        Invited by <span className="font-medium">{invite.inviter.fullName}</span>
+                      </p>
+                      {invite.circle.description && (
+                        <p className="text-sm text-gray-500 mt-1">{invite.circle.description}</p>
+                      )}
+                    </div>
+                  </div>
+                  <div className="flex gap-2">
+                    <Button
+                      size="sm"
+                      onClick={() => acceptInviteMutation.mutate(invite.id)}
+                      disabled={acceptInviteMutation.isPending}
+                      className="text-white"
+                      style={{ backgroundColor: '#F59E0B' }}
+                    >
+                      <Check className="h-4 w-4 mr-1" />
+                      Accept
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => rejectInviteMutation.mutate(invite.id)}
+                      disabled={rejectInviteMutation.isPending}
+                      className="text-red-600 hover:bg-red-50"
+                    >
+                      <X className="h-4 w-4 mr-1" />
+                      Decline
+                    </Button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </DialogContent>
+        </Dialog>
 
         {/* ========================================
             MAIN DASHBOARD: 4 Core Sections

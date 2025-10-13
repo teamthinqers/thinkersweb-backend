@@ -3359,6 +3359,53 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Get user's pending circle invites
+  app.get(`${apiPrefix}/thinq-circles/pending-invites`, requireAuth, async (req: AuthenticatedRequest, res: Response) => {
+    try {
+      const userId = req.user?.id || req.session?.userId;
+      if (!userId) {
+        return res.status(401).json({ error: 'Authentication required' });
+      }
+
+      const pendingInvites = await db.query.thinqCircleInvites.findMany({
+        where: and(
+          eq(thinqCircleInvites.inviteeUserId, userId),
+          eq(thinqCircleInvites.status, 'pending')
+        ),
+        with: {
+          circle: {
+            columns: {
+              id: true,
+              name: true,
+              description: true,
+            },
+          },
+          inviter: {
+            columns: {
+              id: true,
+              fullName: true,
+              avatar: true,
+              linkedinPhotoUrl: true,
+            },
+          },
+        },
+        orderBy: desc(thinqCircleInvites.createdAt),
+      });
+
+      res.json({
+        success: true,
+        invites: pendingInvites,
+      });
+
+    } catch (error) {
+      console.error('Get pending invites error:', error);
+      res.status(500).json({ 
+        error: 'Failed to fetch pending invites',
+        details: error instanceof Error ? error.message : 'Unknown error'
+      });
+    }
+  });
+
   // Accept circle invite
   app.post(`${apiPrefix}/thinq-circles/invites/:inviteId/accept`, requireAuth, async (req: AuthenticatedRequest, res: Response) => {
     try {
