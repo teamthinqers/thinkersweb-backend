@@ -188,7 +188,7 @@ const Profile = () => {
 
           {/* MIDDLE COLUMN - Profile Details */}
           <div className="lg:col-span-1">
-            <Card className="border border-gray-200 shadow-sm h-full">
+            <Card className="border-0 bg-gradient-to-br from-amber-50 to-orange-50 shadow-sm h-full">
               <CardContent className="p-6">
                 {/* Edit/Save Buttons */}
                 <div className="flex flex-col gap-2 mb-4">
@@ -372,7 +372,7 @@ const Profile = () => {
 
           {/* RIGHT COLUMN - About Me Section */}
           <div className="lg:col-span-1">
-            <Card className="border border-gray-200 shadow-sm h-full">
+            <Card className="border-0 bg-gradient-to-br from-amber-50 to-orange-50 shadow-sm h-full">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="text-lg font-semibold text-gray-900">About Me</h3>

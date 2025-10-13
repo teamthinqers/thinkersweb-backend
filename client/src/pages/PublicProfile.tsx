@@ -89,7 +89,7 @@ const PublicProfile = () => {
 
           {/* MIDDLE COLUMN - Profile Details */}
           <div className="lg:col-span-1">
-            <Card className="border border-gray-200 shadow-sm h-full">
+            <Card className="border-0 bg-gradient-to-br from-amber-50 to-orange-50 shadow-sm h-full">
               <CardContent className="p-6">
                 {/* Profile Picture */}
                 <div className="flex justify-center mb-6">
@@ -163,7 +163,7 @@ const PublicProfile = () => {
 
           {/* RIGHT COLUMN - About Me Section */}
           <div className="lg:col-span-1">
-            <Card className="border border-gray-200 shadow-sm h-full">
+            <Card className="border-0 bg-gradient-to-br from-amber-50 to-orange-50 shadow-sm h-full">
               <CardContent className="p-6">
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">About Me</h3>
                 {user.aboutMe ? (
