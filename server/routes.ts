@@ -66,6 +66,7 @@ import notificationsSimpleRouter from './routes/notifications-simple';
 import { initializeVectorDB } from './vector-db';
 import { vectorIntegration } from './vector-integration';
 import { setupVectorAPI } from './routes/vector-api';
+import { notifyBadgeUnlock } from './notification-helpers';
 
 // Interface for authenticated requests
 interface AuthenticatedRequest extends Request {
@@ -400,14 +401,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         notified: false,
       });
 
-      // Create a notification for the badge unlock
-      await db.insert(notifications).values({
-        recipientId: userId,
-        actorIds: JSON.stringify([userId]), // Self-notification
-        notificationType: 'badge_unlocked',
-        badgeId: badge.id,
-        isRead: false,
-      });
+      // Create a notification for the badge unlock using the helper
+      await notifyBadgeUnlock(userId, badge.id);
 
       console.log(`Badge "${badgeKey}" awarded to user ${userId} with notification created`);
       return true;

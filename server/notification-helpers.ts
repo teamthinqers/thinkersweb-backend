@@ -5,9 +5,10 @@ import { eq, and, sql } from 'drizzle-orm';
 export interface NotificationData {
   recipientId: number;
   actorId: number;
-  notificationType: 'new_thought' | 'new_perspective' | 'spark_saved';
-  thoughtId: number;
-  thoughtHeading: string;
+  notificationType: 'new_thought' | 'new_perspective' | 'spark_saved' | 'badge_unlocked';
+  thoughtId?: number;
+  thoughtHeading?: string;
+  badgeId?: number;
 }
 
 /**
@@ -24,13 +25,23 @@ export async function createOrUpdateNotification(data: NotificationData) {
     // Check if a similar notification exists within the last hour
     const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000);
     
+    // Build where conditions based on notification type
+    const whereConditions = [
+      eq(notifications.recipientId, data.recipientId),
+      eq(notifications.notificationType, data.notificationType),
+      sql`${notifications.createdAt} > ${oneHourAgo}`
+    ];
+    
+    // Add thought/badge specific conditions
+    if (data.thoughtId) {
+      whereConditions.push(eq(notifications.thoughtId, data.thoughtId));
+    }
+    if (data.badgeId) {
+      whereConditions.push(eq(notifications.badgeId, data.badgeId));
+    }
+    
     const existingNotification = await db.query.notifications.findFirst({
-      where: and(
-        eq(notifications.recipientId, data.recipientId),
-        eq(notifications.notificationType, data.notificationType),
-        eq(notifications.thoughtId, data.thoughtId),
-        sql`${notifications.createdAt} > ${oneHourAgo}`
-      ),
+      where: and(...whereConditions),
     });
 
     if (existingNotification) {
@@ -61,8 +72,9 @@ export async function createOrUpdateNotification(data: NotificationData) {
           recipientId: data.recipientId,
           actorIds: JSON.stringify([data.actorId]),
           notificationType: data.notificationType,
-          thoughtId: data.thoughtId,
-          thoughtHeading: data.thoughtHeading,
+          thoughtId: data.thoughtId || null,
+          thoughtHeading: data.thoughtHeading || null,
+          badgeId: data.badgeId || null,
           isRead: false,
         })
         .returning();
@@ -162,5 +174,22 @@ export async function notifySparkSaved(actorId: number, thoughtId: number, thoug
     console.log(`✅ Created notifications for spark saved on thought ${thoughtId} by user ${actorId} (all users notified)`);
   } catch (error) {
     console.error('Error notifying spark saved:', error);
+  }
+}
+
+/**
+ * Create a badge unlock notification (only for the user who unlocked it)
+ */
+export async function notifyBadgeUnlock(userId: number, badgeId: number) {
+  try {
+    await createOrUpdateNotification({
+      recipientId: userId,
+      actorId: userId, // Self-notification
+      notificationType: 'badge_unlocked',
+      badgeId,
+    });
+    console.log(`✅ Created badge unlock notification for user ${userId}, badge ${badgeId}`);
+  } catch (error) {
+    console.error('Error notifying badge unlock:', error);
   }
 }
