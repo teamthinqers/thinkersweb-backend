@@ -4,7 +4,7 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useToast } from '@/hooks/use-toast';
-import { Send, Loader2, ArrowLeft, Menu, Brain, Users, Settings, BarChart2, User, MessageSquare, Home, Sparkles, Mic, MicOff, Info, Lightbulb, Target, Puzzle } from 'lucide-react';
+import { Send, Loader2, ArrowLeft, Menu, Brain, Users, BarChart2, User, MessageSquare, Home, Sparkles, Mic, MicOff, Info, Lightbulb, Target, Puzzle } from 'lucide-react';
 import { Link } from 'wouter';
 import { useAuth } from '@/hooks/use-auth-new';
 import { UsageLimitMessage } from '@/components/ui/usage-limit-message';
@@ -525,12 +525,6 @@ export default function ChatPage() {
                         <Button variant="ghost" className="w-full justify-start text-sm h-9">
                           <User className="w-4 h-4 mr-3" />
                           Profile
-                        </Button>
-                      </Link>
-                      <Link href="/settings">
-                        <Button variant="ghost" className="w-full justify-start text-sm h-9">
-                          <Settings className="w-4 h-4 mr-3" />
-                          Settings
                         </Button>
                       </Link>
                     </div>

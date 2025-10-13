@@ -3,7 +3,7 @@ import { Link, useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { 
   Brain, Users, Sparkles, MessageSquare, Plus,
-  Menu, User, LogOut, Settings, TrendingUp, Heart,
+  Menu, User, LogOut, TrendingUp, Heart,
   Share2, Eye, MoreHorizontal, Maximize, Minimize, Clock,
   Grid3x3, List, Bookmark
 } from "lucide-react";
@@ -260,12 +260,6 @@ export default function LandingPage() {
                       <Link href="/myneura" className="cursor-pointer w-full">
                         <Brain className="mr-2 h-4 w-4" />
                         My Neura
-                      </Link>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem asChild>
-                      <Link href="/settings" className="cursor-pointer w-full">
-                        <Settings className="mr-2 h-4 w-4" />
-                        Settings
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
