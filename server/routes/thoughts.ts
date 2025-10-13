@@ -451,6 +451,13 @@ router.get('/myneura', async (req, res) => {
     const allMyNeuraThoughts = [...personalThoughts, ...savedThoughtsData]
       .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 
+    console.log(`🧠 MyNeura thoughts for user ${userId}:`, {
+      personalCount: personalThoughts.length,
+      savedCount: savedThoughtsData.length,
+      totalCount: allMyNeuraThoughts.length,
+      thoughts: allMyNeuraThoughts.map(t => ({ id: t.id, heading: t.heading, visibility: t.visibility }))
+    });
+
     res.json({
       success: true,
       thoughts: allMyNeuraThoughts,
