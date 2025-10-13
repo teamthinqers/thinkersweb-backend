@@ -3549,5 +3549,75 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Get circle thoughts
+  app.get(`${apiPrefix}/thinq-circles/:circleId/thoughts`, requireAuth, async (req: AuthenticatedRequest, res: Response) => {
+    try {
+      const userId = req.user?.id || req.session?.userId;
+      if (!userId) {
+        return res.status(401).json({ error: 'Authentication required' });
+      }
+
+      const circleId = parseInt(req.params.circleId);
+
+      // Verify user is a member
+      const membership = await db.query.thinqCircleMembers.findFirst({
+        where: and(
+          eq(thinqCircleMembers.circleId, circleId),
+          eq(thinqCircleMembers.userId, userId)
+        ),
+      });
+
+      if (!membership) {
+        return res.status(403).json({ error: 'You are not a member of this circle' });
+      }
+
+      // Fetch thoughts shared to this circle
+      const circleThoughts = await db.query.circleDots.findMany({
+        where: eq(circleDots.circleId, circleId),
+        with: {
+          thought: {
+            with: {
+              user: {
+                columns: {
+                  id: true,
+                  fullName: true,
+                  avatar: true,
+                  linkedinPhotoUrl: true,
+                },
+              },
+            },
+          },
+          sharedByUser: {
+            columns: {
+              id: true,
+              fullName: true,
+              avatar: true,
+              linkedinPhotoUrl: true,
+            },
+          },
+        },
+        orderBy: desc(circleDots.sharedAt),
+      });
+
+      // Transform to thought format
+      const thoughts = circleThoughts.map(cd => ({
+        ...cd.thought,
+        sharedBy: cd.sharedByUser,
+        sharedAt: cd.sharedAt,
+      }));
+
+      res.json({
+        thoughts,
+      });
+
+    } catch (error) {
+      console.error('Get circle thoughts error:', error);
+      res.status(500).json({ 
+        error: 'Failed to fetch circle thoughts',
+        details: error instanceof Error ? error.message : 'Unknown error'
+      });
+    }
+  });
+
   return httpServer;
 }

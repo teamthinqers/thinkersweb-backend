@@ -27,6 +27,8 @@ export default function ThinQCirclePage() {
   const { toast } = useToast();
   const [showMembersModal, setShowMembersModal] = useState(false);
   const [showInviteModal, setShowInviteModal] = useState(false);
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  const [selectedThought, setSelectedThought] = useState<any>(null);
 
   const circleId = params?.circleId ? parseInt(params.circleId) : null;
 
@@ -58,6 +60,14 @@ export default function ThinQCirclePage() {
     };
   }>({
     queryKey: [`/api/thinq-circles/${circleId}`],
+    enabled: !!circleId && !!user,
+  });
+
+  // Fetch circle thoughts
+  const { data: thoughtsData, isLoading: thoughtsLoading, refetch: refetchThoughts } = useQuery<{
+    thoughts: any[];
+  }>({
+    queryKey: [`/api/thinq-circles/${circleId}/thoughts`],
     enabled: !!circleId && !!user,
   });
 
@@ -206,18 +216,34 @@ export default function ThinQCirclePage() {
             </div>
           </div>
 
-          {/* Empty State - Thought Grid Coming Soon */}
-          <div className="text-center py-20">
-            <Lightbulb className="h-16 w-16 mx-auto mb-4" style={{ color: '#F59E0B' }} />
-            <h3 className="text-xl font-semibold text-gray-800 mb-2">Share insights to this circle</h3>
-            <p className="text-gray-600 mb-6">
-              Members can share their dots, sparks, and perspectives here
-            </p>
-            <Button className="hover:opacity-90" style={{ backgroundColor: '#F59E0B' }}>
-              <Lightbulb className="h-5 w-5 mr-2" />
-              Share from My Neura
-            </Button>
-          </div>
+          {/* Thoughts Display */}
+          {thoughtsLoading ? (
+            <div className="text-center py-20">
+              <div className="w-16 h-16 border-4 border-t-transparent rounded-full animate-spin mx-auto mb-4" style={{ borderColor: '#F59E0B', borderTopColor: 'transparent' }}></div>
+              <p className="text-gray-600">Loading thoughts...</p>
+            </div>
+          ) : (thoughtsData?.thoughts && thoughtsData.thoughts.length > 0) ? (
+            <ThoughtCloudGrid
+              thoughts={thoughtsData.thoughts}
+              isFullscreen={isFullscreen}
+              onFullscreenToggle={() => setIsFullscreen(!isFullscreen)}
+              onDotClick={(thought) => setSelectedThought(thought)}
+              patternId={`circle-${circleId}-pattern`}
+              onRefresh={refetchThoughts}
+            />
+          ) : (
+            <div className="text-center py-20">
+              <Lightbulb className="h-16 w-16 mx-auto mb-4" style={{ color: '#F59E0B' }} />
+              <h3 className="text-xl font-semibold text-gray-800 mb-2">Share insights to this circle</h3>
+              <p className="text-gray-600 mb-6">
+                Members can share their dots, sparks, and perspectives here
+              </p>
+              <Button className="hover:opacity-90" style={{ backgroundColor: '#F59E0B' }}>
+                <Lightbulb className="h-5 w-5 mr-2" />
+                Share from My Neura
+              </Button>
+            </div>
+          )}
         </div>
 
       {/* Members Modal */}
