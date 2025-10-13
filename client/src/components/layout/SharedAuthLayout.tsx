@@ -1,8 +1,9 @@
 import { useState, ReactNode, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Menu, Brain, Users, User, LogOut, Sparkles, UsersRound, Search, Bell, CheckCheck, MessageSquare, FileText, Trophy } from 'lucide-react';
+import { Menu, Brain, Users, User, LogOut, Sparkles, UsersRound, Search, Bell, CheckCheck, MessageSquare, FileText, Trophy, Lightbulb } from 'lucide-react';
 import { Link, useLocation } from 'wouter';
+import SparkIcon from '@/components/ui/spark-icon';
 import { useAuth } from '@/hooks/use-auth-new';
 import { useToast } from '@/hooks/use-toast';
 import FloatingDot from '@/components/FloatingDot';
@@ -183,11 +184,11 @@ export default function SharedAuthLayout({ children }: SharedAuthLayoutProps) {
   const getNotificationIcon = (type: string) => {
     switch (type) {
       case 'new_thought':
-        return <FileText className="w-4 h-4" />;
+        return <Lightbulb className="w-4 h-4" />;
       case 'new_perspective':
         return <MessageSquare className="w-4 h-4" />;
       case 'spark_saved':
-        return <Sparkles className="w-4 h-4" />;
+        return <SparkIcon className="w-4 h-4" fill="#6366f1" />;
       case 'badge_unlocked':
         return <Trophy className="w-4 h-4" />;
       default:

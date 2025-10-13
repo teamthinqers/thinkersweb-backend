@@ -1,7 +1,7 @@
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useAuth } from "@/hooks/use-auth-new";
 import { queryClient, apiRequest } from "@/lib/queryClient";
-import { Bell, Check, CheckCheck, MessageSquare, FileText, Trophy, Users } from "lucide-react";
+import { Bell, Check, CheckCheck, MessageSquare, FileText, Trophy, Users, Lightbulb } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useLocation } from "wouter";
@@ -140,7 +140,7 @@ export default function NotificationsPage() {
   const getNotificationIcon = (type: string, badge?: Notification['badge']) => {
     switch (type) {
       case 'new_thought':
-        return <FileText className="h-5 w-5 text-blue-500" />;
+        return <Lightbulb className="h-5 w-5 text-amber-500" />;
       case 'new_perspective':
         return <MessageSquare className="h-5 w-5 text-indigo-500" />;
       case 'spark_saved':
