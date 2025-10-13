@@ -37,21 +37,22 @@ export default function ThoughtCirclePage() {
           <div className="mb-8">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-4">
-                <div className="p-4 bg-yellow-400 rounded-2xl shadow-xl">
+                <div className="p-4 rounded-2xl shadow-xl" style={{ backgroundColor: '#E8C89C' }}>
                   <Target className="h-8 w-8 text-white" />
                 </div>
                 <div>
-                  <h1 className="text-4xl font-bold text-yellow-700">
+                  <h1 className="text-4xl font-bold text-amber-800">
                     My ThinQ Circles
                   </h1>
-                  <p className="text-yellow-700/70 text-lg mt-1">
+                  <p className="text-amber-700/70 text-lg mt-1">
                     Form your private ThinQ circles to brainstorm
                   </p>
                 </div>
               </div>
               <Button 
                 onClick={() => setShowCreateModal(true)}
-                className="bg-yellow-400 hover:bg-yellow-500 text-white shadow-lg"
+                className="text-white shadow-lg hover:opacity-90"
+                style={{ backgroundColor: '#E8C89C' }}
               >
                 <Plus className="h-5 w-5 mr-2" />
                 Create Circle
@@ -62,20 +63,21 @@ export default function ThoughtCirclePage() {
           {/* Loading State */}
           {isLoading && (
             <div className="text-center py-12">
-              <p className="text-yellow-600">Loading your circles...</p>
+              <p className="text-amber-700">Loading your circles...</p>
             </div>
           )}
 
           {/* Empty State */}
           {!isLoading && circles.length === 0 && (
-            <Card className="border-yellow-200 bg-gradient-to-br from-white to-yellow-50">
+            <Card className="border-amber-200 bg-gradient-to-br from-white to-amber-50">
               <CardContent className="py-12 text-center">
-                <Target className="h-16 w-16 text-yellow-400 mx-auto mb-4" />
-                <h3 className="text-xl font-semibold text-yellow-900 mb-2">No circles yet</h3>
-                <p className="text-yellow-700/70 mb-6">Create your first ThinQ Circle to start collaborating</p>
+                <Target className="h-16 w-16 mx-auto mb-4" style={{ color: '#E8C89C' }} />
+                <h3 className="text-xl font-semibold text-amber-900 mb-2">No circles yet</h3>
+                <p className="text-amber-700/70 mb-6">Create your first ThinQ Circle to start collaborating</p>
                 <Button 
                   onClick={() => setShowCreateModal(true)}
-                  className="bg-yellow-400 hover:bg-yellow-500 text-white"
+                  className="text-white hover:opacity-90"
+                  style={{ backgroundColor: '#E8C89C' }}
                 >
                   <Plus className="h-5 w-5 mr-2" />
                   Create Your First Circle
@@ -90,12 +92,12 @@ export default function ThoughtCirclePage() {
               {circles.map((circle) => (
                 <Card 
                   key={circle.id}
-                  className="border-yellow-200 bg-gradient-to-br from-white to-yellow-50 hover:shadow-xl transition-shadow cursor-pointer"
+                  className="border-amber-200 bg-gradient-to-br from-white to-amber-50 hover:shadow-xl transition-shadow cursor-pointer"
                   onClick={() => setLocation(`/thinq-circle/${circle.id}`)}
                 >
                   <CardHeader>
-                    <CardTitle className="flex items-center gap-2 text-yellow-900">
-                      <Target className="h-5 w-5 text-yellow-600" />
+                    <CardTitle className="flex items-center gap-2 text-amber-900">
+                      <Target className="h-5 w-5" style={{ color: '#E8C89C' }} />
                       {circle.name}
                     </CardTitle>
                   </CardHeader>
@@ -103,7 +105,7 @@ export default function ThoughtCirclePage() {
                     {circle.description && (
                       <p className="text-gray-600 mb-4">{circle.description}</p>
                     )}
-                    <div className="flex items-center gap-4 text-sm text-yellow-700/70">
+                    <div className="flex items-center gap-4 text-sm text-amber-700/70">
                       <div className="flex items-center gap-1">
                         <Users className="h-4 w-4" />
                         <span>{circle.memberCount || 1} member{circle.memberCount !== 1 ? 's' : ''}</span>

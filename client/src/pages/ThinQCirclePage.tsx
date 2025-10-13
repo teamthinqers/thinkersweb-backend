@@ -64,7 +64,7 @@ export default function ThinQCirclePage() {
     return (
       <div className="min-h-screen bg-gradient-to-br from-yellow-50 via-amber-50 to-yellow-100 flex items-center justify-center">
         <div className="text-center">
-          <div className="w-16 h-16 border-4 border-yellow-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <div className="w-16 h-16 border-4 border-t-transparent rounded-full animate-spin mx-auto mb-4" style={{ borderColor: '#E8C89C', borderTopColor: 'transparent' }}></div>
           <p className="text-gray-600">Loading circle...</p>
         </div>
       </div>
@@ -98,7 +98,7 @@ export default function ThinQCirclePage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-yellow-50 via-amber-50 to-yellow-100">
       {/* Custom Toolbar */}
-      <div className="sticky top-0 z-10 bg-yellow-400 shadow-[0_8px_30px_rgba(250,204,21,0.3)]">
+      <div className="sticky top-0 z-10 shadow-[0_8px_30px_rgba(232,200,156,0.3)]" style={{ backgroundColor: '#E8C89C' }}>
         <div className="max-w-7xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             {/* Left: Back button and Circle name */}
@@ -136,7 +136,7 @@ export default function ThinQCirclePage() {
                   {displayMembers.map((member) => (
                     <Avatar key={member.id} className="h-8 w-8 border-2 border-white">
                       <AvatarImage src={member.user.linkedinPhotoUrl || member.user.avatar} />
-                      <AvatarFallback className="bg-yellow-400 text-white text-xs">
+                      <AvatarFallback className="text-white text-xs" style={{ backgroundColor: '#E8C89C' }}>
                         {member.user.fullName.charAt(0)}
                       </AvatarFallback>
                     </Avatar>
@@ -195,8 +195,8 @@ export default function ThinQCirclePage() {
 
       {/* Content Grid - TODO: Filter to show only circle thoughts */}
       <div className="max-w-7xl mx-auto px-4 py-6">
-        <div className="bg-white/50 backdrop-blur-sm rounded-lg border border-yellow-200 p-4 mb-6">
-          <div className="flex items-center gap-2 text-yellow-700">
+        <div className="bg-white/50 backdrop-blur-sm rounded-lg border border-amber-200 p-4 mb-6">
+          <div className="flex items-center gap-2 text-amber-700">
             <Shield className="h-5 w-5" />
             <p className="text-sm font-medium">
               Private Circle • Only members can see and contribute
@@ -206,12 +206,12 @@ export default function ThinQCirclePage() {
 
         {/* For now, show empty state. Will be replaced with filtered grid */}
         <div className="text-center py-20">
-          <Lightbulb className="h-16 w-16 text-yellow-300 mx-auto mb-4" />
+          <Lightbulb className="h-16 w-16 mx-auto mb-4" style={{ color: '#E8C89C' }} />
           <h3 className="text-xl font-semibold text-gray-800 mb-2">Share insights to this circle</h3>
           <p className="text-gray-600 mb-6">
             Members can share their dots, sparks, and perspectives here
           </p>
-          <Button className="bg-yellow-400 hover:bg-yellow-500">
+          <Button className="hover:opacity-90" style={{ backgroundColor: '#E8C89C' }}>
             Share from My Neura
           </Button>
         </div>
@@ -229,7 +229,7 @@ export default function ThinQCirclePage() {
                 <div className="flex items-center gap-3">
                   <Avatar className="h-10 w-10">
                     <AvatarImage src={member.user.linkedinPhotoUrl || member.user.avatar} />
-                    <AvatarFallback className="bg-yellow-400 text-white">
+                    <AvatarFallback className="text-white" style={{ backgroundColor: '#E8C89C' }}>
                       {member.user.fullName.charAt(0)}
                     </AvatarFallback>
                   </Avatar>
