@@ -1,10 +1,12 @@
 import { useParams } from "wouter";
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Linkedin, Loader2 } from "lucide-react";
+import { Linkedin, Loader2, Trophy, Lightbulb, Search } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import SharedAuthLayout from "@/components/layout/SharedAuthLayout";
 import { CognitiveIdentityCard } from "@/components/CognitiveIdentityCard";
+import BadgeDisplay from "@/components/BadgeDisplay";
+import SparkIcon from "@/components/ui/spark-icon";
 
 interface UserProfile {
   id: number;
@@ -34,7 +36,21 @@ const PublicProfile = () => {
     enabled: !!userId,
   });
 
+  // Fetch user badges
+  const { data: badgesData } = useQuery<{ success: boolean; badges: any[] }>({
+    queryKey: [`/api/users/${userId}/badges`],
+    enabled: !!userId,
+  });
+
+  // Fetch dashboard data for stats
+  const { data: dashboardData } = useQuery<{ success: boolean; data: any }>({
+    queryKey: [`/api/users/${userId}/dashboard`],
+    enabled: !!userId,
+  });
+
   const user = data?.user;
+  const allBadgesForDisplay = badgesData?.badges || [];
+  const dashboard = dashboardData?.data;
   const profilePhoto = user?.linkedinPhotoUrl || user?.avatar;
   const displayName = user?.fullName || "User Name";
   const displayHeadline = user?.linkedinHeadline || "Professional Headline";
@@ -74,23 +90,21 @@ const PublicProfile = () => {
   return (
     <SharedAuthLayout>
       <div className="container mx-auto px-4 py-8 max-w-7xl">
-        {/* Three-Column Layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Three-Column Layout - Compact */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
           {/* LEFT COLUMN - Cognitive Identity Card */}
-          <div className="lg:col-span-1 h-full">
-            <div className="h-full">
-              <CognitiveIdentityCard
-                userId={user.id}
-                isPublic={user.cognitiveIdentityPublic}
-                isOwnProfile={false}
-              />
-            </div>
+          <div className="lg:col-span-1">
+            <CognitiveIdentityCard
+              userId={user.id}
+              isPublic={user.cognitiveIdentityPublic}
+              isOwnProfile={false}
+            />
           </div>
 
           {/* MIDDLE COLUMN - Profile Details */}
           <div className="lg:col-span-1">
-            <Card className="border-0 bg-gradient-to-br from-amber-50 to-orange-50 shadow-sm h-full">
-              <CardContent className="p-6">
+            <Card className="border-0 bg-gradient-to-br from-amber-50 to-orange-50 shadow-sm">
+              <CardContent className="p-4">
                 {/* Profile Picture */}
                 <div className="flex justify-center mb-6">
                   <Avatar className="h-32 w-32 border-4 border-gradient-to-br from-amber-400 to-orange-500">
@@ -163,17 +177,53 @@ const PublicProfile = () => {
 
           {/* RIGHT COLUMN - About Me Section */}
           <div className="lg:col-span-1">
-            <Card className="border-0 bg-gradient-to-br from-amber-50 to-orange-50 shadow-sm h-full">
-              <CardContent className="p-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">About Me</h3>
+            <Card className="border-0 bg-gradient-to-br from-amber-50 to-orange-50 shadow-sm">
+              <CardContent className="p-4">
+                <h3 className="text-lg font-semibold text-gray-900 mb-3">About Me</h3>
                 {user.aboutMe ? (
-                  <p className="text-sm text-gray-700 whitespace-pre-wrap leading-relaxed">{user.aboutMe}</p>
+                  <p className="text-sm text-gray-700 whitespace-pre-wrap leading-relaxed line-clamp-6">{user.aboutMe}</p>
                 ) : (
                   <p className="text-sm text-gray-400 italic">No professional story added yet.</p>
                 )}
               </CardContent>
             </Card>
           </div>
+        </div>
+
+        {/* Badges and Contributions Section */}
+        <div className="flex flex-wrap items-center gap-4">
+          {/* Badges Card */}
+          {allBadgesForDisplay.length > 0 && (
+            <BadgeDisplay badges={allBadgesForDisplay} />
+          )}
+          
+          {/* Contributions Card */}
+          <Card className="inline-flex flex-col gap-2 px-4 py-3 bg-gradient-to-br from-amber-50/80 via-orange-50/80 to-amber-100/80 border-2 border-amber-200/60 shadow-lg backdrop-blur-sm">
+            <div className="flex items-center gap-1">
+              <Trophy className="h-4 w-4 text-amber-600" />
+              <span className="text-xs font-semibold text-amber-700 uppercase tracking-wide">Contributions</span>
+            </div>
+            
+            <div className="h-px w-full bg-amber-300/50 my-1"></div>
+            
+            <div className="flex items-center gap-6">
+              {/* Dots */}
+              <div className="flex flex-col items-center gap-1">
+                <Lightbulb className="h-5 w-5 text-amber-600" />
+                <span className="text-sm font-bold text-amber-700">{dashboard?.stats?.dots || 0}</span>
+              </div>
+              {/* Sparks */}
+              <div className="flex flex-col items-center gap-1">
+                <SparkIcon className="h-5 w-5" fill="#d97706" />
+                <span className="text-sm font-bold text-amber-700">{(dashboard?.stats?.savedSparks || 0) + (dashboard?.neuralStrength?.stats?.userSparksCount || 0)}</span>
+              </div>
+              {/* Perspectives */}
+              <div className="flex flex-col items-center gap-1">
+                <Search className="h-5 w-5 text-amber-600" />
+                <span className="text-sm font-bold text-amber-700">{dashboard?.stats?.perspectives || 0}</span>
+              </div>
+            </div>
+          </Card>
         </div>
       </div>
     </SharedAuthLayout>
