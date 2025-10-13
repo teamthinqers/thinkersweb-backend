@@ -219,17 +219,17 @@ export default function MyDotSparkPage() {
                 <div className="h-px w-full bg-amber-300/50 my-1"></div>
                 
                 <div className="flex items-center justify-around">
-                  {/* Dots */}
+                  {/* Thoughts (Total contributions) */}
                   <div className="flex flex-col items-center gap-1">
                     <Lightbulb className="h-5 w-5 text-amber-600" />
-                    <span className="text-sm font-bold text-amber-700">{dashboard?.stats?.dots || 0}</span>
+                    <span className="text-sm font-bold text-amber-700">{dashboard?.stats?.thoughts || 0}</span>
                   </div>
-                  {/* Sparks */}
+                  {/* Sparks (Total sparks saved) */}
                   <div className="flex flex-col items-center gap-1">
                     <SparkIcon className="h-5 w-5" fill="#d97706" />
                     <span className="text-sm font-bold text-amber-700">{dashboard?.stats?.savedSparks || 0}</span>
                   </div>
-                  {/* Perspectives */}
+                  {/* Perspectives (Total perspective messages) */}
                   <div className="flex flex-col items-center gap-1">
                     <Search className="h-5 w-5 text-amber-600" />
                     <span className="text-sm font-bold text-amber-700">{dashboard?.stats?.perspectives || 0}</span>
