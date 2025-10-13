@@ -19,7 +19,6 @@ import LearningEnginePage from "@/pages/LearningEnginePage";
 import LogoPage from "@/pages/LogoPage";
 import AuthPage from "@/pages/auth-page";
 import NotificationsPage from "@/pages/NotificationsPage";
-import Settings from "@/pages/Settings";
 import Profile from "@/pages/Profile";
 import PublicProfile from "@/pages/PublicProfile";
 import MyDotSparkPage from "@/pages/MyDotSparkPage";
@@ -160,8 +159,6 @@ function AppWithLayout() {
         return <Favorites onEntryClick={openEntryDetail} />;
       case '/network':
         return <Network />;
-      case '/settings':
-        return <Settings />;
       case '/profile':
         return <Profile />;
       default:
@@ -212,7 +209,6 @@ function Router() {
       <Route path="/insights" component={AppWithLayout} />
       <Route path="/favorites" component={AppWithLayout} />
       <Route path="/network" component={AppWithLayout} />
-      <Route path="/settings" component={AppWithLayout} />
       <Route path="/profile" component={Profile} />
       <Route path="/user/:userId" component={PublicProfile} />
       <Route path="/social" component={Social} />

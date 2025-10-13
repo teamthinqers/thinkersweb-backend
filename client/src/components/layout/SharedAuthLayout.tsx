@@ -1,7 +1,7 @@
 import { useState, ReactNode, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Menu, Brain, Users, User, Settings, LogOut, Sparkles, UsersRound, Search, Bell, CheckCheck, MessageSquare, FileText, Trophy } from 'lucide-react';
+import { Menu, Brain, Users, User, LogOut, Sparkles, UsersRound, Search, Bell, CheckCheck, MessageSquare, FileText, Trophy } from 'lucide-react';
 import { Link, useLocation } from 'wouter';
 import { useAuth } from '@/hooks/use-auth-new';
 import { useToast } from '@/hooks/use-toast';
@@ -610,12 +610,6 @@ export default function SharedAuthLayout({ children }: SharedAuthLayoutProps) {
                           <Button variant="ghost" className="w-full justify-start text-sm h-9">
                             <User className="w-4 h-4 mr-3" />
                             Profile
-                          </Button>
-                        </Link>
-                        <Link href="/settings">
-                          <Button variant="ghost" className="w-full justify-start text-sm h-9">
-                            <Settings className="w-4 h-4 mr-3" />
-                            Settings
                           </Button>
                         </Link>
                       </div>
