@@ -10,6 +10,7 @@ import { useToast } from '@/hooks/use-toast';
 import { X, PenTool, Sparkles, Crown, ArrowLeft, Loader2, ImageIcon, Layers } from 'lucide-react';
 import { SiWhatsapp, SiLinkedin, SiOpenai } from 'react-icons/si';
 import { apiRequest, queryClient } from '@/lib/queryClient';
+import { useQuery } from '@tanstack/react-query';
 
 interface FloatingDotProps {
   onClick?: () => void;
@@ -61,7 +62,18 @@ export default function FloatingDot({ onClick, currentPage }: FloatingDotProps) 
   const { toast } = useToast();
 
   // Fetch user's circles using useQuery
-  const { data: circlesResponse } = queryClient.getQueryData(['/api/thinq-circles']) as any || {};
+  const { data: circlesResponse } = useQuery<{
+    success: boolean;
+    circles: Array<{
+      id: number;
+      name: string;
+      description?: string;
+    }>;
+  }>({
+    queryKey: ['/api/thinq-circles'],
+    enabled: !!user,
+  });
+  
   const userCircles = circlesResponse?.circles || [];
 
   // Reset all form fields to initial state
