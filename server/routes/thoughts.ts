@@ -8,7 +8,8 @@ import {
   perspectivesMessages,
   perspectivesParticipants,
   sparks,
-  sparksInsertSchema
+  sparksInsertSchema,
+  circleSparks
 } from '@shared/schema';
 import { eq, desc, and, or, sql } from 'drizzle-orm';
 import { insertThoughtSchema, perspectivesMessagesInsertSchema } from '@shared/schema';
@@ -1536,6 +1537,10 @@ router.delete('/:thoughtId/sparks/:sparkId', async (req, res) => {
       userId = 5; // Use test user ID for demonstration
     }
 
+    // Delete from circleSparks first (if it exists there)
+    await db.delete(circleSparks).where(eq(circleSparks.sparkId, sparkId));
+
+    // Then delete the spark itself
     await db.delete(sparks).where(
       and(
         eq(sparks.id, sparkId),

@@ -3754,6 +3754,62 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Create spark in circle
+  app.post(`${apiPrefix}/thinq-circles/:circleId/thoughts/:thoughtId/sparks`, requireAuth, async (req: AuthenticatedRequest, res: Response) => {
+    try {
+      const userId = req.user?.id || req.session?.userId;
+      if (!userId) {
+        return res.status(401).json({ error: 'Authentication required' });
+      }
+
+      const circleId = parseInt(req.params.circleId);
+      const thoughtId = parseInt(req.params.thoughtId);
+      const { content } = req.body;
+
+      if (!content || !content.trim()) {
+        return res.status(400).json({ error: 'Content is required' });
+      }
+
+      // Verify user is a member
+      const membership = await db.query.thinqCircleMembers.findFirst({
+        where: and(
+          eq(thinqCircleMembers.circleId, circleId),
+          eq(thinqCircleMembers.userId, userId)
+        ),
+      });
+
+      if (!membership) {
+        return res.status(403).json({ error: 'You are not a member of this circle' });
+      }
+
+      // Create the spark in sparks table
+      const [newSpark] = await db.insert(sparks).values({
+        thoughtId,
+        userId,
+        content: content.trim(),
+      }).returning();
+
+      // Also add to circleSparks to track it for this circle
+      await db.insert(circleSparks).values({
+        circleId,
+        sparkId: newSpark.id,
+        sharedBy: userId,
+      });
+
+      res.json({
+        success: true,
+        spark: newSpark,
+      });
+
+    } catch (error) {
+      console.error('Create circle spark error:', error);
+      res.status(500).json({ 
+        error: 'Failed to create spark',
+        details: error instanceof Error ? error.message : 'Unknown error'
+      });
+    }
+  });
+
   // Delete a ThinQ circle (only circle owner can delete)
   app.delete(`${apiPrefix}/thinq-circles/:circleId`, requireAuth, async (req: AuthenticatedRequest, res: Response) => {
     try {

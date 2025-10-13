@@ -202,6 +202,7 @@ export default function FloatingDot({ onClick, currentPage }: FloatingDotProps) 
       await queryClient.invalidateQueries({ queryKey: ['/api/thoughts/neural-strength'] });
       if (selectedCircleId) {
         await queryClient.invalidateQueries({ queryKey: [`/api/thinq-circles/${selectedCircleId}/thoughts`] });
+        await queryClient.invalidateQueries({ queryKey: [`/api/thinq-circles/${selectedCircleId}`] });
       }
 
       // Reset form and close dialog

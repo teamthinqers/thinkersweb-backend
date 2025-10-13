@@ -84,6 +84,7 @@ export default function ThinQCirclePage() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [`/api/thinq-circles/${circleId}/thoughts`] });
+      queryClient.invalidateQueries({ queryKey: [`/api/thinq-circles/${circleId}`] });
       setSelectedThought(null);
       toast({
         title: "Thought deleted",
@@ -583,7 +584,7 @@ export default function ThinQCirclePage() {
               <CircleReflections thoughtId={selectedThought.id} />
 
               {/* Right Column: Sparks */}
-              <CircleSparks thoughtId={selectedThought.id} thought={selectedThought} user={user} />
+              <CircleSparks circleId={circleId!} thoughtId={selectedThought.id} thought={selectedThought} user={user} />
             </div>
           )}
         </DialogContent>
@@ -735,7 +736,7 @@ function CircleReflections({ thoughtId }: { thoughtId: number }) {
 }
 
 // Circle Sparks Component (reuses SparksSection pattern)
-function CircleSparks({ thoughtId, thought, user }: { thoughtId: number; thought: any; user: any }) {
+function CircleSparks({ circleId, thoughtId, thought, user }: { circleId: number; thoughtId: number; thought: any; user: any }) {
   const [viewMode, setViewMode] = useState<'text' | 'visual'>('text');
   const [sparkNote, setSparkNote] = useState('');
   const queryClient = useQueryClient();
@@ -762,10 +763,11 @@ function CircleSparks({ thoughtId, thought, user }: { thoughtId: number; thought
   // Add spark mutation
   const addSparkMutation = useMutation({
     mutationFn: async (content: string) => {
-      return apiRequest("POST", `/api/thoughts/${thoughtId}/sparks`, { content });
+      return apiRequest("POST", `/api/thinq-circles/${circleId}/thoughts/${thoughtId}/sparks`, { content });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [`/api/thoughts/${thoughtId}/sparks`] });
+      queryClient.invalidateQueries({ queryKey: [`/api/thinq-circles/${circleId}`] });
       setSparkNote("");
       toast({
         title: "Spark saved!",
@@ -781,6 +783,7 @@ function CircleSparks({ thoughtId, thought, user }: { thoughtId: number; thought
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [`/api/thoughts/${thoughtId}/sparks`] });
+      queryClient.invalidateQueries({ queryKey: [`/api/thinq-circles/${circleId}`] });
     },
   });
 

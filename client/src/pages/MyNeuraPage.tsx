@@ -643,6 +643,7 @@ export default function MyNeuraPage() {
         description: `Thought shared to ${circle?.name || 'circle'}`,
       });
       queryClient.invalidateQueries({ queryKey: [`/api/thinq-circles/${variables.circleId}/thoughts`] });
+      queryClient.invalidateQueries({ queryKey: [`/api/thinq-circles/${variables.circleId}`] });
     },
     onError: (error: Error) => {
       toast({
