@@ -20,6 +20,12 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import {
@@ -95,6 +101,20 @@ export default function SocialFeedPage() {
     enabled: !!user, // Only fetch if user is authenticated
   });
 
+  // Fetch user's circles
+  const { data: circlesResponse } = useQuery<{
+    circles: Array<{
+      id: number;
+      name: string;
+      description?: string;
+    }>;
+  }>({
+    queryKey: ['/api/thinq-circles/my-circles'],
+    enabled: !!user,
+  });
+
+  const userCircles = circlesResponse?.circles || [];
+
   // Save thought to MyNeura
   const saveToMyNeuraMutation = useMutation({
     mutationFn: async (thoughtId: number) => {
@@ -108,6 +128,31 @@ export default function SocialFeedPage() {
       });
       queryClient.invalidateQueries({ queryKey: ['/api/thoughts/myneura'] });
       setSelectedDot(null);
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
+
+  // Save thought to Circle
+  const saveToCircleMutation = useMutation({
+    mutationFn: async ({ thoughtId, circleId }: { thoughtId: number; circleId: number }) => {
+      const response = await apiRequest('POST', `/api/thinq-circles/${circleId}/share-thought`, {
+        thoughtId,
+      });
+      return response.json();
+    },
+    onSuccess: (_, variables) => {
+      const circle = userCircles.find(c => c.id === variables.circleId);
+      toast({
+        title: "Saved!",
+        description: `Thought saved to ${circle?.name || 'circle'}`,
+      });
+      queryClient.invalidateQueries({ queryKey: [`/api/thinq-circles/${variables.circleId}/thoughts`] });
     },
     onError: (error: Error) => {
       toast({
@@ -807,8 +852,8 @@ export default function SocialFeedPage() {
                       </div>
                     </div>
 
-                    {/* Footer - Action Button */}
-                    <div className="flex-shrink-0 px-6 py-4 border-t border-gray-200 bg-white">
+                    {/* Footer - Action Buttons */}
+                    <div className="flex-shrink-0 px-6 py-4 border-t border-gray-200 bg-white space-y-3">
                       <Button
                         onClick={() => saveToMyNeuraMutation.mutate(selectedDot.id)}
                         disabled={saveToMyNeuraMutation.isPending}
@@ -817,6 +862,29 @@ export default function SocialFeedPage() {
                         <Bookmark className="h-4 w-4 mr-2" />
                         Save to MyNeura
                       </Button>
+
+                      {/* Save to MyCircle Dropdown */}
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button
+                            disabled={saveToCircleMutation.isPending || userCircles.length === 0}
+                            className="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 h-11"
+                          >
+                            <Bookmark className="h-4 w-4 mr-2" />
+                            {userCircles.length === 0 ? 'No Circles Available' : 'Save to MyCircle'}
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end" side="top" className="w-56">
+                          {userCircles.map((circle) => (
+                            <DropdownMenuItem
+                              key={circle.id}
+                              onClick={() => saveToCircleMutation.mutate({ thoughtId: selectedDot.id, circleId: circle.id })}
+                            >
+                              {circle.name}
+                            </DropdownMenuItem>
+                          ))}
+                        </DropdownMenuContent>
+                      </DropdownMenu>
                     </div>
                   </div>
 
