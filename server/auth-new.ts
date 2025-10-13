@@ -36,6 +36,8 @@ export interface SessionUser {
   linkedinId?: string | null;
   linkedinHeadline?: string | null;
   linkedinProfileUrl?: string | null;
+  aboutMe?: string | null;
+  cognitiveIdentityPublic?: boolean | null;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -116,6 +118,8 @@ async function loadUserFromSession(req: Request, res: Response, next: NextFuncti
           linkedin_headline as "linkedinHeadline",
           linkedin_profile_url as "linkedinProfileUrl",
           linkedin_photo_url as "linkedinPhotoUrl",
+          about_me as "aboutMe",
+          cognitive_identity_public as "cognitiveIdentityPublic",
           created_at as "createdAt", 
           updated_at as "updatedAt" 
         FROM users 
@@ -135,6 +139,8 @@ async function loadUserFromSession(req: Request, res: Response, next: NextFuncti
           linkedinHeadline: row.linkedinHeadline,
           linkedinProfileUrl: row.linkedinProfileUrl,
           linkedinPhotoUrl: row.linkedinPhotoUrl,
+          aboutMe: row.aboutMe,
+          cognitiveIdentityPublic: row.cognitiveIdentityPublic,
           createdAt: new Date(row.createdAt),
           updatedAt: new Date(row.updatedAt),
         };
