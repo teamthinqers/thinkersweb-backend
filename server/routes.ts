@@ -3232,7 +3232,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         }
       }
 
-      // Email invites for non-users
+      // Email invites (for both existing users and non-users)
       if (emailInvites && emailInvites.length > 0) {
         for (const email of emailInvites) {
           // Check if email belongs to existing user
@@ -3241,11 +3241,46 @@ export async function registerRoutes(app: Express): Promise<Server> {
           });
 
           if (existingUser) {
-            results.emailInvites.push({ email, status: 'user_exists', userId: existingUser.id });
+            // Check if already a member
+            const existingMember = await db.query.thinqCircleMembers.findFirst({
+              where: and(
+                eq(thinqCircleMembers.circleId, circleId),
+                eq(thinqCircleMembers.userId, existingUser.id)
+              ),
+            });
+
+            if (existingMember) {
+              results.emailInvites.push({ email, status: 'already_member', userId: existingUser.id });
+              continue;
+            }
+
+            // Treat like existing user invite - create invite and notification
+            const token = `circle_${circleId}_${existingUser.id}_${Date.now()}`;
+            const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 days
+
+            const [invite] = await db.insert(thinqCircleInvites).values({
+              circleId,
+              inviterUserId: userId,
+              inviteeEmail: email,
+              inviteeUserId: existingUser.id,
+              token,
+              expiresAt,
+            }).returning();
+
+            // Create notification for existing user
+            await db.insert(notifications).values({
+              recipientId: existingUser.id,
+              actorIds: JSON.stringify([userId]),
+              notificationType: 'circle_invite',
+              circleInviteId: invite.id,
+              circleName: circle.name,
+            });
+
+            results.emailInvites.push({ email, status: 'invited', userId: existingUser.id, inviteId: invite.id });
             continue;
           }
 
-          // Create invite with token
+          // Create invite for non-existing user with token
           const crypto = await import('crypto');
           const token = crypto.randomBytes(32).toString('hex');
           const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 days
