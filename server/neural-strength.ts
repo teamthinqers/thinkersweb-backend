@@ -50,7 +50,10 @@ export async function calculateNeuralStrength(userId: number): Promise<NeuralStr
   const [perspectivesResult] = await db
     .select({ count: count() })
     .from(perspectivesMessages)
-    .where(eq(perspectivesMessages.userId, userId));
+    .where(and(
+      eq(perspectivesMessages.userId, userId),
+      eq(perspectivesMessages.isDeleted, false)
+    ));
 
   const thoughtsCount = thoughtsResult?.count || 0;
   const savedSparksCount = savedSparksResult?.count || 0;
