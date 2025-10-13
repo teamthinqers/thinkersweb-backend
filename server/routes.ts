@@ -23,6 +23,7 @@ import {
   notifications,
   sparks,
   perspectivesMessages,
+  perspectivesThreads,
   cognitiveIdentity
 } from "@shared/schema";
 import { processEntryFromChat, generateChatResponse, type Message } from "./chat";
@@ -2721,10 +2722,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Calculate collective growth percentage (platform-wide)
       // Formula: Each item (thoughts + sparks + perspectives) contributes 0.5% towards growth, capped at 100%
-      // ONLY count social/public thoughts, not personal ones
+      // ONLY count social thoughts and their perspectives, not personal ones
       const [platformThoughtsCount] = await db.select({ count: count() }).from(thoughts).where(eq(thoughts.visibility, 'social'));
       const [platformSparksCount] = await db.select({ count: count() }).from(sparks);
-      const [platformPerspectivesCount] = await db.select({ count: count() }).from(perspectivesMessages);
+      
+      // Count perspectives only on social thoughts
+      const platformPerspectivesResult = await db
+        .select({ count: count() })
+        .from(perspectivesMessages)
+        .innerJoin(perspectivesThreads, eq(perspectivesMessages.threadId, perspectivesThreads.id))
+        .innerJoin(thoughts, eq(perspectivesThreads.thoughtId, thoughts.id))
+        .where(eq(thoughts.visibility, 'social'));
+      const platformPerspectivesCount = platformPerspectivesResult[0] || { count: 0 };
       
       const totalPlatformItems = (platformThoughtsCount?.count || 0) + 
                                   (platformSparksCount?.count || 0) + 
