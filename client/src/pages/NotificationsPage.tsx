@@ -1,12 +1,13 @@
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useAuth } from "@/hooks/use-auth-new";
 import { queryClient, apiRequest } from "@/lib/queryClient";
-import { Bell, Check, CheckCheck, MessageSquare, FileText, Trophy } from "lucide-react";
+import { Bell, Check, CheckCheck, MessageSquare, FileText, Trophy, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useLocation } from "wouter";
 import { formatDistanceToNow } from "date-fns";
 import SparkIcon from "@/components/ui/spark-icon";
+import { useToast } from "@/hooks/use-toast";
 
 interface Notification {
   id: number;
@@ -16,6 +17,8 @@ interface Notification {
   thoughtId?: number | null;
   thoughtHeading?: string | null;
   badgeId?: number | null;
+  circleInviteId?: number | null;
+  circleName?: string | null;
   isRead: boolean;
   createdAt: string;
   actors: Array<{
@@ -35,6 +38,7 @@ interface Notification {
 export default function NotificationsPage() {
   const { user } = useAuth();
   const [, setLocation] = useLocation();
+  const { toast } = useToast();
 
   // Fetch notifications
   const { data: notificationsData, isLoading } = useQuery<{
@@ -66,14 +70,63 @@ export default function NotificationsPage() {
     },
   });
 
+  // Accept circle invite
+  const acceptInviteMutation = useMutation({
+    mutationFn: async (inviteId: number) => {
+      const res = await apiRequest("POST", `/api/thinq-circles/invites/${inviteId}/accept`, {});
+      return await res.json();
+    },
+    onSuccess: (data: any) => {
+      toast({
+        title: 'Invite accepted!',
+        description: 'You are now a member of the circle.',
+      });
+      queryClient.invalidateQueries({ queryKey: ['/api/notifications'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/thinq-circles/my-circles'] });
+      
+      // Navigate to the circle
+      if (data.circleId) {
+        setLocation(`/thinq-circle/${data.circleId}`);
+      }
+    },
+    onError: () => {
+      toast({
+        title: 'Error',
+        description: 'Failed to accept invite',
+        variant: 'destructive',
+      });
+    },
+  });
+
+  // Reject circle invite
+  const rejectInviteMutation = useMutation({
+    mutationFn: async (inviteId: number) => {
+      return apiRequest("POST", `/api/thinq-circles/invites/${inviteId}/reject`, {});
+    },
+    onSuccess: () => {
+      toast({
+        title: 'Invite rejected',
+        description: 'You declined the circle invitation.',
+      });
+      queryClient.invalidateQueries({ queryKey: ['/api/notifications'] });
+    },
+    onError: () => {
+      toast({
+        title: 'Error',
+        description: 'Failed to reject invite',
+        variant: 'destructive',
+      });
+    },
+  });
+
   const handleNotificationClick = (notification: Notification) => {
     // Mark as read
     if (!notification.isRead) {
       markAsReadMutation.mutate(notification.id);
     }
     
-    // Badge notifications don't navigate anywhere
-    if (notification.notificationType === 'badge_unlocked') {
+    // Badge and circle invite notifications don't navigate anywhere
+    if (notification.notificationType === 'badge_unlocked' || notification.notificationType === 'circle_invite') {
       return;
     }
     
@@ -94,6 +147,8 @@ export default function NotificationsPage() {
         return <SparkIcon className="h-5 w-5" fill="#6366f1" />;
       case 'badge_unlocked':
         return <Trophy className="h-5 w-5 text-blue-600" />;
+      case 'circle_invite':
+        return <Users className="h-5 w-5 text-purple-600" />;
       default:
         return <Bell className="h-5 w-5 text-gray-500" />;
     }
@@ -103,6 +158,12 @@ export default function NotificationsPage() {
     // Badge unlock notification
     if (notification.notificationType === 'badge_unlocked' && notification.badge) {
       return `You unlocked the ${notification.badge.name} badge!`;
+    }
+
+    // Circle invite notification
+    if (notification.notificationType === 'circle_invite') {
+      const inviter = notification.actors[0]?.fullName || 'Someone';
+      return `${inviter} invited you to join "${notification.circleName}"`;
     }
 
     const actorNames = notification.actors.map(a => a.fullName || 'Someone').slice(0, 2);
@@ -210,6 +271,25 @@ export default function NotificationsPage() {
                         <span className="text-lg">{notification.badge.icon}</span>
                         {notification.badge.description}
                       </p>
+                    ) : notification.notificationType === 'circle_invite' && notification.circleInviteId ? (
+                      <div className="mt-3 flex gap-2" onClick={(e) => e.stopPropagation()}>
+                        <Button
+                          size="sm"
+                          onClick={() => acceptInviteMutation.mutate(notification.circleInviteId!)}
+                          disabled={acceptInviteMutation.isPending}
+                          className="bg-gradient-to-r from-purple-600 to-violet-600 hover:from-purple-700 hover:to-violet-700"
+                        >
+                          {acceptInviteMutation.isPending ? 'Accepting...' : 'Accept'}
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => rejectInviteMutation.mutate(notification.circleInviteId!)}
+                          disabled={rejectInviteMutation.isPending}
+                        >
+                          {rejectInviteMutation.isPending ? 'Rejecting...' : 'Reject'}
+                        </Button>
+                      </div>
                     ) : notification.thoughtHeading && (
                       <p className="text-sm text-gray-600 mt-1 truncate">
                         "{notification.thoughtHeading}"
