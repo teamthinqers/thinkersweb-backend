@@ -19,7 +19,7 @@ export default function LearningEnginePage() {
     <SharedAuthLayout>
       <div className="min-h-screen bg-gradient-to-br from-yellow-50 via-amber-50 to-yellow-100">
         {/* Header */}
-        <div className="shadow-[0_8px_30px_rgba(245,214,138,0.4)] px-6 py-4" style={{ backgroundColor: '#F5D68A' }}>
+        <div className="shadow-[0_8px_30px_rgba(217,119,6,0.4)] px-6 py-4" style={{ backgroundColor: '#D97706' }}>
           <div className="max-w-5xl mx-auto flex items-center gap-4">
             <Link href="/mydotspark">
               <Button variant="ghost" size="sm" className="gap-2 text-white hover:bg-white/20 backdrop-blur-sm">
@@ -45,7 +45,7 @@ export default function LearningEnginePage() {
         <div className="max-w-5xl mx-auto px-6 py-12">
           <div className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-xl border border-amber-200 p-8">
             <div className="text-center space-y-6">
-              <div className="inline-flex p-4 rounded-full shadow-[0_8px_30px_rgba(245,214,138,0.4)]" style={{ backgroundColor: '#F5D68A' }}>
+              <div className="inline-flex p-4 rounded-full shadow-[0_8px_30px_rgba(217,119,6,0.4)]" style={{ backgroundColor: '#D97706' }}>
                 <Cog className="h-16 w-16 text-white animate-spin" style={{ animationDuration: '3s' }} />
               </div>
               <h2 className="text-3xl font-bold text-gray-800">
@@ -57,15 +57,15 @@ export default function LearningEnginePage() {
               </p>
               
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12">
-                <div className="p-6 rounded-xl shadow-[0_4px_20px_rgba(245,214,138,0.4)]" style={{ backgroundColor: '#F5D68A' }}>
+                <div className="p-6 rounded-xl shadow-[0_4px_20px_rgba(217,119,6,0.4)]" style={{ backgroundColor: '#D97706' }}>
                   <h3 className="font-semibold text-white mb-2">Learning Goals</h3>
                   <p className="text-sm text-white/90">Define what you want to learn</p>
                 </div>
-                <div className="p-6 rounded-xl shadow-[0_4px_20px_rgba(245,214,138,0.4)]" style={{ backgroundColor: '#F5D68A' }}>
+                <div className="p-6 rounded-xl shadow-[0_4px_20px_rgba(217,119,6,0.4)]" style={{ backgroundColor: '#D97706' }}>
                   <h3 className="font-semibold text-white mb-2">Progress Tracking</h3>
                   <p className="text-sm text-white/90">Monitor your learning journey</p>
                 </div>
-                <div className="p-6 rounded-xl shadow-[0_4px_20px_rgba(245,214,138,0.4)]" style={{ backgroundColor: '#F5D68A' }}>
+                <div className="p-6 rounded-xl shadow-[0_4px_20px_rgba(217,119,6,0.4)]" style={{ backgroundColor: '#D97706' }}>
                   <h3 className="font-semibold text-white mb-2">AI Assistance</h3>
                   <p className="text-sm text-white/90">Get personalized guidance</p>
                 </div>
@@ -75,8 +75,8 @@ export default function LearningEnginePage() {
                 <Button 
                   size="lg"
                   onClick={handleConfigureClick}
-                  className="text-white px-8 py-6 text-lg shadow-[0_8px_30px_rgba(245,214,138,0.4)] hover:shadow-[0_12px_40px_rgba(245,214,138,0.5)] hover:opacity-90"
-                  style={{ backgroundColor: '#F5D68A' }}
+                  className="text-white px-8 py-6 text-lg shadow-[0_8px_30px_rgba(217,119,6,0.4)] hover:shadow-[0_12px_40px_rgba(217,119,6,0.5)] hover:opacity-90"
+                  style={{ backgroundColor: '#D97706' }}
                 >
                   Configure Learning Engine
                 </Button>
