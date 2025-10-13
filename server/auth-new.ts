@@ -93,10 +93,7 @@ async function generateUniqueUsername(displayName: string | null, email: string 
 
 // Middleware to check authentication
 export function requireAuth(req: Request, res: Response, next: NextFunction) {
-  // Check both new auth system (session.userId) and legacy Passport.js (session.passport.user)
-  const userId = req.session?.userId || (req.session as any)?.passport?.user;
-  
-  if (!userId) {
+  if (!req.session?.userId) {
     console.log("❌ Authentication required");
     return res.status(401).json({ error: "Authentication required" });
   }
@@ -105,18 +102,7 @@ export function requireAuth(req: Request, res: Response, next: NextFunction) {
 
 // Load user into request from session
 async function loadUserFromSession(req: Request, res: Response, next: NextFunction) {
-  // Check both new auth system (session.userId) and legacy Passport.js (session.passport.user)
-  const userId = req.session?.userId || (req.session as any)?.passport?.user;
-  
-  console.log('🔍 Session check:', {
-    hasSession: !!req.session,
-    sessionId: (req.session as any)?.id,
-    userId: req.session?.userId,
-    passportUser: (req.session as any)?.passport?.user,
-    resolvedUserId: userId
-  });
-  
-  if (userId) {
+  if (req.session?.userId) {
     try {
       const result = await db.execute(sql`
         SELECT 
@@ -133,11 +119,10 @@ async function loadUserFromSession(req: Request, res: Response, next: NextFuncti
           created_at as "createdAt", 
           updated_at as "updatedAt" 
         FROM users 
-        WHERE id = ${userId}
+        WHERE id = ${req.session.userId}
       `);
       if (result.rows && result.rows.length > 0) {
         const row: any = result.rows[0];
-        console.log('✅ User loaded from session:', row.email);
         req.user = {
           id: row.id,
           username: row.username,
@@ -162,7 +147,7 @@ async function loadUserFromSession(req: Request, res: Response, next: NextFuncti
 }
 
 export function setupNewAuth(app: Express) {
-  const sessionSecret = process.env.SESSION_SECRET || 'dotspark-session-secret-2024';
+  const sessionSecret = process.env.SESSION_SECRET || `dotspark-${randomBytes(16).toString('hex')}`;
   
   console.log("Setting up new authentication system");
 
@@ -242,26 +227,12 @@ export function setupNewAuth(app: Express) {
       httpOnly: true,
       sameSite: 'lax',
       path: '/',
-      domain: undefined, // Let browser set domain automatically
     },
     rolling: true,
   }));
 
   // Load user from session on every request
   app.use(loadUserFromSession);
-
-  // Debug endpoint to check session
-  app.get("/api/auth/debug", (req: Request, res: Response) => {
-    res.json({
-      hasSession: !!req.session,
-      sessionId: (req.session as any)?.id,
-      userId: req.session?.userId,
-      passportUser: (req.session as any)?.passport?.user,
-      hasUser: !!req.user,
-      user: req.user ? { id: req.user.id, email: req.user.email } : null,
-      cookies: req.headers.cookie
-    });
-  });
 
   // GET /api/auth/me - Get current user from session
   app.get("/api/auth/me", (req: Request, res: Response) => {

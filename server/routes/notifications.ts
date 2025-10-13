@@ -12,35 +12,11 @@ const router = Router();
  */
 router.get('/', async (req, res) => {
   try {
-    // Debug logging
-    console.log('📬 Notifications request:', {
-      hasUser: !!(req as any).user,
-      userId: (req as any).user?.id,
-      sessionId: (req as any).session?.id,
-      sessionUserId: (req as any).session?.userId,
-      passportUser: (req as any).session?.passport?.user,
-      sessionKeys: Object.keys((req as any).session || {})
-    });
-    
-    // Check both new auth (req.user) and session formats (userId and passport.user)
-    const userIdRaw = (req as any).user?.id || 
-                      (req as any).session?.userId || 
-                      (req as any).session?.passport?.user;
+    const userId = (req as any).user?.id;
 
-    if (!userIdRaw) {
-      console.log('❌ No userId found in any format');
+    if (!userId) {
       return res.status(401).json({ error: 'Authentication required' });
     }
-    
-    // Convert to number - database expects integer
-    const userId = typeof userIdRaw === 'string' ? parseInt(userIdRaw, 10) : userIdRaw;
-    
-    if (isNaN(userId)) {
-      console.log('❌ Invalid userId format:', userIdRaw);
-      return res.status(401).json({ error: 'Invalid user ID' });
-    }
-    
-    console.log('✅ Using userId:', userId, '(type:', typeof userId, ')');
 
     // Fetch all notifications for the user, ordered by most recent
     const userNotifications = await db.query.notifications.findMany({
@@ -119,20 +95,10 @@ router.get('/', async (req, res) => {
  */
 router.patch('/read-all', async (req, res) => {
   try {
-    // Check both new auth (req.user) and session formats (userId and passport.user)
-    const userIdRaw = (req as any).user?.id || 
-                      (req as any).session?.userId || 
-                      (req as any).session?.passport?.user;
+    const userId = (req as any).user?.id;
 
-    if (!userIdRaw) {
+    if (!userId) {
       return res.status(401).json({ error: 'Authentication required' });
-    }
-
-    // Convert to number - database expects integer
-    const userId = typeof userIdRaw === 'string' ? parseInt(userIdRaw, 10) : userIdRaw;
-    
-    if (isNaN(userId)) {
-      return res.status(401).json({ error: 'Invalid user ID' });
     }
 
     // Mark all user's notifications as read
@@ -167,21 +133,15 @@ router.patch('/read-all', async (req, res) => {
  */
 router.patch('/:id/read', async (req, res) => {
   try {
-    // Check both new auth (req.user) and session formats (userId and passport.user)
-    const userIdRaw = (req as any).user?.id || 
-                      (req as any).session?.userId || 
-                      (req as any).session?.passport?.user;
+    const userId = (req as any).user?.id;
     const notificationId = parseInt(req.params.id);
 
-    if (!userIdRaw) {
+    if (!userId) {
       return res.status(401).json({ error: 'Authentication required' });
     }
 
-    // Convert to number - database expects integer
-    const userId = typeof userIdRaw === 'string' ? parseInt(userIdRaw, 10) : userIdRaw;
-    
-    if (isNaN(userId) || isNaN(notificationId)) {
-      return res.status(400).json({ error: 'Invalid user or notification ID' });
+    if (isNaN(notificationId)) {
+      return res.status(400).json({ error: 'Invalid notification ID' });
     }
 
     // Verify notification belongs to user

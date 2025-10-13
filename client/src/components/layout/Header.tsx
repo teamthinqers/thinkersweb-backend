@@ -11,17 +11,13 @@ import {
   Brain, 
   User,
   MessageSquare,
-  Users,
-  FileText,
-  Trophy
+  Users
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/use-auth-new";
 import { Link, useLocation } from "wouter";
-import { useQuery, useMutation } from "@tanstack/react-query";
-import { queryClient, apiRequest } from "@/lib/queryClient";
-import { formatDistanceToNow } from "date-fns";
+import { useQuery } from "@tanstack/react-query";
 // signOut import removed - using logout from useAuth hook instead
 import {
   DropdownMenu,
@@ -30,19 +26,12 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
 import { 
   Button 
 } from "@/components/ui/button";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { useMobile } from "@/hooks/use-mobile";
 import { useWhatsAppStatus } from "@/hooks/useWhatsAppStatus";
 import { neuraStorage } from "@/lib/neuraStorage";
-import SparkIcon from "@/components/ui/spark-icon";
 
 interface HeaderProps {
   onSearch: (query: string) => void;
@@ -58,7 +47,6 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
   const [location, setLocation] = useLocation();
   const isMobile = useMobile();
   const [showMobileNav, setShowMobileNav] = useState(false);
-  const [notificationsOpen, setNotificationsOpen] = useState(false);
   
   // State for Neura activation using neuraStorage - forced check on every render
   const [isActivated, setIsActivated] = useState(() => {
@@ -74,7 +62,7 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
     forceStatusRefresh 
   } = useWhatsAppStatus();
   
-  // Fetch notifications
+  // Fetch notifications unread count
   const { data: notificationsData } = useQuery<{ 
     success: boolean; 
     notifications: any[]; 
@@ -84,92 +72,6 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
     enabled: !!user, // Only fetch if user is logged in
     refetchInterval: 30000, // Refetch every 30 seconds
   });
-
-  // Mark notification as read
-  const markAsReadMutation = useMutation({
-    mutationFn: async (notificationId: number) => {
-      return apiRequest("PATCH", `/api/notifications/${notificationId}/read`, {});
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/notifications'] });
-    },
-  });
-
-  // Mark all as read
-  const markAllAsReadMutation = useMutation({
-    mutationFn: async () => {
-      return apiRequest("PATCH", `/api/notifications/read-all`, {});
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/notifications'] });
-    },
-  });
-
-  const handleNotificationClick = (notification: any) => {
-    // Mark as read
-    if (!notification.isRead) {
-      markAsReadMutation.mutate(notification.id);
-    }
-    
-    // Badge notifications don't navigate anywhere
-    if (notification.notificationType === 'badge_unlocked') {
-      setNotificationsOpen(false);
-      return;
-    }
-    
-    // Navigate to the thought and open full view modal
-    if (notification.thoughtId) {
-      sessionStorage.setItem('openThoughtId', notification.thoughtId.toString());
-      setLocation(`/social`);
-      setNotificationsOpen(false);
-    }
-  };
-
-  const getNotificationIcon = (type: string) => {
-    switch (type) {
-      case 'new_thought':
-        return <FileText className="h-5 w-5 text-blue-500" />;
-      case 'new_perspective':
-        return <MessageSquare className="h-5 w-5 text-indigo-500" />;
-      case 'spark_saved':
-        return <SparkIcon className="h-5 w-5" fill="#6366f1" />;
-      case 'badge_unlocked':
-        return <Trophy className="h-5 w-5 text-blue-600" />;
-      default:
-        return <BellIcon className="h-5 w-5 text-gray-500" />;
-    }
-  };
-
-  const getNotificationMessage = (notification: any) => {
-    // Badge unlock notification
-    if (notification.notificationType === 'badge_unlocked' && notification.badge) {
-      return `You unlocked the ${notification.badge.name} badge!`;
-    }
-
-    const actorNames = notification.actors?.map((a: any) => a.fullName || 'Someone').slice(0, 2) || [];
-    const remainingCount = notification.actorCount - actorNames.length;
-
-    let message = '';
-    
-    if (notification.actorCount === 1) {
-      message = actorNames[0];
-    } else if (notification.actorCount === 2) {
-      message = `${actorNames[0]} and ${actorNames[1]}`;
-    } else {
-      message = `${actorNames[0]} and ${remainingCount} other${remainingCount > 1 ? 's' : ''}`;
-    }
-
-    switch (notification.notificationType) {
-      case 'new_thought':
-        return `${message} shared a new thought`;
-      case 'new_perspective':
-        return `${message} shared a perspective`;
-      case 'spark_saved':
-        return `${message} saved your thought as a spark`;
-      default:
-        return message;
-    }
-  };
   
   // Update activation status when component mounts
   useEffect(() => {
@@ -245,6 +147,13 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
     }
   };
 
+  const handleNotifications = () => {
+    toast({
+      title: "Notifications",
+      description: "This feature is coming soon!",
+      duration: 3000,
+    });
+  };
 
   const handleLogout = async () => {
     try {
@@ -258,20 +167,22 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
         description: "You have been signed out of DotSpark.",
       });
       
-      // Redirect to auth page immediately after logout
-      setLocation('/auth');
+      // Redirect to home page after successful logout
+      setTimeout(() => {
+        window.location.href = "/";
+      }, 1000);
     } catch (error) {
       console.error("Logout error:", error);
       toast({
         title: "Error during logout",
-        description: "There was a problem logging out. Redirecting to login...",
+        description: "There was a problem logging out. We'll reload the page to ensure you're signed out.",
         variant: "destructive",
       });
       
-      // Force redirect to auth page if logout fails
+      // Force a page reload as fallback if logout fails
       setTimeout(() => {
-        setLocation('/auth');
-      }, 500);
+        window.location.replace("/?forcedLogout=true");
+      }, 1500);
     }
   };
 
@@ -335,90 +246,30 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
               </Button>
               
               {/* Notifications Bell - Mobile */}
-              <Popover open={notificationsOpen} onOpenChange={setNotificationsOpen}>
-                <PopoverTrigger asChild>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="relative text-gray-600 hover:text-primary h-9 w-9"
-                  >
-                    <BellIcon className="h-5 w-5" />
-                    {notificationsData && notificationsData.unreadCount > 0 && (
-                      <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-semibold">
-                        {notificationsData.unreadCount > 9 ? '9+' : notificationsData.unreadCount}
-                      </span>
-                    )}
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-80 p-0" align="end">
-                  <div className="flex items-center justify-between p-4 border-b">
-                    <h3 className="font-semibold">Notifications</h3>
-                    {notificationsData && notificationsData.notifications?.length > 0 && (
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => markAllAsReadMutation.mutate()}
-                        className="text-xs"
-                      >
-                        Mark all read
-                      </Button>
-                    )}
-                  </div>
-                  <ScrollArea className="h-[400px]">
-                    {!notificationsData || notificationsData.notifications?.length === 0 ? (
-                      <div className="flex flex-col items-center justify-center py-12 text-gray-500">
-                        <BellIcon className="h-12 w-12 mb-3 opacity-30" />
-                        <p className="text-sm">No notifications yet</p>
-                      </div>
-                    ) : (
-                      <div className="divide-y">
-                        {notificationsData.notifications.map((notification: any) => (
-                          <div
-                            key={notification.id}
-                            className={`p-4 hover:bg-gray-50 cursor-pointer transition-colors ${
-                              !notification.isRead ? 'bg-blue-50' : ''
-                            }`}
-                            onClick={() => handleNotificationClick(notification)}
-                          >
-                            <div className="flex items-start gap-3">
-                              <div className="flex-shrink-0 mt-1">
-                                {getNotificationIcon(notification.notificationType)}
-                              </div>
-                              <div className="flex-1 min-w-0">
-                                <p className="text-sm font-medium text-gray-900">
-                                  {getNotificationMessage(notification)}
-                                </p>
-                                {notification.thoughtHeading && (
-                                  <p className="text-sm text-gray-600 truncate mt-1">
-                                    {notification.thoughtHeading}
-                                  </p>
-                                )}
-                                <p className="text-xs text-gray-500 mt-1">
-                                  {formatDistanceToNow(new Date(notification.createdAt), { addSuffix: true })}
-                                </p>
-                              </div>
-                              {!notification.isRead && (
-                                <div className="flex-shrink-0 w-2 h-2 bg-blue-500 rounded-full mt-2" />
-                              )}
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  </ScrollArea>
-                </PopoverContent>
-              </Popover>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="relative text-gray-600 hover:text-primary h-9 w-9"
+                onClick={() => setLocation("/notifications")}
+              >
+                <BellIcon className="h-5 w-5" />
+                {notificationsData && notificationsData.unreadCount > 0 && (
+                  <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-semibold">
+                    {notificationsData.unreadCount > 9 ? '9+' : notificationsData.unreadCount}
+                  </span>
+                )}
+              </Button>
               
               {/* Profile button - Mobile */}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" size="icon" className="rounded-full p-0 h-9 w-9">
                     <Avatar className="h-8 w-8 border-2 border-white shadow">
-                      {user?.avatarUrl ? (
-                        <AvatarImage src={user.avatarUrl} alt={user.fullName || 'User'} />
+                      {(user?.photoURL || (user as any)?.avatarUrl) ? (
+                        <AvatarImage src={user?.photoURL || (user as any)?.avatarUrl} alt={(user?.displayName || (user as any)?.fullName) || 'User'} />
                       ) : (
                         <AvatarFallback className="bg-primary text-white">
-                          {user?.fullName ? user.fullName.charAt(0).toUpperCase() : 'U'}
+                          {(user?.displayName || (user as any)?.fullName) ? (user?.displayName || (user as any)?.fullName).charAt(0).toUpperCase() : 'U'}
                         </AvatarFallback>
                       )}
                     </Avatar>
@@ -426,7 +277,7 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-56">
                   <div className="p-2 text-sm">
-                    <p className="font-medium">{user?.fullName || 'User'}</p>
+                    <p className="font-medium">{(user?.displayName || (user as any)?.fullName) || 'User'}</p>
                     <p className="text-xs text-muted-foreground truncate">{user?.email}</p>
                   </div>
                   <DropdownMenuSeparator />
@@ -534,90 +385,30 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
               </Button>
               
               {/* Notifications Bell */}
-              <Popover open={notificationsOpen} onOpenChange={setNotificationsOpen}>
-                <PopoverTrigger asChild>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="mr-3 relative text-gray-600 hover:text-primary"
-                  >
-                    <BellIcon className="h-5 w-5" />
-                    {notificationsData && notificationsData.unreadCount > 0 && (
-                      <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-semibold">
-                        {notificationsData.unreadCount > 9 ? '9+' : notificationsData.unreadCount}
-                      </span>
-                    )}
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-80 p-0" align="end">
-                  <div className="flex items-center justify-between p-4 border-b">
-                    <h3 className="font-semibold">Notifications</h3>
-                    {notificationsData && notificationsData.notifications?.length > 0 && (
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => markAllAsReadMutation.mutate()}
-                        className="text-xs"
-                      >
-                        Mark all read
-                      </Button>
-                    )}
-                  </div>
-                  <ScrollArea className="h-[400px]">
-                    {!notificationsData || notificationsData.notifications?.length === 0 ? (
-                      <div className="flex flex-col items-center justify-center py-12 text-gray-500">
-                        <BellIcon className="h-12 w-12 mb-3 opacity-30" />
-                        <p className="text-sm">No notifications yet</p>
-                      </div>
-                    ) : (
-                      <div className="divide-y">
-                        {notificationsData.notifications.map((notification: any) => (
-                          <div
-                            key={notification.id}
-                            className={`p-4 hover:bg-gray-50 cursor-pointer transition-colors ${
-                              !notification.isRead ? 'bg-blue-50' : ''
-                            }`}
-                            onClick={() => handleNotificationClick(notification)}
-                          >
-                            <div className="flex items-start gap-3">
-                              <div className="flex-shrink-0 mt-1">
-                                {getNotificationIcon(notification.notificationType)}
-                              </div>
-                              <div className="flex-1 min-w-0">
-                                <p className="text-sm font-medium text-gray-900">
-                                  {getNotificationMessage(notification)}
-                                </p>
-                                {notification.thoughtHeading && (
-                                  <p className="text-sm text-gray-600 truncate mt-1">
-                                    {notification.thoughtHeading}
-                                  </p>
-                                )}
-                                <p className="text-xs text-gray-500 mt-1">
-                                  {formatDistanceToNow(new Date(notification.createdAt), { addSuffix: true })}
-                                </p>
-                              </div>
-                              {!notification.isRead && (
-                                <div className="flex-shrink-0 w-2 h-2 bg-blue-500 rounded-full mt-2" />
-                              )}
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  </ScrollArea>
-                </PopoverContent>
-              </Popover>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="mr-3 relative text-gray-600 hover:text-primary"
+                onClick={() => setLocation("/notifications")}
+              >
+                <BellIcon className="h-5 w-5" />
+                {notificationsData && notificationsData.unreadCount > 0 && (
+                  <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-semibold">
+                    {notificationsData.unreadCount > 9 ? '9+' : notificationsData.unreadCount}
+                  </span>
+                )}
+              </Button>
               
               {/* Profile button - Desktop */}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <div className="flex items-center cursor-pointer">
                     <Avatar className="h-8 w-8 border-2 border-white shadow">
-                      {user?.avatarUrl ? (
-                        <AvatarImage src={user.avatarUrl} alt={user.fullName || 'User'} />
+                      {(user?.photoURL || (user as any)?.avatarUrl) ? (
+                        <AvatarImage src={user?.photoURL || (user as any)?.avatarUrl} alt={(user?.displayName || (user as any)?.fullName) || 'User'} />
                       ) : (
                         <AvatarFallback className="bg-primary text-white">
-                          {user?.fullName ? user.fullName.charAt(0).toUpperCase() : 'U'}
+                          {(user?.displayName || (user as any)?.fullName) ? (user?.displayName || (user as any)?.fullName).charAt(0).toUpperCase() : 'U'}
                         </AvatarFallback>
                       )}
                     </Avatar>
@@ -626,7 +417,7 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-56">
                   <div className="p-2 text-sm">
-                    <p className="font-medium">{user?.fullName || 'User'}</p>
+                    <p className="font-medium">{(user?.displayName || (user as any)?.fullName) || 'User'}</p>
                     <p className="text-xs text-muted-foreground truncate">{user?.email}</p>
                   </div>
                   <DropdownMenuSeparator />

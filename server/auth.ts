@@ -146,8 +146,9 @@ async function generateUniqueUsername(displayName: string | null, email: string 
 }
 
 export function setupAuth(app: Express) {
-  // Use a consistent secret for session signing - must match auth-new.ts
-  const sessionSecret = process.env.SESSION_SECRET || 'dotspark-session-secret-2024';
+  // Generate a consistent but randomized secret if none provided in environment
+  const sessionSecret = process.env.SESSION_SECRET || 
+    `dotspark-secret-${Math.random().toString(36).substring(2, 15)}`;
   
   console.log("Setting up authentication with session support");
   

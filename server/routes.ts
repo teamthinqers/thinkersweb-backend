@@ -655,11 +655,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       const userId = req.session.userId;
       
-      // Update user profile to mark Cognitive Identity as completed
+      // Update user profile to mark CogniShield as configured
       await db.update(users)
         .set({ 
-          cognitiveIdentityCompleted: true,
-          cognitiveIdentityCompletedAt: new Date(),
+          bio: 'cogni_configured',
           updatedAt: new Date()
         })
         .where(eq(users.id, userId));

@@ -73,7 +73,6 @@ import ActivationPage from "@/pages/ActivationPage";
 import ProductionTest from "@/pages/ProductionTest";
 import VectorMigrationTest from "@/pages/VectorMigrationTest";
 import AuthTest from "@/pages/AuthTest";
-import AuthDebug from "@/pages/AuthDebug";
 
 import { neuraStorage } from "@/lib/neuraStorage";
 import { Loader2 } from "lucide-react";
@@ -202,7 +201,6 @@ function Router() {
       <Route path="/thought-circle" component={ThoughtCirclePage} />
       <Route path="/learning-engine" component={LearningEnginePage} />
       <Route path="/auth" component={AuthPage} />
-      <Route path="/auth-debug" component={AuthDebug} />
       <Route path="/notifications" component={NotificationsPage} />
       
       {/* All routes now public - no authentication required */}

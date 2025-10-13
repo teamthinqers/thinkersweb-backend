@@ -25,17 +25,12 @@ export default function AuthPage() {
     }
   };
 
-  // Check auth on mount (for LinkedIn redirects)
-  useEffect(() => {
-    checkAuth();
-  }, [checkAuth]);
-
-  // Redirect if already logged in
-  useEffect(() => {
-    if (user) {
-      getRedirectPath();
-    }
-  }, [user]);
+  // Redirect if already logged in (disabled - causes double redirect issues)
+  // useEffect(() => {
+  //   if (user) {
+  //     getRedirectPath();
+  //   }
+  // }, [user]);
 
   // Handle Google sign in
   const handleGoogleSignIn = async () => {
