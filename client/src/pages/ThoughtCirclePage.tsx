@@ -44,7 +44,7 @@ export default function ThoughtCirclePage() {
               <Target className="h-6 w-6 text-white" />
               <div>
                 <h1 className="text-xl font-bold text-white">My ThinQ Circles</h1>
-                <p className="text-sm text-white/90">Form your private circles to brainstorm</p>
+                <p className="text-sm text-white/90"><strong>Form your private circles to brainstorm</strong></p>
               </div>
             </div>
           </div>
