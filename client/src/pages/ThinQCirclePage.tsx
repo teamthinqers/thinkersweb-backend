@@ -314,6 +314,7 @@ export default function ThinQCirclePage() {
                 onDotClick={(thought) => setSelectedThought(thought)}
                 patternId={`circle-${circleId}-pattern`}
                 onRefresh={refetchThoughts}
+                avatarSpacing="compact"
               />
             ) : (
               <div className="flex items-center justify-center h-[600px]">

@@ -50,6 +50,7 @@ interface ThoughtCloudGridProps {
   onDotClick: (dot: ThoughtDot) => void;
   patternId?: string;
   onRefresh?: () => void;
+  avatarSpacing?: 'default' | 'compact'; // 'default' for normal spacing, 'compact' for tighter spacing (ThinQ Circles)
 }
 
 const DOTS_PER_PAGE = 8;
@@ -59,6 +60,7 @@ export default function ThoughtCloudGrid({
   isFullscreen,
   onFullscreenToggle,
   onDotClick,
+  avatarSpacing = 'default',
   patternId = 'thought-pattern',
   onRefresh,
 }: ThoughtCloudGridProps) {
@@ -203,8 +205,8 @@ export default function ThoughtCloudGrid({
           // Calculate complete bounding box accounting for ALL visual elements and transforms
           const dotRadius = (dot.size || 120) / 2; // 60px
           const avatarRadius = 20; // Avatar is h-10 w-10 = 40px, radius = 20px
-          const avatarGap = 5; // Small gap to position avatar slightly outside
-          const identityCardOffset = dotRadius + avatarRadius + avatarGap; // 60 + 20 + 5 = 85px
+          const avatarGap = avatarSpacing === 'compact' ? -15 : 5; // Compact for ThinQ Circles, default for others
+          const identityCardOffset = dotRadius + avatarRadius + avatarGap; // Compact: 65px, Default: 85px
           const identityCardHeight = 45; // Actual height of identity card
           const channelBadgeHeight = 24; // Height of channel badge
           const channelBadgeOffset = 2; // Distance from dot bottom (negative in CSS)
