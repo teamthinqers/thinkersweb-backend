@@ -192,17 +192,17 @@ const PublicProfile = () => {
           </div>
         </div>
 
-        {/* Badges and Contributions Section - Full Width Bottom */}
-        <div className="flex flex-col lg:flex-row items-stretch gap-4">
+        {/* Badges and Contributions Section - Centered Bottom */}
+        <div className="flex flex-col lg:flex-row items-stretch justify-center gap-4 max-w-5xl mx-auto">
           {/* Badges Card */}
           {allBadgesForDisplay.length > 0 && (
-            <div className="flex-1">
+            <div className="flex-1 lg:max-w-md">
               <BadgeDisplay badges={allBadgesForDisplay} />
             </div>
           )}
           
           {/* Contributions Card */}
-          <Card className="flex-1 inline-flex flex-col gap-2 px-4 py-3 bg-gradient-to-br from-amber-50/80 via-orange-50/80 to-amber-100/80 border-2 border-amber-200/60 shadow-lg backdrop-blur-sm">
+          <Card className="flex-1 lg:max-w-md inline-flex flex-col gap-2 px-4 py-3 bg-gradient-to-br from-amber-50/80 via-orange-50/80 to-amber-100/80 border-2 border-amber-200/60 shadow-lg backdrop-blur-sm">
             <div className="flex items-center gap-1">
               <Trophy className="h-4 w-4 text-amber-600" />
               <span className="text-xs font-semibold text-amber-700 uppercase tracking-wide">Contributions</span>
