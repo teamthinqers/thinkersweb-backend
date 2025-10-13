@@ -589,6 +589,20 @@ export default function MyNeuraPage() {
     enabled: !!user,
   });
 
+  // Fetch user's circles
+  const { data: circlesResponse } = useQuery<{
+    circles: Array<{
+      id: number;
+      name: string;
+      description?: string;
+    }>;
+  }>({
+    queryKey: ['/api/thinq-circles/my-circles'],
+    enabled: !!user,
+  });
+
+  const userCircles = circlesResponse?.circles || [];
+
   // Share thought to social feed
   const shareToSocialMutation = useMutation({
     mutationFn: async (thoughtId: number) => {
@@ -604,6 +618,31 @@ export default function MyNeuraPage() {
       queryClient.invalidateQueries({ queryKey: ['/api/thoughts/myneura'] });
       queryClient.invalidateQueries({ queryKey: ['/api/thoughts'] });
       queryClient.invalidateQueries({ queryKey: ['/api/thoughts/stats'] });
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
+
+  // Share thought to Circle
+  const shareToCircleMutation = useMutation({
+    mutationFn: async ({ thoughtId, circleId }: { thoughtId: number; circleId: number }) => {
+      const response = await apiRequest('POST', `/api/thinq-circles/${circleId}/share-thought`, {
+        thoughtId,
+      });
+      return response.json();
+    },
+    onSuccess: (_, variables) => {
+      const circle = userCircles.find(c => c.id === variables.circleId);
+      toast({
+        title: "Shared!",
+        description: `Thought shared to ${circle?.name || 'circle'}`,
+      });
+      queryClient.invalidateQueries({ queryKey: [`/api/thinq-circles/${variables.circleId}/thoughts`] });
     },
     onError: (error: Error) => {
       toast({
@@ -1188,8 +1227,8 @@ export default function MyNeuraPage() {
                   </div>
                 </div>
 
-                {/* Footer - Action Button */}
-                <div className="flex-shrink-0 p-4 border-t border-gray-200 bg-white">
+                {/* Footer - Action Buttons */}
+                <div className="flex-shrink-0 p-4 border-t border-gray-200 bg-white space-y-3">
                   {!selectedThought.isSaved && (
                     <Button
                       onClick={() => shareToSocialMutation.mutate(selectedThought.id)}
@@ -1200,6 +1239,29 @@ export default function MyNeuraPage() {
                       {selectedThought.sharedToSocial ? 'Already Shared to Social' : 'Share to Social'}
                     </Button>
                   )}
+
+                  {/* Share to MyCircle Dropdown */}
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button
+                        disabled={shareToCircleMutation.isPending || userCircles.length === 0}
+                        className="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600"
+                      >
+                        <Share2 className="h-4 w-4 mr-2" />
+                        {userCircles.length === 0 ? 'No Circles Available' : 'Share to MyCircle'}
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" side="top" className="w-56">
+                      {userCircles.map((circle) => (
+                        <DropdownMenuItem
+                          key={circle.id}
+                          onClick={() => shareToCircleMutation.mutate({ thoughtId: selectedThought.id, circleId: circle.id })}
+                        >
+                          {circle.name}
+                        </DropdownMenuItem>
+                      ))}
+                    </DropdownMenuContent>
+                  </DropdownMenu>
                 </div>
               </div>
 
