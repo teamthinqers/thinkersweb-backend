@@ -123,8 +123,8 @@ export default function ThoughtCirclePage() {
                         <div className="text-center">
                           <Target className="h-8 w-8 text-white mx-auto mb-1" />
                           <div className="flex items-center justify-center gap-1 text-white">
-                            <Users className="h-3 w-3" />
-                            <span className="text-xs font-medium">{circle.memberCount || 1}</span>
+                            <Users className="h-5 w-5" />
+                            <span className="text-sm font-semibold">{circle.memberCount || 1}</span>
                           </div>
                         </div>
                       </div>
