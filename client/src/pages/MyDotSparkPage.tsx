@@ -182,30 +182,31 @@ export default function MyDotSparkPage() {
               )}
               
               {/* Contributions Card */}
-              <Card className="border-0 bg-gradient-to-br from-amber-50 to-orange-50 shadow-sm">
-                <CardContent className="p-3">
-                  <div className="flex items-center gap-2">
-                    <Trophy className="h-4 w-4 text-amber-600" />
-                    <span className="text-xs font-semibold text-amber-700">CONTRIBUTIONS</span>
+              <Card className="inline-flex flex-col gap-2 px-4 py-3 bg-gradient-to-br from-amber-50/80 via-orange-50/80 to-amber-100/80 border-2 border-amber-200/60 shadow-lg backdrop-blur-sm">
+                <div className="flex items-center gap-1">
+                  <Trophy className="h-4 w-4 text-amber-600" />
+                  <span className="text-xs font-semibold text-amber-700 uppercase tracking-wide">Contributions</span>
+                </div>
+                
+                <div className="h-px w-full bg-amber-300/50 my-1"></div>
+                
+                <div className="flex items-center gap-6">
+                  {/* Dots */}
+                  <div className="flex flex-col items-center gap-1">
+                    <Lightbulb className="h-5 w-5 text-amber-600" />
+                    <span className="text-sm font-bold text-amber-700">{dashboard?.stats?.dots || 0}</span>
                   </div>
-                  <div className="flex items-center gap-4 mt-2">
-                    {/* Dots */}
-                    <div className="flex items-center gap-1.5">
-                      <Lightbulb className="h-4 w-4 text-amber-600" />
-                      <span className="text-sm font-bold text-gray-900">{dashboard?.stats?.dots || 0}</span>
-                    </div>
-                    {/* Sparks */}
-                    <div className="flex items-center gap-1.5">
-                      <SparkIcon className="h-4 w-4" fill="#d97706" />
-                      <span className="text-sm font-bold text-gray-900">{(dashboard?.stats?.savedSparks || 0) + (dashboard?.neuralStrength?.stats?.userSparksCount || 0)}</span>
-                    </div>
-                    {/* Perspectives */}
-                    <div className="flex items-center gap-1.5">
-                      <Search className="h-4 w-4 text-amber-600" />
-                      <span className="text-sm font-bold text-gray-900">{dashboard?.stats?.perspectives || 0}</span>
-                    </div>
+                  {/* Sparks */}
+                  <div className="flex flex-col items-center gap-1">
+                    <SparkIcon className="h-5 w-5" fill="#d97706" />
+                    <span className="text-sm font-bold text-amber-700">{(dashboard?.stats?.savedSparks || 0) + (dashboard?.neuralStrength?.stats?.userSparksCount || 0)}</span>
                   </div>
-                </CardContent>
+                  {/* Perspectives */}
+                  <div className="flex flex-col items-center gap-1">
+                    <Search className="h-5 w-5 text-amber-600" />
+                    <span className="text-sm font-bold text-amber-700">{dashboard?.stats?.perspectives || 0}</span>
+                  </div>
+                </div>
               </Card>
             </div>
           </div>
