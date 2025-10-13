@@ -5,13 +5,14 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Linkedin, Camera, Pencil, Check, X, Loader2 } from "lucide-react";
+import { Linkedin, Camera, Pencil, Check, X, Loader2, Eye } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth-new";
 import SharedAuthLayout from "@/components/layout/SharedAuthLayout";
 import { useToast } from "@/hooks/use-toast";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { CognitiveIdentityCard } from "@/components/CognitiveIdentityCard";
 import { apiRequest } from "@/lib/queryClient";
+import { Link } from "wouter";
 
 const Profile = () => {
   const { user, checkAuth } = useAuth();
@@ -188,44 +189,58 @@ const Profile = () => {
             <Card className="border border-gray-200 shadow-sm h-full">
               <CardContent className="p-6">
                 {/* Edit/Save Buttons */}
-                <div className="flex justify-end mb-4">
-                  {!isEditing ? (
-                    <Button
-                      onClick={() => setIsEditing(true)}
-                      variant="outline"
-                      size="sm"
-                      className="flex items-center gap-2"
-                    >
-                      <Pencil className="h-4 w-4" />
-                      Edit Profile
-                    </Button>
-                  ) : (
-                    <div className="flex gap-2">
+                <div className="flex flex-col gap-2 mb-4">
+                  <div className="flex justify-end">
+                    {!isEditing ? (
                       <Button
-                        onClick={handleCancel}
+                        onClick={() => setIsEditing(true)}
                         variant="outline"
                         size="sm"
                         className="flex items-center gap-2"
-                        disabled={updateProfileMutation.isPending}
                       >
-                        <X className="h-4 w-4" />
-                        Cancel
+                        <Pencil className="h-4 w-4" />
+                        Edit Profile
                       </Button>
+                    ) : (
+                      <div className="flex gap-2">
+                        <Button
+                          onClick={handleCancel}
+                          variant="outline"
+                          size="sm"
+                          className="flex items-center gap-2"
+                          disabled={updateProfileMutation.isPending}
+                        >
+                          <X className="h-4 w-4" />
+                          Cancel
+                        </Button>
+                        <Button
+                          onClick={handleSave}
+                          size="sm"
+                          className="flex items-center gap-2 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600"
+                          disabled={updateProfileMutation.isPending}
+                        >
+                          {updateProfileMutation.isPending ? (
+                            <Loader2 className="h-4 w-4 animate-spin" />
+                          ) : (
+                            <Check className="h-4 w-4" />
+                          )}
+                          Save
+                        </Button>
+                      </div>
+                    )}
+                  </div>
+                  <div className="flex justify-end">
+                    <Link href={`/user/${(user as any)?.id}`}>
                       <Button
-                        onClick={handleSave}
+                        variant="ghost"
                         size="sm"
-                        className="flex items-center gap-2 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600"
-                        disabled={updateProfileMutation.isPending}
+                        className="flex items-center gap-2 text-gray-600 hover:text-amber-600"
                       >
-                        {updateProfileMutation.isPending ? (
-                          <Loader2 className="h-4 w-4 animate-spin" />
-                        ) : (
-                          <Check className="h-4 w-4" />
-                        )}
-                        Save
+                        <Eye className="h-4 w-4" />
+                        Social View
                       </Button>
-                    </div>
-                  )}
+                    </Link>
+                  </div>
                 </div>
 
                 {/* Profile Picture */}
