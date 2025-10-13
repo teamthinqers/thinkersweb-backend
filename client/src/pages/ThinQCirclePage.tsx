@@ -17,6 +17,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { useQuery } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 import { InviteToCircleModal } from "@/components/InviteToCircleModal";
+import { CircleThoughtModal } from "@/components/CircleThoughtModal";
 import ThoughtCloudGrid from "@/components/ThoughtCloudGrid";
 import SharedAuthLayout from "@/components/layout/SharedAuthLayout";
 
@@ -27,6 +28,7 @@ export default function ThinQCirclePage() {
   const { toast } = useToast();
   const [showMembersModal, setShowMembersModal] = useState(false);
   const [showInviteModal, setShowInviteModal] = useState(false);
+  const [showCreateThoughtModal, setShowCreateThoughtModal] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [selectedThought, setSelectedThought] = useState<any>(null);
 
@@ -238,9 +240,13 @@ export default function ThinQCirclePage() {
               <p className="text-gray-600 mb-6">
                 Members can share their dots, sparks, and perspectives here
               </p>
-              <Button className="hover:opacity-90" style={{ backgroundColor: '#F59E0B' }}>
+              <Button 
+                onClick={() => setShowCreateThoughtModal(true)}
+                className="hover:opacity-90" 
+                style={{ backgroundColor: '#F59E0B' }}
+              >
                 <Lightbulb className="h-5 w-5 mr-2" />
-                Share from My Neura
+                Create Thought
               </Button>
             </div>
           )}
@@ -287,6 +293,14 @@ export default function ThinQCirclePage() {
         <InviteToCircleModal 
           open={showInviteModal} 
           onOpenChange={setShowInviteModal}
+          circleId={circleId!}
+          circleName={circle.name}
+        />
+
+        {/* Create Thought Modal */}
+        <CircleThoughtModal 
+          open={showCreateThoughtModal} 
+          onOpenChange={setShowCreateThoughtModal}
           circleId={circleId!}
           circleName={circle.name}
         />
