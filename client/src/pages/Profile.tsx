@@ -41,9 +41,15 @@ const Profile = () => {
         bio: (user as any)?.bio || '',
         avatarFile: null,
       });
-      setAboutMeText((user as any)?.aboutMe || '');
     }
   }, [user, isEditing]);
+
+  // Update aboutMeText when user changes
+  useEffect(() => {
+    if (user && !isEditingAbout) {
+      setAboutMeText((user as any)?.aboutMe || '');
+    }
+  }, [user, isEditingAbout]);
 
   // Update profile mutation
   const updateProfileMutation = useMutation({
