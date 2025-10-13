@@ -73,7 +73,6 @@ export function CognitiveIdentityCard({
               </div>
               <div>
                 <h3 className="text-xl font-bold text-white drop-shadow-lg">Cognitive Identity</h3>
-                <p className="text-white/90 text-xs font-medium drop-shadow-md">Your unique thought patterns and intellectual fingerprint</p>
               </div>
             </div>
             {isOwnProfile ? (
