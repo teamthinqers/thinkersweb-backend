@@ -1097,9 +1097,29 @@ export default function MyNeuraPage() {
                           variant="outline"
                           size="sm"
                           className="text-red-600 hover:text-red-700 hover:bg-red-50 p-2"
-                          onClick={() => {
-                            if (confirm('Are you sure you want to delete this thought? This action cannot be undone.')) {
-                              deleteThoughtMutation.mutate(selectedThought.id);
+                          onClick={async () => {
+                            // Check if thought is shared to any circles
+                            try {
+                              const response = await fetch(`/api/thoughts/${selectedThought.id}/circles`, {
+                                credentials: 'include'
+                              });
+                              const data = await response.json();
+                              
+                              let confirmMessage = 'Are you sure you want to delete this thought? This action cannot be undone.';
+                              
+                              if (data.success && data.count > 0) {
+                                const circleNames = data.circles.map((c: any) => c.name).join(', ');
+                                confirmMessage = `Are you sure? Deleting here will also delete the dot in your ThinQ Circle${data.count > 1 ? 's' : ''}: ${circleNames}`;
+                              }
+                              
+                              if (confirm(confirmMessage)) {
+                                deleteThoughtMutation.mutate(selectedThought.id);
+                              }
+                            } catch (error) {
+                              // If check fails, proceed with standard confirmation
+                              if (confirm('Are you sure you want to delete this thought? This action cannot be undone.')) {
+                                deleteThoughtMutation.mutate(selectedThought.id);
+                              }
                             }
                           }}
                           disabled={deleteThoughtMutation.isPending}

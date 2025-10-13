@@ -9,7 +9,8 @@ import {
   perspectivesParticipants,
   sparks,
   sparksInsertSchema,
-  circleSparks
+  circleSparks,
+  circleDots
 } from '@shared/schema';
 import { eq, desc, and, or, sql } from 'drizzle-orm';
 import { insertThoughtSchema, perspectivesMessagesInsertSchema } from '@shared/schema';
@@ -355,10 +356,18 @@ router.delete('/:id', async (req, res) => {
     }
 
     // Delete associated data in order (foreign key constraints)
-    // 1. Delete sparks
+    // 1. Delete circle sparks (for this thought's sparks shared to circles)
+    const thoughtSparks = await db.query.sparks.findMany({
+      where: eq(sparks.thoughtId, thoughtId),
+    });
+    for (const spark of thoughtSparks) {
+      await db.delete(circleSparks).where(eq(circleSparks.sparkId, spark.id));
+    }
+    
+    // 2. Delete sparks
     await db.delete(sparks).where(eq(sparks.thoughtId, thoughtId));
     
-    // 2. Delete perspective messages
+    // 3. Delete perspective messages
     const threads = await db.query.perspectivesThreads.findMany({
       where: eq(perspectivesThreads.thoughtId, thoughtId),
     });
@@ -368,13 +377,16 @@ router.delete('/:id', async (req, res) => {
       await db.delete(perspectivesParticipants).where(eq(perspectivesParticipants.threadId, thread.id));
     }
     
-    // 3. Delete perspective threads
+    // 4. Delete perspective threads
     await db.delete(perspectivesThreads).where(eq(perspectivesThreads.thoughtId, thoughtId));
     
-    // 4. Delete saved thoughts
+    // 5. Delete saved thoughts
     await db.delete(savedThoughts).where(eq(savedThoughts.thoughtId, thoughtId));
     
-    // 5. Finally delete the thought
+    // 6. Delete from circles (circleDots)
+    await db.delete(circleDots).where(eq(circleDots.thoughtId, thoughtId));
+    
+    // 7. Finally delete the thought
     await db.delete(thoughts).where(eq(thoughts.id, thoughtId));
 
     res.json({
@@ -1639,6 +1651,67 @@ router.get('/user/sparks-count', async (req, res) => {
     res.status(500).json({
       success: false,
       error: 'Failed to get sparks count'
+    });
+  }
+});
+
+/**
+ * GET /api/thoughts/:id/circles
+ * Check which circles a thought is shared to
+ * Only returns circles for thoughts owned by the requesting user
+ */
+router.get('/:id/circles', async (req, res) => {
+  try {
+    const userId = (req as any).user?.id;
+    
+    if (!userId) {
+      return res.status(401).json({ error: 'Authentication required' });
+    }
+
+    const thoughtId = parseInt(req.params.id);
+
+    if (isNaN(thoughtId)) {
+      return res.status(400).json({ error: 'Invalid thought ID' });
+    }
+
+    // Verify user owns the thought
+    const thought = await db.query.thoughts.findFirst({
+      where: eq(thoughts.id, thoughtId),
+    });
+
+    if (!thought) {
+      return res.status(404).json({ error: 'Thought not found' });
+    }
+
+    if (thought.userId !== userId) {
+      return res.status(403).json({ error: 'You can only view circles for your own thoughts' });
+    }
+
+    // Get circles this thought is shared to
+    const circleShares = await db.query.circleDots.findMany({
+      where: eq(circleDots.thoughtId, thoughtId),
+      with: {
+        circle: {
+          columns: {
+            id: true,
+            name: true,
+          }
+        }
+      }
+    });
+
+    res.json({
+      success: true,
+      circles: circleShares.map(cs => cs.circle),
+      count: circleShares.length,
+    });
+
+  } catch (error) {
+    console.error('Get thought circles error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to get thought circles',
+      details: error instanceof Error ? error.message : 'Unknown error'
     });
   }
 });

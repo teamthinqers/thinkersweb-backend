@@ -77,7 +77,7 @@ export default function ThinQCirclePage() {
 
   const queryClient = useQueryClient();
 
-  // Delete thought mutation - allows all circle members to delete
+  // Delete thought mutation - deletes thought completely (from circle AND MyNeura)
   const deleteThoughtMutation = useMutation({
     mutationFn: async (thoughtId: number) => {
       return apiRequest("DELETE", `/api/thoughts/${thoughtId}`, {});
@@ -85,10 +85,12 @@ export default function ThinQCirclePage() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [`/api/thinq-circles/${circleId}/thoughts`] });
       queryClient.invalidateQueries({ queryKey: [`/api/thinq-circles/${circleId}`] });
+      queryClient.invalidateQueries({ queryKey: ['/api/thoughts/myneura'] }); // Also refresh MyNeura
+      queryClient.invalidateQueries({ queryKey: ['/api/thoughts/neural-strength'] });
       setSelectedThought(null);
       toast({
         title: "Thought deleted",
-        description: "The thought has been removed from the circle",
+        description: "The thought has been completely removed",
       });
     },
     onError: (error: Error) => {
