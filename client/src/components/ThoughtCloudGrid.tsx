@@ -243,7 +243,7 @@ export default function ThoughtCloudGrid({
                 className="absolute z-50 thought-dot-clickable"
                 style={{ 
                   top: `-${identityCardOffset}px`,
-                  left: '30%',
+                  left: avatarSpacing === 'compact' ? '40%' : '30%', // Shift right for ThinQ Circles, normal for Social/MyNeura
                   transform: 'translate(-50%, -50%)',
                 }}
               >
