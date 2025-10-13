@@ -165,10 +165,12 @@ export const notifications = pgTable("notifications", {
   id: serial("id").primaryKey(),
   recipientId: integer("recipient_id").references(() => users.id).notNull(), // Who receives the notification
   actorIds: text("actor_ids").notNull(), // JSON array of user IDs who triggered this (for grouping)
-  notificationType: text("notification_type").notNull(), // 'new_thought', 'new_perspective', 'spark_saved', 'badge_unlocked'
+  notificationType: text("notification_type").notNull(), // 'new_thought', 'new_perspective', 'spark_saved', 'badge_unlocked', 'circle_invite'
   thoughtId: integer("thought_id").references(() => thoughts.id), // Related thought (nullable for badge notifications)
   thoughtHeading: text("thought_heading"), // Cached for display (nullable for badge notifications)
   badgeId: integer("badge_id").references(() => badges.id), // For badge unlock notifications
+  circleInviteId: integer("circle_invite_id").references(() => thinqCircleInvites.id), // For circle invite notifications
+  circleName: text("circle_name"), // Cached circle name for display
   isRead: boolean("is_read").default(false).notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(), // For grouping updates
@@ -656,3 +658,180 @@ export type CognitiveIdentity = z.infer<typeof selectCognitiveIdentitySchema>;
 // Legacy types
 export type Entry = typeof entries.$inferSelect;
 export type ConversationSession = typeof conversationSessions.$inferSelect;
+
+// === THINQ CIRCLES SYSTEM ===
+
+// ThinQ Circles - Private brainstorming groups
+export const thinqCircles = pgTable("thinq_circles", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull(),
+  description: text("description"),
+  createdBy: integer("created_by").references(() => users.id).notNull(),
+  status: text("status").notNull().default("active"), // 'active' or 'archived'
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+// Circle Members - Who's in each circle
+export const thinqCircleMembers = pgTable("thinq_circle_members", {
+  id: serial("id").primaryKey(),
+  circleId: integer("circle_id").references(() => thinqCircles.id).notNull(),
+  userId: integer("user_id").references(() => users.id).notNull(),
+  role: text("role").notNull().default("member"), // 'owner' or 'member'
+  joinedAt: timestamp("joined_at").defaultNow().notNull(),
+}, (table) => ({
+  // Prevent duplicate membership
+  uniqueMembership: unique().on(table.circleId, table.userId),
+}));
+
+// Circle Invites - Manage invitations
+export const thinqCircleInvites = pgTable("thinq_circle_invites", {
+  id: serial("id").primaryKey(),
+  circleId: integer("circle_id").references(() => thinqCircles.id).notNull(),
+  inviterUserId: integer("inviter_user_id").references(() => users.id).notNull(),
+  inviteeEmail: text("invitee_email").notNull(), // Can be existing or new user
+  inviteeUserId: integer("invitee_user_id").references(() => users.id), // Set when existing user is invited
+  token: text("token").notNull().unique(), // Hashed token for email invites
+  status: text("status").notNull().default("pending"), // 'pending', 'accepted', 'rejected', 'expired'
+  claimedAt: timestamp("claimed_at"),
+  expiresAt: timestamp("expires_at").notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+// Circle Dots - Thoughts shared to circles
+export const circleDots = pgTable("circle_dots", {
+  id: serial("id").primaryKey(),
+  circleId: integer("circle_id").references(() => thinqCircles.id).notNull(),
+  thoughtId: integer("thought_id").references(() => thoughts.id).notNull(),
+  sharedBy: integer("shared_by").references(() => users.id).notNull(),
+  sharedAt: timestamp("shared_at").defaultNow().notNull(),
+}, (table) => ({
+  // Prevent duplicate shares
+  uniqueCircleThought: unique().on(table.circleId, table.thoughtId),
+}));
+
+// Circle Sparks - Sparks shared to circles
+export const circleSparks = pgTable("circle_sparks", {
+  id: serial("id").primaryKey(),
+  circleId: integer("circle_id").references(() => thinqCircles.id).notNull(),
+  sparkId: integer("spark_id").references(() => sparks.id).notNull(),
+  sharedBy: integer("shared_by").references(() => users.id).notNull(),
+  sharedAt: timestamp("shared_at").defaultNow().notNull(),
+}, (table) => ({
+  // Prevent duplicate shares
+  uniqueCircleSpark: unique().on(table.circleId, table.sparkId),
+}));
+
+// Circle Perspectives - Perspectives shared to circles
+export const circlePerspectives = pgTable("circle_perspectives", {
+  id: serial("id").primaryKey(),
+  circleId: integer("circle_id").references(() => thinqCircles.id).notNull(),
+  threadId: integer("thread_id").references(() => perspectivesThreads.id).notNull(),
+  sharedBy: integer("shared_by").references(() => users.id).notNull(),
+  sharedAt: timestamp("shared_at").defaultNow().notNull(),
+}, (table) => ({
+  // Prevent duplicate shares
+  uniqueCirclePerspective: unique().on(table.circleId, table.threadId),
+}));
+
+// Relations for ThinQ Circles
+export const thinqCirclesRelations = relations(thinqCircles, ({ one, many }) => ({
+  creator: one(users, {
+    fields: [thinqCircles.createdBy],
+    references: [users.id],
+  }),
+  members: many(thinqCircleMembers),
+  invites: many(thinqCircleInvites),
+  dots: many(circleDots),
+  sparks: many(circleSparks),
+  perspectives: many(circlePerspectives),
+}));
+
+export const thinqCircleMembersRelations = relations(thinqCircleMembers, ({ one }) => ({
+  circle: one(thinqCircles, {
+    fields: [thinqCircleMembers.circleId],
+    references: [thinqCircles.id],
+  }),
+  user: one(users, {
+    fields: [thinqCircleMembers.userId],
+    references: [users.id],
+  }),
+}));
+
+export const thinqCircleInvitesRelations = relations(thinqCircleInvites, ({ one }) => ({
+  circle: one(thinqCircles, {
+    fields: [thinqCircleInvites.circleId],
+    references: [thinqCircles.id],
+  }),
+  inviter: one(users, {
+    fields: [thinqCircleInvites.inviterUserId],
+    references: [users.id],
+  }),
+  invitee: one(users, {
+    fields: [thinqCircleInvites.inviteeUserId],
+    references: [users.id],
+  }),
+}));
+
+export const circleDotsRelations = relations(circleDots, ({ one }) => ({
+  circle: one(thinqCircles, {
+    fields: [circleDots.circleId],
+    references: [thinqCircles.id],
+  }),
+  thought: one(thoughts, {
+    fields: [circleDots.thoughtId],
+    references: [thoughts.id],
+  }),
+  sharedByUser: one(users, {
+    fields: [circleDots.sharedBy],
+    references: [users.id],
+  }),
+}));
+
+export const circleSparksRelations = relations(circleSparks, ({ one }) => ({
+  circle: one(thinqCircles, {
+    fields: [circleSparks.circleId],
+    references: [thinqCircles.id],
+  }),
+  spark: one(sparks, {
+    fields: [circleSparks.sparkId],
+    references: [sparks.id],
+  }),
+  sharedByUser: one(users, {
+    fields: [circleSparks.sharedBy],
+    references: [users.id],
+  }),
+}));
+
+export const circlePerspectivesRelations = relations(circlePerspectives, ({ one }) => ({
+  circle: one(thinqCircles, {
+    fields: [circlePerspectives.circleId],
+    references: [thinqCircles.id],
+  }),
+  thread: one(perspectivesThreads, {
+    fields: [circlePerspectives.threadId],
+    references: [perspectivesThreads.id],
+  }),
+  sharedByUser: one(users, {
+    fields: [circlePerspectives.sharedBy],
+    references: [users.id],
+  }),
+}));
+
+// Validation schemas
+export const thinqCirclesInsertSchema = createInsertSchema(thinqCircles, {
+  name: (schema) => schema.min(3, "Circle name must be at least 3 characters").max(50, "Circle name too long"),
+  description: (schema) => schema.max(200, "Description too long"),
+});
+
+export const thinqCirclesSelectSchema = createSelectSchema(thinqCircles);
+export type ThinqCircle = z.infer<typeof thinqCirclesSelectSchema>;
+export type ThinqCircleInsert = z.infer<typeof thinqCirclesInsertSchema>;
+
+export const thinqCircleInvitesInsertSchema = createInsertSchema(thinqCircleInvites, {
+  inviteeEmail: (schema) => schema.email("Invalid email address"),
+});
+
+export const thinqCircleInvitesSelectSchema = createSelectSchema(thinqCircleInvites);
+export type ThinqCircleInvite = z.infer<typeof thinqCircleInvitesSelectSchema>;
+export type ThinqCircleInviteInsert = z.infer<typeof thinqCircleInvitesInsertSchema>;
