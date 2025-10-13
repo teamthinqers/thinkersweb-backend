@@ -2776,6 +2776,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
             savedSparks: neuralStrength.stats.userSparksCount, // Fixed: use userSparksCount for actual sparks
             perspectives: neuralStrength.stats.perspectivesCount,
           },
+          // Platform-wide stats for Social Neura box (collective brain)
+          socialStats: {
+            thoughts: platformThoughtsCount?.count || 0,
+            sparks: platformSparksCount?.count || 0,
+            perspectives: platformPerspectivesCount?.count || 0,
+          },
           recentActivity,
         },
       });

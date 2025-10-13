@@ -43,6 +43,11 @@ interface DashboardData {
     savedSparks: number;
     perspectives: number;
   };
+  socialStats: {
+    thoughts: number;
+    sparks: number;
+    perspectives: number;
+  };
   recentActivity: Array<{
     type: 'dot' | 'wheel' | 'thought';
     data: any;
@@ -369,19 +374,19 @@ export default function MyDotSparkPage() {
                 <h3 className="text-xl font-bold text-white mb-1">Social Neura</h3>
                 <p className="text-white/90 text-sm font-medium mb-4">Collective intelligence & shared thoughts</p>
                 
-                {/* Stats */}
+                {/* Stats - Platform-wide for collective brain feeling */}
                 <div className="flex items-center justify-center gap-2 mb-4">
                   <div className="flex items-center gap-1 px-2 py-1 bg-white/20 backdrop-blur-sm rounded-full">
                     <Lightbulb className="h-3 w-3 text-white" />
-                    <span className="text-white font-semibold text-xs">{dashboard?.stats.thoughts || 0}</span>
+                    <span className="text-white font-semibold text-xs">{dashboard?.socialStats?.thoughts || 0}</span>
                   </div>
                   <div className="flex items-center gap-1 px-2 py-1 bg-white/20 backdrop-blur-sm rounded-full">
                     <Search className="h-3 w-3 text-white" />
-                    <span className="text-white font-semibold text-xs">{dashboard?.stats.perspectives || 0}</span>
+                    <span className="text-white font-semibold text-xs">{dashboard?.socialStats?.perspectives || 0}</span>
                   </div>
                   <div className="flex items-center gap-1 px-2 py-1 bg-white/20 backdrop-blur-sm rounded-full">
                     <Zap className="h-3 w-3 text-white" />
-                    <span className="text-white font-semibold text-xs">{dashboard?.stats.savedSparks || 0}</span>
+                    <span className="text-white font-semibold text-xs">{dashboard?.socialStats?.sparks || 0}</span>
                   </div>
                 </div>
                 
