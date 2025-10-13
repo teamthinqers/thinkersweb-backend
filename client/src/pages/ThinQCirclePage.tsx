@@ -114,18 +114,6 @@ export default function ThinQCirclePage() {
     <SharedAuthLayout>
       <div className={`flex-1 overflow-hidden ${isFullscreen ? 'fixed inset-0 z-50 bg-gradient-to-br from-amber-50 via-orange-50 to-red-50' : ''}`}>
         <div className={`${isFullscreen ? 'h-full' : 'container mx-auto px-4 sm:px-6 lg:px-8 py-8'}`}>
-          
-          {/* Universal Private Notice - Above the box */}
-          {!isFullscreen && (
-            <div className="mb-4 bg-white/60 backdrop-blur-sm rounded-lg border border-amber-200/60 p-3">
-              <div className="flex items-center gap-2 text-amber-700">
-                <Shield className="h-4 w-4" />
-                <p className="text-sm font-medium">
-                  Only respective members of a circle can see and contribute
-                </p>
-              </div>
-            </div>
-          )}
 
           {/* Thought Cloud Canvas */}
           <div className={`relative w-full bg-gradient-to-br from-amber-50/70 to-orange-50/50 shadow-2xl border border-amber-200 overflow-hidden backdrop-blur-sm ${isFullscreen ? 'h-full rounded-none' : 'rounded-3xl'}`}>
