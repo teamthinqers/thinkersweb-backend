@@ -277,7 +277,15 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-56">
                   <div className="p-2 text-sm">
-                    <p className="font-medium">{(user?.displayName || (user as any)?.fullName) || 'User'}</p>
+                    <p className="font-medium">
+                      {(() => {
+                        const fullName = (user as any)?.fullName || user?.displayName;
+                        if (fullName) {
+                          return fullName.split(' ')[0]; // Extract first name
+                        }
+                        return 'User';
+                      })()}
+                    </p>
                     <p className="text-xs text-muted-foreground truncate">{user?.email}</p>
                   </div>
                   <DropdownMenuSeparator />
@@ -417,7 +425,15 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-56">
                   <div className="p-2 text-sm">
-                    <p className="font-medium">{(user?.displayName || (user as any)?.fullName) || 'User'}</p>
+                    <p className="font-medium">
+                      {(() => {
+                        const fullName = (user as any)?.fullName || user?.displayName;
+                        if (fullName) {
+                          return fullName.split(' ')[0]; // Extract first name
+                        }
+                        return 'User';
+                      })()}
+                    </p>
                     <p className="text-xs text-muted-foreground truncate">{user?.email}</p>
                   </div>
                   <DropdownMenuSeparator />
