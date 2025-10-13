@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useLocation, Link } from 'wouter';
 import SharedAuthLayout from '@/components/layout/SharedAuthLayout';
 import { Button } from '@/components/ui/button';
-import { Target, Users, ArrowLeft } from 'lucide-react';
+import { Target, Users, ArrowLeft, Shield } from 'lucide-react';
 import { CreateCircleModal } from '@/components/CreateCircleModal';
 import { useAuth } from '@/hooks/use-auth-new';
 
@@ -52,6 +52,16 @@ export default function ThoughtCirclePage() {
 
         {/* Content */}
         <div className="max-w-5xl mx-auto px-6 py-12">
+          {/* Privacy Notice - Above the box */}
+          <div className="mb-4 bg-white/60 backdrop-blur-sm rounded-lg border border-amber-200/60 p-3">
+            <div className="flex items-center gap-2 text-amber-700">
+              <Shield className="h-4 w-4" />
+              <p className="text-sm font-medium">
+                Only respective members of a circle can see and contribute
+              </p>
+            </div>
+          </div>
+
           {/* Loading State */}
           {isLoading && (
             <div className="text-center py-12">
