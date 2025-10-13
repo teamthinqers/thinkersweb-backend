@@ -31,27 +31,27 @@ export default function ThoughtCirclePage() {
 
   return (
     <SharedAuthLayout>
-      <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-purple-100">
+      <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-amber-100">
         <div className="container mx-auto px-4 py-8 max-w-7xl">
           {/* Header */}
           <div className="mb-8">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-4">
-                <div className="p-4 bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl shadow-xl">
+                <div className="p-4 bg-gradient-to-br from-amber-400 to-orange-500 rounded-2xl shadow-xl">
                   <Target className="h-8 w-8 text-white" />
                 </div>
                 <div>
-                  <h1 className="text-4xl font-bold bg-gradient-to-r from-purple-700 to-pink-700 bg-clip-text text-transparent">
+                  <h1 className="text-4xl font-bold bg-gradient-to-r from-amber-700 to-orange-700 bg-clip-text text-transparent">
                     My ThinQ Circles
                   </h1>
-                  <p className="text-purple-700/70 text-lg mt-1">
+                  <p className="text-amber-700/70 text-lg mt-1">
                     Form your private ThinQ circles to brainstorm
                   </p>
                 </div>
               </div>
               <Button 
                 onClick={() => setShowCreateModal(true)}
-                className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white shadow-lg"
+                className="bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white shadow-lg"
               >
                 <Plus className="h-5 w-5 mr-2" />
                 Create Circle
@@ -62,20 +62,20 @@ export default function ThoughtCirclePage() {
           {/* Loading State */}
           {isLoading && (
             <div className="text-center py-12">
-              <p className="text-purple-600">Loading your circles...</p>
+              <p className="text-amber-600">Loading your circles...</p>
             </div>
           )}
 
           {/* Empty State */}
           {!isLoading && circles.length === 0 && (
-            <Card className="border-purple-200 bg-gradient-to-br from-white to-purple-50">
+            <Card className="border-amber-200 bg-gradient-to-br from-white to-amber-50">
               <CardContent className="py-12 text-center">
-                <Target className="h-16 w-16 text-purple-400 mx-auto mb-4" />
-                <h3 className="text-xl font-semibold text-purple-900 mb-2">No circles yet</h3>
-                <p className="text-purple-700/70 mb-6">Create your first ThinQ Circle to start collaborating</p>
+                <Target className="h-16 w-16 text-amber-400 mx-auto mb-4" />
+                <h3 className="text-xl font-semibold text-amber-900 mb-2">No circles yet</h3>
+                <p className="text-amber-700/70 mb-6">Create your first ThinQ Circle to start collaborating</p>
                 <Button 
                   onClick={() => setShowCreateModal(true)}
-                  className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white"
+                  className="bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white"
                 >
                   <Plus className="h-5 w-5 mr-2" />
                   Create Your First Circle
@@ -90,12 +90,12 @@ export default function ThoughtCirclePage() {
               {circles.map((circle) => (
                 <Card 
                   key={circle.id}
-                  className="border-purple-200 bg-gradient-to-br from-white to-purple-50 hover:shadow-xl transition-shadow cursor-pointer"
+                  className="border-amber-200 bg-gradient-to-br from-white to-amber-50 hover:shadow-xl transition-shadow cursor-pointer"
                   onClick={() => setLocation(`/thinq-circle/${circle.id}`)}
                 >
                   <CardHeader>
-                    <CardTitle className="flex items-center gap-2 text-purple-900">
-                      <Target className="h-5 w-5 text-purple-600" />
+                    <CardTitle className="flex items-center gap-2 text-amber-900">
+                      <Target className="h-5 w-5 text-amber-600" />
                       {circle.name}
                     </CardTitle>
                   </CardHeader>
@@ -103,7 +103,7 @@ export default function ThoughtCirclePage() {
                     {circle.description && (
                       <p className="text-gray-600 mb-4">{circle.description}</p>
                     )}
-                    <div className="flex items-center gap-4 text-sm text-purple-700/70">
+                    <div className="flex items-center gap-4 text-sm text-amber-700/70">
                       <div className="flex items-center gap-1">
                         <Users className="h-4 w-4" />
                         <span>{circle.memberCount || 1} member{circle.memberCount !== 1 ? 's' : ''}</span>
