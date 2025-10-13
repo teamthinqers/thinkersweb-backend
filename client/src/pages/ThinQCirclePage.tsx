@@ -16,7 +16,7 @@ import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useQuery } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
-import { CreateCircleModal } from "@/components/CreateCircleModal";
+import { InviteToCircleModal } from "@/components/InviteToCircleModal";
 import ThoughtCloudGrid from "@/components/ThoughtCloudGrid";
 
 export default function ThinQCirclePage() {
@@ -255,9 +255,11 @@ export default function ThinQCirclePage() {
       </Dialog>
 
       {/* Invite Modal */}
-      <CreateCircleModal 
+      <InviteToCircleModal 
         open={showInviteModal} 
         onOpenChange={setShowInviteModal}
+        circleId={circleId!}
+        circleName={circle.name}
       />
     </div>
   );

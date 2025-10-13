@@ -3422,6 +3422,50 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Validate invite token (public endpoint)
+  app.get(`${apiPrefix}/thinq-circles/invites/validate/:token`, async (req: Request, res: Response) => {
+    try {
+      const token = req.params.token;
+
+      const invite = await db.query.thinqCircleInvites.findFirst({
+        where: eq(thinqCircleInvites.token, token),
+      });
+
+      if (!invite) {
+        return res.status(404).json({ error: 'Invite not found' });
+      }
+
+      // Get circle name and inviter name
+      const circle = await db.query.thinqCircles.findFirst({
+        where: eq(thinqCircles.id, invite.circleId),
+      });
+
+      const inviter = await db.query.users.findFirst({
+        where: eq(users.id, invite.inviterUserId),
+      });
+
+      res.json({
+        success: true,
+        invite: {
+          id: invite.id,
+          circleId: invite.circleId,
+          circleName: circle?.name || 'Unknown Circle',
+          inviterName: inviter?.fullName || 'Someone',
+          inviteeEmail: invite.inviteeEmail,
+          status: invite.status,
+          expiresAt: invite.expiresAt,
+        },
+      });
+
+    } catch (error) {
+      console.error('Validate invite error:', error);
+      res.status(500).json({ 
+        error: 'Failed to validate invite',
+        details: error instanceof Error ? error.message : 'Unknown error'
+      });
+    }
+  });
+
   // Get circle details with members
   app.get(`${apiPrefix}/thinq-circles/:circleId`, requireAuth, async (req: AuthenticatedRequest, res: Response) => {
     try {
