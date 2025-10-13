@@ -18,7 +18,6 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 import { InviteToCircleModal } from "@/components/InviteToCircleModal";
-import { CircleThoughtModal } from "@/components/CircleThoughtModal";
 import ThoughtCloudGrid from "@/components/ThoughtCloudGrid";
 import SharedAuthLayout from "@/components/layout/SharedAuthLayout";
 import { Card, CardContent } from "@/components/ui/card";
@@ -32,7 +31,6 @@ export default function ThinQCirclePage() {
   const { toast } = useToast();
   const [showMembersModal, setShowMembersModal] = useState(false);
   const [showInviteModal, setShowInviteModal] = useState(false);
-  const [showCreateThoughtModal, setShowCreateThoughtModal] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [selectedThought, setSelectedThought] = useState<any>(null);
 
@@ -260,42 +258,22 @@ export default function ThinQCirclePage() {
                 </div>
               </div>
             ) : (thoughtsData?.thoughts && thoughtsData.thoughts.length > 0) ? (
-              <>
-                <ThoughtCloudGrid
-                  thoughts={thoughtsData.thoughts}
-                  isFullscreen={isFullscreen}
-                  onFullscreenToggle={() => setIsFullscreen(!isFullscreen)}
-                  onDotClick={(thought) => setSelectedThought(thought)}
-                  patternId={`circle-${circleId}-pattern`}
-                  onRefresh={refetchThoughts}
-                />
-                
-                {/* Floating Action Button to create thoughts */}
-                <Button
-                  onClick={() => setShowCreateThoughtModal(true)}
-                  className="fixed bottom-8 right-8 h-14 w-14 rounded-full shadow-lg hover:shadow-xl transition-all hover:scale-110"
-                  style={{ backgroundColor: '#F59E0B' }}
-                  size="icon"
-                >
-                  <Lightbulb className="h-6 w-6 text-white" />
-                </Button>
-              </>
+              <ThoughtCloudGrid
+                thoughts={thoughtsData.thoughts}
+                isFullscreen={isFullscreen}
+                onFullscreenToggle={() => setIsFullscreen(!isFullscreen)}
+                onDotClick={(thought) => setSelectedThought(thought)}
+                patternId={`circle-${circleId}-pattern`}
+                onRefresh={refetchThoughts}
+              />
             ) : (
               <div className="flex items-center justify-center h-[600px]">
                 <div className="text-center space-y-4 max-w-md">
                   <Lightbulb className="h-16 w-16 mx-auto" style={{ color: '#F59E0B' }} />
-                  <h3 className="text-xl font-semibold text-gray-800">Share insights to this circle</h3>
+                  <h3 className="text-xl font-semibold text-gray-800">No thoughts shared yet</h3>
                   <p className="text-gray-600">
-                    Members can share their dots, sparks, and perspectives here
+                    Use the floating dot to create and share thoughts to this circle
                   </p>
-                  <Button 
-                    onClick={() => setShowCreateThoughtModal(true)}
-                    className="hover:opacity-90" 
-                    style={{ backgroundColor: '#F59E0B' }}
-                  >
-                    <Lightbulb className="h-5 w-5 mr-2" />
-                    Create Thought
-                  </Button>
                 </div>
               </div>
             )}
@@ -344,14 +322,6 @@ export default function ThinQCirclePage() {
       <InviteToCircleModal 
         open={showInviteModal} 
         onOpenChange={setShowInviteModal}
-        circleId={circleId!}
-        circleName={circle.name}
-      />
-
-      {/* Create Thought Modal */}
-      <CircleThoughtModal 
-        open={showCreateThoughtModal} 
-        onOpenChange={setShowCreateThoughtModal}
         circleId={circleId!}
         circleName={circle.name}
       />
