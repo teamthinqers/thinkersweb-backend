@@ -258,22 +258,20 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
         description: "You have been signed out of DotSpark.",
       });
       
-      // Redirect to home page after successful logout
-      setTimeout(() => {
-        window.location.href = "/";
-      }, 1000);
+      // Redirect to auth page immediately after logout
+      setLocation('/auth');
     } catch (error) {
       console.error("Logout error:", error);
       toast({
         title: "Error during logout",
-        description: "There was a problem logging out. We'll reload the page to ensure you're signed out.",
+        description: "There was a problem logging out. Redirecting to login...",
         variant: "destructive",
       });
       
-      // Force a page reload as fallback if logout fails
+      // Force redirect to auth page if logout fails
       setTimeout(() => {
-        window.location.replace("/?forcedLogout=true");
-      }, 1500);
+        setLocation('/auth');
+      }, 500);
     }
   };
 
