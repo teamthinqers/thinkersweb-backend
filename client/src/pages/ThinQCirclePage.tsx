@@ -62,9 +62,9 @@ export default function ThinQCirclePage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-amber-100 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-yellow-50 via-amber-50 to-yellow-100 flex items-center justify-center">
         <div className="text-center">
-          <div className="w-16 h-16 border-4 border-amber-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <div className="w-16 h-16 border-4 border-yellow-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
           <p className="text-gray-600">Loading circle...</p>
         </div>
       </div>
@@ -73,7 +73,7 @@ export default function ThinQCirclePage() {
 
   if (!circleData?.circle) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-amber-100 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-yellow-50 via-amber-50 to-yellow-100 flex items-center justify-center">
         <div className="text-center">
           <Users className="h-16 w-16 text-gray-300 mx-auto mb-4" />
           <h2 className="text-2xl font-bold text-gray-800 mb-2">Circle not found</h2>
@@ -96,9 +96,9 @@ export default function ThinQCirclePage() {
   const remainingCount = circle.members.length - displayMembers.length;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-amber-100">
+    <div className="min-h-screen bg-gradient-to-br from-yellow-50 via-amber-50 to-yellow-100">
       {/* Custom Toolbar */}
-      <div className="sticky top-0 z-10 bg-gradient-to-r from-amber-400 to-orange-500 shadow-[0_8px_30px_rgba(251,191,36,0.3)]">
+      <div className="sticky top-0 z-10 bg-yellow-400 shadow-[0_8px_30px_rgba(250,204,21,0.3)]">
         <div className="max-w-7xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             {/* Left: Back button and Circle name */}
@@ -136,7 +136,7 @@ export default function ThinQCirclePage() {
                   {displayMembers.map((member) => (
                     <Avatar key={member.id} className="h-8 w-8 border-2 border-white">
                       <AvatarImage src={member.user.linkedinPhotoUrl || member.user.avatar} />
-                      <AvatarFallback className="bg-gradient-to-br from-amber-400 to-orange-500 text-white text-xs">
+                      <AvatarFallback className="bg-yellow-400 text-white text-xs">
                         {member.user.fullName.charAt(0)}
                       </AvatarFallback>
                     </Avatar>
@@ -195,8 +195,8 @@ export default function ThinQCirclePage() {
 
       {/* Content Grid - TODO: Filter to show only circle thoughts */}
       <div className="max-w-7xl mx-auto px-4 py-6">
-        <div className="bg-white/50 backdrop-blur-sm rounded-lg border border-amber-200 p-4 mb-6">
-          <div className="flex items-center gap-2 text-amber-700">
+        <div className="bg-white/50 backdrop-blur-sm rounded-lg border border-yellow-200 p-4 mb-6">
+          <div className="flex items-center gap-2 text-yellow-700">
             <Shield className="h-5 w-5" />
             <p className="text-sm font-medium">
               Private Circle • Only members can see and contribute
@@ -206,12 +206,12 @@ export default function ThinQCirclePage() {
 
         {/* For now, show empty state. Will be replaced with filtered grid */}
         <div className="text-center py-20">
-          <Lightbulb className="h-16 w-16 text-amber-300 mx-auto mb-4" />
+          <Lightbulb className="h-16 w-16 text-yellow-300 mx-auto mb-4" />
           <h3 className="text-xl font-semibold text-gray-800 mb-2">Share insights to this circle</h3>
           <p className="text-gray-600 mb-6">
             Members can share their dots, sparks, and perspectives here
           </p>
-          <Button className="bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700">
+          <Button className="bg-yellow-400 hover:bg-yellow-500">
             Share from My Neura
           </Button>
         </div>
@@ -229,7 +229,7 @@ export default function ThinQCirclePage() {
                 <div className="flex items-center gap-3">
                   <Avatar className="h-10 w-10">
                     <AvatarImage src={member.user.linkedinPhotoUrl || member.user.avatar} />
-                    <AvatarFallback className="bg-gradient-to-br from-amber-400 to-orange-500 text-white">
+                    <AvatarFallback className="bg-yellow-400 text-white">
                       {member.user.fullName.charAt(0)}
                     </AvatarFallback>
                   </Avatar>

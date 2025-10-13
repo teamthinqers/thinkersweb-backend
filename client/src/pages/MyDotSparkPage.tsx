@@ -418,7 +418,7 @@ export default function MyDotSparkPage() {
 
           {/* 3. My ThinQ Circles Box */}
           <Link href="/thinq-circle">
-            <Card className="group cursor-pointer border-0 transition-all duration-300 hover:scale-[1.02] bg-gradient-to-br from-amber-400 to-orange-500 relative overflow-hidden rounded-[32px] shadow-[0_8px_30px_rgba(251,191,36,0.3)] hover:shadow-[0_20px_60px_rgba(251,191,36,0.4)]">
+            <Card className="group cursor-pointer border-0 transition-all duration-300 hover:scale-[1.02] bg-yellow-400 relative overflow-hidden rounded-[32px] shadow-[0_8px_30px_rgba(250,204,21,0.3)] hover:shadow-[0_20px_60px_rgba(250,204,21,0.4)]">
               
               {/* Icon Badge */}
               <div className="absolute top-4 left-1/2 -translate-x-1/2">
@@ -444,7 +444,7 @@ export default function MyDotSparkPage() {
 
           {/* 4. Learning Engine Box */}
           <Link href="/learning-engine">
-            <Card className="group cursor-pointer border-0 transition-all duration-300 hover:scale-[1.02] bg-gradient-to-br from-orange-500 to-amber-600 relative overflow-hidden rounded-[32px] shadow-[0_8px_30px_rgba(249,115,22,0.3)] hover:shadow-[0_20px_60px_rgba(249,115,22,0.4)]">
+            <Card className="group cursor-pointer border-0 transition-all duration-300 hover:scale-[1.02] bg-yellow-400 relative overflow-hidden rounded-[32px] shadow-[0_8px_30px_rgba(250,204,21,0.3)] hover:shadow-[0_20px_60px_rgba(250,204,21,0.4)]">
               
               {/* Icon Badge */}
               <div className="absolute top-4 left-1/2 -translate-x-1/2">
