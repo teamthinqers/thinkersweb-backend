@@ -12,14 +12,27 @@ const router = Router();
  */
 router.get('/', async (req, res) => {
   try {
+    // Debug logging
+    console.log('📬 Notifications request:', {
+      hasUser: !!(req as any).user,
+      userId: (req as any).user?.id,
+      sessionId: (req as any).session?.id,
+      sessionUserId: (req as any).session?.userId,
+      passportUser: (req as any).session?.passport?.user,
+      sessionKeys: Object.keys((req as any).session || {})
+    });
+    
     // Check both new auth (req.user) and session formats (userId and passport.user)
     const userId = (req as any).user?.id || 
                    (req as any).session?.userId || 
                    (req as any).session?.passport?.user;
 
     if (!userId) {
+      console.log('❌ No userId found in any format');
       return res.status(401).json({ error: 'Authentication required' });
     }
+    
+    console.log('✅ Using userId:', userId);
 
     // Fetch all notifications for the user, ordered by most recent
     const userNotifications = await db.query.notifications.findMany({
