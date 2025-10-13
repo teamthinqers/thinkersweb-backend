@@ -432,7 +432,7 @@ export default function MyDotSparkPage() {
               {/* Content */}
               <div className="pt-16 pb-5 px-6 text-center">
                 <h3 className="text-xl font-bold text-white mb-1">My Thought Circles</h3>
-                <p className="text-white/90 text-sm font-medium">Connect with your thinking network</p>
+                <p className="text-white/90 text-sm font-medium">Form your own think circles</p>
               </div>
               
               {/* Arrow indicator */}

@@ -18,7 +18,7 @@ export default function ThoughtCirclePage() {
                   My Thought Circles
                 </h1>
                 <p className="text-purple-700/70 text-lg mt-1">
-                  Connect with your thinking network
+                  Form your own think circles
                 </p>
               </div>
             </div>
