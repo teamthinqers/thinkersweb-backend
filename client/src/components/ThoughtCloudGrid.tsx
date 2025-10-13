@@ -239,7 +239,7 @@ export default function ThoughtCloudGrid({
                 className="absolute z-50 thought-dot-clickable"
                 style={{ 
                   top: '-28px',
-                  left: '50%',
+                  left: '30%',
                   transform: 'translate(-50%, -50%)',
                 }}
               >
