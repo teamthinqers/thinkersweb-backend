@@ -1,7 +1,7 @@
 import { useState, ReactNode, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Menu, Brain, Users, User, Settings, LogOut, Sparkles, UsersRound, Search, Bell, CheckCheck, MessageSquare, FileText } from 'lucide-react';
+import { Menu, Brain, Users, User, Settings, LogOut, Sparkles, UsersRound, Search, Bell, CheckCheck, MessageSquare, FileText, Trophy } from 'lucide-react';
 import { Link, useLocation } from 'wouter';
 import { useAuth } from '@/hooks/use-auth-new';
 import { useToast } from '@/hooks/use-toast';
@@ -113,9 +113,7 @@ export default function SharedAuthLayout({ children }: SharedAuthLayoutProps) {
   // Mutation to mark notification as read
   const markAsReadMutation = useMutation({
     mutationFn: async (notificationId: number) => {
-      return apiRequest(`/api/notifications/${notificationId}/read`, {
-        method: 'PATCH',
-      });
+      return apiRequest('PATCH', `/api/notifications/${notificationId}/read`, {});
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/notifications'] });
@@ -125,9 +123,7 @@ export default function SharedAuthLayout({ children }: SharedAuthLayoutProps) {
   // Mutation to mark all notifications as read
   const markAllAsReadMutation = useMutation({
     mutationFn: async () => {
-      return apiRequest('/api/notifications/read-all', {
-        method: 'PATCH',
-      });
+      return apiRequest('PATCH', '/api/notifications/read-all', {});
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/notifications'] });
@@ -140,13 +136,25 @@ export default function SharedAuthLayout({ children }: SharedAuthLayoutProps) {
       markAsReadMutation.mutate(notification.id);
     }
     
-    // Store thoughtId in sessionStorage and navigate to social page
-    sessionStorage.setItem('openThoughtId', notification.thoughtId.toString());
-    setLocation('/social');
-    setShowNotifications(false);
+    // Handle different notification types
+    if (notification.notificationType === 'badge_unlocked') {
+      // Navigate to badges page or profile (you can change this to wherever badges are displayed)
+      setLocation('/mydotspark');
+      setShowNotifications(false);
+    } else if (notification.thoughtId) {
+      // Store thoughtId in sessionStorage and navigate to social page
+      sessionStorage.setItem('openThoughtId', notification.thoughtId.toString());
+      setLocation('/social');
+      setShowNotifications(false);
+    }
   };
 
   const getNotificationMessage = (notification: any) => {
+    // Handle badge notifications differently
+    if (notification.notificationType === 'badge_unlocked') {
+      return `You unlocked the ${notification.badge?.name || 'achievement'} badge!`;
+    }
+
     const actorIds = JSON.parse(notification.actorIds);
     const actorNames = notification.actors.map((actor: any) => actor.fullName || 'Someone');
     
@@ -180,6 +188,8 @@ export default function SharedAuthLayout({ children }: SharedAuthLayoutProps) {
         return <MessageSquare className="w-4 h-4" />;
       case 'spark_saved':
         return <Sparkles className="w-4 h-4" />;
+      case 'badge_unlocked':
+        return <Trophy className="w-4 h-4" />;
       default:
         return <Bell className="w-4 h-4" />;
     }
@@ -518,6 +528,7 @@ export default function SharedAuthLayout({ children }: SharedAuthLayoutProps) {
                               <div className={`flex-shrink-0 p-2 rounded-full ${
                                 notification.notificationType === 'new_thought' ? 'bg-blue-100 text-blue-600' :
                                 notification.notificationType === 'new_perspective' ? 'bg-purple-100 text-purple-600' :
+                                notification.notificationType === 'badge_unlocked' ? 'bg-yellow-100 text-yellow-600' :
                                 'bg-amber-100 text-amber-600'
                               }`}>
                                 {getNotificationIcon(notification.notificationType)}
@@ -526,9 +537,16 @@ export default function SharedAuthLayout({ children }: SharedAuthLayoutProps) {
                                 <p className="text-sm text-gray-900 mb-1">
                                   {getNotificationMessage(notification)}
                                 </p>
-                                <p className="text-xs text-gray-500 truncate mb-1">
-                                  "{notification.thoughtHeading}"
-                                </p>
+                                {notification.thoughtHeading && (
+                                  <p className="text-xs text-gray-500 truncate mb-1">
+                                    "{notification.thoughtHeading}"
+                                  </p>
+                                )}
+                                {notification.badge?.description && notification.notificationType === 'badge_unlocked' && (
+                                  <p className="text-xs text-gray-500 truncate mb-1">
+                                    {notification.badge.description}
+                                  </p>
+                                )}
                                 <p className="text-xs text-gray-400">
                                   {formatDistanceToNow(new Date(notification.createdAt), { addSuffix: true })}
                                 </p>
