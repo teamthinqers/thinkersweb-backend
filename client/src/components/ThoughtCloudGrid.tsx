@@ -23,6 +23,7 @@ export interface ThoughtDot {
     id: number;
     fullName: string | null;
     avatar?: string | null;
+    linkedinPhotoUrl?: string | null;
     email?: string;
   };
   contributors?: {
@@ -237,7 +238,7 @@ export default function ThoughtCloudGrid({
               <div 
                 className="absolute z-50 thought-dot-clickable"
                 style={{ 
-                  top: '-60px',
+                  top: '-28px',
                   left: '50%',
                   transform: 'translate(-50%, -50%)',
                 }}
@@ -254,8 +255,8 @@ export default function ThoughtCloudGrid({
                     className="focus:outline-none focus:ring-2 focus:ring-amber-500 rounded-full"
                   >
                     <Avatar className="h-10 w-10 border-2 border-amber-300 shadow-lg hover:border-amber-400 hover:scale-110 transition-all cursor-pointer">
-                      {dot.user?.avatar ? (
-                        <AvatarImage src={dot.user.avatar} alt={dot.user.fullName || 'User'} />
+                      {dot.user?.linkedinPhotoUrl || dot.user?.avatar ? (
+                        <AvatarImage src={(dot.user.linkedinPhotoUrl || dot.user.avatar) ?? undefined} alt={dot.user.fullName || 'User'} />
                       ) : (
                         <AvatarFallback className="bg-gradient-to-r from-amber-500 to-orange-500 text-white text-sm">
                           {dot.user?.fullName?.charAt(0).toUpperCase() || 'U'}
