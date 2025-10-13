@@ -416,8 +416,8 @@ export default function MyDotSparkPage() {
             </Card>
           </Link>
 
-          {/* 3. My Thought Circles Box */}
-          <Link href="/thought-circle">
+          {/* 3. My ThinQ Circles Box */}
+          <Link href="/thinq-circle">
             <Card className="group cursor-pointer border-0 transition-all duration-300 hover:scale-[1.02] bg-gradient-to-br from-purple-500 to-purple-600 relative overflow-hidden rounded-[32px] shadow-[0_8px_30px_rgba(168,85,247,0.3)] hover:shadow-[0_20px_60px_rgba(168,85,247,0.4)]">
               
               {/* Icon Badge */}
@@ -431,7 +431,7 @@ export default function MyDotSparkPage() {
               
               {/* Content */}
               <div className="pt-16 pb-5 px-6 text-center">
-                <h3 className="text-xl font-bold text-white mb-1">My Thought Circles</h3>
+                <h3 className="text-xl font-bold text-white mb-1">My ThinQ Circles</h3>
                 <p className="text-white/90 text-sm font-medium">Form your own think circles</p>
               </div>
               

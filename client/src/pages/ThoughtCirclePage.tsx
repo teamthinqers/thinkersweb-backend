@@ -15,7 +15,7 @@ export default function ThoughtCirclePage() {
               </div>
               <div>
                 <h1 className="text-4xl font-bold bg-gradient-to-r from-purple-700 to-pink-700 bg-clip-text text-transparent">
-                  My Thought Circles
+                  My ThinQ Circles
                 </h1>
                 <p className="text-purple-700/70 text-lg mt-1">
                   Form your own think circles

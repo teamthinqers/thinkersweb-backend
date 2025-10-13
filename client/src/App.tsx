@@ -198,7 +198,7 @@ function Router() {
       <Route path="/myneura" component={MyNeuraPage} />
       <Route path="/mydotspark" component={MyDotSparkPage} />
       <Route path="/cognitive-identity" component={CognitiveIdentityPage} />
-      <Route path="/thought-circle" component={ThoughtCirclePage} />
+      <Route path="/thinq-circle" component={ThoughtCirclePage} />
       <Route path="/learning-engine" component={LearningEnginePage} />
       <Route path="/auth" component={AuthPage} />
       <Route path="/notifications" component={NotificationsPage} />
