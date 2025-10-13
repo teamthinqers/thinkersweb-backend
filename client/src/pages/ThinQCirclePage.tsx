@@ -133,7 +133,7 @@ export default function ThinQCirclePage() {
             {/* Toolbar - Circle Navigation - hide in fullscreen */}
             {!isFullscreen && (
               <div className="sticky top-0 z-10 bg-white/95 backdrop-blur-lg border-b border-gray-200 shadow-sm px-6 py-4 flex items-center justify-between">
-                {/* Left: Back button and Circle info */}
+                {/* Left: Back button and stats */}
                 <div className="flex items-center gap-4">
                   <Button
                     variant="ghost"
@@ -143,20 +143,6 @@ export default function ThinQCirclePage() {
                   >
                     <ArrowLeft className="h-5 w-5" />
                   </Button>
-                  
-                  {/* Circle Name and Members Count */}
-                  <div className="flex items-center gap-2">
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="group flex items-center gap-2 rounded-lg px-3 py-2 bg-gradient-to-br from-amber-50 to-orange-50 hover:from-amber-100 hover:to-orange-100 border-l-2 border-amber-500 transition-all duration-300 relative"
-                    >
-                      <Users className="h-4 w-4" style={{ color: '#F59E0B' }} />
-                      <span className="text-sm font-semibold" style={{ color: '#F59E0B' }}>
-                        {circle.name}
-                      </span>
-                    </Button>
-                  </div>
 
                   {/* Dots count */}
                   <div className="flex items-center gap-2">
@@ -195,8 +181,16 @@ export default function ThinQCirclePage() {
                   </div>
                 </div>
 
-                {/* Right: Member avatars and actions */}
+                {/* Right: Circle name, Member avatars and actions */}
                 <div className="flex items-center gap-4">
+                  {/* Circle Name */}
+                  <div className="flex items-center gap-2">
+                    <Users className="h-5 w-5" style={{ color: '#F59E0B' }} />
+                    <span className="text-lg font-bold text-gray-900 tracking-tight">
+                      {circle.name}
+                    </span>
+                  </div>
+                  
                   {/* Members avatars */}
                   <div 
                     onClick={() => setShowMembersModal(true)}
