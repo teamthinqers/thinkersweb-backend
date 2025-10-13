@@ -2,10 +2,9 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Lock, Unlock, Fingerprint } from "lucide-react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
-import { useDotSparkTuning } from '@/hooks/useDotSparkTuning';
 import { generateCognitiveIdentityTags } from '@/lib/cognitiveIdentityTags';
 import { useState, useEffect } from 'react';
 
@@ -22,8 +21,14 @@ export function CognitiveIdentityCard({
 }: CognitiveIdentityCardProps) {
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  const { tuning } = useDotSparkTuning();
-  const cognitiveIdentityTags = generateCognitiveIdentityTags(tuning || {});
+  
+  // Fetch real cognitive identity data for this user
+  const { data: cognitiveData } = useQuery<{ success: boolean; data: any; isPublic: boolean; configured: boolean }>({
+    queryKey: [`/api/users/${userId}/cognitive-identity`],
+    enabled: !!userId,
+  });
+  
+  const cognitiveIdentityTags = generateCognitiveIdentityTags(cognitiveData?.data || {});
   
   // Local state for toggle to ensure UI updates
   const [isPublic, setIsPublic] = useState(initialIsPublic);
@@ -40,6 +45,7 @@ export function CognitiveIdentityCard({
     onSuccess: (data, newIsPublic) => {
       setIsPublic(newIsPublic); // Update local state immediately
       queryClient.invalidateQueries({ queryKey: ['/api/auth/me'] });
+      queryClient.invalidateQueries({ queryKey: [`/api/users/${userId}/cognitive-identity`] });
       toast({
         title: "Privacy Updated",
         description: `Your cognitive identity is now ${newIsPublic ? 'public' : 'private'}.`,

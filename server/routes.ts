@@ -2993,5 +2993,63 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Get user's cognitive identity (respects privacy settings)
+  app.get(`${apiPrefix}/users/:userId/cognitive-identity`, async (req: Request, res: Response) => {
+    try {
+      const targetUserId = parseInt(req.params.userId);
+      const requestingUserId = (req as AuthenticatedRequest).user?.id || (req as AuthenticatedRequest).session?.userId;
+
+      if (!targetUserId || isNaN(targetUserId)) {
+        return res.status(400).json({ error: 'Invalid user ID' });
+      }
+
+      // Check if viewing own profile
+      const isOwnProfile = requestingUserId === targetUserId;
+
+      // Get user's privacy setting
+      const user = await db.query.users.findFirst({
+        where: eq(users.id, targetUserId),
+        columns: {
+          cognitiveIdentityPublic: true,
+          cognitiveIdentityCompleted: true
+        }
+      });
+
+      if (!user) {
+        return res.status(404).json({ error: 'User not found' });
+      }
+
+      // Check if cognitive identity is accessible
+      const isPublic = user.cognitiveIdentityPublic;
+      if (!isOwnProfile && !isPublic) {
+        return res.json({
+          success: true,
+          data: null,
+          isPublic: false,
+          configured: user.cognitiveIdentityCompleted
+        });
+      }
+
+      // Fetch cognitive identity
+      const config = await db.query.cognitiveIdentity.findFirst({
+        where: eq(cognitiveIdentity.userId, targetUserId)
+      });
+
+      res.json({
+        success: true,
+        data: config,
+        isPublic: isPublic,
+        configured: user.cognitiveIdentityCompleted || false
+      });
+
+    } catch (error) {
+      console.error('Get user cognitive identity error:', error);
+      res.status(500).json({ 
+        error: 'Failed to fetch cognitive identity',
+        details: error instanceof Error ? error.message : 'Unknown error'
+      });
+    }
+  });
+
   return httpServer;
 }
