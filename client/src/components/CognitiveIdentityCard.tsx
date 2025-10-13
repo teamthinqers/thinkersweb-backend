@@ -33,11 +33,11 @@ export function CognitiveIdentityCard({
     mutationFn: async (newIsPublic: boolean) => {
       return apiRequest('PATCH', '/api/users/cognitive-identity-privacy', { isPublic: newIsPublic });
     },
-    onSuccess: () => {
+    onSuccess: (data, newIsPublic) => {
       queryClient.invalidateQueries({ queryKey: ['/api/auth/me'] });
       toast({
         title: "Privacy Updated",
-        description: `Your cognitive identity is now ${!isPublic ? 'public' : 'private'}.`,
+        description: `Your cognitive identity is now ${newIsPublic ? 'public' : 'private'}.`,
       });
     },
     onError: () => {

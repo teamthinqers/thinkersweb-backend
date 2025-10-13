@@ -358,10 +358,10 @@ const Profile = () => {
 
           {/* RIGHT COLUMN - About Me Section */}
           <div className="lg:col-span-1">
-            <Card className="border-2 border-amber-400/50 shadow-lg bg-gradient-to-br from-amber-50/50 to-orange-50/30 h-full">
+            <Card className="border border-gray-200 shadow-sm h-full">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-lg font-semibold bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent">About Me</h3>
+                  <h3 className="text-lg font-semibold text-gray-900">About Me</h3>
                   {!isEditingAbout ? (
                     <Button
                       onClick={() => setIsEditingAbout(true)}
