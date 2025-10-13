@@ -2,7 +2,8 @@ import { useState } from "react";
 import { Link, useLocation, useRoute } from "wouter";
 import { Button } from "@/components/ui/button";
 import { 
-  Users, ArrowLeft, MoreHorizontal, UserPlus, Lightbulb, Zap, Settings, Shield
+  Users, ArrowLeft, MoreHorizontal, UserPlus, Lightbulb, Zap, Settings, Shield, 
+  Sparkles, MessageCircle, Send, RefreshCw, Trash2, Pencil, Share2, Bookmark
 } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth-new";
 import {
@@ -14,12 +15,15 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 import { InviteToCircleModal } from "@/components/InviteToCircleModal";
 import { CircleThoughtModal } from "@/components/CircleThoughtModal";
 import ThoughtCloudGrid from "@/components/ThoughtCloudGrid";
 import SharedAuthLayout from "@/components/layout/SharedAuthLayout";
+import { Card, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { apiRequest } from "@/lib/queryClient";
 
 export default function ThinQCirclePage() {
   const { user } = useAuth();
@@ -351,6 +355,412 @@ export default function ThinQCirclePage() {
         circleId={circleId!}
         circleName={circle.name}
       />
+
+      {/* Expanded Thought Modal - Three Column Layout (Same as MyNeura) */}
+      <Dialog open={!!selectedThought} onOpenChange={(open) => !open && setSelectedThought(null)}>
+        <DialogContent className="max-w-7xl max-h-[90vh] p-0 flex flex-col">
+          {selectedThought && (
+            <div className="grid grid-cols-3 flex-1 min-h-0">
+              {/* Left Column: Thought Details */}
+              <div className="flex flex-col h-full min-h-0 border-r border-gray-200">
+                {/* Header */}
+                <div className="flex-shrink-0 p-6 border-b border-gray-200">
+                  <DialogHeader>
+                    <div className="flex items-center gap-3 mb-4">
+                      <Avatar className="h-12 w-12 border-2 border-amber-200">
+                        <AvatarImage src={selectedThought.user?.linkedinPhotoUrl || selectedThought.user?.avatar} />
+                        <AvatarFallback className="bg-gradient-to-r from-amber-500 to-orange-500 text-white">
+                          {selectedThought.user?.fullName?.charAt(0).toUpperCase() || 'U'}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div>
+                        <p className="font-semibold text-gray-900">{selectedThought.user?.fullName}</p>
+                        <p className="text-sm text-gray-500">Shared to {circle.name}</p>
+                      </div>
+                    </div>
+                    
+                    <DialogTitle className="text-2xl font-bold text-gray-900 mt-4">
+                      {selectedThought.heading}
+                    </DialogTitle>
+                  </DialogHeader>
+                </div>
+
+                {/* Main Content - Scrollable */}
+                <div className="flex-1 min-h-0 overflow-y-scroll px-6 pt-6 pb-8">
+                  <div className="space-y-6">
+                    {/* Image - if present */}
+                    {selectedThought.imageUrl && (
+                      <div className="space-y-2">
+                        <img 
+                          src={selectedThought.imageUrl} 
+                          alt={selectedThought.heading}
+                          className="w-full max-h-96 object-cover rounded-lg shadow-lg"
+                          onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                        />
+                      </div>
+                    )}
+
+                    <Card className="bg-gradient-to-br from-amber-50 to-orange-50 border-amber-200">
+                      <CardContent className="pt-6">
+                        <p className="text-gray-700 leading-relaxed">
+                          {selectedThought.summary}
+                        </p>
+                      </CardContent>
+                    </Card>
+
+                    {/* Additional Layers Section */}
+                    <div className="space-y-4">
+                      <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
+                        <span className="text-amber-500">●</span>
+                        Additional Layers
+                      </h3>
+                      
+                      <div className="space-y-3">
+                        {/* Emotions Tag Layer */}
+                        <Card className="border-amber-200 bg-white/50">
+                          <CardContent className="pt-4">
+                            <div className="flex items-start gap-3">
+                              <div className="flex-shrink-0 w-24">
+                                <p className="text-sm font-semibold text-gray-700">Emotions Tag</p>
+                              </div>
+                              <div className="flex-1 flex flex-wrap gap-2">
+                                {selectedThought.emotions ? (() => {
+                                  try {
+                                    const emotionsArray = JSON.parse(selectedThought.emotions);
+                                    return emotionsArray.length > 0 ? emotionsArray.map((emotion: string, idx: number) => (
+                                      <Badge key={idx} className="bg-gradient-to-r from-amber-500 to-orange-500 text-white border-0">
+                                        {emotion}
+                                      </Badge>
+                                    )) : <p className="text-sm text-gray-400 italic">No emotions added yet</p>;
+                                  } catch {
+                                    return <p className="text-sm text-gray-400 italic">No emotions added yet</p>;
+                                  }
+                                })() : (
+                                  <p className="text-sm text-gray-400 italic">No emotions added yet</p>
+                                )}
+                              </div>
+                            </div>
+                          </CardContent>
+                        </Card>
+
+                        {/* Anchor Layer */}
+                        <Card className="border-amber-200 bg-white/50">
+                          <CardContent className="pt-4">
+                            <div className="flex items-start gap-3">
+                              <div className="flex-shrink-0 w-24">
+                                <p className="text-sm font-semibold text-gray-700">Anchor</p>
+                              </div>
+                              <div className="flex-1">
+                                {selectedThought.anchor ? (
+                                  <p className="text-sm text-gray-600">{selectedThought.anchor}</p>
+                                ) : (
+                                  <p className="text-sm text-gray-400 italic">No anchor added yet</p>
+                                )}
+                              </div>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Middle Column: Circle Reflections (Personal Perspectives) */}
+              <CircleReflections thoughtId={selectedThought.id} />
+
+              {/* Right Column: Sparks */}
+              <CircleSparks thoughtId={selectedThought.id} thought={selectedThought} user={user} />
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </SharedAuthLayout>
+  );
+}
+
+// Circle Reflections Component (reuses PersonalPerspectives pattern)
+function CircleReflections({ thoughtId }: { thoughtId: number }) {
+  const [message, setMessage] = useState("");
+  const queryClient = useQueryClient();
+  const { toast } = useToast();
+
+  // Fetch personal perspectives
+  const { data: perspectivesData, isLoading } = useQuery<{
+    success: boolean;
+    threadId: number;
+    messages: any[];
+  }>({
+    queryKey: [`/api/thoughts/${thoughtId}/perspectives/personal`],
+  });
+
+  // Add perspective mutation
+  const addPerspectiveMutation = useMutation({
+    mutationFn: async (messageBody: string) => {
+      return apiRequest("POST", `/api/thoughts/${thoughtId}/perspectives/personal`, { messageBody });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [`/api/thoughts/${thoughtId}/perspectives/personal`] });
+      setMessage("");
+    },
+    onError: () => {
+      toast({
+        title: "Error",
+        description: "Failed to add reflection",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const handleSend = () => {
+    if (!message.trim()) return;
+    addPerspectiveMutation.mutate(message);
+  };
+
+  const messages = perspectivesData?.messages || [];
+
+  return (
+    <div className="flex flex-col h-full min-h-0 border-r border-gray-200">
+      {/* Header */}
+      <div className="flex-shrink-0 p-4 border-b border-gray-200">
+        <div className="flex items-center gap-2">
+          <MessageCircle className="h-5 w-5 text-orange-600" />
+          <h3 className="text-lg font-semibold text-gray-900">Circle Reflections</h3>
+        </div>
+      </div>
+
+      {/* Messages - Scrollable */}
+      <div className="flex-1 min-h-0 overflow-y-auto p-4 bg-gray-50 space-y-3">
+        {isLoading ? (
+          <div className="text-center text-gray-500 py-8">
+            <RefreshCw className="h-6 w-6 animate-spin mx-auto mb-2" />
+            <p className="text-sm">Loading reflections...</p>
+          </div>
+        ) : messages.length === 0 ? (
+          <div className="text-center text-gray-500 py-8">
+            <p className="text-sm">No reflections yet</p>
+            <p className="text-xs mt-2">Start sharing your thoughts</p>
+          </div>
+        ) : (
+          messages.map((msg: any) => (
+            <div key={msg.id} className="bg-white rounded-lg p-3 shadow-sm border border-amber-100">
+              <div className="flex items-start gap-2">
+                <Avatar className="h-8 w-8">
+                  <AvatarImage src={msg.user?.linkedinPhotoUrl || msg.user?.avatar} />
+                  <AvatarFallback className="bg-amber-500 text-white text-xs">
+                    {msg.user?.fullName?.[0] || 'U'}
+                  </AvatarFallback>
+                </Avatar>
+                <div className="flex-1">
+                  <p className="text-sm text-gray-800">{msg.messageBody}</p>
+                  <p className="text-xs text-gray-400 mt-1">
+                    {new Date(msg.createdAt).toLocaleTimeString()}
+                  </p>
+                </div>
+              </div>
+            </div>
+          ))
+        )}
+      </div>
+
+      {/* Input - Footer */}
+      <div className="flex-shrink-0 p-4 border-t border-gray-200 bg-white">
+        <div className="flex gap-2">
+          <Input
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+            onKeyPress={(e) => e.key === 'Enter' && handleSend()}
+            placeholder="Write your reflection..."
+            className="flex-1"
+          />
+          <Button
+            onClick={handleSend}
+            disabled={!message.trim() || addPerspectiveMutation.isPending}
+            className="bg-gradient-to-r from-amber-500 to-orange-500"
+          >
+            <Send className="h-4 w-4" />
+          </Button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Circle Sparks Component (reuses SparksSection pattern)
+function CircleSparks({ thoughtId, thought, user }: { thoughtId: number; thought: any; user: any }) {
+  const [viewMode, setViewMode] = useState<'text' | 'visual'>('text');
+  const [sparkNote, setSparkNote] = useState('');
+  const queryClient = useQueryClient();
+  const { toast } = useToast();
+
+  // Fetch evolved summary
+  const { data: evolvedData, isLoading: evolvedLoading } = useQuery<{
+    success: boolean;
+    evolvedSummary: string;
+    thoughtContext: any;
+  }>({
+    queryKey: [`/api/thoughts/${thoughtId}/evolved-summary`],
+  });
+
+  // Fetch user sparks
+  const { data: sparksData, isLoading: sparksLoading } = useQuery<{
+    success: boolean;
+    sparks: any[];
+  }>({
+    queryKey: [`/api/thoughts/${thoughtId}/sparks`],
+    enabled: !!thoughtId,
+  });
+
+  // Add spark mutation
+  const addSparkMutation = useMutation({
+    mutationFn: async (content: string) => {
+      return apiRequest("POST", `/api/thoughts/${thoughtId}/sparks`, { content });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [`/api/thoughts/${thoughtId}/sparks`] });
+      setSparkNote("");
+      toast({
+        title: "Spark saved!",
+        description: "Your insight has been captured",
+      });
+    },
+  });
+
+  // Delete spark mutation
+  const deleteSparkMutation = useMutation({
+    mutationFn: async (sparkId: number) => {
+      return apiRequest("DELETE", `/api/thoughts/${thoughtId}/sparks/${sparkId}`, {});
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [`/api/thoughts/${thoughtId}/sparks`] });
+    },
+  });
+
+  const handleSaveSpark = () => {
+    if (!sparkNote.trim()) return;
+    addSparkMutation.mutate(sparkNote);
+  };
+
+  const userSparks = sparksData?.sparks || [];
+
+  return (
+    <div className="flex flex-col h-full min-h-0">
+      {/* Header */}
+      <div className="flex-shrink-0 p-4 border-b border-gray-200">
+        <div className="flex items-center gap-2">
+          <div className="relative">
+            <Zap className="h-5 w-5 text-yellow-500" />
+            <Sparkles className="h-3 w-3 text-yellow-400 absolute -top-0.5 -right-0.5 animate-pulse" />
+          </div>
+          <h3 className="text-lg font-semibold text-gray-900">Sparks</h3>
+        </div>
+      </div>
+
+      {/* Main Content - Scrollable */}
+      <div className="flex-1 min-h-0 overflow-y-auto p-6 bg-gray-50 space-y-6">
+        {/* Smart Summary */}
+        <div className="bg-white rounded-lg border border-gray-200 p-4">
+          <div className="flex items-center justify-between mb-4">
+            <h4 className="text-sm font-semibold text-gray-900">Smart Summary</h4>
+            <div className="flex gap-1 bg-gray-100 rounded-md p-1">
+              <Button
+                variant={viewMode === 'text' ? 'default' : 'ghost'}
+                size="sm"
+                onClick={() => setViewMode('text')}
+                className="text-xs"
+              >
+                Text
+              </Button>
+              <Button
+                variant={viewMode === 'visual' ? 'default' : 'ghost'}
+                size="sm"
+                onClick={() => setViewMode('visual')}
+                className="text-xs"
+              >
+                Visual
+              </Button>
+            </div>
+          </div>
+
+          {evolvedLoading ? (
+            <div className="h-[220px] flex items-center justify-center">
+              <div className="text-center">
+                <RefreshCw className="h-6 w-6 animate-spin mx-auto mb-2 text-yellow-500" />
+                <p className="text-xs text-gray-500">Generating evolved insight...</p>
+              </div>
+            </div>
+          ) : viewMode === 'text' ? (
+            <div className="h-[220px] flex flex-col justify-between">
+              <div className="bg-gradient-to-r from-yellow-50 to-amber-50 rounded-lg p-4 border border-yellow-200 flex-1 flex items-center overflow-y-auto">
+                <p className="text-sm text-gray-800">{evolvedData?.evolvedSummary || 'No evolved thought yet. Add reflections to generate insights!'}</p>
+              </div>
+            </div>
+          ) : (
+            <div className="bg-gradient-to-br from-yellow-100 via-amber-100 to-orange-100 rounded-lg p-6 h-[220px] flex items-center justify-center">
+              <div className="text-center">
+                <Lightbulb className="h-12 w-12 text-yellow-600 mx-auto mb-3" />
+                <p className="text-sm font-medium text-gray-800 mb-2">Visual Summary</p>
+                <p className="text-xs text-gray-600 max-w-[250px]">{evolvedData?.evolvedSummary || 'Coming soon!'}</p>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* My Sparks */}
+        <div className="bg-white rounded-lg border border-gray-200 p-4">
+          <h4 className="text-sm font-semibold text-gray-900 mb-3">My Sparks ({userSparks.length})</h4>
+          
+          <div className="space-y-2 max-h-[200px] overflow-y-auto">
+            {sparksLoading ? (
+              <div className="text-center py-4">
+                <RefreshCw className="h-4 w-4 animate-spin mx-auto text-gray-400" />
+              </div>
+            ) : userSparks.length === 0 ? (
+              <p className="text-xs text-gray-500 text-center py-4">No sparks saved yet</p>
+            ) : (
+              userSparks.map((spark: any) => (
+                <div key={spark.id} className="bg-yellow-50 rounded-lg p-3 border border-yellow-100 group relative">
+                  <p className="text-sm text-gray-800 pr-6">{spark.content}</p>
+                  {user && spark.userId === user.id && (
+                    <button
+                      onClick={() => {
+                        if (confirm('Delete this spark?')) {
+                          deleteSparkMutation.mutate(spark.id);
+                        }
+                      }}
+                      className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity text-red-500 hover:text-red-700"
+                      disabled={deleteSparkMutation.isPending}
+                    >
+                      <Trash2 className="h-3 w-3" />
+                    </button>
+                  )}
+                  <p className="text-xs text-gray-400 mt-1">{new Date(spark.createdAt).toLocaleString()}</p>
+                </div>
+              ))
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Input - Footer */}
+      <div className="flex-shrink-0 p-4 border-t border-gray-200 bg-white">
+        <div className="flex gap-2">
+          <Input
+            value={sparkNote}
+            onChange={(e) => setSparkNote(e.target.value)}
+            onKeyPress={(e) => e.key === 'Enter' && handleSaveSpark()}
+            placeholder="Capture your spark..."
+            className="flex-1"
+          />
+          <Button
+            onClick={handleSaveSpark}
+            disabled={!sparkNote.trim() || addSparkMutation.isPending}
+            className="bg-gradient-to-r from-yellow-500 to-amber-500 hover:from-yellow-600 hover:to-amber-600"
+          >
+            <Zap className="h-4 w-4" />
+          </Button>
+        </div>
+      </div>
+    </div>
   );
 }

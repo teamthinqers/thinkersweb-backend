@@ -3680,5 +3680,78 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Share existing thought to circle
+  app.post(`${apiPrefix}/thinq-circles/:circleId/share-thought`, requireAuth, async (req: AuthenticatedRequest, res: Response) => {
+    try {
+      const userId = req.user?.id || req.session?.userId;
+      if (!userId) {
+        return res.status(401).json({ error: 'Authentication required' });
+      }
+
+      const circleId = parseInt(req.params.circleId);
+      const { thoughtId } = req.body;
+
+      if (!thoughtId) {
+        return res.status(400).json({ error: 'Thought ID is required' });
+      }
+
+      // Verify user is a member
+      const membership = await db.query.thinqCircleMembers.findFirst({
+        where: and(
+          eq(thinqCircleMembers.circleId, circleId),
+          eq(thinqCircleMembers.userId, userId)
+        ),
+      });
+
+      if (!membership) {
+        return res.status(403).json({ error: 'You are not a member of this circle' });
+      }
+
+      // Verify thought exists and user owns it
+      const thought = await db.query.thoughts.findFirst({
+        where: eq(thoughts.id, thoughtId),
+      });
+
+      if (!thought) {
+        return res.status(404).json({ error: 'Thought not found' });
+      }
+
+      if (thought.userId !== userId) {
+        return res.status(403).json({ error: 'You can only share your own thoughts' });
+      }
+
+      // Check if already shared to this circle
+      const existingShare = await db.query.circleDots.findFirst({
+        where: and(
+          eq(circleDots.circleId, circleId),
+          eq(circleDots.thoughtId, thoughtId)
+        ),
+      });
+
+      if (existingShare) {
+        return res.status(400).json({ error: 'Thought already shared to this circle' });
+      }
+
+      // Share to circle
+      await db.insert(circleDots).values({
+        circleId,
+        thoughtId,
+        sharedBy: userId,
+      });
+
+      res.json({
+        success: true,
+        message: 'Thought shared to circle successfully',
+      });
+
+    } catch (error) {
+      console.error('Share thought to circle error:', error);
+      res.status(500).json({ 
+        error: 'Failed to share thought',
+        details: error instanceof Error ? error.message : 'Unknown error'
+      });
+    }
+  });
+
   return httpServer;
 }

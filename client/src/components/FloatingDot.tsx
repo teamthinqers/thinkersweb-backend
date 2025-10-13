@@ -34,7 +34,8 @@ export default function FloatingDot({ onClick, currentPage }: FloatingDotProps) 
     return 'social'; // default fallback
   };
   
-  const [targetNeura, setTargetNeura] = useState<'social' | 'myneura'>(getDefaultTarget());
+  const [targetNeura, setTargetNeura] = useState<'social' | 'myneura' | 'circle'>(getDefaultTarget());
+  const [selectedCircleId, setSelectedCircleId] = useState<number | null>(null);
   const [dialogPosition, setDialogPosition] = useState({ x: 0, y: 0 });
   const [isDraggingDialog, setIsDraggingDialog] = useState(false);
   const [showWriteForm, setShowWriteForm] = useState(false);
@@ -58,6 +59,10 @@ export default function FloatingDot({ onClick, currentPage }: FloatingDotProps) 
   const dialogRef = useRef<HTMLDivElement>(null);
   const { user } = useAuth();
   const { toast } = useToast();
+
+  // Fetch user's circles using useQuery
+  const { data: circlesResponse } = queryClient.getQueryData(['/api/thinq-circles']) as any || {};
+  const userCircles = circlesResponse?.circles || [];
 
   // Reset all form fields to initial state
   const resetForm = () => {
@@ -106,6 +111,15 @@ export default function FloatingDot({ onClick, currentPage }: FloatingDotProps) 
       return;
     }
 
+    if (targetNeura === 'circle' && !selectedCircleId) {
+      toast({
+        title: "Select a circle",
+        description: "Please select a circle to share your thought.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setIsSubmitting(true);
     try {
       if (editMode && editThoughtId) {
@@ -123,8 +137,31 @@ export default function FloatingDot({ onClick, currentPage }: FloatingDotProps) 
           title: "Thought updated!",
           description: "Your changes have been saved.",
         });
+      } else if (targetNeura === 'circle' && selectedCircleId) {
+        // Create and share to circle
+        const thoughtResponse: any = await apiRequest('POST', '/api/thoughts', {
+          heading: heading.trim(),
+          summary: summary.trim(),
+          emotion: emotion.trim() || null,
+          visibility: 'personal',
+          channel: 'write',
+          keywords: keywords.trim() || null,
+          anchor: anchor.trim() || null,
+          analogies: analogies.trim() || null,
+        });
+
+        // Share to circle
+        await apiRequest('POST', `/api/thinq-circles/${selectedCircleId}/share-thought`, {
+          thoughtId: thoughtResponse.thought.id
+        });
+
+        const selectedCircle = userCircles.find((c: any) => c.id === selectedCircleId);
+        toast({
+          title: "Thought shared!",
+          description: `Your thought has been shared to ${selectedCircle?.name || 'the circle'}.`,
+        });
       } else {
-        // Create new thought
+        // Create new thought (My Neura or Social)
         await apiRequest('POST', '/api/thoughts', {
           heading: heading.trim(),
           summary: summary.trim(),
@@ -149,9 +186,13 @@ export default function FloatingDot({ onClick, currentPage }: FloatingDotProps) 
       await queryClient.invalidateQueries({ queryKey: ['/api/thoughts'] });
       await queryClient.invalidateQueries({ queryKey: ['/api/thoughts/stats'] });
       await queryClient.invalidateQueries({ queryKey: ['/api/thoughts/neural-strength'] });
+      if (selectedCircleId) {
+        await queryClient.invalidateQueries({ queryKey: [`/api/thinq-circles/${selectedCircleId}/thoughts`] });
+      }
 
       // Reset form and close dialog
       resetForm();
+      setSelectedCircleId(null);
       setIsOpen(false);
     } catch (error: any) {
       console.error('Error creating thought:', error);
@@ -441,6 +482,16 @@ export default function FloatingDot({ onClick, currentPage }: FloatingDotProps) 
                         >
                           My Neura
                         </button>
+                        <button
+                          onClick={() => setTargetNeura('circle')}
+                          className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all whitespace-nowrap ${
+                            targetNeura === 'circle'
+                              ? 'bg-amber-500 text-white shadow-sm'
+                              : 'text-gray-600 hover:text-gray-900'
+                          }`}
+                        >
+                          My Circle
+                        </button>
                       </div>
                     </div>
 
@@ -456,6 +507,28 @@ export default function FloatingDot({ onClick, currentPage }: FloatingDotProps) 
                     </button>
                   </div>
                 </div>
+
+                {/* Circle Selector - Show when My Circle is selected */}
+                {targetNeura === 'circle' && (
+                  <div className="mb-4 p-3 bg-white/60 rounded-lg border border-amber-200">
+                    <label className="text-xs font-medium text-gray-700 block mb-2">Select Circle</label>
+                    <select
+                      value={selectedCircleId || ''}
+                      onChange={(e) => setSelectedCircleId(e.target.value ? Number(e.target.value) : null)}
+                      className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
+                    >
+                      <option value="">Choose a circle...</option>
+                      {userCircles.map((circle: any) => (
+                        <option key={circle.id} value={circle.id}>
+                          {circle.name}
+                        </option>
+                      ))}
+                    </select>
+                    {userCircles.length === 0 && (
+                      <p className="text-xs text-gray-500 mt-2">No circles available. Create one first!</p>
+                    )}
+                  </div>
+                )}
 
                 {/* Conditional Content: Write Form, Layers Screen, or Action Buttons */}
                 {showWriteForm && !showLayersScreen ? (
