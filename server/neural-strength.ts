@@ -59,7 +59,7 @@ export async function calculateNeuralStrength(userId: number): Promise<NeuralStr
   const savedSparksCount = savedSparksResult?.count || 0;
   const userSparksCount = userSparksResult?.count || 0;
   const perspectivesCount = perspectivesResult?.count || 0;
-  const hasActivity = thoughtsCount > 0 || savedSparksCount > 0 || userSparksCount > 0 || perspectivesCount > 0;
+  const hasFirstThought = thoughtsCount > 0; // Only true when user creates their first actual thought/dot
 
   // Calculate neural strength using configurable thresholds
   let strength = neuralStrengthConfig.baseStrength;
@@ -73,7 +73,7 @@ export async function calculateNeuralStrength(userId: number): Promise<NeuralStr
     strength += neuralStrengthConfig.learningEngineBonus;
   }
 
-  if (hasActivity) {
+  if (hasFirstThought) {
     strength += neuralStrengthConfig.firstActivityBonus;
   }
 
