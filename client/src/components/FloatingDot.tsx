@@ -70,7 +70,7 @@ export default function FloatingDot({ onClick, currentPage }: FloatingDotProps) 
       description?: string;
     }>;
   }>({
-    queryKey: ['/api/thinq-circles'],
+    queryKey: ['/api/thinq-circles/my-circles'],
     enabled: !!user,
   });
   
