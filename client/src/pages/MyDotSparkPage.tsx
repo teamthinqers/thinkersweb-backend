@@ -470,67 +470,64 @@ export default function MyDotSparkPage() {
         </div>
 
         {/* Recent Activity */}
-        <Card className="border-amber-200 bg-gradient-to-br from-amber-50/50 to-orange-50/50">
-          <CardHeader className="bg-gradient-to-r from-amber-100/80 to-orange-100/80 border-b border-amber-200/50">
-            <CardTitle className="flex items-center gap-2">
-              <TrendingUp className="h-5 w-5 text-amber-600" />
-              Recent Activity
-            </CardTitle>
-            <CardDescription className="text-amber-700/70">Your latest actions and creations</CardDescription>
+        <Card className="border-0 bg-white shadow-[0_8px_30px_rgba(0,0,0,0.08)] overflow-hidden">
+          <CardHeader className="border-b border-gray-100 pb-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <CardTitle className="flex items-center gap-3 text-2xl font-bold text-gray-900">
+                  <div className="p-2 rounded-xl bg-gradient-to-br from-amber-500 to-orange-500">
+                    <TrendingUp className="h-5 w-5 text-white" />
+                  </div>
+                  Recent Activity
+                </CardTitle>
+                <CardDescription className="text-gray-500 mt-2 text-sm">Your latest actions and creations</CardDescription>
+              </div>
+            </div>
           </CardHeader>
-          <CardContent>
+          <CardContent className="pt-6">
             {dashboard?.recentActivity && dashboard.recentActivity.length > 0 ? (
-              <div className="space-y-3">
+              <div className="space-y-4">
                 {dashboard.recentActivity.map((activity, index) => (
-                  <div key={index} className={`flex items-start gap-3 p-3 rounded-lg border transition-all duration-200 ${
-                    activity.type === 'dot' ? 'bg-gradient-to-r from-amber-50 to-yellow-50 border-amber-200 hover:from-amber-100 hover:to-yellow-100 hover:border-amber-300' :
-                    activity.type === 'wheel' ? 'bg-gradient-to-r from-orange-50 to-amber-50 border-orange-200 hover:from-orange-100 hover:to-amber-100 hover:border-orange-300' :
-                    'bg-gradient-to-r from-red-50 to-orange-50 border-red-200 hover:from-red-100 hover:to-orange-100 hover:border-red-300'
-                  }`}>
-                    <div className={`p-2 rounded-lg ${
-                      activity.type === 'dot' ? 'bg-amber-200' :
-                      activity.type === 'wheel' ? 'bg-orange-200' :
-                      'bg-red-200'
+                  <div 
+                    key={index} 
+                    className="group flex items-start gap-4 p-4 rounded-2xl border border-gray-100 hover:border-amber-200 bg-white hover:bg-gradient-to-br hover:from-amber-50/50 hover:to-orange-50/30 transition-all duration-300 cursor-pointer"
+                  >
+                    <div className={`relative p-3 rounded-xl shadow-sm ${
+                      activity.type === 'dot' ? 'bg-gradient-to-br from-amber-100 to-yellow-100' :
+                      activity.type === 'wheel' ? 'bg-gradient-to-br from-orange-100 to-amber-100' :
+                      'bg-gradient-to-br from-rose-100 to-orange-100'
                     }`}>
-                      {activity.type === 'dot' ? <Lightbulb className="h-4 w-4 text-amber-700" /> :
-                       activity.type === 'wheel' ? <Target className="h-4 w-4 text-orange-700" /> :
-                       <Lightbulb className="h-4 w-4 text-red-700" />}
+                      {activity.type === 'dot' ? <Lightbulb className="h-5 w-5 text-amber-700" /> :
+                       activity.type === 'wheel' ? <Target className="h-5 w-5 text-orange-700" /> :
+                       <Lightbulb className="h-5 w-5 text-rose-700" />}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className={`text-sm font-semibold capitalize ${
-                        activity.type === 'dot' ? 'text-amber-900' :
-                        activity.type === 'wheel' ? 'text-orange-900' :
-                        'text-red-900'
-                      }`}>
-                        {activity.type === 'dot' ? 'New Dot Created' :
-                         activity.type === 'wheel' ? 'New Wheel Created' :
-                         'New Thought Shared'}
-                      </p>
-                      <p className={`text-sm truncate ${
-                        activity.type === 'dot' ? 'text-amber-700' :
-                        activity.type === 'wheel' ? 'text-orange-700' :
-                        'text-red-700'
-                      }`}>
+                      <div className="flex items-center justify-between gap-4 mb-1">
+                        <p className="text-sm font-bold text-gray-900">
+                          {activity.type === 'dot' ? 'New Dot Created' :
+                           activity.type === 'wheel' ? 'New Wheel Created' :
+                           'New Thought Shared'}
+                        </p>
+                        <p className="text-xs font-medium text-gray-400 shrink-0">
+                          {formatDistanceToNow(new Date(activity.timestamp), { addSuffix: true })}
+                        </p>
+                      </div>
+                      <p className="text-sm text-gray-600 line-clamp-2">
                         {activity.type === 'dot' ? activity.data.summary :
                          activity.type === 'wheel' ? activity.data.heading :
                          activity.data.heading}
-                      </p>
-                      <p className={`text-xs mt-1 ${
-                        activity.type === 'dot' ? 'text-amber-600' :
-                        activity.type === 'wheel' ? 'text-orange-600' :
-                        'text-red-600'
-                      }`}>
-                        {formatDistanceToNow(new Date(activity.timestamp), { addSuffix: true })}
                       </p>
                     </div>
                   </div>
                 ))}
               </div>
             ) : (
-              <div className="text-center py-8">
-                <Sparkles className="h-12 w-12 text-gray-300 mx-auto mb-3" />
-                <p className="text-gray-500 text-sm">No recent activity</p>
-                <p className="text-gray-400 text-xs mt-1">Start creating to see your progress here</p>
+              <div className="text-center py-12">
+                <div className="inline-flex p-4 rounded-2xl bg-gradient-to-br from-gray-50 to-gray-100 mb-4">
+                  <Sparkles className="h-8 w-8 text-gray-400" />
+                </div>
+                <p className="text-gray-600 font-medium">No recent activity</p>
+                <p className="text-gray-400 text-sm mt-1">Start creating to see your progress here</p>
               </div>
             )}
           </CardContent>
