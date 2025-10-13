@@ -162,9 +162,11 @@ export default function FloatingDot({ onClick, currentPage }: FloatingDotProps) 
           analogies: analogies.trim() || null,
         });
 
+        const thoughtData = await thoughtResponse.json();
+
         // Share to circle
         await apiRequest('POST', `/api/thinq-circles/${selectedCircleId}/share-thought`, {
-          thoughtId: thoughtResponse.thought.id
+          thoughtId: thoughtData.thought.id
         });
 
         const selectedCircle = userCircles.find((c: any) => c.id === selectedCircleId);
