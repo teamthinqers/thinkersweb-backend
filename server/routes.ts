@@ -2727,7 +2727,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
         eq(thoughts.visibility, 'social'),
         eq(thoughts.sharedToSocial, true)
       ));
-      const [platformSparksCount] = await db.select({ count: count() }).from(sparks);
+      // Count sparks where users saved sparks on OTHER people's social thoughts (social engagement metric)
+      const platformSparksResult = await db
+        .select({ count: count() })
+        .from(sparks)
+        .innerJoin(thoughts, eq(sparks.thoughtId, thoughts.id))
+        .where(and(
+          or(
+            eq(thoughts.visibility, 'social'),
+            eq(thoughts.sharedToSocial, true)
+          ),
+          sql`${sparks.userId} != ${thoughts.userId}` // Spark owner is different from thought owner
+        ));
+      const platformSparksCount = platformSparksResult[0] || { count: 0 };
       
       // Count perspectives on social thoughts (visibility='social' OR sharedToSocial=true, excluding soft-deleted)
       const platformPerspectivesResult = await db

@@ -682,9 +682,19 @@ router.get('/stats', async (req, res) => {
         eq(thoughts.sharedToSocial, true)
       ));
 
-    // Count total sparks (all users, platform-wide)
-    const [{ count: savedSparksCount }] = await db.select({ count: sql<number>`count(*)` })
-      .from(sparks);
+    // Count total sparks where users saved sparks on OTHER people's social thoughts (social engagement metric)
+    const sparksResult = await db
+      .select({ count: sql<number>`count(*)` })
+      .from(sparks)
+      .innerJoin(thoughts, eq(sparks.thoughtId, thoughts.id))
+      .where(and(
+        or(
+          eq(thoughts.visibility, 'social'),
+          eq(thoughts.sharedToSocial, true)
+        ),
+        sql`${sparks.userId} != ${thoughts.userId}` // Spark owner is different from thought owner
+      ));
+    const savedSparksCount = sparksResult[0]?.count || 0;
 
     // Count total perspectives (on social thoughts - visibility='social' OR sharedToSocial=true, excluding soft-deleted)
     const platformPerspectivesResult = await db
