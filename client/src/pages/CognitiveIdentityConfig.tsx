@@ -1203,7 +1203,7 @@ export default function CognitiveIdentityConfig() {
         <CardFooter className="bg-gradient-to-r from-amber-50/50 to-yellow-50/50 dark:from-amber-950/50 dark:to-yellow-950/50 border-t px-6 py-4 justify-between">
           <Button 
             variant="outline" 
-            onClick={() => setLocation('/my-neura')}
+            onClick={() => setLocation('/mydotspark')}
           >
             Back to DotSpark
           </Button>
