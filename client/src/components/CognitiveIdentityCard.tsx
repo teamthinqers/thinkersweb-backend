@@ -62,7 +62,7 @@ export function CognitiveIdentityCard({
   const showPrivateMessage = !isOwnProfile && !isPublic;
 
   return (
-    <div className="space-y-4">
+    <div className="flex flex-col h-full gap-4">
       {/* Header Card with Toggle/Status - Purple gradient matching /mydotspark */}
       <Card className="border-0 bg-gradient-to-br from-[#a78bfa] via-[#9575cd] to-[#8b5cf6] shadow-[0_8px_30px_rgba(139,92,246,0.2)]">
         <CardContent className="p-4">
@@ -100,7 +100,7 @@ export function CognitiveIdentityCard({
       </Card>
 
       {/* Identity Tags Card - Purple gradient */}
-      <Card className="border-0 bg-gradient-to-br from-[#a78bfa] via-[#9575cd] to-[#8b5cf6] shadow-[0_8px_30px_rgba(139,92,246,0.2)]">
+      <Card className="border-0 bg-gradient-to-br from-[#a78bfa] via-[#9575cd] to-[#8b5cf6] shadow-[0_8px_30px_rgba(139,92,246,0.2)] flex-1">
         <CardContent className="p-6">
           {showPrivateMessage ? (
             <div className="text-center py-6">

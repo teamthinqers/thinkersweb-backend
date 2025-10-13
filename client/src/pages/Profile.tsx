@@ -176,12 +176,14 @@ const Profile = () => {
         {/* Three-Column Layout */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* LEFT COLUMN - Cognitive Identity Card */}
-          <div className="lg:col-span-1">
-            <CognitiveIdentityCard
-              userId={(user as any)?.id}
-              isPublic={(user as any)?.cognitiveIdentityPublic || false}
-              isOwnProfile={true}
-            />
+          <div className="lg:col-span-1 h-full">
+            <div className="h-full">
+              <CognitiveIdentityCard
+                userId={(user as any)?.id}
+                isPublic={(user as any)?.cognitiveIdentityPublic || false}
+                isOwnProfile={true}
+              />
+            </div>
           </div>
 
           {/* MIDDLE COLUMN - Profile Details */}
