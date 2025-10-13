@@ -201,6 +201,7 @@ function Router() {
       <Route path="/mydotspark" component={MyDotSparkPage} />
       <Route path="/cognitive-identity" component={CognitiveIdentityPage} />
       <Route path="/join-circle" component={JoinCircleInvitePage} />
+      <Route path="/thinq-circle" component={ThoughtCirclePage} />
       <Route path="/thinq-circle/:circleId" component={ThinQCirclePage} />
       <Route path="/learning-engine" component={LearningEnginePage} />
       <Route path="/auth" component={AuthPage} />
