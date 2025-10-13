@@ -418,7 +418,7 @@ export default function MyDotSparkPage() {
 
           {/* 3. My ThinQ Circles Box */}
           <Link href="/thinq-circle">
-            <Card className="group cursor-pointer border-0 transition-all duration-300 hover:scale-[1.02] relative overflow-hidden rounded-[32px] shadow-[0_8px_30px_rgba(251,225,195,0.4)] hover:shadow-[0_20px_60px_rgba(251,225,195,0.5)]" style={{ backgroundColor: '#FBE1C3' }}>
+            <Card className="group cursor-pointer border-0 transition-all duration-300 hover:scale-[1.02] relative overflow-hidden rounded-[32px] shadow-[0_8px_30px_rgba(245,214,138,0.4)] hover:shadow-[0_20px_60px_rgba(245,214,138,0.5)]" style={{ backgroundColor: '#F5D68A' }}>
               
               {/* Icon Badge */}
               <div className="absolute top-4 left-1/2 -translate-x-1/2">
@@ -431,7 +431,7 @@ export default function MyDotSparkPage() {
               
               {/* Content */}
               <div className="pt-16 pb-5 px-6 text-center">
-                <h3 className="text-xl font-bold text-white mb-1">My ThinQ Circles</h3>
+                <h3 className="text-xl font-extrabold text-white mb-1">My ThinQ Circles</h3>
                 <p className="text-white/90 text-sm font-medium">Form your own think circles</p>
               </div>
               
@@ -444,7 +444,7 @@ export default function MyDotSparkPage() {
 
           {/* 4. Learning Engine Box */}
           <Link href="/learning-engine">
-            <Card className="group cursor-pointer border-0 transition-all duration-300 hover:scale-[1.02] relative overflow-hidden rounded-[32px] shadow-[0_8px_30px_rgba(251,225,195,0.4)] hover:shadow-[0_20px_60px_rgba(251,225,195,0.5)]" style={{ backgroundColor: '#FBE1C3' }}>
+            <Card className="group cursor-pointer border-0 transition-all duration-300 hover:scale-[1.02] relative overflow-hidden rounded-[32px] shadow-[0_8px_30px_rgba(245,214,138,0.4)] hover:shadow-[0_20px_60px_rgba(245,214,138,0.5)]" style={{ backgroundColor: '#F5D68A' }}>
               
               {/* Icon Badge */}
               <div className="absolute top-4 left-1/2 -translate-x-1/2">
@@ -457,7 +457,7 @@ export default function MyDotSparkPage() {
               
               {/* Content */}
               <div className="pt-16 pb-5 px-6 text-center">
-                <h3 className="text-xl font-bold text-white mb-1">Learning Engine</h3>
+                <h3 className="text-xl font-extrabold text-white mb-1">Learning Engine</h3>
                 <p className="text-white/90 text-sm font-medium">Optimize your learning journey</p>
               </div>
               
