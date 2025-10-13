@@ -236,7 +236,7 @@ const Profile = () => {
                       <Button
                         variant="ghost"
                         size="sm"
-                        className="flex items-center gap-2 text-gray-600 hover:text-amber-600"
+                        className="flex items-center gap-2 text-amber-600 hover:text-amber-700 hover:bg-amber-50"
                       >
                         <Eye className="h-4 w-4" />
                         Social View
