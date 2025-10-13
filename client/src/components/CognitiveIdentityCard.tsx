@@ -59,31 +59,39 @@ export function CognitiveIdentityCard({
   }
 
   return (
-    <Card className="border-2 border-amber-200 bg-gradient-to-br from-amber-50 to-orange-50">
-      <CardHeader>
-        <div className="flex items-center justify-between">
-          <CardTitle className="text-lg font-bold bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent flex items-center gap-2">
-            <Brain className="h-5 w-5 text-amber-600" />
-            Cognitive Identity
-          </CardTitle>
-          {isOwnProfile && (
+    <div className="space-y-4">
+      {/* Header Card with Toggle */}
+      <Card className="border-2 border-amber-400/50 bg-gradient-to-br from-amber-50 to-orange-50/50">
+        <CardContent className="p-4">
+          <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <Label htmlFor="privacy-toggle" className="text-sm text-gray-600 flex items-center gap-1">
-                {isPublic ? <Unlock className="h-3 w-3" /> : <Lock className="h-3 w-3" />}
-                {isPublic ? 'Public' : 'Private'}
-              </Label>
-              <Switch
-                id="privacy-toggle"
-                checked={isPublic}
-                onCheckedChange={handlePrivacyToggle}
-                disabled={updatePrivacyMutation.isPending}
-                className="data-[state=checked]:bg-amber-500"
-              />
+              <Brain className="h-5 w-5 text-amber-600" />
+              <h3 className="text-lg font-bold bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent">
+                Cognitive Identity
+              </h3>
             </div>
-          )}
-        </div>
-      </CardHeader>
-      <CardContent className="space-y-4">
+            {isOwnProfile && (
+              <div className="flex items-center gap-2">
+                <Label htmlFor="privacy-toggle" className="text-sm text-gray-600 flex items-center gap-1">
+                  {isPublic ? <Unlock className="h-3 w-3" /> : <Lock className="h-3 w-3" />}
+                  {isPublic ? 'Public' : 'Private'}
+                </Label>
+                <Switch
+                  id="privacy-toggle"
+                  checked={isPublic}
+                  onCheckedChange={handlePrivacyToggle}
+                  disabled={updatePrivacyMutation.isPending}
+                  className="data-[state=checked]:bg-amber-500"
+                />
+              </div>
+            )}
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Identity Tags Card */}
+      <Card className="border-2 border-amber-200 bg-gradient-to-br from-amber-50 to-orange-50">
+        <CardContent className="p-6 space-y-4">
         {/* Primary Archetype */}
         {cognitiveProfile?.primaryArchetype && (
           <div className="flex items-start gap-3">
@@ -165,7 +173,8 @@ export function CognitiveIdentityCard({
             <p className="text-sm text-gray-500">Complete your cognitive identity to unlock personalized insights</p>
           </div>
         )}
-      </CardContent>
-    </Card>
+        </CardContent>
+      </Card>
+    </div>
   );
 }

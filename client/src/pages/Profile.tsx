@@ -46,10 +46,12 @@ const Profile = () => {
 
   // Update aboutMeText when user changes
   useEffect(() => {
-    if (user && !isEditingAbout) {
-      setAboutMeText((user as any)?.aboutMe || '');
+    if (user) {
+      const newAboutMe = (user as any)?.aboutMe || '';
+      console.log('User aboutMe updated:', newAboutMe);
+      setAboutMeText(newAboutMe);
     }
-  }, [user, isEditingAbout]);
+  }, [user?.id, (user as any)?.aboutMe]);
 
   // Update profile mutation
   const updateProfileMutation = useMutation({
@@ -91,10 +93,15 @@ const Profile = () => {
     mutationFn: async (aboutMe: string) => {
       return apiRequest('PATCH', '/api/users/about-me', { aboutMe });
     },
-    onSuccess: async () => {
-      await checkAuth();
-      queryClient.invalidateQueries({ queryKey: ['/api/auth/me'] });
+    onSuccess: async (data, aboutMe) => {
+      // Update local state immediately
+      setAboutMeText(aboutMe);
       setIsEditingAbout(false);
+      
+      // Then refresh auth to sync with backend
+      await checkAuth();
+      await queryClient.invalidateQueries({ queryKey: ['/api/auth/me'] });
+      
       toast({
         title: "About Me Updated",
         description: "Your professional story has been saved.",
