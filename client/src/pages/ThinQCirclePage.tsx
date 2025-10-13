@@ -482,6 +482,48 @@ function CircleReflections({ thoughtId }: { thoughtId: number }) {
     },
   });
 
+  // Save to MyNeura mutation
+  const saveToMyNeuraMutation = useMutation({
+    mutationFn: async () => {
+      return apiRequest("POST", `/api/thoughts/myneura/save/${thoughtId}`, {});
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/thoughts/myneura'] });
+      toast({
+        title: "Saved to MyNeura!",
+        description: "Thought has been added to your personal collection",
+      });
+    },
+    onError: () => {
+      toast({
+        title: "Error",
+        description: "Failed to save to MyNeura",
+        variant: "destructive",
+      });
+    },
+  });
+
+  // Share to Social mutation
+  const shareToSocialMutation = useMutation({
+    mutationFn: async () => {
+      return apiRequest("POST", `/api/thoughts/myneura/share/${thoughtId}`, {});
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/social/feed'] });
+      toast({
+        title: "Shared to Social!",
+        description: "Thought is now visible on the social feed",
+      });
+    },
+    onError: () => {
+      toast({
+        title: "Error",
+        description: "Failed to share to social",
+        variant: "destructive",
+      });
+    },
+  });
+
   const handleSend = () => {
     if (!message.trim()) return;
     addPerspectiveMutation.mutate(message);
@@ -507,9 +549,26 @@ function CircleReflections({ thoughtId }: { thoughtId: number }) {
             <p className="text-sm">Loading reflections...</p>
           </div>
         ) : messages.length === 0 ? (
-          <div className="text-center text-gray-500 py-8">
-            <p className="text-sm">No reflections yet</p>
-            <p className="text-xs mt-2">Start sharing your thoughts</p>
+          <div className="text-center py-8 space-y-4">
+            <p className="text-sm text-gray-500">No reflections yet</p>
+            <div className="flex flex-col gap-3 max-w-xs mx-auto">
+              <Button
+                variant="outline"
+                className="w-full border-amber-500 text-amber-700 hover:bg-amber-50"
+                onClick={() => saveToMyNeuraMutation.mutate()}
+                disabled={saveToMyNeuraMutation.isPending}
+              >
+                {saveToMyNeuraMutation.isPending ? 'Saving...' : 'Share to MyNeura'}
+              </Button>
+              <Button
+                variant="outline"
+                className="w-full border-red-400 text-red-600 hover:bg-red-50"
+                onClick={() => shareToSocialMutation.mutate()}
+                disabled={shareToSocialMutation.isPending}
+              >
+                {shareToSocialMutation.isPending ? 'Sharing...' : 'Share to Social'}
+              </Button>
+            </div>
           </div>
         ) : (
           messages.map((msg: any) => (
