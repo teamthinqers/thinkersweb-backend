@@ -243,6 +243,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
           linkedinProfileUrl: true,
           linkedinPhotoUrl: true,
           avatar: true,
+          aboutMe: true,
+          cognitiveIdentityPublic: true,
         }
       });
       
