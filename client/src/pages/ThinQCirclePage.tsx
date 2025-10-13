@@ -77,6 +77,28 @@ export default function ThinQCirclePage() {
 
   const queryClient = useQueryClient();
 
+  // Delete thought mutation - allows all circle members to delete
+  const deleteThoughtMutation = useMutation({
+    mutationFn: async (thoughtId: number) => {
+      return apiRequest("DELETE", `/api/thoughts/${thoughtId}`, {});
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [`/api/thinq-circles/${circleId}/thoughts`] });
+      setSelectedThought(null);
+      toast({
+        title: "Thought deleted",
+        description: "The thought has been removed from the circle",
+      });
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
+
   // Save to MyNeura mutation
   const saveToMyNeuraMutation = useMutation({
     mutationFn: async (thoughtId: number) => {
@@ -362,17 +384,47 @@ export default function ThinQCirclePage() {
                 {/* Header */}
                 <div className="flex-shrink-0 p-6 border-b border-gray-200">
                   <DialogHeader>
-                    <div className="flex items-center gap-3 mb-4">
-                      <Avatar className="h-12 w-12 border-2 border-amber-200">
-                        <AvatarImage src={selectedThought.user?.linkedinPhotoUrl || selectedThought.user?.avatar} />
-                        <AvatarFallback className="bg-gradient-to-r from-amber-500 to-orange-500 text-white">
-                          {selectedThought.user?.fullName?.charAt(0).toUpperCase() || 'U'}
-                        </AvatarFallback>
-                      </Avatar>
-                      <div>
-                        <p className="font-semibold text-gray-900">{selectedThought.user?.fullName}</p>
-                        <p className="text-sm text-gray-500">Shared to {circle.name}</p>
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="flex items-center gap-3">
+                        <Avatar className="h-12 w-12 border-2 border-amber-200">
+                          <AvatarImage src={selectedThought.user?.linkedinPhotoUrl || selectedThought.user?.avatar} />
+                          <AvatarFallback className="bg-gradient-to-r from-amber-500 to-orange-500 text-white">
+                            {selectedThought.user?.fullName?.charAt(0).toUpperCase() || 'U'}
+                          </AvatarFallback>
+                        </Avatar>
+                        <div>
+                          <p className="font-semibold text-gray-900">{selectedThought.user?.fullName}</p>
+                          <p className="text-sm text-gray-500">Shared to {circle.name}</p>
+                        </div>
                       </div>
+                      
+                      {/* Action Menu - Available to all circle members */}
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="ghost" size="icon">
+                            <MoreHorizontal className="h-5 w-5" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                          <DropdownMenuItem onClick={() => {
+                            // TODO: Implement edit functionality
+                            toast({
+                              title: "Edit feature",
+                              description: "Edit functionality coming soon",
+                            });
+                          }}>
+                            <Pencil className="h-4 w-4 mr-2" />
+                            Edit Thought
+                          </DropdownMenuItem>
+                          <DropdownMenuItem 
+                            onClick={() => deleteThoughtMutation.mutate(selectedThought.id)}
+                            className="text-red-600"
+                          >
+                            <Trash2 className="h-4 w-4 mr-2" />
+                            Delete Thought
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
                     </div>
                     
                     <DialogTitle className="text-2xl font-bold text-gray-900 mt-4">
@@ -502,6 +554,7 @@ function CircleReflections({ thoughtId }: { thoughtId: number }) {
   const [message, setMessage] = useState("");
   const queryClient = useQueryClient();
   const { toast } = useToast();
+  const { user } = useAuth();
 
   // Fetch personal perspectives
   const { data: perspectivesData, isLoading } = useQuery<{
@@ -525,6 +578,27 @@ function CircleReflections({ thoughtId }: { thoughtId: number }) {
       toast({
         title: "Error",
         description: "Failed to add reflection",
+        variant: "destructive",
+      });
+    },
+  });
+
+  // Delete perspective mutation
+  const deletePerspectiveMutation = useMutation({
+    mutationFn: async (messageId: number) => {
+      return apiRequest("DELETE", `/api/thoughts/${thoughtId}/perspectives/${messageId}`, {});
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [`/api/thoughts/${thoughtId}/perspectives/personal`] });
+      toast({
+        title: "Reflection deleted",
+        description: "Your reflection has been removed",
+      });
+    },
+    onError: () => {
+      toast({
+        title: "Error",
+        description: "Failed to delete reflection",
         variant: "destructive",
       });
     },
@@ -569,10 +643,24 @@ function CircleReflections({ thoughtId }: { thoughtId: number }) {
                   </AvatarFallback>
                 </Avatar>
                 <div className="flex-1">
-                  <p className="text-sm text-gray-800">{msg.messageBody}</p>
-                  <p className="text-xs text-gray-400 mt-1">
-                    {new Date(msg.createdAt).toLocaleTimeString()}
-                  </p>
+                  <div className="flex items-start justify-between">
+                    <div className="flex-1">
+                      <p className="text-sm text-gray-800">{msg.messageBody}</p>
+                      <p className="text-xs text-gray-400 mt-1">
+                        {new Date(msg.createdAt).toLocaleTimeString()}
+                      </p>
+                    </div>
+                    {msg.user?.id === user?.id && (
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-6 w-6 text-red-500 hover:text-red-600 hover:bg-red-50"
+                        onClick={() => deletePerspectiveMutation.mutate(msg.id)}
+                      >
+                        <Trash2 className="h-3 w-3" />
+                      </Button>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
