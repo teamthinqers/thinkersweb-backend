@@ -416,11 +416,11 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" size="icon" className="rounded-full p-0 h-9 w-9">
                     <Avatar className="h-8 w-8 border-2 border-white shadow">
-                      {(user?.photoURL || (user as any)?.avatarUrl) ? (
-                        <AvatarImage src={user?.photoURL || (user as any)?.avatarUrl} alt={(user?.displayName || (user as any)?.fullName) || 'User'} />
+                      {user?.avatarUrl ? (
+                        <AvatarImage src={user.avatarUrl} alt={user.fullName || 'User'} />
                       ) : (
                         <AvatarFallback className="bg-primary text-white">
-                          {(user?.displayName || (user as any)?.fullName) ? (user?.displayName || (user as any)?.fullName).charAt(0).toUpperCase() : 'U'}
+                          {user?.fullName ? user.fullName.charAt(0).toUpperCase() : 'U'}
                         </AvatarFallback>
                       )}
                     </Avatar>
@@ -428,7 +428,7 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-56">
                   <div className="p-2 text-sm">
-                    <p className="font-medium">{(user?.displayName || (user as any)?.fullName) || 'User'}</p>
+                    <p className="font-medium">{user?.fullName || 'User'}</p>
                     <p className="text-xs text-muted-foreground truncate">{user?.email}</p>
                   </div>
                   <DropdownMenuSeparator />
@@ -615,11 +615,11 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
                 <DropdownMenuTrigger asChild>
                   <div className="flex items-center cursor-pointer">
                     <Avatar className="h-8 w-8 border-2 border-white shadow">
-                      {(user?.photoURL || (user as any)?.avatarUrl) ? (
-                        <AvatarImage src={user?.photoURL || (user as any)?.avatarUrl} alt={(user?.displayName || (user as any)?.fullName) || 'User'} />
+                      {user?.avatarUrl ? (
+                        <AvatarImage src={user.avatarUrl} alt={user.fullName || 'User'} />
                       ) : (
                         <AvatarFallback className="bg-primary text-white">
-                          {(user?.displayName || (user as any)?.fullName) ? (user?.displayName || (user as any)?.fullName).charAt(0).toUpperCase() : 'U'}
+                          {user?.fullName ? user.fullName.charAt(0).toUpperCase() : 'U'}
                         </AvatarFallback>
                       )}
                     </Avatar>
@@ -628,7 +628,7 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-56">
                   <div className="p-2 text-sm">
-                    <p className="font-medium">{(user?.displayName || (user as any)?.fullName) || 'User'}</p>
+                    <p className="font-medium">{user?.fullName || 'User'}</p>
                     <p className="text-xs text-muted-foreground truncate">{user?.email}</p>
                   </div>
                   <DropdownMenuSeparator />
