@@ -93,9 +93,9 @@ export default function ThinQCirclePage() {
           <Users className="h-16 w-16 text-gray-300 mx-auto mb-4" />
           <h2 className="text-2xl font-bold text-gray-800 mb-2">Circle not found</h2>
           <p className="text-gray-600 mb-6">This circle may have been deleted or you don't have access.</p>
-          <Button onClick={() => setLocation("/mydotspark")}>
+          <Button onClick={() => setLocation("/thinq-circle")}>
             <ArrowLeft className="h-4 w-4 mr-2" />
-            Go to Dashboard
+            Back to Circles
           </Button>
         </div>
       </div>
@@ -138,7 +138,7 @@ export default function ThinQCirclePage() {
                   <Button
                     variant="ghost"
                     size="icon"
-                    onClick={() => setLocation("/mydotspark")}
+                    onClick={() => setLocation("/thinq-circle")}
                     className="text-gray-700 hover:bg-gray-100"
                   >
                     <ArrowLeft className="h-5 w-5" />
