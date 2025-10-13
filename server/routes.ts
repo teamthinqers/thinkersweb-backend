@@ -62,6 +62,7 @@ import userContentRouter from './routes/user-content';
 import socialRouter from './routes/social';
 import thoughtsRouter from './routes/thoughts';
 import notificationsRouter from './routes/notifications';
+import notificationsSimpleRouter from './routes/notifications-simple';
 import { initializeVectorDB } from './vector-db';
 import { vectorIntegration } from './vector-integration';
 import { setupVectorAPI } from './routes/vector-api';
@@ -2135,6 +2136,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   
   // Mount notifications system routes - authentication handled internally like thoughts
   app.use(`${apiPrefix}/notifications`, notificationsRouter);
+  
+  // Mount simplified notifications endpoint with better session handling
+  app.use(`${apiPrefix}/notifications-simple`, notificationsSimpleRouter);
 
   // ===========================
   // MAPPING ROUTES

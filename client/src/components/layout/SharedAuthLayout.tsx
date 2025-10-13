@@ -47,13 +47,13 @@ export default function SharedAuthLayout({ children }: SharedAuthLayoutProps) {
   const isOnMyNeura = location === '/myneura';
   const isOnMyDotSpark = location === '/mydotspark';
 
-  // Fetch notifications unread count
+  // Fetch notifications using simplified endpoint
   const { data: notificationsData } = useQuery<{ 
     success: boolean; 
     notifications: any[]; 
     unreadCount: number 
   }>({
-    queryKey: ['/api/notifications'],
+    queryKey: ['/api/notifications-simple'],
     enabled: !!user,
     refetchInterval: 30000, // Refetch every 30 seconds
   });
@@ -113,20 +113,20 @@ export default function SharedAuthLayout({ children }: SharedAuthLayoutProps) {
   // Mutation to mark notification as read
   const markAsReadMutation = useMutation({
     mutationFn: async (notificationId: number) => {
-      return apiRequest('PATCH', `/api/notifications/${notificationId}/read`, {});
+      return apiRequest('PATCH', `/api/notifications-simple/${notificationId}/read`, {});
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/notifications'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/notifications-simple'] });
     },
   });
 
   // Mutation to mark all notifications as read
   const markAllAsReadMutation = useMutation({
     mutationFn: async () => {
-      return apiRequest('PATCH', '/api/notifications/read-all', {});
+      return apiRequest('PATCH', '/api/notifications-simple/read-all', {});
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/notifications'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/notifications-simple'] });
     },
   });
 
