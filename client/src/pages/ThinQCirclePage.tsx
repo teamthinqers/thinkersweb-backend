@@ -18,6 +18,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 import { InviteToCircleModal } from "@/components/InviteToCircleModal";
 import ThoughtCloudGrid from "@/components/ThoughtCloudGrid";
+import SharedAuthLayout from "@/components/layout/SharedAuthLayout";
 
 export default function ThinQCirclePage() {
   const { user } = useAuth();
@@ -96,9 +97,10 @@ export default function ThinQCirclePage() {
   const remainingCount = circle.members.length - displayMembers.length;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-yellow-50 via-amber-50 to-yellow-100">
-      {/* Custom Toolbar */}
-      <div className="sticky top-0 z-10 shadow-[0_8px_30px_rgba(245,158,11,0.4)]" style={{ backgroundColor: '#F59E0B' }}>
+    <SharedAuthLayout>
+      <div className="min-h-screen bg-gradient-to-br from-yellow-50 via-amber-50 to-yellow-100">
+        {/* Custom Toolbar */}
+        <div className="sticky top-0 z-10 shadow-[0_8px_30px_rgba(245,158,11,0.4)]" style={{ backgroundColor: '#F59E0B' }}>
         <div className="max-w-7xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             {/* Left: Back button and Circle name */}
@@ -193,29 +195,30 @@ export default function ThinQCirclePage() {
         </div>
       </div>
 
-      {/* Content Grid - TODO: Filter to show only circle thoughts */}
-      <div className="max-w-7xl mx-auto px-4 py-6">
-        <div className="bg-white/50 backdrop-blur-sm rounded-lg border border-amber-200 p-4 mb-6">
-          <div className="flex items-center gap-2 text-amber-700">
-            <Shield className="h-5 w-5" />
-            <p className="text-sm font-medium">
-              Private Circle • Only members can see and contribute
+        {/* Content Grid - Circle Thoughts */}
+        <div className="max-w-7xl mx-auto px-4 py-6">
+          <div className="bg-white/50 backdrop-blur-sm rounded-lg border border-amber-200 p-4 mb-6">
+            <div className="flex items-center gap-2 text-amber-700">
+              <Shield className="h-5 w-5" />
+              <p className="text-sm font-medium">
+                Private Circle • Only members can see and contribute
+              </p>
+            </div>
+          </div>
+
+          {/* Empty State - Thought Grid Coming Soon */}
+          <div className="text-center py-20">
+            <Lightbulb className="h-16 w-16 mx-auto mb-4" style={{ color: '#F59E0B' }} />
+            <h3 className="text-xl font-semibold text-gray-800 mb-2">Share insights to this circle</h3>
+            <p className="text-gray-600 mb-6">
+              Members can share their dots, sparks, and perspectives here
             </p>
+            <Button className="hover:opacity-90" style={{ backgroundColor: '#F59E0B' }}>
+              <Lightbulb className="h-5 w-5 mr-2" />
+              Share from My Neura
+            </Button>
           </div>
         </div>
-
-        {/* For now, show empty state. Will be replaced with filtered grid */}
-        <div className="text-center py-20">
-          <Lightbulb className="h-16 w-16 mx-auto mb-4" style={{ color: '#F59E0B' }} />
-          <h3 className="text-xl font-semibold text-gray-800 mb-2">Share insights to this circle</h3>
-          <p className="text-gray-600 mb-6">
-            Members can share their dots, sparks, and perspectives here
-          </p>
-          <Button className="hover:opacity-90" style={{ backgroundColor: '#F59E0B' }}>
-            Share from My Neura
-          </Button>
-        </div>
-      </div>
 
       {/* Members Modal */}
       <Dialog open={showMembersModal} onOpenChange={setShowMembersModal}>
@@ -254,13 +257,14 @@ export default function ThinQCirclePage() {
         </DialogContent>
       </Dialog>
 
-      {/* Invite Modal */}
-      <InviteToCircleModal 
-        open={showInviteModal} 
-        onOpenChange={setShowInviteModal}
-        circleId={circleId!}
-        circleName={circle.name}
-      />
-    </div>
+        {/* Invite Modal */}
+        <InviteToCircleModal 
+          open={showInviteModal} 
+          onOpenChange={setShowInviteModal}
+          circleId={circleId!}
+          circleName={circle.name}
+        />
+      </div>
+    </SharedAuthLayout>
   );
 }
