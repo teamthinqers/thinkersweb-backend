@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
-import { Lock, Unlock, Brain, Heart, Target, Zap, Users } from "lucide-react";
+import { Lock, Unlock, Fingerprint, Heart, Target, Zap, Users, Brain } from "lucide-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
@@ -63,7 +63,7 @@ export function CognitiveIdentityCard({
         <CardContent className="p-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <Brain className="h-5 w-5 text-amber-600" />
+              <Fingerprint className="h-5 w-5 text-amber-600" />
               <h3 className="text-lg font-bold bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent">
                 Cognitive Identity
               </h3>
@@ -179,7 +179,7 @@ export function CognitiveIdentityCard({
         {/* Empty State */}
         {(!cognitiveProfile || Object.keys(cognitiveProfile).length === 0) && (
           <div className="text-center py-6">
-            <Brain className="h-12 w-12 text-amber-300 mx-auto mb-3" />
+            <Fingerprint className="h-12 w-12 text-amber-300 mx-auto mb-3" />
             <p className="text-sm text-gray-500">Complete your cognitive identity to unlock personalized insights</p>
           </div>
         )}
