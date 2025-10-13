@@ -231,10 +231,10 @@ export default function MyDotSparkPage() {
         
         {/* Cognitive Identity Box - Full Width - Links conditionally based on config status */}
         <Link href={cognitiveIdentityConfigured ? "/cognitive-identity-config" : "/cognitive-identity"}>
-          <Card className="group cursor-pointer border-0 transition-all duration-300 hover:scale-[1.01] bg-gradient-to-br from-[#a78bfa] via-[#9575cd] to-[#8b5cf6] relative overflow-hidden rounded-[32px] shadow-[0_8px_30px_rgba(139,92,246,0.2)] hover:shadow-[0_20px_60px_rgba(139,92,246,0.3)] mb-4">
+          <Card className="group cursor-pointer border-0 transition-all duration-300 hover:scale-[1.01] bg-gradient-to-br from-[#a78bfa] via-[#9575cd] to-[#8b5cf6] relative overflow-hidden rounded-[32px] shadow-[0_8px_30px_rgba(139,92,246,0.2)] hover:shadow-[0_20px_60px_rgba(139,92,246,0.3)] mb-3">
             
             {/* Icon Badge */}
-            <div className="absolute top-4 left-6">
+            <div className="absolute top-3 left-6">
               <div className="relative px-3 py-1.5 bg-white/20 backdrop-blur-sm rounded-full flex items-center">
                 <Fingerprint className="h-4 w-4 text-white" />
                 {/* Status Indicator */}
@@ -243,23 +243,23 @@ export default function MyDotSparkPage() {
             </div>
             
             {/* Content */}
-            <div className="pt-14 pb-5 px-6">
-              <h3 className="text-xl font-bold text-white mb-1 drop-shadow-lg">Cognitive Identity</h3>
-              <p className="text-white/90 text-sm font-medium mb-4 drop-shadow-md">Your unique thought patterns and intellectual fingerprint</p>
+            <div className="pt-12 pb-3 px-6">
+              <h3 className="text-lg font-bold text-white mb-1 drop-shadow-lg">Cognitive Identity</h3>
+              <p className="text-white/90 text-xs font-medium mb-2 drop-shadow-md">Your unique thought patterns and intellectual fingerprint</p>
               
               {/* Cognitive Identity Tags - Dynamic based on user settings */}
-              <div className="flex flex-wrap gap-2 items-center justify-center md:justify-start">
+              <div className="flex flex-wrap gap-1.5 items-center justify-center md:justify-start">
                 {cognitiveIdentityTags.length > 0 ? (
                   cognitiveIdentityTags.map((tag, index) => (
                     <span 
                       key={index} 
-                      className="text-sm px-4 py-1.5 bg-white/35 font-bold backdrop-blur-sm rounded-full text-white drop-shadow-md"
+                      className="text-xs px-3 py-1 bg-white/35 font-bold backdrop-blur-sm rounded-full text-white drop-shadow-md"
                     >
                       {tag}
                     </span>
                   ))
                 ) : (
-                  <span className="text-sm px-4 py-1.5 bg-white/35 font-bold backdrop-blur-sm rounded-full text-white drop-shadow-md">
+                  <span className="text-xs px-3 py-1 bg-white/35 font-bold backdrop-blur-sm rounded-full text-white drop-shadow-md">
                     Configure your identity to see tags
                   </span>
                 )}
@@ -267,7 +267,7 @@ export default function MyDotSparkPage() {
             </div>
             
             {/* Arrow indicator */}
-            <div className="absolute top-5 right-6">
+            <div className="absolute top-4 right-6">
               <ArrowRight className="h-4 w-4 text-white/80 group-hover:translate-x-1 transition-transform" />
             </div>
           </Card>
