@@ -3,6 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Sparkles, Trophy, Target, Lightbulb, TrendingUp, ArrowRight, Brain, Users, Plus, FileText, Circle, Hexagon, Pencil, Zap, Fingerprint, Search, Settings } from 'lucide-react';
+import SparkIcon from '@/components/ui/spark-icon';
 import { Link } from 'wouter';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useAuth } from '@/hooks/use-auth-new';
@@ -179,6 +180,33 @@ export default function MyDotSparkPage() {
               {allBadgesForDisplay.length > 0 && (
                 <BadgeDisplay badges={allBadgesForDisplay} />
               )}
+              
+              {/* Contributions Card */}
+              <Card className="border-0 bg-gradient-to-br from-amber-50 to-orange-50 shadow-sm">
+                <CardContent className="p-3">
+                  <div className="flex items-center gap-2">
+                    <Trophy className="h-4 w-4 text-amber-600" />
+                    <span className="text-xs font-semibold text-amber-700">CONTRIBUTIONS</span>
+                  </div>
+                  <div className="flex items-center gap-4 mt-2">
+                    {/* Dots */}
+                    <div className="flex items-center gap-1.5">
+                      <Lightbulb className="h-4 w-4 text-amber-600" />
+                      <span className="text-sm font-bold text-gray-900">{dashboard?.stats?.dots || 0}</span>
+                    </div>
+                    {/* Sparks */}
+                    <div className="flex items-center gap-1.5">
+                      <SparkIcon className="h-4 w-4" fill="#d97706" />
+                      <span className="text-sm font-bold text-gray-900">{(dashboard?.stats?.savedSparks || 0) + (dashboard?.neuralStrength?.stats?.userSparksCount || 0)}</span>
+                    </div>
+                    {/* Perspectives */}
+                    <div className="flex items-center gap-1.5">
+                      <Search className="h-4 w-4 text-amber-600" />
+                      <span className="text-sm font-bold text-gray-900">{dashboard?.stats?.perspectives || 0}</span>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
             </div>
           </div>
         </div>
