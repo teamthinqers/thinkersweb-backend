@@ -25,6 +25,9 @@ export const users = pgTable("users", {
   cognitiveIdentityCompletedAt: timestamp("cognitive_identity_completed_at"),
   learningEngineCompleted: boolean("learning_engine_completed").default(false).notNull(),
   learningEngineCompletedAt: timestamp("learning_engine_completed_at"),
+  // Profile Settings
+  aboutMe: text("about_me"), // Professional story/bio
+  cognitiveIdentityPublic: boolean("cognitive_identity_public").default(false).notNull(), // Privacy setting for cognitive identity
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
