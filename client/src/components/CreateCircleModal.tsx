@@ -288,7 +288,7 @@ export function CreateCircleModal({ open, onOpenChange }: CreateCircleModalProps
           <Button 
             onClick={handleCreate} 
             disabled={createCircleMutation.isPending || !circleName.trim()}
-            className="bg-gradient-to-r from-purple-600 to-violet-600 hover:from-purple-700 hover:to-violet-700"
+            className="bg-amber-500 hover:bg-amber-600 text-white"
           >
             {createCircleMutation.isPending ? 'Creating...' : 'Create Circle'}
           </Button>
