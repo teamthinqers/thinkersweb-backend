@@ -11,7 +11,7 @@ import { formatDistanceToNow } from 'date-fns';
 import SharedAuthLayout from '@/components/layout/SharedAuthLayout';
 import BadgeDisplay from '@/components/BadgeDisplay';
 import BadgeUnlockModal from '@/components/BadgeUnlockModal';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { apiRequest, queryClient } from '@/lib/queryClient';
 import type { Badge } from '@shared/schema';
 import { useDotSparkTuning } from '@/hooks/useDotSparkTuning';
@@ -54,22 +54,43 @@ export default function MyDotSparkPage() {
   const { user } = useAuth();
   const [badgeToShow, setBadgeToShow] = useState<Badge | null>(null);
   const [showBadgeModal, setShowBadgeModal] = useState(false);
-  const [cognitiveIdentityConfigured, setCognitiveIdentityConfigured] = useState(false);
 
   const { data: dashboardData, isLoading } = useQuery<{ success: boolean; data: DashboardData }>({
     queryKey: ['/api/dashboard'],
     enabled: !!user,
   });
 
-  // Get cognitive tuning parameters for identity tags
-  const { tuning } = useDotSparkTuning();
-  const cognitiveIdentityTags = generateCognitiveIdentityTags(tuning || {});
+  // Fetch cognitive identity configuration from database
+  const { data: cognitiveConfig } = useQuery<{ success: boolean; data: any; configured: boolean }>({
+    queryKey: ['/api/cognitive-identity/config'],
+    enabled: !!user,
+  });
 
-  // Check if cognitive identity is already configured
-  useEffect(() => {
-    const isConfigured = localStorage.getItem('cognitiveIdentityConfigured') === 'true';
-    setCognitiveIdentityConfigured(isConfigured);
-  }, []);
+  const cognitiveIdentityConfigured = cognitiveConfig?.configured || false;
+
+  // Get cognitive identity tags from saved configuration
+  const cognitiveIdentityTags = useMemo(() => {
+    if (!cognitiveConfig?.data) {
+      return [];
+    }
+    
+    const tuning = {
+      cognitivePace: parseFloat(cognitiveConfig.data.cognitivePace || '0.5'),
+      signalFocus: parseFloat(cognitiveConfig.data.signalFocus || '0.5'),
+      impulseControl: parseFloat(cognitiveConfig.data.impulseControl || '0.5'),
+      mentalEnergyFlow: parseFloat(cognitiveConfig.data.mentalEnergyFlow || '0.5'),
+      analytical: parseFloat(cognitiveConfig.data.analytical || '0.8'),
+      intuitive: parseFloat(cognitiveConfig.data.intuitive || '0.6'),
+      contextualThinking: parseFloat(cognitiveConfig.data.contextualThinking || '0.5'),
+      memoryBandwidth: parseFloat(cognitiveConfig.data.memoryBandwidth || '0.5'),
+      thoughtComplexity: parseFloat(cognitiveConfig.data.thoughtComplexity || '0.5'),
+      mentalModelDensity: parseFloat(cognitiveConfig.data.mentalModelDensity || '0.5'),
+      patternDetectionSensitivity: parseFloat(cognitiveConfig.data.patternDetectionSensitivity || '0.5'),
+      decisionMakingIndex: parseFloat(cognitiveConfig.data.decisionMakingIndex || '0.5'),
+    };
+    
+    return generateCognitiveIdentityTags(tuning);
+  }, [cognitiveConfig]);
 
   // Fetch ALL badges with earned/locked status for gamification
   const { data: badgesData } = useQuery<{ success: boolean; badges: any[] }>({
@@ -259,9 +280,11 @@ export default function MyDotSparkPage() {
                     </span>
                   ))
                 ) : (
-                  <span className="text-xs px-3 py-1 bg-white/35 font-bold backdrop-blur-sm rounded-full text-white drop-shadow-md">
-                    Configure your identity to see tags
-                  </span>
+                  <div className="text-center w-full">
+                    <p className="text-xs text-white/90 italic">
+                      ✨ Set up your Cognitive Identity based on your unique thought patterns and intellectual fingerprint
+                    </p>
+                  </div>
                 )}
               </div>
             </div>

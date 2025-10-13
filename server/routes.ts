@@ -22,7 +22,8 @@ import {
   userBadges,
   notifications,
   sparks,
-  perspectivesMessages
+  perspectivesMessages,
+  cognitiveIdentity
 } from "@shared/schema";
 import { processEntryFromChat, generateChatResponse, type Message } from "./chat";
 import { connectionsService } from "./connections";
@@ -2783,6 +2784,99 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.error('Dashboard data error:', error);
       res.status(500).json({ 
         error: 'Failed to fetch dashboard data',
+        details: error instanceof Error ? error.message : 'Unknown error'
+      });
+    }
+  });
+
+  // Save cognitive identity configuration
+  app.post(`${apiPrefix}/cognitive-identity/configure`, requireAuth, async (req: AuthenticatedRequest, res: Response) => {
+    try {
+      const userId = req.user?.id || req.session?.userId;
+
+      if (!userId) {
+        return res.status(401).json({ error: 'Authentication required' });
+      }
+
+      const configData = req.body;
+
+      // Check if user already has a cognitive identity configuration
+      const existing = await db.query.cognitiveIdentity.findFirst({
+        where: eq(cognitiveIdentity.userId, userId)
+      });
+
+      let result;
+      if (existing) {
+        // Update existing configuration
+        [result] = await db.update(cognitiveIdentity)
+          .set({
+            ...configData,
+            updatedAt: new Date()
+          })
+          .where(eq(cognitiveIdentity.userId, userId))
+          .returning();
+      } else {
+        // Create new configuration
+        [result] = await db.insert(cognitiveIdentity)
+          .values({
+            userId,
+            ...configData
+          })
+          .returning();
+      }
+
+      // Mark cognitive identity as completed
+      await db.update(users)
+        .set({
+          cognitiveIdentityCompleted: true,
+          cognitiveIdentityCompletedAt: new Date()
+        })
+        .where(eq(users.id, userId));
+
+      res.json({
+        success: true,
+        data: result
+      });
+
+    } catch (error) {
+      console.error('Cognitive identity configuration error:', error);
+      res.status(500).json({ 
+        error: 'Failed to save cognitive identity configuration',
+        details: error instanceof Error ? error.message : 'Unknown error'
+      });
+    }
+  });
+
+  // Get cognitive identity configuration
+  app.get(`${apiPrefix}/cognitive-identity/config`, requireAuth, async (req: AuthenticatedRequest, res: Response) => {
+    try {
+      const userId = req.user?.id || req.session?.userId;
+
+      if (!userId) {
+        return res.status(401).json({ error: 'Authentication required' });
+      }
+
+      const config = await db.query.cognitiveIdentity.findFirst({
+        where: eq(cognitiveIdentity.userId, userId)
+      });
+
+      const user = await db.query.users.findFirst({
+        where: eq(users.id, userId),
+        columns: {
+          cognitiveIdentityCompleted: true
+        }
+      });
+
+      res.json({
+        success: true,
+        data: config,
+        configured: user?.cognitiveIdentityCompleted || false
+      });
+
+    } catch (error) {
+      console.error('Get cognitive identity configuration error:', error);
+      res.status(500).json({ 
+        error: 'Failed to fetch cognitive identity configuration',
         details: error instanceof Error ? error.message : 'Unknown error'
       });
     }

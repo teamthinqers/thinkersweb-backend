@@ -32,6 +32,28 @@ export const users = pgTable("users", {
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
+// Cognitive Identity configuration table
+export const cognitiveIdentity = pgTable("cognitive_identity", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").references(() => users.id).notNull().unique(),
+  // Core tuning parameters
+  cognitivePace: decimal("cognitive_pace", { precision: 3, scale: 2 }).default('0.50'),
+  signalFocus: decimal("signal_focus", { precision: 3, scale: 2 }).default('0.50'),
+  impulseControl: decimal("impulse_control", { precision: 3, scale: 2 }).default('0.50'),
+  mentalEnergyFlow: decimal("mental_energy_flow", { precision: 3, scale: 2 }).default('0.50'),
+  // Cognitive style parameters
+  analytical: decimal("analytical", { precision: 3, scale: 2 }).default('0.80'),
+  intuitive: decimal("intuitive", { precision: 3, scale: 2 }).default('0.60'),
+  contextualThinking: decimal("contextual_thinking", { precision: 3, scale: 2 }).default('0.50'),
+  memoryBandwidth: decimal("memory_bandwidth", { precision: 3, scale: 2 }).default('0.50'),
+  thoughtComplexity: decimal("thought_complexity", { precision: 3, scale: 2 }).default('0.50'),
+  mentalModelDensity: decimal("mental_model_density", { precision: 3, scale: 2 }).default('0.50'),
+  patternDetectionSensitivity: decimal("pattern_detection_sensitivity", { precision: 3, scale: 2 }).default('0.50'),
+  decisionMakingIndex: decimal("decision_making_index", { precision: 3, scale: 2 }).default('0.50'),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
 // Categories table
 export const categories = pgTable("categories", {
   id: serial("id").primaryKey(),
@@ -592,7 +614,11 @@ export const whatsappUsersRelations = relations(whatsappUsers, ({ one }) => ({
   user: one(users, { fields: [whatsappUsers.userId], references: [users.id] }),
 }));
 
-export const usersRelations = relations(users, ({ many }) => ({
+export const cognitiveIdentityRelations = relations(cognitiveIdentity, ({ one }) => ({
+  user: one(users, { fields: [cognitiveIdentity.userId], references: [users.id] }),
+}));
+
+export const usersRelations = relations(users, ({ many, one }) => ({
   dots: many(dots),
   wheels: many(wheels),
   chakras: many(chakras),
@@ -601,6 +627,7 @@ export const usersRelations = relations(users, ({ many }) => ({
   conversationSessions: many(conversationSessions),
   whatsappUsers: many(whatsappUsers),
   entries: many(entries),
+  cognitiveIdentity: one(cognitiveIdentity),
 }));
 
 // === TYPE EXPORTS ===
@@ -619,6 +646,12 @@ export type VoiceRecording = typeof voiceRecordings.$inferSelect;
 
 export type InsertVectorEmbedding = z.infer<typeof insertVectorEmbeddingSchema>;
 export type VectorEmbedding = typeof vectorEmbeddings.$inferSelect;
+
+// Cognitive Identity schemas
+export const insertCognitiveIdentitySchema = createInsertSchema(cognitiveIdentity);
+export const selectCognitiveIdentitySchema = createSelectSchema(cognitiveIdentity);
+export type InsertCognitiveIdentity = z.infer<typeof insertCognitiveIdentitySchema>;
+export type CognitiveIdentity = z.infer<typeof selectCognitiveIdentitySchema>;
 
 // Legacy types
 export type Entry = typeof entries.$inferSelect;

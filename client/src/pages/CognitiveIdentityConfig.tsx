@@ -91,39 +91,40 @@ export default function CognitiveIdentityConfig() {
     }
     
     try {
-      // Update using the mutation function from the hook
-      updateTuning(pendingChanges);
+      // Save to database via API
+      const response = await fetch('/api/cognitive-identity/configure', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+        body: JSON.stringify(pendingChanges)
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to save cognitive identity configuration');
+      }
       
       // Reset state after saving
       setUnsavedChanges(false);
       setPendingChanges({});
       setJustSaved(true);
       
-      // Mark cognitive identity as configured in localStorage
-      localStorage.setItem('cognitiveIdentityConfigured', 'true');
-      
-      // Mark Cognitive Identity as configured on the server
-      try {
-        await fetch('/api/cognitive-identity/configure', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          credentials: 'include'
-        });
-      } catch (error) {
-        console.log('Note: Could not save Cognitive Identity configuration status to server');
-      }
+      toast({
+        title: "Saved!",
+        description: "Your cognitive identity has been configured successfully.",
+        variant: "default",
+      });
       
       // Reset saved status after 2 seconds
       setTimeout(() => {
         setJustSaved(false);
       }, 2000);
     } catch (error) {
-      console.error("Error updating cognitive style:", error);
+      console.error("Error updating cognitive identity:", error);
       toast({
         title: "Save Failed",
-        description: "There was a problem saving your neural mirror cognitive style settings.",
+        description: "There was a problem saving your cognitive identity settings.",
         variant: "destructive",
       });
     }
