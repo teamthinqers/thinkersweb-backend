@@ -242,6 +242,7 @@ export function setupNewAuth(app: Express) {
       httpOnly: true,
       sameSite: 'lax',
       path: '/',
+      domain: undefined, // Let browser set domain automatically
     },
     rolling: true,
   }));
