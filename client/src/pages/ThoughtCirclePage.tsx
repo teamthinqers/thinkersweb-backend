@@ -18,7 +18,7 @@ export default function ThoughtCirclePage() {
                   My ThinQ Circles
                 </h1>
                 <p className="text-purple-700/70 text-lg mt-1">
-                  Form your own think circles
+                  Form your private ThinQ circles to brainstorm on a thought
                 </p>
               </div>
             </div>
