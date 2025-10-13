@@ -54,15 +54,17 @@ router.get('/', async (req, res) => {
       userNotifications.map(async (notification) => {
         const actorIds = JSON.parse(notification.actorIds) as number[];
         
-        // Fetch actor user details
-        const actors = await db.query.users.findMany({
-          where: sql`${users.id} = ANY(${actorIds})`,
-          columns: {
-            id: true,
-            fullName: true,
-            avatar: true,
-          },
-        });
+        // Fetch actor user details using inArray for proper SQL handling
+        const actors = actorIds.length > 0 
+          ? await db.query.users.findMany({
+              where: sql`${users.id} = ANY(ARRAY[${sql.raw(actorIds.join(','))}])`,
+              columns: {
+                id: true,
+                fullName: true,
+                avatar: true,
+              },
+            })
+          : [];
 
         return {
           ...notification,
