@@ -22,6 +22,7 @@ import {
   userBadges,
   notifications,
   sparks,
+  savedThoughts,
   perspectivesMessages,
   perspectivesThreads,
   cognitiveIdentity
@@ -2783,6 +2784,31 @@ export async function registerRoutes(app: Express): Promise<Server> {
         limit: 5,
       });
 
+      // Count MyNeura thoughts (personal thoughts + saved social thoughts)
+      const [personalThoughtsCount] = await db.select({ count: count() })
+        .from(thoughts)
+        .where(and(
+          eq(thoughts.userId, userId),
+          eq(thoughts.visibility, 'personal')
+        ));
+      
+      const [savedSocialThoughtsCount] = await db.select({ count: count() })
+        .from(savedThoughts)
+        .where(eq(savedThoughts.userId, userId));
+      
+      const myNeuraThoughtsCount = (personalThoughtsCount?.count || 0) + (savedSocialThoughtsCount?.count || 0);
+
+      // Count personal sparks (sparks on user's own thoughts only)
+      const personalSparksResult = await db
+        .select({ count: count() })
+        .from(sparks)
+        .innerJoin(thoughts, eq(sparks.thoughtId, thoughts.id))
+        .where(and(
+          eq(sparks.userId, userId),
+          eq(thoughts.userId, userId)
+        ));
+      const personalSparksCount = personalSparksResult[0]?.count || 0;
+
       // Combine and sort all recent activity
       const recentActivity = [
         ...recentDots.map(d => ({ type: 'dot', data: d, timestamp: d.createdAt })),
@@ -2804,8 +2830,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
             wheels: wheelsCount?.count || 0,
             chakras: chakrasCount?.count || 0,
             thoughts: neuralStrength.stats.thoughtsCount,
-            savedSparks: neuralStrength.stats.userSparksCount, // Fixed: use userSparksCount for actual sparks
+            savedSparks: neuralStrength.stats.userSparksCount,
             perspectives: neuralStrength.stats.perspectivesCount,
+          },
+          // MyNeura-specific stats (for MyNeura box and toolbar)
+          myNeuraStats: {
+            thoughts: Number(myNeuraThoughtsCount),
+            sparks: Number(personalSparksCount),
           },
           // Platform-wide stats for Social Neura box (collective brain)
           socialStats: {

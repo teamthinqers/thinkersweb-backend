@@ -43,6 +43,10 @@ interface DashboardData {
     savedSparks: number;
     perspectives: number;
   };
+  myNeuraStats: {
+    thoughts: number;
+    sparks: number;
+  };
   socialStats: {
     thoughts: number;
     sparks: number;
@@ -312,8 +316,8 @@ export default function MyDotSparkPage() {
               <div className="absolute top-4 left-1/2 -translate-x-1/2">
                 <div className="relative px-3 py-1.5 bg-white/20 backdrop-blur-sm rounded-full flex items-center">
                   <Brain className="h-4 w-4 text-white animate-pulse" />
-                  {/* Status Indicator - Green if has dots, Red if not */}
-                  <div className={`absolute -top-1 -right-1 h-3 w-3 rounded-full border-2 border-white ${(dashboard?.stats.dots || 0) > 0 ? 'bg-green-500' : 'bg-red-500'}`}></div>
+                  {/* Status Indicator - Green if has thoughts, Red if not */}
+                  <div className={`absolute -top-1 -right-1 h-3 w-3 rounded-full border-2 border-white ${(dashboard?.myNeuraStats?.thoughts || 0) > 0 ? 'bg-green-500' : 'bg-red-500'}`}></div>
                 </div>
               </div>
               
@@ -326,11 +330,11 @@ export default function MyDotSparkPage() {
                 <div className="flex items-center justify-center gap-3 mb-4">
                   <div className="flex items-center gap-1.5 px-2.5 py-1 bg-white/20 backdrop-blur-sm rounded-full">
                     <Lightbulb className="h-3 w-3 text-white" />
-                    <span className="text-white font-semibold text-xs">{dashboard?.stats.dots || 0}</span>
+                    <span className="text-white font-semibold text-xs">{dashboard?.myNeuraStats?.thoughts || 0}</span>
                   </div>
                   <div className="flex items-center gap-1.5 px-2.5 py-1 bg-white/20 backdrop-blur-sm rounded-full">
                     <Zap className="h-3 w-3 text-white" />
-                    <span className="text-white font-semibold text-xs">{dashboard?.stats.savedSparks || 0}</span>
+                    <span className="text-white font-semibold text-xs">{dashboard?.myNeuraStats?.sparks || 0}</span>
                   </div>
                 </div>
                 
