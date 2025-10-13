@@ -245,13 +245,6 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
     }
   };
 
-  const handleNotifications = () => {
-    toast({
-      title: "Notifications",
-      description: "This feature is coming soon!",
-      duration: 3000,
-    });
-  };
 
   const handleLogout = async () => {
     try {
