@@ -90,7 +90,7 @@ export async function calculateNeuralStrength(userId: number): Promise<NeuralStr
     milestones: {
       cognitiveIdentityCompleted: user.cognitiveIdentityCompleted || false,
       learningEngineCompleted: user.learningEngineCompleted || false,
-      hasActivity,
+      hasActivity: hasFirstThought,
     },
     stats: {
       thoughtsCount,
