@@ -117,7 +117,7 @@ export default function ThinQCirclePage() {
       <div className={`flex-1 overflow-hidden ${isFullscreen ? 'fixed inset-0 z-50 bg-gradient-to-br from-amber-50 via-orange-50 to-red-50' : ''}`}>
         <div className={`${isFullscreen ? 'h-full' : 'container mx-auto px-4 sm:px-6 lg:px-8 py-8'}`}>
           
-          {/* Universal Private Notice - Outside Grid */}
+          {/* Universal Private Notice - Above the box */}
           {!isFullscreen && (
             <div className="mb-4 bg-white/60 backdrop-blur-sm rounded-lg border border-amber-200/60 p-3">
               <div className="flex items-center gap-2 text-amber-700">
