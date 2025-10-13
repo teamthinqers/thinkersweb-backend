@@ -93,7 +93,10 @@ async function generateUniqueUsername(displayName: string | null, email: string 
 
 // Middleware to check authentication
 export function requireAuth(req: Request, res: Response, next: NextFunction) {
-  if (!req.session?.userId) {
+  // Check both new auth system (session.userId) and legacy Passport.js (session.passport.user)
+  const userId = req.session?.userId || (req.session as any)?.passport?.user;
+  
+  if (!userId) {
     console.log("❌ Authentication required");
     return res.status(401).json({ error: "Authentication required" });
   }
@@ -102,7 +105,10 @@ export function requireAuth(req: Request, res: Response, next: NextFunction) {
 
 // Load user into request from session
 async function loadUserFromSession(req: Request, res: Response, next: NextFunction) {
-  if (req.session?.userId) {
+  // Check both new auth system (session.userId) and legacy Passport.js (session.passport.user)
+  const userId = req.session?.userId || (req.session as any)?.passport?.user;
+  
+  if (userId) {
     try {
       const result = await db.execute(sql`
         SELECT 
@@ -119,7 +125,7 @@ async function loadUserFromSession(req: Request, res: Response, next: NextFuncti
           created_at as "createdAt", 
           updated_at as "updatedAt" 
         FROM users 
-        WHERE id = ${req.session.userId}
+        WHERE id = ${userId}
       `);
       if (result.rows && result.rows.length > 0) {
         const row: any = result.rows[0];
