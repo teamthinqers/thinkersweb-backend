@@ -90,20 +90,22 @@ const PublicProfile = () => {
   return (
     <SharedAuthLayout>
       <div className="container mx-auto px-4 py-8 max-w-7xl">
-        {/* Three-Column Layout - Compact */}
+        {/* Three-Column Layout - Equal Heights */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
           {/* LEFT COLUMN - Cognitive Identity Card */}
-          <div className="lg:col-span-1">
-            <CognitiveIdentityCard
-              userId={user.id}
-              isPublic={user.cognitiveIdentityPublic}
-              isOwnProfile={false}
-            />
+          <div className="lg:col-span-1 flex">
+            <div className="w-full">
+              <CognitiveIdentityCard
+                userId={user.id}
+                isPublic={user.cognitiveIdentityPublic}
+                isOwnProfile={false}
+              />
+            </div>
           </div>
 
           {/* MIDDLE COLUMN - Profile Details */}
-          <div className="lg:col-span-1">
-            <Card className="border-0 bg-gradient-to-br from-amber-50 to-orange-50 shadow-sm">
+          <div className="lg:col-span-1 flex">
+            <Card className="border-0 bg-gradient-to-br from-amber-50 to-orange-50 shadow-sm w-full h-full">
               <CardContent className="p-4">
                 {/* Profile Picture */}
                 <div className="flex justify-center mb-6">
@@ -176,8 +178,8 @@ const PublicProfile = () => {
           </div>
 
           {/* RIGHT COLUMN - About Me Section */}
-          <div className="lg:col-span-1">
-            <Card className="border-0 bg-gradient-to-br from-amber-50 to-orange-50 shadow-sm">
+          <div className="lg:col-span-1 flex">
+            <Card className="border-0 bg-gradient-to-br from-amber-50 to-orange-50 shadow-sm w-full h-full">
               <CardContent className="p-4">
                 <h3 className="text-lg font-semibold text-gray-900 mb-3">About Me</h3>
                 {user.aboutMe ? (
@@ -190,8 +192,8 @@ const PublicProfile = () => {
           </div>
         </div>
 
-        {/* Badges and Contributions Section */}
-        <div className="flex flex-wrap items-center gap-4">
+        {/* Badges and Contributions Section - Full Width Bottom */}
+        <div className="flex flex-col lg:flex-row items-stretch gap-4">
           {/* Badges Card */}
           {allBadgesForDisplay.length > 0 && (
             <div className="flex-1">
