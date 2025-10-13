@@ -37,7 +37,7 @@ export default function ThoughtCirclePage() {
           <div className="mb-8">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-4">
-                <div className="p-4 rounded-2xl shadow-xl" style={{ backgroundColor: '#E8C89C' }}>
+                <div className="p-4 rounded-2xl shadow-xl" style={{ backgroundColor: '#FBE1C3' }}>
                   <Target className="h-8 w-8 text-white" />
                 </div>
                 <div>
@@ -52,7 +52,7 @@ export default function ThoughtCirclePage() {
               <Button 
                 onClick={() => setShowCreateModal(true)}
                 className="text-white shadow-lg hover:opacity-90"
-                style={{ backgroundColor: '#E8C89C' }}
+                style={{ backgroundColor: '#FBE1C3' }}
               >
                 <Plus className="h-5 w-5 mr-2" />
                 Create Circle
@@ -71,13 +71,13 @@ export default function ThoughtCirclePage() {
           {!isLoading && circles.length === 0 && (
             <Card className="border-amber-200 bg-gradient-to-br from-white to-amber-50">
               <CardContent className="py-12 text-center">
-                <Target className="h-16 w-16 mx-auto mb-4" style={{ color: '#E8C89C' }} />
+                <Target className="h-16 w-16 mx-auto mb-4" style={{ color: '#FBE1C3' }} />
                 <h3 className="text-xl font-semibold text-amber-900 mb-2">No circles yet</h3>
                 <p className="text-amber-700/70 mb-6">Create your first ThinQ Circle to start collaborating</p>
                 <Button 
                   onClick={() => setShowCreateModal(true)}
                   className="text-white hover:opacity-90"
-                  style={{ backgroundColor: '#E8C89C' }}
+                  style={{ backgroundColor: '#FBE1C3' }}
                 >
                   <Plus className="h-5 w-5 mr-2" />
                   Create Your First Circle
@@ -97,7 +97,7 @@ export default function ThoughtCirclePage() {
                 >
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2 text-amber-900">
-                      <Target className="h-5 w-5" style={{ color: '#E8C89C' }} />
+                      <Target className="h-5 w-5" style={{ color: '#FBE1C3' }} />
                       {circle.name}
                     </CardTitle>
                   </CardHeader>
