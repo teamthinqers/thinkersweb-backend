@@ -1,11 +1,23 @@
 import { useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useLocation, Link } from 'wouter';
 import SharedAuthLayout from '@/components/layout/SharedAuthLayout';
 import { Button } from '@/components/ui/button';
-import { Target, Users, ArrowLeft, Shield } from 'lucide-react';
+import { Target, Users, ArrowLeft, Shield, Trash2 } from 'lucide-react';
 import { CreateCircleModal } from '@/components/CreateCircleModal';
 import { useAuth } from '@/hooks/use-auth-new';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { useToast } from '@/hooks/use-toast';
+import { apiRequest } from '@/lib/queryClient';
 
 interface Circle {
   id: number;
@@ -20,6 +32,9 @@ export default function ThoughtCirclePage() {
   const [, setLocation] = useLocation();
   const { user } = useAuth();
   const [showCreateModal, setShowCreateModal] = useState(false);
+  const [circleToDelete, setCircleToDelete] = useState<Circle | null>(null);
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
 
   const { data: circlesData, isLoading } = useQuery<{ circles: Circle[] }>({
     queryKey: ['/api/thinq-circles/my-circles'],
@@ -27,6 +42,28 @@ export default function ThoughtCirclePage() {
   });
 
   const circles = circlesData?.circles || [];
+
+  // Delete circle mutation
+  const deleteCircleMutation = useMutation({
+    mutationFn: async (circleId: number) => {
+      return apiRequest("DELETE", `/api/thinq-circles/${circleId}`, {});
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/thinq-circles/my-circles'] });
+      setCircleToDelete(null);
+      toast({
+        title: "Circle deleted",
+        description: "The circle and all its data have been removed",
+      });
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
 
   return (
     <SharedAuthLayout>
@@ -122,12 +159,25 @@ export default function ThoughtCirclePage() {
                   {circles.map((circle) => (
                     <div
                       key={circle.id}
-                      onClick={() => setLocation(`/thinq-circle/${circle.id}`)}
-                      className="group cursor-pointer text-center transition-all duration-300 hover:scale-105"
+                      className="group text-center transition-all duration-300 hover:scale-105 relative"
                     >
+                      {/* Delete Icon - Only for circle owners */}
+                      {user?.id === circle.ownerId && (
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setCircleToDelete(circle);
+                          }}
+                          className="absolute -top-2 -right-2 z-10 p-1.5 rounded-full bg-red-500 text-white hover:bg-red-600 transition-colors shadow-lg"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </button>
+                      )}
+                      
                       {/* Circle Element */}
                       <div 
-                        className="relative w-32 h-32 rounded-full shadow-lg group-hover:shadow-xl transition-shadow flex items-center justify-center"
+                        onClick={() => setLocation(`/thinq-circle/${circle.id}`)}
+                        className="relative w-32 h-32 rounded-full shadow-lg group-hover:shadow-xl transition-shadow flex items-center justify-center cursor-pointer"
                         style={{ backgroundColor: '#F59E0B' }}
                       >
                         <div className="text-center">
@@ -167,6 +217,27 @@ export default function ThoughtCirclePage() {
         open={showCreateModal} 
         onOpenChange={setShowCreateModal} 
       />
+
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog open={!!circleToDelete} onOpenChange={(open) => !open && setCircleToDelete(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete Circle?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure? All the thoughts and data associated to your circle will be lost for you and circle members.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => circleToDelete && deleteCircleMutation.mutate(circleToDelete.id)}
+              className="bg-red-500 hover:bg-red-600"
+            >
+              Delete Circle
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </SharedAuthLayout>
   );
 }

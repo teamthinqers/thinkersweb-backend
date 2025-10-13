@@ -3297,6 +3297,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         success: true,
         circles: circles.map(m => ({
           ...m.circle,
+          ownerId: m.circle.createdBy, // Map createdBy to ownerId for frontend
           role: m.role,
         })),
       });
@@ -3748,6 +3749,66 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.error('Share thought to circle error:', error);
       res.status(500).json({ 
         error: 'Failed to share thought',
+        details: error instanceof Error ? error.message : 'Unknown error'
+      });
+    }
+  });
+
+  // Delete a ThinQ circle (only circle owner can delete)
+  app.delete(`${apiPrefix}/thinq-circles/:circleId`, requireAuth, async (req: AuthenticatedRequest, res: Response) => {
+    try {
+      const userId = req.user?.id || req.session?.userId;
+      if (!userId) {
+        return res.status(401).json({ error: 'Authentication required' });
+      }
+
+      const circleId = parseInt(req.params.circleId);
+
+      if (isNaN(circleId)) {
+        return res.status(400).json({ error: 'Invalid circle ID' });
+      }
+
+      // Verify circle exists
+      const circle = await db.query.thinqCircles.findFirst({
+        where: eq(thinqCircles.id, circleId),
+      });
+
+      if (!circle) {
+        return res.status(404).json({ error: 'Circle not found' });
+      }
+
+      // Verify user is the circle owner
+      if (circle.createdBy !== userId) {
+        return res.status(403).json({ error: 'Only the circle owner can delete the circle' });
+      }
+
+      // Delete all associated data in correct order (within transaction for atomicity)
+      await db.transaction(async (tx) => {
+        // 1. Delete circle invites
+        await tx.delete(thinqCircleInvites).where(eq(thinqCircleInvites.circleId, circleId));
+
+        // 2. Delete circle perspectives
+        await tx.delete(circlePerspectives).where(eq(circlePerspectives.circleId, circleId));
+
+        // 3. Delete circle sparks
+        await tx.delete(circleSparks).where(eq(circleSparks.circleId, circleId));
+
+        // 4. Delete circle dots
+        await tx.delete(circleDots).where(eq(circleDots.circleId, circleId));
+
+        // 5. Delete circle members
+        await tx.delete(thinqCircleMembers).where(eq(thinqCircleMembers.circleId, circleId));
+
+        // 6. Finally delete the circle itself
+        await tx.delete(thinqCircles).where(eq(thinqCircles.id, circleId));
+      });
+
+      res.status(204).send(); // No content on successful deletion
+
+    } catch (error) {
+      console.error('Delete circle error:', error);
+      res.status(500).json({ 
+        error: 'Failed to delete circle',
         details: error instanceof Error ? error.message : 'Unknown error'
       });
     }
