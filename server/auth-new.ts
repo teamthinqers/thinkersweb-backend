@@ -162,7 +162,7 @@ async function loadUserFromSession(req: Request, res: Response, next: NextFuncti
 }
 
 export function setupNewAuth(app: Express) {
-  const sessionSecret = process.env.SESSION_SECRET || `dotspark-${randomBytes(16).toString('hex')}`;
+  const sessionSecret = process.env.SESSION_SECRET || 'dotspark-session-secret-2024';
   
   console.log("Setting up new authentication system");
 
