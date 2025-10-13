@@ -3336,6 +3336,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
                   linkedinPhotoUrl: true,
                 },
               },
+              members: true, // Include all members to get accurate count
             },
           },
         },
@@ -3347,6 +3348,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           ...m.circle,
           ownerId: m.circle.createdBy, // Map createdBy to ownerId for frontend
           role: m.role,
+          memberCount: m.circle.members?.length || 0, // Add accurate member count
         })),
       });
 
