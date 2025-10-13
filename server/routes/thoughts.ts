@@ -1601,7 +1601,7 @@ router.get('/:thoughtId/social-sparks', async (req, res) => {
 
 /**
  * GET /api/user/sparks-count
- * Get total sparks count for the logged-in user
+ * Get personal sparks count for /myneura (only sparks on user's own thoughts)
  */
 router.get('/user/sparks-count', async (req, res) => {
   try {
@@ -1611,13 +1611,22 @@ router.get('/user/sparks-count', async (req, res) => {
       return res.status(401).json({ error: 'Unauthorized' });
     }
 
-    const userSparks = await db.query.sparks.findMany({
-      where: eq(sparks.userId, userId),
-    });
+    // Count only personal sparks (sparks saved on user's OWN thoughts)
+    // Excludes sparks saved on other people's social thoughts
+    const personalSparksResult = await db
+      .select({ count: sql<number>`count(*)` })
+      .from(sparks)
+      .innerJoin(thoughts, eq(sparks.thoughtId, thoughts.id))
+      .where(and(
+        eq(sparks.userId, userId),
+        eq(thoughts.userId, userId) // Only count sparks on own thoughts
+      ));
+    
+    const count = personalSparksResult[0]?.count || 0;
 
     res.json({
       success: true,
-      count: userSparks.length
+      count: Number(count)
     });
 
   } catch (error) {
