@@ -225,14 +225,26 @@ export default function ThinQCirclePage() {
               <p className="text-gray-600">Loading thoughts...</p>
             </div>
           ) : (thoughtsData?.thoughts && thoughtsData.thoughts.length > 0) ? (
-            <ThoughtCloudGrid
-              thoughts={thoughtsData.thoughts}
-              isFullscreen={isFullscreen}
-              onFullscreenToggle={() => setIsFullscreen(!isFullscreen)}
-              onDotClick={(thought) => setSelectedThought(thought)}
-              patternId={`circle-${circleId}-pattern`}
-              onRefresh={refetchThoughts}
-            />
+            <div className="relative">
+              <ThoughtCloudGrid
+                thoughts={thoughtsData.thoughts}
+                isFullscreen={isFullscreen}
+                onFullscreenToggle={() => setIsFullscreen(!isFullscreen)}
+                onDotClick={(thought) => setSelectedThought(thought)}
+                patternId={`circle-${circleId}-pattern`}
+                onRefresh={refetchThoughts}
+              />
+              
+              {/* Floating Action Button to create thoughts */}
+              <Button
+                onClick={() => setShowCreateThoughtModal(true)}
+                className="fixed bottom-8 right-8 h-14 w-14 rounded-full shadow-lg hover:shadow-xl transition-all hover:scale-110"
+                style={{ backgroundColor: '#F59E0B' }}
+                size="icon"
+              >
+                <Lightbulb className="h-6 w-6 text-white" />
+              </Button>
+            </div>
           ) : (
             <div className="text-center py-20">
               <Lightbulb className="h-16 w-16 mx-auto mb-4" style={{ color: '#F59E0B' }} />

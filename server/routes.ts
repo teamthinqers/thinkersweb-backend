@@ -3619,5 +3619,66 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Create and share thought to circle
+  app.post(`${apiPrefix}/thinq-circles/:circleId/create-thought`, requireAuth, async (req: AuthenticatedRequest, res: Response) => {
+    try {
+      const userId = req.user?.id || req.session?.userId;
+      if (!userId) {
+        return res.status(401).json({ error: 'Authentication required' });
+      }
+
+      const circleId = parseInt(req.params.circleId);
+      const { heading, summary, emotions, anchor } = req.body;
+
+      // Verify user is a member
+      const membership = await db.query.thinqCircleMembers.findFirst({
+        where: and(
+          eq(thinqCircleMembers.circleId, circleId),
+          eq(thinqCircleMembers.userId, userId)
+        ),
+      });
+
+      if (!membership) {
+        return res.status(403).json({ error: 'You are not a member of this circle' });
+      }
+
+      // Validate input
+      if (!heading || !summary) {
+        return res.status(400).json({ error: 'Heading and summary are required' });
+      }
+
+      // Create the thought
+      const [thought] = await db.insert(thoughts).values({
+        userId,
+        heading: heading.trim(),
+        summary: summary.trim(),
+        emotions: emotions?.trim() || null,
+        anchor: anchor?.trim() || null,
+        visibility: 'personal',
+        channel: 'circle',
+        sharedToSocial: false,
+      }).returning();
+
+      // Share to circle
+      await db.insert(circleDots).values({
+        circleId,
+        thoughtId: thought.id,
+        sharedBy: userId,
+      });
+
+      res.json({
+        success: true,
+        thought,
+      });
+
+    } catch (error) {
+      console.error('Create circle thought error:', error);
+      res.status(500).json({ 
+        error: 'Failed to create thought',
+        details: error instanceof Error ? error.message : 'Unknown error'
+      });
+    }
+  });
+
   return httpServer;
 }
