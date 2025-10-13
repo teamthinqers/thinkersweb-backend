@@ -110,159 +110,194 @@ export default function ThinQCirclePage() {
 
   return (
     <SharedAuthLayout>
-      <div className="min-h-screen bg-gradient-to-br from-yellow-50 via-amber-50 to-yellow-100">
-        {/* Custom Toolbar */}
-        <div className="sticky top-0 z-10 shadow-[0_8px_30px_rgba(245,158,11,0.4)]" style={{ backgroundColor: '#F59E0B' }}>
-        <div className="max-w-7xl mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            {/* Left: Back button and Circle name */}
-            <div className="flex items-center gap-4">
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => setLocation("/mydotspark")}
-                className="text-white hover:bg-white/20"
-              >
-                <ArrowLeft className="h-5 w-5" />
-              </Button>
-              
-              <div className="flex items-center gap-3">
-                <div className="p-2 bg-white/20 backdrop-blur-sm rounded-full">
-                  <Users className="h-5 w-5 text-white" />
-                </div>
-                <div>
-                  <h1 className="text-xl font-bold text-white">{circle.name}</h1>
-                  {circle.description && (
-                    <p className="text-sm text-white/80">{circle.description}</p>
-                  )}
-                </div>
+      <div className={`flex-1 overflow-hidden ${isFullscreen ? 'fixed inset-0 z-50 bg-gradient-to-br from-amber-50 via-orange-50 to-red-50' : ''}`}>
+        <div className={`${isFullscreen ? 'h-full' : 'container mx-auto px-4 sm:px-6 lg:px-8 py-8'}`}>
+          
+          {/* Universal Private Notice - Outside Grid */}
+          {!isFullscreen && (
+            <div className="mb-4 bg-white/60 backdrop-blur-sm rounded-lg border border-amber-200/60 p-3">
+              <div className="flex items-center gap-2 text-amber-700">
+                <Shield className="h-4 w-4" />
+                <p className="text-sm font-medium">
+                  Only respective members of a circle can see and contribute
+                </p>
               </div>
             </div>
+          )}
 
-            {/* Right: Stats and actions */}
-            <div className="flex items-center gap-6">
-              {/* Members avatars */}
-              <div 
-                onClick={() => setShowMembersModal(true)}
-                className="flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity"
-              >
-                <div className="flex -space-x-2">
-                  {displayMembers.map((member) => (
-                    <Avatar key={member.id} className="h-8 w-8 border-2 border-white">
-                      <AvatarImage src={member.user.linkedinPhotoUrl || member.user.avatar} />
-                      <AvatarFallback className="text-white text-xs" style={{ backgroundColor: '#F59E0B' }}>
-                        {member.user.fullName.charAt(0)}
-                      </AvatarFallback>
-                    </Avatar>
-                  ))}
-                </div>
-                <span className="text-white font-medium">
-                  {circle.stats.members}
-                  {remainingCount > 0 && ` (+${remainingCount})`}
-                </span>
-              </div>
-
-              {/* Dots count */}
-              <div className="flex items-center gap-2 bg-white/20 backdrop-blur-sm px-3 py-1.5 rounded-full">
-                <Lightbulb className="h-4 w-4 text-white" />
-                <span className="text-white font-medium">{circle.stats.dots}</span>
-              </div>
-
-              {/* Sparks count */}
-              <div className="flex items-center gap-2 bg-white/20 backdrop-blur-sm px-3 py-1.5 rounded-full">
-                <Zap className="h-4 w-4 text-white" />
-                <span className="text-white font-medium">{circle.stats.sparks}</span>
-              </div>
-
-              {/* Actions */}
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
+          {/* Thought Cloud Canvas */}
+          <div className={`relative w-full bg-gradient-to-br from-amber-50/70 to-orange-50/50 shadow-2xl border border-amber-200 overflow-hidden backdrop-blur-sm ${isFullscreen ? 'h-full rounded-none' : 'rounded-3xl'}`}>
+            
+            {/* Toolbar - Circle Navigation - hide in fullscreen */}
+            {!isFullscreen && (
+              <div className="sticky top-0 z-10 bg-white/95 backdrop-blur-lg border-b border-gray-200 shadow-sm px-6 py-4 flex items-center justify-between">
+                {/* Left: Back button and Circle info */}
+                <div className="flex items-center gap-4">
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="text-white hover:bg-white/20"
+                    onClick={() => setLocation("/mydotspark")}
+                    className="text-gray-700 hover:bg-gray-100"
                   >
-                    <MoreHorizontal className="h-5 w-5" />
+                    <ArrowLeft className="h-5 w-5" />
                   </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuItem onClick={() => setShowMembersModal(true)}>
-                    <Users className="h-4 w-4 mr-2" />
-                    View Members
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => setShowInviteModal(true)}>
-                    <UserPlus className="h-4 w-4 mr-2" />
-                    Invite Members
-                  </DropdownMenuItem>
-                  {isOwner && (
-                    <DropdownMenuItem>
-                      <Settings className="h-4 w-4 mr-2" />
-                      Circle Settings
-                    </DropdownMenuItem>
-                  )}
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
+                  
+                  {/* Circle Name and Members Count */}
+                  <div className="flex items-center gap-2">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="group flex items-center gap-2 rounded-lg px-3 py-2 bg-gradient-to-br from-amber-50 to-orange-50 hover:from-amber-100 hover:to-orange-100 border-l-2 border-amber-500 transition-all duration-300 relative"
+                    >
+                      <Users className="h-4 w-4" style={{ color: '#F59E0B' }} />
+                      <span className="text-sm font-semibold" style={{ color: '#F59E0B' }}>
+                        {circle.name}
+                      </span>
+                    </Button>
+                  </div>
+
+                  {/* Dots count */}
+                  <div className="flex items-center gap-2">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="group flex items-center gap-2 rounded-lg px-3 py-2 bg-gradient-to-br from-orange-50 to-amber-50 hover:from-orange-100 hover:to-amber-100 border-l-2 border-orange-500 transition-all duration-300 relative"
+                      title="Dots"
+                    >
+                      <Lightbulb className="h-4 w-4 text-orange-600 group-hover:scale-110 transition-transform" />
+                      <span className="text-sm font-medium text-orange-700">
+                        Dots
+                      </span>
+                    </Button>
+                    <div className="px-2.5 py-1 bg-gradient-to-br from-orange-50 to-amber-50 rounded-lg border border-orange-200/50">
+                      <span className="text-xs font-semibold text-orange-800">{circle.stats.dots}</span>
+                    </div>
+                  </div>
+
+                  {/* Sparks count */}
+                  <div className="flex items-center gap-2">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="group flex items-center gap-2 rounded-lg px-3 py-2 bg-gradient-to-br from-yellow-50 to-amber-50 hover:from-yellow-100 hover:to-amber-100 border-l-2 border-yellow-500 transition-all duration-300 relative"
+                      title="Sparks"
+                    >
+                      <Zap className="h-4 w-4 text-yellow-600 group-hover:scale-110 transition-transform" />
+                      <span className="text-sm font-medium text-yellow-700">
+                        Sparks
+                      </span>
+                    </Button>
+                    <div className="px-2.5 py-1 bg-gradient-to-br from-yellow-50 to-amber-50 rounded-lg border border-yellow-200/50">
+                      <span className="text-xs font-semibold text-yellow-800">{circle.stats.sparks}</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Right: Member avatars and actions */}
+                <div className="flex items-center gap-4">
+                  {/* Members avatars */}
+                  <div 
+                    onClick={() => setShowMembersModal(true)}
+                    className="flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity bg-white/70 px-3 py-2 rounded-xl border border-gray-200"
+                  >
+                    <div className="flex -space-x-2">
+                      {displayMembers.map((member) => (
+                        <Avatar key={member.id} className="h-7 w-7 border-2 border-white">
+                          <AvatarImage src={member.user.linkedinPhotoUrl || member.user.avatar} />
+                          <AvatarFallback className="text-white text-xs" style={{ backgroundColor: '#F59E0B' }}>
+                            {member.user.fullName.charAt(0)}
+                          </AvatarFallback>
+                        </Avatar>
+                      ))}
+                    </div>
+                    <span className="text-sm font-semibold text-gray-700">
+                      {circle.stats.members}
+                    </span>
+                  </div>
+
+                  {/* Actions Dropdown */}
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="text-gray-700 hover:bg-gray-100"
+                      >
+                        <MoreHorizontal className="h-5 w-5" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuItem onClick={() => setShowMembersModal(true)}>
+                        <Users className="h-4 w-4 mr-2" />
+                        View Members
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => setShowInviteModal(true)}>
+                        <UserPlus className="h-4 w-4 mr-2" />
+                        Invite Members
+                      </DropdownMenuItem>
+                      {isOwner && (
+                        <DropdownMenuItem>
+                          <Settings className="h-4 w-4 mr-2" />
+                          Circle Settings
+                        </DropdownMenuItem>
+                      )}
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
+              </div>
+            )}
+
+            {/* Thoughts Display */}
+            {thoughtsLoading ? (
+              <div className="flex items-center justify-center h-[600px]">
+                <div className="text-center space-y-4">
+                  <div className="w-16 h-16 border-4 border-t-transparent rounded-full animate-spin mx-auto" style={{ borderColor: '#F59E0B', borderTopColor: 'transparent' }}></div>
+                  <p className="text-gray-600">Loading circle thoughts...</p>
+                </div>
+              </div>
+            ) : (thoughtsData?.thoughts && thoughtsData.thoughts.length > 0) ? (
+              <>
+                <ThoughtCloudGrid
+                  thoughts={thoughtsData.thoughts}
+                  isFullscreen={isFullscreen}
+                  onFullscreenToggle={() => setIsFullscreen(!isFullscreen)}
+                  onDotClick={(thought) => setSelectedThought(thought)}
+                  patternId={`circle-${circleId}-pattern`}
+                  onRefresh={refetchThoughts}
+                />
+                
+                {/* Floating Action Button to create thoughts */}
+                <Button
+                  onClick={() => setShowCreateThoughtModal(true)}
+                  className="fixed bottom-8 right-8 h-14 w-14 rounded-full shadow-lg hover:shadow-xl transition-all hover:scale-110"
+                  style={{ backgroundColor: '#F59E0B' }}
+                  size="icon"
+                >
+                  <Lightbulb className="h-6 w-6 text-white" />
+                </Button>
+              </>
+            ) : (
+              <div className="flex items-center justify-center h-[600px]">
+                <div className="text-center space-y-4 max-w-md">
+                  <Lightbulb className="h-16 w-16 mx-auto" style={{ color: '#F59E0B' }} />
+                  <h3 className="text-xl font-semibold text-gray-800">Share insights to this circle</h3>
+                  <p className="text-gray-600">
+                    Members can share their dots, sparks, and perspectives here
+                  </p>
+                  <Button 
+                    onClick={() => setShowCreateThoughtModal(true)}
+                    className="hover:opacity-90" 
+                    style={{ backgroundColor: '#F59E0B' }}
+                  >
+                    <Lightbulb className="h-5 w-5 mr-2" />
+                    Create Thought
+                  </Button>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>
-
-        {/* Content Grid - Circle Thoughts */}
-        <div className="max-w-7xl mx-auto px-4 py-6">
-          <div className="bg-white/50 backdrop-blur-sm rounded-lg border border-amber-200 p-4 mb-6">
-            <div className="flex items-center gap-2 text-amber-700">
-              <Shield className="h-5 w-5" />
-              <p className="text-sm font-medium">
-                Private Circle • Only members can see and contribute
-              </p>
-            </div>
-          </div>
-
-          {/* Thoughts Display */}
-          {thoughtsLoading ? (
-            <div className="text-center py-20">
-              <div className="w-16 h-16 border-4 border-t-transparent rounded-full animate-spin mx-auto mb-4" style={{ borderColor: '#F59E0B', borderTopColor: 'transparent' }}></div>
-              <p className="text-gray-600">Loading thoughts...</p>
-            </div>
-          ) : (thoughtsData?.thoughts && thoughtsData.thoughts.length > 0) ? (
-            <div className="relative">
-              <ThoughtCloudGrid
-                thoughts={thoughtsData.thoughts}
-                isFullscreen={isFullscreen}
-                onFullscreenToggle={() => setIsFullscreen(!isFullscreen)}
-                onDotClick={(thought) => setSelectedThought(thought)}
-                patternId={`circle-${circleId}-pattern`}
-                onRefresh={refetchThoughts}
-              />
-              
-              {/* Floating Action Button to create thoughts */}
-              <Button
-                onClick={() => setShowCreateThoughtModal(true)}
-                className="fixed bottom-8 right-8 h-14 w-14 rounded-full shadow-lg hover:shadow-xl transition-all hover:scale-110"
-                style={{ backgroundColor: '#F59E0B' }}
-                size="icon"
-              >
-                <Lightbulb className="h-6 w-6 text-white" />
-              </Button>
-            </div>
-          ) : (
-            <div className="text-center py-20">
-              <Lightbulb className="h-16 w-16 mx-auto mb-4" style={{ color: '#F59E0B' }} />
-              <h3 className="text-xl font-semibold text-gray-800 mb-2">Share insights to this circle</h3>
-              <p className="text-gray-600 mb-6">
-                Members can share their dots, sparks, and perspectives here
-              </p>
-              <Button 
-                onClick={() => setShowCreateThoughtModal(true)}
-                className="hover:opacity-90" 
-                style={{ backgroundColor: '#F59E0B' }}
-              >
-                <Lightbulb className="h-5 w-5 mr-2" />
-                Create Thought
-              </Button>
-            </div>
-          )}
-        </div>
 
       {/* Members Modal */}
       <Dialog open={showMembersModal} onOpenChange={setShowMembersModal}>
@@ -301,22 +336,21 @@ export default function ThinQCirclePage() {
         </DialogContent>
       </Dialog>
 
-        {/* Invite Modal */}
-        <InviteToCircleModal 
-          open={showInviteModal} 
-          onOpenChange={setShowInviteModal}
-          circleId={circleId!}
-          circleName={circle.name}
-        />
+      {/* Invite Modal */}
+      <InviteToCircleModal 
+        open={showInviteModal} 
+        onOpenChange={setShowInviteModal}
+        circleId={circleId!}
+        circleName={circle.name}
+      />
 
-        {/* Create Thought Modal */}
-        <CircleThoughtModal 
-          open={showCreateThoughtModal} 
-          onOpenChange={setShowCreateThoughtModal}
-          circleId={circleId!}
-          circleName={circle.name}
-        />
-      </div>
+      {/* Create Thought Modal */}
+      <CircleThoughtModal 
+        open={showCreateThoughtModal} 
+        onOpenChange={setShowCreateThoughtModal}
+        circleId={circleId!}
+        circleName={circle.name}
+      />
     </SharedAuthLayout>
   );
 }
