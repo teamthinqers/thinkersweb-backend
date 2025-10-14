@@ -88,15 +88,21 @@ export default function HomePage() {
             
             {/* Left Column - Content */}
             <div className="space-y-8 lg:space-y-10 text-center lg:text-left">
-              {/* DotSpark Logo */}
+              {/* DotSpark - Dot & Spark Elements */}
               <div className="inline-block animate-fade-in-up">
                 <div className="relative group">
-                  <div className="absolute -inset-3 bg-gradient-to-r from-amber-500/20 via-orange-500/20 to-amber-500/20 rounded-full blur-xl opacity-60 group-hover:opacity-90 transition-all duration-500"></div>
-                  <img 
-                    src="/dotspark-logo-combined.png?v=2" 
-                    alt="DotSpark" 
-                    className="relative h-20 lg:h-24 w-auto drop-shadow-xl transform group-hover:scale-105 transition-all duration-300" 
-                  />
+                  {/* Glow Effect */}
+                  <div className="absolute -inset-4 bg-gradient-to-r from-amber-500/30 via-orange-500/30 to-amber-500/30 rounded-full blur-2xl opacity-60 group-hover:opacity-90 transition-all duration-500"></div>
+                  
+                  {/* Dot with Spark */}
+                  <div className="relative flex items-center gap-3">
+                    <div className="relative w-16 h-16 lg:w-20 lg:h-20 bg-gradient-to-br from-amber-500 to-orange-500 rounded-full shadow-2xl transform group-hover:scale-105 transition-all duration-300 flex items-center justify-center">
+                      <Zap className="w-8 h-8 lg:w-10 lg:h-10 text-amber-900 fill-amber-900" />
+                    </div>
+                    <span className="text-3xl lg:text-4xl font-bold bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent">
+                      DotSpark
+                    </span>
+                  </div>
                 </div>
               </div>
 
@@ -130,20 +136,22 @@ export default function HomePage() {
               </div>
             </div>
 
-            {/* Right Column - Neural Network Illustration */}
+            {/* Right Column - Dot & Spark Network */}
             <div className="relative hidden lg:flex items-center justify-center animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
               <div className="relative w-full max-w-lg aspect-square">
-                {/* Central Node - Brain/Hub */}
+                {/* Central Dot - Main Hub */}
                 <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10">
                   <div className="relative">
-                    <div className="absolute inset-0 bg-gradient-to-r from-amber-400 to-orange-400 rounded-full blur-2xl opacity-40 animate-pulse"></div>
-                    <div className="relative w-24 h-24 bg-gradient-to-br from-amber-500 to-orange-500 rounded-full flex items-center justify-center shadow-2xl">
-                      <Brain className="w-12 h-12 text-white" />
+                    <div className="absolute inset-0 bg-gradient-to-r from-amber-400 to-orange-400 rounded-full blur-3xl opacity-50 animate-pulse"></div>
+                    <div className="relative w-28 h-28 bg-gradient-to-br from-amber-500 to-orange-500 rounded-full shadow-2xl"></div>
+                    {/* Central Spark */}
+                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+                      <Zap className="w-14 h-14 text-amber-900 fill-amber-900" />
                     </div>
                   </div>
                 </div>
 
-                {/* Connecting Nodes - Representing People */}
+                {/* Surrounding Dots with Sparks */}
                 {[...Array(6)].map((_, i) => {
                   const angle = (i * 60) * (Math.PI / 180);
                   const radius = 180;
@@ -156,21 +164,23 @@ export default function HomePage() {
                       className="absolute top-1/2 left-1/2 animate-pulse"
                       style={{
                         transform: `translate(calc(-50% + ${x}px), calc(-50% + ${y}px))`,
-                        animationDelay: `${i * 0.2}s`,
+                        animationDelay: `${i * 0.3}s`,
                         animationDuration: '3s'
                       }}
                     >
                       <div className="relative">
-                        <div className="absolute inset-0 bg-gradient-to-r from-amber-300 to-orange-300 rounded-full blur-lg opacity-30"></div>
-                        <div className="relative w-16 h-16 bg-gradient-to-br from-amber-400 to-orange-400 rounded-full flex items-center justify-center shadow-xl">
-                          <Users className="w-8 h-8 text-white" />
+                        <div className="absolute inset-0 bg-gradient-to-r from-amber-300 to-orange-300 rounded-full blur-xl opacity-40"></div>
+                        <div className="relative w-20 h-20 bg-gradient-to-br from-amber-400 to-orange-400 rounded-full shadow-xl"></div>
+                        {/* Spark in each dot */}
+                        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+                          <Zap className="w-9 h-9 text-amber-900 fill-amber-900" />
                         </div>
                       </div>
                     </div>
                   );
                 })}
 
-                {/* Connection Lines */}
+                {/* Connection Lines with Spark Animation */}
                 <svg className="absolute inset-0 w-full h-full" style={{ zIndex: 1 }}>
                   {[...Array(6)].map((_, i) => {
                     const angle = (i * 60) * (Math.PI / 180);
@@ -185,16 +195,21 @@ export default function HomePage() {
                         y1="50%"
                         x2={`${x}%`}
                         y2={`${y}%`}
-                        stroke="url(#gradient)"
-                        strokeWidth="2"
-                        strokeDasharray="5,5"
-                        className="opacity-40"
+                        stroke="url(#dotsparkGradient)"
+                        strokeWidth="3"
+                        strokeDasharray="8,4"
+                        className="opacity-30"
+                        style={{
+                          animation: 'dashFlow 2s linear infinite',
+                          animationDelay: `${i * 0.2}s`
+                        }}
                       />
                     );
                   })}
                   <defs>
-                    <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <linearGradient id="dotsparkGradient" x1="0%" y1="0%" x2="100%" y2="100%">
                       <stop offset="0%" stopColor="#f59e0b" />
+                      <stop offset="50%" stopColor="#fb923c" />
                       <stop offset="100%" stopColor="#f97316" />
                     </linearGradient>
                   </defs>
