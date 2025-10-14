@@ -642,20 +642,45 @@ export default function HomePage() {
                   </div>
                 </div>
               </div>
+              
+              {/* Desktop CTA */}
+              <div className="mt-6 text-center">
+                <Button
+                  onClick={() => setLocation("/auth")}
+                  className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white px-8 py-2 rounded-full"
+                >
+                  Get Started <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
+              </div>
             </div>
 
             {/* Mobile Access */}
             <div className="pt-8 border-t border-gray-200">
               <p className="text-sm font-semibold text-amber-600 mb-6 text-center">On Mobile</p>
-              <div className="flex items-start gap-4 bg-gradient-to-r from-green-50 to-emerald-50 p-6 rounded-xl border border-green-100">
-                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-gradient-to-r from-green-500 to-emerald-500 flex items-center justify-center text-white font-semibold">
-                  <MessageCircle className="h-4 w-4" />
+              <div className="bg-gradient-to-r from-green-50 to-emerald-50 p-6 rounded-xl border border-green-100">
+                <div className="flex items-start gap-4 mb-4">
+                  <div className="flex-shrink-0 w-8 h-8 rounded-full bg-gradient-to-r from-green-500 to-emerald-500 flex items-center justify-center text-white font-semibold">
+                    <MessageCircle className="h-4 w-4" />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-semibold mb-1">WhatsApp Integration</h3>
+                    <p className="text-gray-600">
+                      Connect with your Neura anytime, anywhere. Send thoughts via WhatsApp and access your neural network on the go — seamless mobile-first experience.
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <h3 className="text-lg font-semibold mb-1">WhatsApp Integration</h3>
-                  <p className="text-gray-600">
-                    Connect with your Neura anytime, anywhere. Send thoughts via WhatsApp and access your neural network on the go — seamless mobile-first experience.
-                  </p>
+                
+                {/* Mobile CTA */}
+                <div className="text-center">
+                  <a
+                    href="https://chat.whatsapp.com/E6Mwv20MUrCG58xuVJQNTv"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 px-6 py-2 bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white font-semibold rounded-full transition-all duration-300 hover:scale-105"
+                  >
+                    <SiWhatsapp className="h-5 w-5" />
+                    DotSpark WhatsApp
+                  </a>
                 </div>
               </div>
             </div>
