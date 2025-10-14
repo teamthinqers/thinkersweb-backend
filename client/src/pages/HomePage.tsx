@@ -111,10 +111,8 @@ export default function HomePage() {
               {/* Tagline */}
               <div className="animate-fade-in-up space-y-6" style={{ animationDelay: '0.15s' }}>
                 <div className="space-y-2">
-                  <h1 className="text-[2.75rem] md:text-5xl lg:text-6xl leading-[1.1]" style={{ fontFamily: 'Inter, -apple-system, system-ui, sans-serif', letterSpacing: '-0.04em' }}>
-                    <span className="font-light text-gray-800">A</span>{' '}
-                    <span className="font-semibold bg-gradient-to-r from-amber-600 via-orange-500 to-amber-600 bg-clip-text text-transparent">Human Intelligence</span>{' '}
-                    <span className="font-light text-gray-800">Network</span>
+                  <h1 className="text-[2.75rem] md:text-5xl lg:text-6xl font-medium leading-[1.1] bg-gradient-to-r from-amber-600 via-orange-500 to-amber-600 bg-clip-text text-transparent" style={{ fontFamily: 'Inter, -apple-system, system-ui, sans-serif', letterSpacing: '-0.04em' }}>
+                    A Human Intelligence Network
                   </h1>
                 </div>
               </div>
@@ -136,140 +134,128 @@ export default function HomePage() {
               </div>
             </div>
 
-            {/* Right Column - Human Intelligence Amplification */}
+            {/* Right Column - Power of Connected Intelligence */}
             <div className="relative hidden lg:flex items-center justify-center animate-fade-in-up" style={{ animationDelay: '0.3s' }}>
               <div className="relative w-full max-w-xl h-[500px]">
                 
-                {/* People Circle - Top Layer */}
-                <div className="absolute inset-0 flex items-center justify-center">
-                  {/* Individual Humans with Their Ideas */}
-                  {[...Array(8)].map((_, i) => {
-                    const angle = (i * 45) * (Math.PI / 180);
-                    const radius = 180;
-                    const x = Math.cos(angle) * radius;
-                    const y = Math.sin(angle) * radius;
-                    
-                    return (
-                      <div
-                        key={`person-${i}`}
-                        className="absolute"
-                        style={{
-                          left: '50%',
-                          top: '50%',
-                          transform: `translate(calc(-50% + ${x}px), calc(-50% + ${y}px))`,
-                          animation: `float 4s ease-in-out infinite`,
-                          animationDelay: `${i * 0.2}s`
-                        }}
-                      >
-                        {/* Person with Idea */}
-                        <div className="relative flex flex-col items-center gap-1">
-                          {/* Lightbulb (Idea) above person */}
-                          <div className="relative">
-                            <div className="absolute inset-0 bg-amber-300/40 rounded-full blur-md animate-pulse"></div>
-                            <div className="relative w-8 h-8 bg-gradient-to-br from-amber-400 to-orange-400 rounded-full flex items-center justify-center">
-                              <Lightbulb className="w-4 h-4 text-white fill-white" />
-                            </div>
-                          </div>
-                          {/* Person */}
-                          <div className="relative">
-                            <div className="absolute inset-0 bg-gray-200/50 rounded-full blur-sm"></div>
-                            <div className="relative w-12 h-12 bg-gradient-to-br from-gray-700 to-gray-800 rounded-full flex items-center justify-center border-2 border-white/20 shadow-xl">
-                              <Users className="w-6 h-6 text-white" />
-                            </div>
+                {/* Human Nodes in Circle */}
+                {[...Array(8)].map((_, i) => {
+                  const angle = (i * 45) * (Math.PI / 180);
+                  const radius = 200;
+                  const x = Math.cos(angle) * radius;
+                  const y = Math.sin(angle) * radius;
+                  
+                  return (
+                    <div
+                      key={`human-${i}`}
+                      className="absolute top-1/2 left-1/2"
+                      style={{
+                        transform: `translate(calc(-50% + ${x}px), calc(-50% + ${y}px))`,
+                        animation: `float 5s ease-in-out infinite`,
+                        animationDelay: `${i * 0.3}s`
+                      }}
+                    >
+                      <div className="relative">
+                        {/* Glowing Mind/Intelligence */}
+                        <div className="absolute -top-3 left-1/2 -translate-x-1/2">
+                          <div className="absolute inset-0 bg-amber-400/40 blur-lg rounded-full animate-pulse"></div>
+                          <div className="relative w-6 h-6 bg-gradient-to-br from-amber-400 to-orange-500 rounded-full"></div>
+                        </div>
+                        
+                        {/* Human Figure */}
+                        <div className="relative">
+                          <div className="absolute inset-0 bg-gradient-to-br from-gray-600 to-gray-700 rounded-full blur-sm opacity-30"></div>
+                          <div className="relative w-16 h-16 bg-gradient-to-br from-gray-600 to-gray-700 rounded-full flex items-center justify-center shadow-xl border-2 border-gray-500/30">
+                            <div className="w-8 h-8 bg-white/90 rounded-full"></div>
                           </div>
                         </div>
                       </div>
-                    );
-                  })}
-                </div>
+                    </div>
+                  );
+                })}
 
-                {/* Connection Lines - Ideas Flowing */}
-                <svg className="absolute inset-0 w-full h-full" style={{ zIndex: 5 }}>
+                {/* Dynamic Connection Lines */}
+                <svg className="absolute inset-0 w-full h-full pointer-events-none" style={{ zIndex: 10 }}>
                   <defs>
-                    <linearGradient id="ideaFlow" x1="0%" y1="0%" x2="100%" y2="100%">
-                      <stop offset="0%" stopColor="#f59e0b" stopOpacity="0.4" />
-                      <stop offset="100%" stopColor="#f97316" stopOpacity="0.2" />
+                    <linearGradient id="powerFlow" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stopColor="#f59e0b" stopOpacity="0.6" />
+                      <stop offset="50%" stopColor="#f97316" stopOpacity="0.8" />
+                      <stop offset="100%" stopColor="#f59e0b" stopOpacity="0.6" />
                     </linearGradient>
                   </defs>
                   
-                  {/* Lines connecting people */}
+                  {/* Lines to center (showing power flow) */}
                   {[...Array(8)].map((_, i) => {
-                    const angle1 = (i * 45) * (Math.PI / 180);
-                    const radius = 180;
-                    const x1 = Math.cos(angle1) * radius + 50;
-                    const y1 = Math.sin(angle1) * radius + 50;
-                    
-                    // Connect to adjacent people
-                    const nextIndex = (i + 1) % 8;
-                    const angle2 = (nextIndex * 45) * (Math.PI / 180);
-                    const x2 = Math.cos(angle2) * radius + 50;
-                    const y2 = Math.sin(angle2) * radius + 50;
+                    const angle = (i * 45) * (Math.PI / 180);
+                    const radius = 200;
+                    const x = Math.cos(angle) * radius + 50;
+                    const y = Math.sin(angle) * radius + 50;
                     
                     return (
                       <line
-                        key={`line-${i}`}
-                        x1={`${x1}%`}
-                        y1={`${y1}%`}
-                        x2={`${x2}%`}
-                        y2={`${y2}%`}
-                        stroke="url(#ideaFlow)"
-                        strokeWidth="2"
-                        strokeDasharray="5,5"
+                        key={`power-${i}`}
+                        x1={`${x}%`}
+                        y1={`${y}%`}
+                        x2="50%"
+                        y2="50%"
+                        stroke="url(#powerFlow)"
+                        strokeWidth="2.5"
+                        className="opacity-50"
                       />
                     );
                   })}
                 </svg>
 
-                {/* Central Amplified Intelligence */}
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-30">
+                {/* Central Power Core - Amplified Intelligence */}
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20">
                   <div className="relative">
-                    {/* Amplification Rings */}
-                    <div className="absolute -inset-12 border-2 border-amber-400/30 rounded-full animate-ping" style={{ animationDuration: '3s' }}></div>
-                    <div className="absolute -inset-16 border border-orange-400/20 rounded-full animate-ping" style={{ animationDuration: '4s', animationDelay: '0.5s' }}></div>
+                    {/* Power Waves */}
+                    <div className="absolute -inset-20 border-4 border-amber-400/40 rounded-full animate-ping" style={{ animationDuration: '2.5s' }}></div>
+                    <div className="absolute -inset-24 border-2 border-orange-400/30 rounded-full animate-ping" style={{ animationDuration: '3s', animationDelay: '0.3s' }}></div>
+                    <div className="absolute -inset-28 border border-amber-400/20 rounded-full animate-ping" style={{ animationDuration: '3.5s', animationDelay: '0.6s' }}></div>
                     
-                    {/* Amplified Result - Larger, Brighter */}
-                    <div className="relative w-24 h-24 bg-gradient-to-br from-amber-500 via-orange-500 to-amber-600 rounded-full flex items-center justify-center shadow-2xl">
-                      <div className="absolute inset-0 bg-amber-400/30 rounded-full animate-pulse blur-xl"></div>
-                      <Zap className="w-12 h-12 text-white relative z-10 drop-shadow-lg" />
+                    {/* Massive Power Glow */}
+                    <div className="absolute inset-0 bg-gradient-to-r from-amber-400 via-orange-500 to-amber-400 rounded-full blur-3xl opacity-60 animate-pulse"></div>
+                    
+                    {/* Core Energy Sphere */}
+                    <div className="relative w-40 h-40 bg-gradient-to-br from-amber-500 via-orange-500 to-amber-600 rounded-full flex items-center justify-center shadow-2xl border-4 border-amber-300/30">
+                      <div className="absolute inset-0 bg-gradient-to-tr from-white/30 to-transparent rounded-full"></div>
+                      <Zap className="w-20 h-20 text-white relative z-10 animate-pulse" />
                     </div>
                   </div>
                 </div>
 
-                {/* Flowing Ideas - Visual Particles */}
-                <div className="absolute inset-0">
-                  {[...Array(16)].map((_, i) => {
-                    const angle = (i * 22.5) * (Math.PI / 180);
-                    const startRadius = 180;
-                    const endRadius = 50;
-                    
-                    return (
-                      <div
-                        key={`idea-${i}`}
-                        className="absolute w-2 h-2 bg-amber-400 rounded-full"
-                        style={{
-                          left: '50%',
-                          top: '50%',
-                          animation: `moveToCenter 3s ease-in-out infinite`,
-                          animationDelay: `${i * 0.2}s`,
-                          opacity: 0.6
-                        }}
-                      >
-                        <style jsx>{`
-                          @keyframes moveToCenter {
-                            0% {
-                              transform: translate(${Math.cos(angle) * startRadius}px, ${Math.sin(angle) * startRadius}px) scale(1);
-                              opacity: 0.8;
-                            }
-                            100% {
-                              transform: translate(${Math.cos(angle) * endRadius}px, ${Math.sin(angle) * endRadius}px) scale(0.5);
-                              opacity: 0;
-                            }
-                          }
-                        `}</style>
-                      </div>
-                    );
-                  })}
-                </div>
+                {/* Energy Particles Flowing Inward */}
+                {[...Array(24)].map((_, i) => {
+                  const angle = (i * 15) * (Math.PI / 180);
+                  const startX = Math.cos(angle) * 200;
+                  const startY = Math.sin(angle) * 200;
+                  
+                  return (
+                    <div
+                      key={`energy-${i}`}
+                      className="absolute top-1/2 left-1/2 w-2 h-2 bg-amber-400 rounded-full shadow-lg shadow-amber-400/50"
+                      style={{
+                        animation: `flowIn 2s ease-in infinite`,
+                        animationDelay: `${i * 0.08}s`,
+                        transform: `translate(${startX}px, ${startY}px)`
+                      }}
+                    />
+                  );
+                })}
+                
+                <style jsx>{`
+                  @keyframes flowIn {
+                    0% {
+                      transform: translate(${200}px, 0px) scale(0.5);
+                      opacity: 0.3;
+                    }
+                    100% {
+                      transform: translate(0px, 0px) scale(1.5);
+                      opacity: 0;
+                    }
+                  }
+                `}</style>
               </div>
             </div>
           </div>
