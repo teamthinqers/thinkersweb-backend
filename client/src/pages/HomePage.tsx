@@ -602,7 +602,7 @@ export default function HomePage() {
           <div className="max-w-6xl mx-auto">
             <h2 className="text-3xl font-bold text-center mb-4">How It Works</h2>
             <p className="text-center text-gray-600 mb-12 text-lg">
-              DotSpark is built for deep ThinQing — and every thinker has their own way to begin.
+              DotSpark is built for deep thinking — and every ThinQer has their own way to begin.
             </p>
             
             <div className="grid md:grid-cols-2 gap-6">
