@@ -92,8 +92,4 @@ externalPort = 8081
 localPort = 44663
 externalPort = 8099
 
-[[ports]]
-localPort = 46199
-externalPort = 6800
-
 [agent]
