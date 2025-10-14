@@ -31,16 +31,16 @@ export default function MobileLandingPage() {
 
   const handleWhatsAppConnect = () => {
     // WhatsApp number for DotSpark
-    const phoneNumber = "919344174118"; // Replace with your actual WhatsApp number
+    const phoneNumber = "16067157733";
     const message = encodeURIComponent(
       `Hi! I just signed up with DotSpark using ${userEmail}. I'd like to connect my WhatsApp to stay updated with my insights and community.`
     );
     const whatsappUrl = `https://wa.me/${phoneNumber}?text=${message}`;
-    window.open(whatsappUrl, "_blank");
+    window.location.href = whatsappUrl; // Use location.href instead of window.open for better mobile compatibility
   };
 
   const handleJoinCommunity = () => {
-    setLocation("/social");
+    window.open("https://chat.whatsapp.com/E6Mwv20MUrCG58xuVJQNTv", "_blank");
   };
 
   if (isLoading) {
@@ -75,8 +75,20 @@ export default function MobileLandingPage() {
       <div className="container mx-auto px-4 py-8 max-w-lg">
         {/* Welcome Section */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br from-amber-500 to-orange-600 mb-4">
-            <Users className="h-8 w-8 text-white" />
+          <div className="inline-block mb-4">
+            <div className="relative group">
+              <div className="absolute -inset-4 bg-gradient-to-r from-amber-500/30 via-orange-500/30 to-amber-500/30 rounded-full blur-2xl opacity-60"></div>
+              <div className="relative flex items-center gap-2 justify-center">
+                <img 
+                  src="/dotspark-icon.png" 
+                  alt="DotSpark" 
+                  className="h-12 w-12 drop-shadow-2xl" 
+                />
+                <span className="text-2xl font-bold bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent">
+                  DotSpark
+                </span>
+              </div>
+            </div>
           </div>
           <h2 className="text-2xl font-bold mb-2">Welcome to DotSpark!</h2>
           <p className="text-muted-foreground">
@@ -118,7 +130,7 @@ export default function MobileLandingPage() {
           <Card className="border-2 border-amber-200 dark:border-amber-800 hover:border-amber-400 dark:hover:border-amber-600 transition-colors">
             <CardContent className="p-6">
               <div className="flex items-start gap-4">
-                <div className="flex-shrink-0 w-12 h-12 rounded-full bg-gradient-to-br from-purple-500 to-violet-600 flex items-center justify-center">
+                <div className="flex-shrink-0 w-12 h-12 rounded-full bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center">
                   <Users className="h-6 w-6 text-white" />
                 </div>
                 <div className="flex-1">
@@ -128,8 +140,7 @@ export default function MobileLandingPage() {
                   </p>
                   <Button
                     onClick={handleJoinCommunity}
-                    variant="outline"
-                    className="w-full border-2 border-purple-300 dark:border-purple-700 hover:bg-purple-50 dark:hover:bg-purple-950"
+                    className="w-full bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 text-white"
                   >
                     <Users className="h-4 w-4 mr-2" />
                     Explore Community
@@ -139,13 +150,6 @@ export default function MobileLandingPage() {
               </div>
             </CardContent>
           </Card>
-        </div>
-
-        {/* Info Section */}
-        <div className="mt-8 p-4 rounded-lg bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800">
-          <p className="text-sm text-center text-muted-foreground">
-            💡 <span className="font-medium">Pro Tip:</span> Connect with WhatsApp for the best mobile experience. You can always access the full platform from your desktop browser.
-          </p>
         </div>
       </div>
     </div>
