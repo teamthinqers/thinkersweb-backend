@@ -43,7 +43,7 @@ export default function HomePage() {
                 variant="outline"
                 size="sm"
                 onClick={() => setLocation("/")}
-                className="text-sm font-medium text-gray-700 border-gray-300 hover:border-amber-500 hover:text-amber-600 hover:bg-amber-50 transition-all duration-300"
+                className="text-sm font-semibold text-gray-800 border-gray-400 hover:border-amber-600 hover:text-amber-700 hover:bg-amber-50 transition-all duration-300 px-5"
               >
                 About
               </Button>
@@ -51,7 +51,7 @@ export default function HomePage() {
                 variant="outline"
                 size="sm"
                 onClick={() => setLocation("/auth")}
-                className="text-sm font-medium text-gray-700 border-gray-300 hover:border-amber-500 hover:text-amber-600 hover:bg-amber-50 transition-all duration-300"
+                className="text-sm font-semibold text-gray-800 border-gray-400 hover:border-amber-600 hover:text-amber-700 hover:bg-amber-50 transition-all duration-300 px-5"
               >
                 Sign In / Register
               </Button>
