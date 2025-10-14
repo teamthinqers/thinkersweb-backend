@@ -511,20 +511,8 @@ export default function HomePage() {
               </div>
 
               <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
-                {/* Founder Photo */}
-                <div className="order-2 lg:order-1 flex justify-center">
-                  <div className="relative">
-                    <div className="absolute inset-0 bg-gradient-to-r from-amber-400 to-orange-400 rounded-2xl blur-2xl opacity-20"></div>
-                    <img 
-                      src="/founder-photo.jpg" 
-                      alt="Aravindh Rajendran - Founder of DotSpark" 
-                      className="relative rounded-2xl shadow-2xl w-full max-w-sm object-cover"
-                    />
-                  </div>
-                </div>
-
-                {/* Message */}
-                <div className="order-1 lg:order-2 space-y-6">
+                {/* Message - Left Side */}
+                <div className="space-y-6">
                   <p className="text-lg text-gray-700 leading-relaxed">
                     Hey ThinQers,
                   </p>
@@ -559,6 +547,24 @@ export default function HomePage() {
                     <p className="text-xl font-bold text-gray-900">Aravindh Rajendran</p>
                     <p className="text-gray-600">Founder, DotSpark</p>
                   </div>
+                </div>
+
+                {/* Founder Photo - Right Side */}
+                <div className="flex flex-col items-center space-y-6">
+                  <div className="relative">
+                    <div className="absolute inset-0 bg-gradient-to-r from-amber-400 to-orange-400 rounded-2xl blur-2xl opacity-20"></div>
+                    <div className="relative rounded-2xl shadow-2xl overflow-hidden">
+                      <img 
+                        src="/founder-photo.jpg" 
+                        alt="Aravindh Rajendran - Founder of DotSpark" 
+                        className="w-full max-w-sm object-cover object-top h-96"
+                      />
+                    </div>
+                  </div>
+                  
+                  <button className="px-8 py-4 bg-gradient-to-r from-amber-500 to-orange-500 text-white font-bold text-lg rounded-full shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-300">
+                    Join ThinQers Community
+                  </button>
                 </div>
               </div>
             </div>
