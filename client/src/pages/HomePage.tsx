@@ -525,7 +525,7 @@ export default function HomePage() {
                         <img 
                           src="/aravindh-profile.jpg" 
                           alt="Aravindh Rajendran - Founder of DotSpark" 
-                          className="w-full h-80 object-cover object-center"
+                          className="w-full h-[420px] sm:h-[450px] lg:h-[480px] object-cover object-center"
                         />
                       </div>
                     </div>
