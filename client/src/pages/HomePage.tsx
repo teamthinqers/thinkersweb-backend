@@ -122,8 +122,20 @@ export default function HomePage() {
                 Where human thoughts connect, evolve, and give rise to a collective intelligence that feels deeply human.
               </p>
 
-              {/* CTA Button */}
-              <div className="flex justify-center lg:justify-start animate-fade-in-up" style={{ animationDelay: '0.45s' }}>
+              {/* CTA Buttons */}
+              <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start animate-fade-in-up" style={{ animationDelay: '0.45s' }}>
+                <Button
+                  size="lg"
+                  variant="outline"
+                  onClick={() => {
+                    // Scroll to features or about section
+                    const featuresSection = document.querySelector('.features-section');
+                    featuresSection?.scrollIntoView({ behavior: 'smooth' });
+                  }}
+                  className="border-2 border-amber-500 text-amber-600 hover:bg-amber-50 px-8 py-6 text-lg font-semibold transform hover:scale-105 transition-all duration-300"
+                >
+                  Know Why?
+                </Button>
                 <Button
                   size="lg"
                   onClick={() => setLocation("/auth")}
@@ -134,128 +146,79 @@ export default function HomePage() {
               </div>
             </div>
 
-            {/* Right Column - Power of Connected Intelligence */}
+            {/* Right Column - Intelligence Network */}
             <div className="relative hidden lg:flex items-center justify-center animate-fade-in-up" style={{ animationDelay: '0.3s' }}>
-              <div className="relative w-full max-w-xl h-[500px]">
+              <div className="relative w-full max-w-lg aspect-square">
                 
-                {/* Human Nodes in Circle */}
-                {[...Array(8)].map((_, i) => {
-                  const angle = (i * 45) * (Math.PI / 180);
-                  const radius = 200;
+                {/* Central Hub - Brain */}
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20">
+                  <div className="relative">
+                    <div className="absolute inset-0 bg-gradient-to-r from-amber-400 to-orange-400 rounded-full blur-3xl opacity-40 animate-pulse"></div>
+                    <div className="absolute -inset-8 border-2 border-amber-400/30 rounded-full animate-ping" style={{ animationDuration: '3s' }}></div>
+                    <div className="absolute -inset-12 border border-orange-400/20 rounded-full animate-ping" style={{ animationDuration: '4s', animationDelay: '0.5s' }}></div>
+                    
+                    <div className="relative w-28 h-28 bg-gradient-to-br from-amber-500 to-orange-500 rounded-full flex items-center justify-center shadow-2xl">
+                      <Brain className="w-14 h-14 text-white" />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Human Nodes Around */}
+                {[...Array(6)].map((_, i) => {
+                  const angle = (i * 60) * (Math.PI / 180);
+                  const radius = 180;
                   const x = Math.cos(angle) * radius;
                   const y = Math.sin(angle) * radius;
                   
                   return (
                     <div
-                      key={`human-${i}`}
-                      className="absolute top-1/2 left-1/2"
+                      key={i}
+                      className="absolute top-1/2 left-1/2 animate-pulse"
                       style={{
                         transform: `translate(calc(-50% + ${x}px), calc(-50% + ${y}px))`,
-                        animation: `float 5s ease-in-out infinite`,
-                        animationDelay: `${i * 0.3}s`
+                        animationDelay: `${i * 0.2}s`,
+                        animationDuration: '3s'
                       }}
                     >
                       <div className="relative">
-                        {/* Glowing Mind/Intelligence */}
-                        <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                          <div className="absolute inset-0 bg-amber-400/40 blur-lg rounded-full animate-pulse"></div>
-                          <div className="relative w-6 h-6 bg-gradient-to-br from-amber-400 to-orange-500 rounded-full"></div>
-                        </div>
-                        
-                        {/* Human Figure */}
-                        <div className="relative">
-                          <div className="absolute inset-0 bg-gradient-to-br from-gray-600 to-gray-700 rounded-full blur-sm opacity-30"></div>
-                          <div className="relative w-16 h-16 bg-gradient-to-br from-gray-600 to-gray-700 rounded-full flex items-center justify-center shadow-xl border-2 border-gray-500/30">
-                            <div className="w-8 h-8 bg-white/90 rounded-full"></div>
-                          </div>
+                        <div className="absolute inset-0 bg-gradient-to-r from-amber-300 to-orange-300 rounded-full blur-lg opacity-30"></div>
+                        <div className="relative w-16 h-16 bg-gradient-to-br from-amber-400 to-orange-400 rounded-full flex items-center justify-center shadow-xl">
+                          <Users className="w-8 h-8 text-white" />
                         </div>
                       </div>
                     </div>
                   );
                 })}
 
-                {/* Dynamic Connection Lines */}
-                <svg className="absolute inset-0 w-full h-full pointer-events-none" style={{ zIndex: 10 }}>
-                  <defs>
-                    <linearGradient id="powerFlow" x1="0%" y1="0%" x2="100%" y2="100%">
-                      <stop offset="0%" stopColor="#f59e0b" stopOpacity="0.6" />
-                      <stop offset="50%" stopColor="#f97316" stopOpacity="0.8" />
-                      <stop offset="100%" stopColor="#f59e0b" stopOpacity="0.6" />
-                    </linearGradient>
-                  </defs>
-                  
-                  {/* Lines to center (showing power flow) */}
-                  {[...Array(8)].map((_, i) => {
-                    const angle = (i * 45) * (Math.PI / 180);
-                    const radius = 200;
+                {/* Connection Lines */}
+                <svg className="absolute inset-0 w-full h-full" style={{ zIndex: 1 }}>
+                  {[...Array(6)].map((_, i) => {
+                    const angle = (i * 60) * (Math.PI / 180);
+                    const radius = 180;
                     const x = Math.cos(angle) * radius + 50;
                     const y = Math.sin(angle) * radius + 50;
                     
                     return (
                       <line
-                        key={`power-${i}`}
-                        x1={`${x}%`}
-                        y1={`${y}%`}
-                        x2="50%"
-                        y2="50%"
-                        stroke="url(#powerFlow)"
-                        strokeWidth="2.5"
-                        className="opacity-50"
+                        key={i}
+                        x1="50%"
+                        y1="50%"
+                        x2={`${x}%`}
+                        y2={`${y}%`}
+                        stroke="url(#gradient)"
+                        strokeWidth="2"
+                        strokeDasharray="5,5"
+                        className="opacity-40"
                       />
                     );
                   })}
+                  <defs>
+                    <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stopColor="#f59e0b" />
+                      <stop offset="100%" stopColor="#f97316" />
+                    </linearGradient>
+                  </defs>
                 </svg>
-
-                {/* Central Power Core - Amplified Intelligence */}
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20">
-                  <div className="relative">
-                    {/* Power Waves */}
-                    <div className="absolute -inset-20 border-4 border-amber-400/40 rounded-full animate-ping" style={{ animationDuration: '2.5s' }}></div>
-                    <div className="absolute -inset-24 border-2 border-orange-400/30 rounded-full animate-ping" style={{ animationDuration: '3s', animationDelay: '0.3s' }}></div>
-                    <div className="absolute -inset-28 border border-amber-400/20 rounded-full animate-ping" style={{ animationDuration: '3.5s', animationDelay: '0.6s' }}></div>
-                    
-                    {/* Massive Power Glow */}
-                    <div className="absolute inset-0 bg-gradient-to-r from-amber-400 via-orange-500 to-amber-400 rounded-full blur-3xl opacity-60 animate-pulse"></div>
-                    
-                    {/* Core Energy Sphere */}
-                    <div className="relative w-40 h-40 bg-gradient-to-br from-amber-500 via-orange-500 to-amber-600 rounded-full flex items-center justify-center shadow-2xl border-4 border-amber-300/30">
-                      <div className="absolute inset-0 bg-gradient-to-tr from-white/30 to-transparent rounded-full"></div>
-                      <Zap className="w-20 h-20 text-white relative z-10 animate-pulse" />
-                    </div>
-                  </div>
-                </div>
-
-                {/* Energy Particles Flowing Inward */}
-                {[...Array(24)].map((_, i) => {
-                  const angle = (i * 15) * (Math.PI / 180);
-                  const startX = Math.cos(angle) * 200;
-                  const startY = Math.sin(angle) * 200;
-                  
-                  return (
-                    <div
-                      key={`energy-${i}`}
-                      className="absolute top-1/2 left-1/2 w-2 h-2 bg-amber-400 rounded-full shadow-lg shadow-amber-400/50"
-                      style={{
-                        animation: `flowIn 2s ease-in infinite`,
-                        animationDelay: `${i * 0.08}s`,
-                        transform: `translate(${startX}px, ${startY}px)`
-                      }}
-                    />
-                  );
-                })}
-                
-                <style jsx>{`
-                  @keyframes flowIn {
-                    0% {
-                      transform: translate(${200}px, 0px) scale(0.5);
-                      opacity: 0.3;
-                    }
-                    100% {
-                      transform: translate(0px, 0px) scale(1.5);
-                      opacity: 0;
-                    }
-                  }
-                `}</style>
               </div>
             </div>
           </div>
