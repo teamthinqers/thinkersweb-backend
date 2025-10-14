@@ -565,39 +565,6 @@ export default function HomePage() {
             </div>
           </div>
 
-          {/* Features Grid */}
-          <div className="grid md:grid-cols-3 gap-8 mb-20">
-            <div className="p-6 rounded-xl bg-white shadow-sm border border-gray-100">
-              <div className="w-12 h-12 rounded-lg bg-amber-100 flex items-center justify-center mb-4">
-                <Sparkles className="h-6 w-6 text-amber-600" />
-              </div>
-              <h3 className="text-lg font-semibold mb-2">Capture Thoughts</h3>
-              <p className="text-gray-600">
-                Quickly capture and preserve your insights, ideas, and learnings in one place.
-              </p>
-            </div>
-
-            <div className="p-6 rounded-xl bg-white shadow-sm border border-gray-100">
-              <div className="w-12 h-12 rounded-lg bg-orange-100 flex items-center justify-center mb-4">
-                <Network className="h-6 w-6 text-orange-600" />
-              </div>
-              <h3 className="text-lg font-semibold mb-2">Connect Ideas</h3>
-              <p className="text-gray-600">
-                See how your thoughts interconnect and discover patterns across your knowledge.
-              </p>
-            </div>
-
-            <div className="p-6 rounded-xl bg-white shadow-sm border border-gray-100">
-              <div className="w-12 h-12 rounded-lg bg-amber-100 flex items-center justify-center mb-4">
-                <Users className="h-6 w-6 text-amber-600" />
-              </div>
-              <h3 className="text-lg font-semibold mb-2">Collective Intelligence</h3>
-              <p className="text-gray-600">
-                Share insights and learn from a community of thoughtful individuals.
-              </p>
-            </div>
-          </div>
-
           {/* How It Works */}
           <div className="max-w-6xl mx-auto">
             <h2 className="text-3xl font-bold text-center mb-4">How It Works</h2>
