@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
-import { Brain, Users, Sparkles, ArrowRight, CheckCircle, Network, Zap, MessageCircle } from "lucide-react";
+import { Brain, Users, Sparkles, ArrowRight, CheckCircle, Network, Zap, MessageCircle, Lightbulb } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth-new";
 
 export default function HomePage() {
@@ -88,17 +88,19 @@ export default function HomePage() {
             
             {/* Left Column - Content */}
             <div className="space-y-8 lg:space-y-10 text-center lg:text-left">
-              {/* DotSpark - Dot & Spark Elements */}
+              {/* DotSpark Logo */}
               <div className="inline-block animate-fade-in-up">
                 <div className="relative group">
                   {/* Glow Effect */}
                   <div className="absolute -inset-4 bg-gradient-to-r from-amber-500/30 via-orange-500/30 to-amber-500/30 rounded-full blur-2xl opacity-60 group-hover:opacity-90 transition-all duration-500"></div>
                   
-                  {/* Dot with Spark */}
-                  <div className="relative flex items-center gap-3">
-                    <div className="relative w-16 h-16 lg:w-20 lg:h-20 bg-gradient-to-br from-amber-500 to-orange-500 rounded-full shadow-2xl transform group-hover:scale-105 transition-all duration-300 flex items-center justify-center">
-                      <Zap className="w-8 h-8 lg:w-10 lg:h-10 text-amber-900 fill-amber-900" />
-                    </div>
+                  {/* Logo with Text */}
+                  <div className="relative flex items-center gap-4">
+                    <img 
+                      src="/dotspark-icon.png" 
+                      alt="DotSpark" 
+                      className="h-16 w-16 lg:h-20 lg:w-20 transform group-hover:scale-110 group-hover:rotate-12 transition-all duration-500 drop-shadow-2xl" 
+                    />
                     <span className="text-3xl lg:text-4xl font-bold bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent">
                       DotSpark
                     </span>
@@ -107,21 +109,21 @@ export default function HomePage() {
               </div>
 
               {/* Tagline */}
-              <div className="animate-fade-in-up space-y-3" style={{ animationDelay: '0.15s' }}>
-                <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight leading-tight">
-                  <span className="inline-block bg-gradient-to-r from-amber-600 via-orange-600 to-amber-500 bg-clip-text text-transparent">
+              <div className="animate-fade-in-up space-y-4" style={{ animationDelay: '0.15s' }}>
+                <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight leading-[1.1]" style={{ fontFamily: 'system-ui, -apple-system, "Segoe UI", sans-serif', letterSpacing: '-0.02em' }}>
+                  <span className="inline-block bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 bg-clip-text text-transparent">
                     A Human Intelligence
                   </span>
                   <br />
-                  <span className="inline-block bg-gradient-to-r from-orange-600 via-amber-600 to-orange-500 bg-clip-text text-transparent">
+                  <span className="inline-block bg-gradient-to-r from-amber-600 via-orange-500 to-amber-600 bg-clip-text text-transparent font-semibold">
                     Network
                   </span>
                 </h1>
               </div>
 
               {/* Subtitle */}
-              <p className="text-lg lg:text-xl text-gray-600 max-w-lg mx-auto lg:mx-0 animate-fade-in-up" style={{ animationDelay: '0.3s' }}>
-                Connect your thoughts, discover insights, and grow your collective intelligence with others.
+              <p className="text-xl lg:text-2xl text-gray-600 max-w-xl mx-auto lg:mx-0 animate-fade-in-up font-light leading-relaxed" style={{ animationDelay: '0.3s', letterSpacing: '-0.01em' }}>
+                Where human thoughts converge to create collective intelligence that transcends individual minds.
               </p>
 
               {/* CTA Button */}
@@ -136,84 +138,136 @@ export default function HomePage() {
               </div>
             </div>
 
-            {/* Right Column - Dot & Spark Network */}
-            <div className="relative hidden lg:flex items-center justify-center animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
-              <div className="relative w-full max-w-lg aspect-square">
-                {/* Central Dot - Main Hub */}
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10">
+            {/* Right Column - Collective Intelligence Visualization */}
+            <div className="relative hidden lg:flex items-center justify-center animate-fade-in-up" style={{ animationDelay: '0.3s' }}>
+              <div className="relative w-full max-w-xl aspect-square">
+                
+                {/* Background glow effect */}
+                <div className="absolute inset-0 bg-gradient-to-br from-amber-100/20 via-orange-100/20 to-amber-100/20 rounded-full blur-3xl"></div>
+                
+                {/* Central Neural Core */}
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-30">
                   <div className="relative">
-                    <div className="absolute inset-0 bg-gradient-to-r from-amber-400 to-orange-400 rounded-full blur-3xl opacity-50 animate-pulse"></div>
-                    <div className="relative w-28 h-28 bg-gradient-to-br from-amber-500 to-orange-500 rounded-full shadow-2xl"></div>
-                    {/* Central Spark */}
-                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
-                      <Zap className="w-14 h-14 text-amber-900 fill-amber-900" />
+                    {/* Expanding rings - representing signal propagation */}
+                    <div className="absolute -inset-16 border border-amber-300/40 rounded-full animate-ping" style={{ animationDuration: '4s' }}></div>
+                    <div className="absolute -inset-20 border border-orange-300/30 rounded-full animate-ping" style={{ animationDuration: '5s', animationDelay: '0.5s' }}></div>
+                    <div className="absolute -inset-24 border border-amber-300/20 rounded-full animate-ping" style={{ animationDuration: '6s', animationDelay: '1s' }}></div>
+                    
+                    {/* Core node */}
+                    <div className="relative w-32 h-32 bg-gradient-to-br from-amber-500 via-orange-500 to-amber-600 rounded-full flex items-center justify-center shadow-2xl">
+                      <div className="absolute inset-0 bg-gradient-to-tr from-white/20 to-transparent rounded-full"></div>
+                      <Network className="w-16 h-16 text-white relative z-10" />
                     </div>
                   </div>
                 </div>
 
-                {/* Surrounding Dots with Sparks */}
-                {[...Array(6)].map((_, i) => {
-                  const angle = (i * 60) * (Math.PI / 180);
-                  const radius = 180;
+                {/* Mind Nodes - Outer Ring */}
+                {[...Array(12)].map((_, i) => {
+                  const angle = (i * 30) * (Math.PI / 180);
+                  const radius = 220;
                   const x = Math.cos(angle) * radius;
                   const y = Math.sin(angle) * radius;
+                  const sizes = [56, 48, 52, 48, 56, 52, 48, 56, 52, 48, 56, 48];
                   
                   return (
                     <div
-                      key={i}
-                      className="absolute top-1/2 left-1/2 animate-pulse"
+                      key={`outer-${i}`}
+                      className="absolute top-1/2 left-1/2 z-10"
                       style={{
                         transform: `translate(calc(-50% + ${x}px), calc(-50% + ${y}px))`,
-                        animationDelay: `${i * 0.3}s`,
-                        animationDuration: '3s'
+                        animation: `float 6s ease-in-out infinite`,
+                        animationDelay: `${i * 0.15}s`
                       }}
                     >
-                      <div className="relative">
-                        <div className="absolute inset-0 bg-gradient-to-r from-amber-300 to-orange-300 rounded-full blur-xl opacity-40"></div>
-                        <div className="relative w-20 h-20 bg-gradient-to-br from-amber-400 to-orange-400 rounded-full shadow-xl"></div>
-                        {/* Spark in each dot */}
-                        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
-                          <Zap className="w-9 h-9 text-amber-900 fill-amber-900" />
+                      <div className="relative group">
+                        <div className="absolute inset-0 bg-gradient-to-br from-amber-200/50 to-orange-200/50 rounded-full blur-md"></div>
+                        <div 
+                          className="relative bg-gradient-to-br from-amber-400/90 to-orange-400/90 rounded-full flex items-center justify-center shadow-xl backdrop-blur-sm border border-white/20"
+                          style={{ width: sizes[i], height: sizes[i] }}
+                        >
+                          <Brain className="w-6 h-6 text-white/90" />
                         </div>
                       </div>
                     </div>
                   );
                 })}
 
-                {/* Connection Lines with Spark Animation */}
-                <svg className="absolute inset-0 w-full h-full" style={{ zIndex: 1 }}>
-                  {[...Array(6)].map((_, i) => {
-                    const angle = (i * 60) * (Math.PI / 180);
-                    const radius = 180;
-                    const x = Math.cos(angle) * radius + 50;
-                    const y = Math.sin(angle) * radius + 50;
+                {/* Connection Web - Neural Pathways */}
+                <svg className="absolute inset-0 w-full h-full pointer-events-none" style={{ zIndex: 5 }}>
+                  <defs>
+                    <linearGradient id="neuralGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stopColor="#f59e0b" stopOpacity="0.15" />
+                      <stop offset="50%" stopColor="#f97316" stopOpacity="0.3" />
+                      <stop offset="100%" stopColor="#f59e0b" stopOpacity="0.15" />
+                    </linearGradient>
+                    <filter id="glow">
+                      <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+                      <feMerge>
+                        <feMergeNode in="coloredBlur"/>
+                        <feMergeNode in="SourceGraphic"/>
+                      </feMerge>
+                    </filter>
+                  </defs>
+                  
+                  {/* Mesh connections between nodes */}
+                  {[...Array(12)].map((_, i) => {
+                    const angle1 = (i * 30) * (Math.PI / 180);
+                    const radius = 220;
+                    const x1 = Math.cos(angle1) * radius + 50;
+                    const y1 = Math.sin(angle1) * radius + 50;
                     
+                    // Connect to center
                     return (
-                      <line
-                        key={i}
-                        x1="50%"
-                        y1="50%"
-                        x2={`${x}%`}
-                        y2={`${y}%`}
-                        stroke="url(#dotsparkGradient)"
-                        strokeWidth="3"
-                        strokeDasharray="8,4"
-                        className="opacity-30"
-                        style={{
-                          animation: 'dashFlow 2s linear infinite',
-                          animationDelay: `${i * 0.2}s`
-                        }}
-                      />
+                      <g key={`connection-${i}`}>
+                        <line
+                          x1="50%"
+                          y1="50%"
+                          x2={`${x1}%`}
+                          y2={`${y1}%`}
+                          stroke="url(#neuralGradient)"
+                          strokeWidth="1.5"
+                          filter="url(#glow)"
+                        />
+                        
+                        {/* Connect to adjacent nodes */}
+                        {i < 11 && (() => {
+                          const angle2 = ((i + 1) * 30) * (Math.PI / 180);
+                          const x2 = Math.cos(angle2) * radius + 50;
+                          const y2 = Math.sin(angle2) * radius + 50;
+                          
+                          return (
+                            <line
+                              x1={`${x1}%`}
+                              y1={`${y1}%`}
+                              x2={`${x2}%`}
+                              y2={`${y2}%`}
+                              stroke="url(#neuralGradient)"
+                              strokeWidth="1"
+                              strokeDasharray="4,4"
+                            />
+                          );
+                        })()}
+                      </g>
                     );
                   })}
-                  <defs>
-                    <linearGradient id="dotsparkGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                      <stop offset="0%" stopColor="#f59e0b" />
-                      <stop offset="50%" stopColor="#fb923c" />
-                      <stop offset="100%" stopColor="#f97316" />
-                    </linearGradient>
-                  </defs>
                 </svg>
+
+                {/* Energy particles flowing through network */}
+                <div className="absolute inset-0">
+                  {[...Array(20)].map((_, i) => (
+                    <div
+                      key={`particle-${i}`}
+                      className="absolute w-1.5 h-1.5 bg-amber-400 rounded-full shadow-lg shadow-amber-400/50"
+                      style={{
+                        top: `${Math.random() * 100}%`,
+                        left: `${Math.random() * 100}%`,
+                        animation: `pulse ${1.5 + Math.random() * 2}s ease-in-out infinite`,
+                        animationDelay: `${Math.random() * 3}s`,
+                        opacity: 0.7
+                      }}
+                    />
+                  ))}
+                </div>
               </div>
             </div>
           </div>
