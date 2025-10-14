@@ -372,11 +372,34 @@ export default function HomePage() {
                 {/* Pillar 2: Thought Circles */}
                 <div className="text-center space-y-6">
                   <div className="relative w-full max-w-xs mx-auto h-64">
+                    {/* Connecting Lines */}
+                    {[0, 120, 240].map((angle, i) => {
+                      const radian = (angle * Math.PI) / 180;
+                      const radius = 90;
+                      const x = Math.cos(radian) * radius;
+                      const y = Math.sin(radian) * radius;
+                      
+                      return (
+                        <div
+                          key={`line-${i}`}
+                          className="absolute top-1/2 left-1/2 h-0.5 bg-gradient-to-r from-yellow-400/40 to-orange-400/0"
+                          style={{
+                            width: `${radius}px`,
+                            transform: `translate(-50%, -50%) rotate(${angle}deg)`,
+                            transformOrigin: 'left center',
+                            animation: `pulse 2s ease-in-out infinite`,
+                            animationDelay: `${i * 0.2}s`
+                          }}
+                        />
+                      );
+                    })}
+
                     {/* Central Target Icon */}
                     <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20">
                       <div className="relative">
                         <div className="absolute inset-0 bg-yellow-400 rounded-full blur-xl opacity-30 animate-pulse"></div>
-                        <div className="relative w-20 h-20 bg-gradient-to-br from-yellow-500 to-orange-500 rounded-full flex items-center justify-center shadow-xl">
+                        <div className="absolute -inset-2 bg-gradient-to-r from-yellow-300 to-orange-300 rounded-full blur-md opacity-20 animate-ping" style={{ animationDuration: '3s' }}></div>
+                        <div className="relative w-20 h-20 bg-gradient-to-br from-yellow-500 to-orange-500 rounded-full flex items-center justify-center shadow-xl animate-pulse" style={{ animationDuration: '2s' }}>
                           <Target className="w-10 h-10 text-white" />
                         </div>
                       </div>
@@ -394,11 +417,13 @@ export default function HomePage() {
                           key={i}
                           className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
                           style={{
-                            transform: `translate(calc(-50% + ${x}px), calc(-50% + ${y}px))`
+                            transform: `translate(calc(-50% + ${x}px), calc(-50% + ${y}px))`,
+                            animation: `float ${3 + (i % 2)}s ease-in-out infinite`,
+                            animationDelay: `${i * 0.4}s`
                           }}
                         >
                           <div className="relative">
-                            <div className="absolute inset-0 bg-yellow-300 rounded-full blur-sm opacity-30"></div>
+                            <div className="absolute inset-0 bg-yellow-300 rounded-full blur-md opacity-40 animate-pulse" style={{ animationDuration: '2s', animationDelay: `${i * 0.3}s` }}></div>
                             <div className="relative w-14 h-14 bg-gradient-to-br from-yellow-400 to-orange-400 rounded-full flex items-center justify-center shadow-lg">
                               <User className="w-7 h-7 text-white" />
                             </div>
@@ -406,6 +431,17 @@ export default function HomePage() {
                         </div>
                       );
                     })}
+
+                    <style>{`
+                      @keyframes float {
+                        0%, 100% {
+                          transform: translate(calc(-50% + var(--x)), calc(-50% + var(--y))) translateY(0px);
+                        }
+                        50% {
+                          transform: translate(calc(-50% + var(--x)), calc(-50% + var(--y))) translateY(-10px);
+                        }
+                      }
+                    `}</style>
                   </div>
 
                   <div className="space-y-4">
