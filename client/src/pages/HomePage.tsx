@@ -291,7 +291,7 @@ export default function HomePage() {
                   
                   <div className="space-y-6 text-lg lg:text-xl text-gray-700 leading-relaxed">
                     <p>
-                      In a world obsessed with artificial intelligence, we're forgetting what made us intelligent in the first place — <span className="font-semibold text-gray-900">Thinking</span>.
+                      In a world obsessed with <span className="font-semibold text-gray-900">Artificial Intelligence</span>, we're forgetting what made us intelligent in the first place — <span className="font-semibold text-gray-900">Thinking</span>.
                     </p>
                     
                     <p>
