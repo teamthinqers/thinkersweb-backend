@@ -161,10 +161,10 @@ whatsappWebhookRouter.post('/', async (req: Request, res: Response) => {
           
           console.log(`✅ Successfully auto-linked phone to user account!`);
           
-          // Send confirmation message
+          // Send confirmation message with clear privacy messaging
           await sendWhatsAppMessage(
             normalizedPhone,
-            "✅ Your WhatsApp is now linked to your DotSpark account! You can now send thoughts and interact with DotSpark via WhatsApp. Try sending a message!"
+            "✅ Your WhatsApp is now linked!\n\nFrom now on, any message you send here will be saved to your DotSpark account. Your previous WhatsApp chats remain private and are never synced.\n\nTry sending your first thought! 💭"
           );
         } else {
           console.log(`ℹ️ Phone ${standardizedPhone} already linked to user ID ${existingLink.userId}`);
@@ -201,56 +201,64 @@ whatsappWebhookRouter.post('/', async (req: Request, res: Response) => {
         return;
       }
       
-      // Always create an entry for the received message, regardless of user status
+      // Create an entry for the received message (skip if it's a linking message)
       try {
-        console.log(`⭐️ Creating entry for WhatsApp message from user ID: ${userId}`);
+        // Check if this message contains a linking token
+        const hasToken = extractUserIdFromMessage(messageText) !== null;
         
-        // Clean the message text by removing the token (if present)
-        const cleanedMessage = cleanMessageFromToken(messageText);
-        
-        const timestamp = new Date().toLocaleString('en-US', {
-          year: 'numeric',
-          month: 'numeric',
-          day: 'numeric',
-          hour: 'numeric',
-          minute: 'numeric',
-          hour12: true
-        });
-        
-        const now = new Date();
-        
-        const entryData = {
-          userId: userId,
-          title: `WhatsApp - ${timestamp}`,
-          content: cleanedMessage,
-          visibility: "private",
-          isFavorite: false,
-          createdAt: now,
-          updatedAt: now
-        };
-        
-        // Insert with explicit timestamp to ensure it's visible in dashboard
-        const [newEntry] = await db.insert(entries).values(entryData).returning();
-        
-        if (newEntry) {
-          console.log(`⭐️ Created entry with ID ${newEntry.id} for WhatsApp message with timestamp ${now.toISOString()}`);
+        // Only create entry if this is NOT a linking message
+        if (!hasToken) {
+          console.log(`⭐️ Creating entry for WhatsApp message from user ID: ${userId}`);
           
-          // Double-check entry creation
-          try {
-            const verifyEntry = await db.query.entries.findFirst({
-              where: eq(entries.id, newEntry.id)
-            });
+          // Clean the message text by removing any tokens (if present)
+          const cleanedMessage = cleanMessageFromToken(messageText);
+          
+          const timestamp = new Date().toLocaleString('en-US', {
+            year: 'numeric',
+            month: 'numeric',
+            day: 'numeric',
+            hour: 'numeric',
+            minute: 'numeric',
+            hour12: true
+          });
+          
+          const now = new Date();
+          
+          const entryData = {
+            userId: userId,
+            title: `WhatsApp - ${timestamp}`,
+            content: cleanedMessage,
+            visibility: "private",
+            isFavorite: false,
+            createdAt: now,
+            updatedAt: now
+          };
+          
+          // Insert with explicit timestamp to ensure it's visible in dashboard
+          const [newEntry] = await db.insert(entries).values(entryData).returning();
+        
+          if (newEntry) {
+            console.log(`⭐️ Created entry with ID ${newEntry.id} for WhatsApp message with timestamp ${now.toISOString()}`);
             
-            if (verifyEntry) {
-              console.log(`⭐️ Entry verification successful. Entry ID ${newEntry.id} exists in database.`);
-            } else {
-              console.error(`⛔️ Failed to verify entry existence after creation. Entry ID ${newEntry.id} not found!`);
+            // Double-check entry creation
+            try {
+              const verifyEntry = await db.query.entries.findFirst({
+                where: eq(entries.id, newEntry.id)
+              });
+              
+              if (verifyEntry) {
+                console.log(`⭐️ Entry verification successful. Entry ID ${newEntry.id} exists in database.`);
+              } else {
+                console.error(`⛔️ Failed to verify entry existence after creation. Entry ID ${newEntry.id} not found!`);
+              }
+            } catch (verifyError) {
+              console.error(`⛔️ Error verifying entry: ${verifyError}`);
             }
-          } catch (verifyError) {
-            console.error(`⛔️ Error verifying entry: ${verifyError}`);
+          } else {
+            console.error(`⛔️ Failed to create entry! No entry returned after insert.`);
           }
         } else {
-          console.error(`⛔️ Failed to create entry! No entry returned after insert.`);
+          console.log(`ℹ️ Skipping entry creation for linking message`);
         }
       } catch (entryError) {
         console.error("⛔️ Error creating entry for WhatsApp message:", entryError);

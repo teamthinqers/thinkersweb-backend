@@ -471,7 +471,7 @@ export default function SharedAuthLayout({ children }: SharedAuthLayoutProps) {
                 window.open(`https://wa.me/16067157733?text=${encodedMessage}`, '_blank');
               }}
               className="flex items-center justify-center w-10 h-10 bg-[#25D366] hover:bg-[#128C7E] rounded-xl transition-all duration-300 hover:scale-105 shadow-lg"
-              title="WhatsApp"
+              title="Send to WhatsApp - Only new messages saved, past chats stay private"
             >
               <SiWhatsapp className="h-5 w-5 text-white" />
             </Button>
