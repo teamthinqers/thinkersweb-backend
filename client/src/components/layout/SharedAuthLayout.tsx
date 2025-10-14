@@ -49,6 +49,7 @@ export default function SharedAuthLayout({ children }: SharedAuthLayoutProps) {
   const isOnSocial = location === '/social';
   const isOnMyNeura = location === '/myneura';
   const isOnMyDotSpark = location === '/mydotspark';
+  const isOnThoughtCircles = location === '/thinq-circle' || location.startsWith('/thinq-circle/');
 
   // Fetch notifications using simplified endpoint
   const { data: notificationsData } = useQuery<{ 
@@ -312,6 +313,21 @@ export default function SharedAuthLayout({ children }: SharedAuthLayoutProps) {
               >
                 <Brain className="w-5 h-5" />
                 {isSidebarOpen && <span className="ml-3 text-sm font-medium">My Neura</span>}
+              </Button>
+            </Link>
+
+            <Link href="/thinq-circle">
+              <Button 
+                variant="ghost" 
+                title="My Thought Circles"
+                className={`${isSidebarOpen ? 'w-full justify-start h-10' : 'w-10 h-10'} rounded-xl transition-all duration-300 ${
+                  isOnThoughtCircles 
+                    ? 'bg-gradient-to-br from-yellow-400 via-amber-500 to-yellow-600 text-white hover:from-yellow-500 hover:via-amber-600 hover:to-yellow-700' 
+                    : 'hover:bg-yellow-50 hover:text-yellow-600'
+                }`}
+              >
+                <UsersRound className="w-5 h-5" />
+                {isSidebarOpen && <span className="ml-3 text-sm font-medium">My Thought Circles</span>}
               </Button>
             </Link>
           </div>
