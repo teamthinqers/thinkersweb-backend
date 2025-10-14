@@ -20,7 +20,7 @@ export default function HomePage() {
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-b from-amber-50/50 via-white to-orange-50/30">
       {/* Header */}
-      <header className="sticky top-0 z-50 border-b border-amber-900/10 bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 backdrop-blur-lg shadow-xl">
+      <header className="sticky top-0 z-50 border-b border-amber-200/50 bg-white/95 backdrop-blur-md shadow-sm">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex h-16 items-center justify-between">
             {/* Logo */}
@@ -32,7 +32,7 @@ export default function HomePage() {
                 <img 
                   src="/dotspark-logo-combined.png?v=1" 
                   alt="DotSpark" 
-                  className="h-10 w-auto object-contain brightness-0 invert" 
+                  className="h-10 w-auto object-contain" 
                 />
               </div>
             </div>
@@ -40,10 +40,10 @@ export default function HomePage() {
             {/* Navigation */}
             <nav className="flex items-center gap-6">
               <Button
-                variant="ghost"
+                variant="outline"
                 size="sm"
                 onClick={() => setLocation("/")}
-                className="text-sm font-medium text-gray-300 hover:text-amber-400"
+                className="text-sm font-medium text-gray-700 border-gray-300 hover:border-amber-500 hover:text-amber-600 hover:bg-amber-50 transition-all duration-300"
               >
                 About
               </Button>
