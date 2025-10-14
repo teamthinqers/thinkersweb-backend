@@ -725,10 +725,10 @@ export default function MyNeuraPage() {
               {/* Left: Navigation sections */}
               <div className="flex items-center gap-4">
               
-              {/* My Neura Heading */}
-              <div className="flex items-center gap-2 mr-4">
+              {/* My Neura Heading - integrated in toolbar */}
+              <div className="flex items-center gap-2 px-3 py-2 bg-gradient-to-br from-amber-50 to-orange-50 rounded-lg border-l-2 border-amber-500">
                 <Brain className="h-5 w-5 text-amber-600" />
-                <h1 className="text-lg font-bold text-amber-900">My Neura</h1>
+                <h1 className="text-sm font-bold text-amber-900">My Neura</h1>
               </div>
               
               {/* 1. Cognitive Identity - button and icon in one line */}
