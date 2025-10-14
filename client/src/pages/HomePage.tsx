@@ -708,7 +708,7 @@ export default function HomePage() {
       {/* Footer */}
       <footer className="border-t bg-white py-8">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center text-gray-600 text-sm">
-          <p>© 2025 DotSpark. Building collective intelligence together.</p>
+          <p>© 2025 DotSpark. Building collective Human Intelligence Network.</p>
         </div>
       </footer>
     </div>
