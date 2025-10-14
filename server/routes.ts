@@ -3967,5 +3967,55 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Admin endpoint - Get all users (only accessible by admin)
+  app.get(`${apiPrefix}/admin/users`, requireAuth, async (req: AuthenticatedRequest, res: Response) => {
+    try {
+      const userId = req.user?.id || req.session?.userId;
+      const userEmail = req.user?.email;
+      
+      if (!userId || !userEmail) {
+        return res.status(401).json({ error: 'Authentication required' });
+      }
+
+      // Check if user is admin (only aravindhraj1410@gmail.com)
+      if (userEmail !== 'aravindhraj1410@gmail.com') {
+        return res.status(403).json({ error: 'Admin access required' });
+      }
+
+      // Fetch all users with relevant information
+      const allUsers = await db.select({
+        id: users.id,
+        email: users.email,
+        fullName: users.fullName,
+        username: users.username,
+        avatar: users.avatar,
+        linkedinPhotoUrl: users.linkedinPhotoUrl,
+        linkedinHeadline: users.linkedinHeadline,
+        linkedinProfileUrl: users.linkedinProfileUrl,
+        dotSparkActivated: users.dotSparkActivated,
+        dotSparkActivatedAt: users.dotSparkActivatedAt,
+        subscriptionTier: users.subscriptionTier,
+        cognitiveIdentityCompleted: users.cognitiveIdentityCompleted,
+        learningEngineCompleted: users.learningEngineCompleted,
+        createdAt: users.createdAt,
+        updatedAt: users.updatedAt,
+      })
+      .from(users)
+      .orderBy(desc(users.createdAt));
+
+      res.json({
+        success: true,
+        users: allUsers,
+      });
+
+    } catch (error) {
+      console.error('Admin users fetch error:', error);
+      res.status(500).json({ 
+        error: 'Failed to fetch users',
+        details: error instanceof Error ? error.message : 'Unknown error'
+      });
+    }
+  });
+
   return httpServer;
 }

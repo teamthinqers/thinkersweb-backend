@@ -32,6 +32,7 @@ import JoinCircleInvitePage from "@/pages/JoinCircleInvitePage";
 import WhatsAppAdmin from "@/pages/WhatsAppAdmin";
 import WhatsAppTest from "@/pages/WhatsAppTest";
 import WhatsAppEntries from "@/pages/WhatsAppEntries";
+import AdminPage from "@/pages/AdminPage";
 import FixedEntries from "@/pages/FixedEntries";
 import ActivateDotSpark from "@/pages/ActivateDotSpark";
 import ActivateNeura from "@/pages/ActivateNeura";
@@ -210,6 +211,7 @@ function Router() {
       <Route path="/learning-engine" component={LearningEnginePage} />
       <Route path="/auth" component={AuthPage} />
       <Route path="/notifications" component={NotificationsPage} />
+      <Route path="/admin" component={AdminPage} />
       
       {/* All routes now public - no authentication required */}
       <Route path="/entries" component={AppWithLayout} />
