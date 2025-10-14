@@ -121,7 +121,7 @@ export default function HomePage() {
 
               {/* Subtitle */}
               <p className="text-lg lg:text-xl text-gray-600/90 max-w-xl mx-auto lg:mx-0 animate-fade-in-up font-normal leading-relaxed" style={{ animationDelay: '0.3s', letterSpacing: '-0.005em' }}>
-                Where human thoughts converge to create collective intelligence
+                Where human thoughts connect, evolve, and give rise to a collective intelligence that feels deeply human.
               </p>
 
               {/* CTA Button */}
