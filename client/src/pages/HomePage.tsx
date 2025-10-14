@@ -305,10 +305,10 @@ export default function HomePage() {
           </div>
 
           {/* Inside the Network Section */}
-          <div className="py-20 lg:py-32 bg-gradient-to-b from-gray-50 to-white">
-            <div className="max-w-7xl mx-auto">
+          <div className="py-20 lg:py-24 bg-gradient-to-b from-gray-50 to-white">
+            <div className="max-w-7xl mx-auto px-4">
               {/* Section Header */}
-              <div className="text-center mb-16 lg:mb-24">
+              <div className="text-center mb-16">
                 <h2 className="text-4xl lg:text-5xl font-bold bg-gradient-to-r from-amber-500 to-orange-500 bg-clip-text text-transparent mb-4">
                   Inside the Network
                 </h2>
@@ -317,83 +317,65 @@ export default function HomePage() {
                 </p>
               </div>
 
-              {/* Three Pillars */}
-              <div className="space-y-24 lg:space-y-32">
+              {/* Three Pillars - Grid Layout */}
+              <div className="grid md:grid-cols-3 gap-8 lg:gap-12">
                 
                 {/* Pillar 1: Self Reflection */}
-                <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-                  <div className="order-2 lg:order-1">
-                    <div className="relative w-full max-w-md mx-auto aspect-square">
-                      {/* Central Person */}
-                      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20">
-                        <div className="relative">
-                          <div className="absolute inset-0 bg-gradient-to-r from-amber-300 to-orange-300 rounded-full blur-2xl opacity-30 animate-pulse"></div>
-                          <div className="relative w-24 h-24 bg-gradient-to-br from-amber-400 to-orange-400 rounded-full flex items-center justify-center shadow-xl">
-                            <User className="w-12 h-12 text-white" />
-                          </div>
+                <div className="text-center space-y-6">
+                  <div className="relative w-full max-w-xs mx-auto h-64">
+                    {/* Central Person */}
+                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20">
+                      <div className="relative">
+                        <div className="absolute inset-0 bg-gradient-to-r from-amber-300 to-orange-300 rounded-full blur-xl opacity-30 animate-pulse"></div>
+                        <div className="relative w-20 h-20 bg-gradient-to-br from-amber-400 to-orange-400 rounded-full flex items-center justify-center shadow-xl">
+                          <User className="w-10 h-10 text-white" />
                         </div>
                       </div>
-
-                      {/* Orbiting Dots */}
-                      {[...Array(6)].map((_, i) => {
-                        const angle = (i * 60) * (Math.PI / 180);
-                        const radius = 120;
-                        
-                        return (
-                          <div
-                            key={i}
-                            className="absolute top-1/2 left-1/2 w-4 h-4 bg-gradient-to-br from-amber-400 to-orange-400 rounded-full shadow-lg"
-                            style={{
-                              animation: `orbit 8s linear infinite`,
-                              animationDelay: `${-i * 1.33}s`,
-                              transformOrigin: '0 0'
-                            }}
-                          />
-                        );
-                      })}
-                      
-                      <style>{`
-                        @keyframes orbit {
-                          from {
-                            transform: translate(-50%, -50%) rotate(0deg) translateX(120px);
-                          }
-                          to {
-                            transform: translate(-50%, -50%) rotate(360deg) translateX(120px);
-                          }
-                        }
-                      `}</style>
                     </div>
+
+                    {/* Orbiting Dots */}
+                    {[...Array(6)].map((_, i) => (
+                      <div
+                        key={i}
+                        className="absolute top-1/2 left-1/2 w-3 h-3 bg-gradient-to-br from-amber-400 to-orange-400 rounded-full shadow-lg"
+                        style={{
+                          animation: `orbit 8s linear infinite`,
+                          animationDelay: `${-i * 1.33}s`,
+                          transformOrigin: '0 0'
+                        }}
+                      />
+                    ))}
+                    
+                    <style>{`
+                      @keyframes orbit {
+                        from {
+                          transform: translate(-50%, -50%) rotate(0deg) translateX(90px);
+                        }
+                        to {
+                          transform: translate(-50%, -50%) rotate(360deg) translateX(90px);
+                        }
+                      }
+                    `}</style>
                   </div>
 
-                  <div className="order-1 lg:order-2 space-y-6">
-                    <h3 className="text-3xl lg:text-4xl font-bold text-gray-900">
-                      Self Reflection — Where Thinking Begins
+                  <div className="space-y-4">
+                    <h3 className="text-2xl font-bold text-gray-900">
+                      Self Reflection
                     </h3>
-                    <div className="space-y-4 text-lg text-gray-700 leading-relaxed">
-                      <p>Every journey starts with a thought. A moment of pause, awareness, or curiosity.</p>
-                      <p>DotSpark gives you a private space to capture those thoughts — not for validation, but for clarity.</p>
-                    </div>
+                    <p className="text-sm font-semibold text-amber-600">Where Thinking Begins</p>
+                    <p className="text-gray-700 leading-relaxed">
+                      Every journey starts with a thought. DotSpark gives you a private space to capture those thoughts — not for validation, but for clarity.
+                    </p>
                   </div>
                 </div>
 
                 {/* Pillar 2: Thought Circles */}
-                <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-                  <div className="space-y-6">
-                    <h3 className="text-3xl lg:text-4xl font-bold text-gray-900">
-                      Thought Circles — Think, Share, Evolve
-                    </h3>
-                    <div className="space-y-4 text-lg text-gray-700 leading-relaxed">
-                      <p>Reflection deepens when shared with people who think like you — or unlike you.</p>
-                      <p>ThinQers create private Thought Circles to explore perspectives, exchange sparks, and refine their thinking together.</p>
-                      <p className="font-medium text-gray-800">It's not about debate — it's about discovery.</p>
-                    </div>
-                  </div>
-
-                  <div className="relative w-full max-w-md mx-auto aspect-square">
-                    {/* 5 Profile Silhouettes in Circle Formation */}
+                <div className="text-center space-y-6">
+                  <div className="relative w-full max-w-xs mx-auto h-64">
+                    {/* 5 Profile Silhouettes */}
                     {[...Array(5)].map((_, i) => {
                       const angle = (i * 72 - 90) * (Math.PI / 180);
-                      const radius = 100;
+                      const radius = 70;
                       const x = Math.cos(angle) * radius;
                       const y = Math.sin(angle) * radius;
                       
@@ -408,9 +390,9 @@ export default function HomePage() {
                           }}
                         >
                           <div className="relative">
-                            <div className="absolute inset-0 bg-amber-300 rounded-full blur-md opacity-30"></div>
-                            <div className="relative w-16 h-16 bg-gradient-to-br from-gray-400 to-gray-500 rounded-full flex items-center justify-center shadow-lg">
-                              <User className="w-8 h-8 text-white" />
+                            <div className="absolute inset-0 bg-amber-300 rounded-full blur-sm opacity-30"></div>
+                            <div className="relative w-14 h-14 bg-gradient-to-br from-gray-400 to-gray-500 rounded-full flex items-center justify-center shadow-lg">
+                              <User className="w-7 h-7 text-white" />
                             </div>
                           </div>
                         </div>
@@ -422,7 +404,7 @@ export default function HomePage() {
                       {[...Array(5)].map((_, i) => {
                         const angle1 = (i * 72 - 90) * (Math.PI / 180);
                         const angle2 = ((i + 1) * 72 - 90) * (Math.PI / 180);
-                        const radius = 100;
+                        const radius = 70;
                         const x1 = Math.cos(angle1) * radius + 50;
                         const y1 = Math.sin(angle1) * radius + 50;
                         const x2 = Math.cos(angle2) * radius + 50;
@@ -436,89 +418,97 @@ export default function HomePage() {
                             x2={`${x2}%`}
                             y2={`${y2}%`}
                             stroke="#f59e0b"
-                            strokeWidth="2"
-                            strokeDasharray="4,4"
+                            strokeWidth="1.5"
+                            strokeDasharray="3,3"
                             className="opacity-40"
                           />
                         );
                       })}
                     </svg>
                   </div>
+
+                  <div className="space-y-4">
+                    <h3 className="text-2xl font-bold text-gray-900">
+                      Thought Circles
+                    </h3>
+                    <p className="text-sm font-semibold text-amber-600">Think, Share, Evolve</p>
+                    <p className="text-gray-700 leading-relaxed">
+                      ThinQers create private Thought Circles to explore perspectives and refine their thinking together. It's not about debate — it's about discovery.
+                    </p>
+                  </div>
                 </div>
 
                 {/* Pillar 3: The Social Brain */}
-                <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-                  <div className="order-2 lg:order-1">
-                    <div className="relative w-full max-w-lg mx-auto aspect-square">
-                      {/* Central Core */}
-                      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20">
-                        <div className="relative">
-                          <div className="absolute inset-0 bg-gradient-to-r from-amber-400 to-orange-400 rounded-full blur-3xl opacity-40 animate-pulse"></div>
-                          <div className="relative w-20 h-20 bg-gradient-to-br from-amber-500 to-orange-500 rounded-full shadow-2xl"></div>
-                        </div>
+                <div className="text-center space-y-6">
+                  <div className="relative w-full max-w-xs mx-auto h-64">
+                    {/* Central Core */}
+                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20">
+                      <div className="relative">
+                        <div className="absolute inset-0 bg-gradient-to-r from-amber-400 to-orange-400 rounded-full blur-2xl opacity-40 animate-pulse"></div>
+                        <div className="relative w-16 h-16 bg-gradient-to-br from-amber-500 to-orange-500 rounded-full shadow-2xl"></div>
                       </div>
+                    </div>
 
-                      {/* Neural Network Nodes */}
+                    {/* Neural Network Nodes */}
+                    {[...Array(12)].map((_, i) => {
+                      const angle = (i * 30) * (Math.PI / 180);
+                      const radius = 80 + (i % 3) * 25;
+                      const x = Math.cos(angle) * radius;
+                      const y = Math.sin(angle) * radius;
+                      
+                      return (
+                        <div
+                          key={i}
+                          className="absolute top-1/2 left-1/2"
+                          style={{
+                            transform: `translate(calc(-50% + ${x}px), calc(-50% + ${y}px))`,
+                            animation: `pulse ${2 + (i % 3) * 0.5}s ease-in-out infinite`,
+                            animationDelay: `${i * 0.1}s`
+                          }}
+                        >
+                          <div className="w-2 h-2 bg-gradient-to-br from-amber-400 to-orange-400 rounded-full shadow-lg"></div>
+                        </div>
+                      );
+                    })}
+
+                    {/* Connection Lines */}
+                    <svg className="absolute inset-0 w-full h-full" style={{ zIndex: 10 }}>
                       {[...Array(12)].map((_, i) => {
                         const angle = (i * 30) * (Math.PI / 180);
-                        const radius = 120 + (i % 3) * 40;
-                        const x = Math.cos(angle) * radius;
-                        const y = Math.sin(angle) * radius;
+                        const radius = 80 + (i % 3) * 25;
+                        const x = Math.cos(angle) * radius + 50;
+                        const y = Math.sin(angle) * radius + 50;
                         
                         return (
-                          <div
+                          <line
                             key={i}
-                            className="absolute top-1/2 left-1/2"
-                            style={{
-                              transform: `translate(calc(-50% + ${x}px), calc(-50% + ${y}px))`,
-                              animation: `pulse ${2 + (i % 3) * 0.5}s ease-in-out infinite`,
-                              animationDelay: `${i * 0.1}s`
-                            }}
-                          >
-                            <div className="w-3 h-3 bg-gradient-to-br from-amber-400 to-orange-400 rounded-full shadow-lg"></div>
-                          </div>
+                            x1="50%"
+                            y1="50%"
+                            x2={`${x}%`}
+                            y2={`${y}%`}
+                            stroke="url(#neuralGradient)"
+                            strokeWidth="1"
+                            className="opacity-30"
+                          />
                         );
                       })}
-
-                      {/* Connection Lines - Neural Pattern */}
-                      <svg className="absolute inset-0 w-full h-full" style={{ zIndex: 10 }}>
-                        {[...Array(12)].map((_, i) => {
-                          const angle = (i * 30) * (Math.PI / 180);
-                          const radius = 120 + (i % 3) * 40;
-                          const x = Math.cos(angle) * radius + 50;
-                          const y = Math.sin(angle) * radius + 50;
-                          
-                          return (
-                            <line
-                              key={i}
-                              x1="50%"
-                              y1="50%"
-                              x2={`${x}%`}
-                              y2={`${y}%`}
-                              stroke="url(#neuralGradient)"
-                              strokeWidth="1.5"
-                              className="opacity-30"
-                            />
-                          );
-                        })}
-                        <defs>
-                          <linearGradient id="neuralGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                            <stop offset="0%" stopColor="#f59e0b" />
-                            <stop offset="100%" stopColor="#f97316" />
-                          </linearGradient>
-                        </defs>
-                      </svg>
-                    </div>
+                      <defs>
+                        <linearGradient id="neuralGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                          <stop offset="0%" stopColor="#f59e0b" />
+                          <stop offset="100%" stopColor="#f97316" />
+                        </linearGradient>
+                      </defs>
+                    </svg>
                   </div>
 
-                  <div className="order-1 lg:order-2 space-y-6">
-                    <h3 className="text-3xl lg:text-4xl font-bold text-gray-900">
-                      The Social Brain — Where Intelligence Connects
+                  <div className="space-y-4">
+                    <h3 className="text-2xl font-bold text-gray-900">
+                      The Social Brain
                     </h3>
-                    <div className="space-y-4 text-lg text-gray-700 leading-relaxed">
-                      <p>When ideas from many circles converge, a collective brain begins to form — powered purely by human thought.</p>
-                      <p>This is the Social Brain — where ThinQers co-create, connect analogies, and grow shared intelligence that transcends individual minds.</p>
-                    </div>
+                    <p className="text-sm font-semibold text-amber-600">Where Intelligence Connects</p>
+                    <p className="text-gray-700 leading-relaxed">
+                      When ideas from many circles converge, a collective brain begins to form — where ThinQers co-create and grow shared intelligence.
+                    </p>
                   </div>
                 </div>
 
