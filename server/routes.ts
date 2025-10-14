@@ -3967,7 +3967,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Admin endpoint - Get all users (only accessible by admin)
+  // Admin endpoint - Get all users and ThinQ circles (only accessible by admin)
   app.get(`${apiPrefix}/admin/users`, requireAuth, async (req: AuthenticatedRequest, res: Response) => {
     try {
       const userId = req.user?.id || req.session?.userId;
@@ -4003,15 +4003,45 @@ export async function registerRoutes(app: Express): Promise<Server> {
       .from(users)
       .orderBy(desc(users.createdAt));
 
+      // Fetch all ThinQ circles with their members
+      const allCircles = await db.query.thinqCircles.findMany({
+        orderBy: desc(thinqCircles.createdAt),
+        with: {
+          creator: {
+            columns: {
+              id: true,
+              email: true,
+              fullName: true,
+              avatar: true,
+              linkedinPhotoUrl: true,
+            }
+          },
+          members: {
+            with: {
+              user: {
+                columns: {
+                  id: true,
+                  email: true,
+                  fullName: true,
+                  avatar: true,
+                  linkedinPhotoUrl: true,
+                }
+              }
+            }
+          }
+        }
+      });
+
       res.json({
         success: true,
         users: allUsers,
+        circles: allCircles,
       });
 
     } catch (error) {
-      console.error('Admin users fetch error:', error);
+      console.error('Admin data fetch error:', error);
       res.status(500).json({ 
-        error: 'Failed to fetch users',
+        error: 'Failed to fetch admin data',
         details: error instanceof Error ? error.message : 'Unknown error'
       });
     }
