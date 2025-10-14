@@ -510,54 +510,56 @@ export default function HomePage() {
                 </h2>
               </div>
 
-              <div className="max-w-5xl mx-auto text-center space-y-8">
-                {/* Founder Photo - Circular at Top */}
-                <div className="flex justify-center">
-                  <div className="relative">
-                    <div className="absolute inset-0 bg-gradient-to-r from-amber-400 to-orange-400 rounded-full blur-2xl opacity-30"></div>
-                    <div className="relative w-32 h-32 rounded-full overflow-hidden shadow-2xl ring-4 ring-white">
-                      <img 
-                        src="/founder-photo.jpg" 
-                        alt="Aravindh Rajendran - Founder of DotSpark" 
-                        className="w-full h-full object-cover object-top"
-                      />
+              <div className="bg-gradient-to-br from-amber-50/50 to-orange-50/50 rounded-3xl p-8 lg:p-12 border border-amber-100 shadow-xl">
+                <div className="grid lg:grid-cols-[350px_1fr] gap-8 lg:gap-12 items-center max-w-6xl mx-auto">
+                  {/* Founder Photo - Left Side, More Prominent */}
+                  <div className="flex flex-col items-center space-y-6">
+                    <div className="relative">
+                      <div className="absolute inset-0 bg-gradient-to-r from-amber-400 to-orange-400 rounded-2xl blur-2xl opacity-30"></div>
+                      <div className="relative rounded-2xl shadow-2xl overflow-hidden ring-4 ring-white/50">
+                        <img 
+                          src="/founder-photo.jpg" 
+                          alt="Aravindh Rajendran - Founder of DotSpark" 
+                          className="w-full h-80 object-cover object-top"
+                        />
+                      </div>
+                    </div>
+                    
+                    <div className="text-center">
+                      <p className="text-xl font-bold text-gray-900">Aravindh Rajendran</p>
+                      <p className="text-gray-600 text-sm">Founder, DotSpark</p>
                     </div>
                   </div>
-                </div>
 
-                {/* Founder Name */}
-                <div>
-                  <p className="text-2xl font-bold text-gray-900">Aravindh Rajendran</p>
-                  <p className="text-gray-600 mt-1">Founder, DotSpark</p>
-                </div>
+                  {/* Message - Right Side, Condensed */}
+                  <div className="space-y-5">
+                    <p className="text-lg italic text-gray-700">"Hey ThinQers, thank you for taking a moment to pause and reach here."</p>
+                    
+                    <div className="space-y-4 text-base text-gray-700 leading-relaxed">
+                      <p>
+                        We live in a world obsessed with big data and faster systems. But real intelligence doesn't come from scale — it comes from small, distilled human moments that can't be measured, only felt.
+                      </p>
+                      
+                      <p>
+                        That belief shaped DotSpark. A space for those who choose to ThinQ, to reflect deeply, and to turn thought into connection. AI helped me create this platform, but the spark behind it was human.
+                      </p>
+                      
+                      <p className="font-medium text-gray-800">
+                        One person choosing to ThinQ can make a difference. But when many minds come together, something remarkable forms — a collective brain, a connected intelligence powered by human thoughts. That is the future I believe in. Not artificial. <span className="font-bold bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent">Deeply human.</span>
+                      </p>
+                    </div>
 
-                {/* Message - Condensed */}
-                <div className="max-w-3xl mx-auto space-y-4 text-base text-gray-700 leading-relaxed">
-                  <p className="italic">"Hey ThinQers, thank you for taking a moment to pause and reach here."</p>
-                  
-                  <p>
-                    We live in a world obsessed with big data and faster systems. But real intelligence doesn't come from scale — it comes from small, distilled human moments that can't be measured, only felt.
-                  </p>
-                  
-                  <p>
-                    That belief shaped DotSpark. A space for those who choose to ThinQ, to reflect deeply, and to turn thought into connection. AI helped me create this platform, but the spark behind it was human.
-                  </p>
-                  
-                  <p className="font-medium text-gray-800">
-                    One person choosing to ThinQ can make a difference. But when many minds come together, something remarkable forms — a collective brain, a connected intelligence powered by human thoughts. That is the future I believe in. Not artificial. <span className="font-bold bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent">Deeply human.</span>
-                  </p>
-                </div>
-
-                {/* CTA Button */}
-                <div className="pt-4">
-                  <a 
-                    href="https://chat.whatsapp.com/E6Mwv20MUrCG58xuVJQNTv" 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="inline-block px-8 py-4 bg-gradient-to-r from-amber-500 to-orange-500 text-white font-bold text-lg rounded-full shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-300"
-                  >
-                    Join ThinQers Community
-                  </a>
+                    <div className="pt-2">
+                      <a 
+                        href="https://chat.whatsapp.com/E6Mwv20MUrCG58xuVJQNTv" 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="inline-block px-8 py-3 bg-gradient-to-r from-amber-500 to-orange-500 text-white font-bold text-base rounded-full shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-300"
+                      >
+                        Join ThinQers Community
+                      </a>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
