@@ -238,9 +238,9 @@ export default function HomePage() {
                         {/* Glow effect */}
                         <div className="absolute inset-0 bg-gradient-to-r from-amber-400 to-orange-400 rounded-full blur-3xl opacity-50 animate-pulse"></div>
                         
-                        {/* Main icon */}
-                        <div className="relative w-32 h-32 bg-gradient-to-br from-amber-500 to-orange-500 rounded-full flex items-center justify-center shadow-2xl">
-                          <Lightbulb className="w-16 h-16 text-white" />
+                        {/* Main icon - Pulsating */}
+                        <div className="relative w-32 h-32 bg-gradient-to-br from-amber-500 to-orange-500 rounded-full flex items-center justify-center shadow-2xl animate-pulse" style={{ animationDuration: '2s' }}>
+                          <Lightbulb className="w-16 h-16 text-white animate-pulse" style={{ animationDuration: '1.5s' }} />
                         </div>
                       </div>
                     </div>
