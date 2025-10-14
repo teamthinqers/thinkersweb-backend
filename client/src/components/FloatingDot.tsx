@@ -417,10 +417,10 @@ export default function FloatingDot({ onClick, currentPage }: FloatingDotProps) 
         onMouseDown={handleMouseDown}
         onClick={handleClick}
       >
-        <div className="relative">
+        <div className="relative w-14 h-14">
           {/* Arrow Indicator - Points to the floating dot */}
           {!hasMoved && !isDragging && (
-            <div className="absolute -top-16 left-1/2 transform -translate-x-1/2 animate-bounce">
+            <div className="absolute -top-16 left-1/2 -translate-x-1/2 animate-bounce">
               <ArrowDown className="h-8 w-8 text-amber-600" strokeWidth={3} />
             </div>
           )}
