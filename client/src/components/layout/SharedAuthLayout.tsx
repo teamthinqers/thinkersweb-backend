@@ -406,58 +406,48 @@ export default function SharedAuthLayout({ children }: SharedAuthLayoutProps) {
             {/* My DotSpark Button with Logo Icon */}
             <Link href="/mydotspark">
               <Button 
-                variant="ghost" 
+                variant="outline" 
                 size="sm" 
-                className="flex items-center gap-2 px-4 py-2 rounded-xl transition-all duration-300 hover:scale-105 shadow-lg"
-                style={{
-                  backgroundColor: '#B85C3A',
-                  backgroundImage: 'linear-gradient(to bottom right, #C06A42, #B85C3A, #A04E2E)'
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.backgroundImage = 'linear-gradient(to bottom right, #A04E2E, #904428, #803A22)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.backgroundImage = 'linear-gradient(to bottom right, #C06A42, #B85C3A, #A04E2E)';
-                }}
+                className="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-gray-800 border-gray-400 hover:border-amber-600 hover:text-amber-700 hover:bg-amber-50 transition-all duration-300"
                 title="My DotSpark"
               >
-                <div className="relative h-5 w-5 flex items-center justify-center bg-white rounded-full p-0.5">
-                  <img 
-                    src="/dotspark-logo-transparent.png?v=1" 
-                    alt="DotSpark" 
-                    className="h-full w-full"
-                  />
-                </div>
-                <span className="text-white font-medium">My DotSpark</span>
+                <img 
+                  src="/dotspark-logo-icon.png?v=2" 
+                  alt="DotSpark" 
+                  className="h-4 w-4 object-contain rounded"
+                />
+                <span>My DotSpark</span>
               </Button>
             </Link>
 
             {/* Social Button with Brain Icon and Text */}
             <Link href="/social">
               <Button 
-                variant="ghost" 
+                variant="outline" 
                 size="sm" 
-                className="flex items-center gap-2 px-4 py-2 bg-red-500 hover:bg-red-600 rounded-xl transition-all duration-300 hover:scale-105 shadow-sm"
+                className="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-gray-800 border-gray-400 hover:border-red-600 hover:text-red-700 hover:bg-red-50 transition-all duration-300"
                 title="Social"
               >
-                <Brain className="h-5 w-5 text-white animate-pulse" />
-                <span className="text-white font-medium">Social</span>
+                <Brain className="h-4 w-4" />
+                <span>Social</span>
               </Button>
             </Link>
 
             {/* My Neura Button with Brain Icon, Text and green active indicator */}
             <Link href="/myneura">
               <Button 
-                variant="ghost" 
+                variant="outline" 
                 size="sm" 
-                className="relative flex items-center gap-2 px-4 py-2 bg-gradient-to-br from-amber-500 via-amber-600 to-orange-600 hover:from-amber-600 hover:via-amber-700 hover:to-orange-700 rounded-xl transition-all duration-300 hover:scale-105 shadow-lg"
+                className="relative flex items-center gap-2 px-4 py-2 text-sm font-semibold text-gray-800 border-gray-400 hover:border-amber-600 hover:text-amber-700 hover:bg-amber-50 transition-all duration-300"
                 title="My Neura"
               >
-                <Brain className="h-5 w-5 text-white transition-all duration-300" />
-                <span className="text-white font-medium">My Neura</span>
-                {isOnMyNeura && (
-                  <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-400 rounded-full animate-pulse shadow-lg border-2 border-white"></div>
-                )}
+                <div className="relative">
+                  <Brain className="h-4 w-4" />
+                  {isOnMyNeura && (
+                    <div className="absolute -top-1 -right-1 w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                  )}
+                </div>
+                <span>My Neura</span>
               </Button>
             </Link>
 
