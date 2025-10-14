@@ -574,7 +574,7 @@ export default function HomePage() {
             
             <div className="grid md:grid-cols-2 gap-6 items-end">
               {/* Desktop Section */}
-              <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-8 border border-blue-100 flex flex-col h-full">
+              <div className="bg-gradient-to-br from-amber-50 to-orange-50 rounded-2xl p-8 border border-amber-100 flex flex-col h-full">
                 <div className="flex items-start gap-3 mb-4">
                   <span className="text-3xl">🖥️</span>
                   <h3 className="text-2xl font-bold text-gray-900 mt-1">If you're on Desktop</h3>
@@ -601,7 +601,7 @@ export default function HomePage() {
               </div>
 
               {/* Mobile Section */}
-              <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-2xl p-8 border border-purple-100 shadow-sm flex flex-col h-full">
+              <div className="bg-gradient-to-br from-amber-100/40 to-orange-100/40 rounded-2xl p-8 border border-amber-200 shadow-sm flex flex-col h-full">
                 <div className="flex items-start gap-3 mb-4">
                   <span className="text-3xl">📱</span>
                   <h3 className="text-2xl font-bold text-gray-900 mt-1">If you're on Mobile</h3>
