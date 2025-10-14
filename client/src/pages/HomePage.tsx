@@ -605,26 +605,25 @@ export default function HomePage() {
               DotSpark is built for deep thinking — and every ThinQer has their own way to begin.
             </p>
             
-            <div className="grid md:grid-cols-2 gap-6">
+            <div className="grid md:grid-cols-2 gap-6 items-end">
               {/* Desktop Section */}
-              <div className="bg-gradient-to-br from-amber-50/50 to-orange-50/50 rounded-2xl p-8 border border-amber-100">
+              <div className="bg-gradient-to-br from-amber-50/50 to-orange-50/50 rounded-2xl p-8 border border-amber-100 flex flex-col h-full">
                 <div className="flex items-start gap-3 mb-4">
                   <span className="text-3xl">🖥️</span>
                   <h3 className="text-2xl font-bold text-gray-900 mt-1">If you're on Desktop</h3>
                 </div>
-                <p className="text-gray-700 mb-3 leading-relaxed">
-                  Create your own Neura to reflect and save your thoughts.
-                </p>
-                <p className="text-gray-700 mb-3 leading-relaxed">
-                  Start Thought Circles with people you trust to share ideas and learn from each other.
-                </p>
-                <p className="text-gray-700 mb-3 leading-relaxed">
-                  Join the Social Cloud to connect with other ThinQers and help build a collective brain powered by human thought.
-                </p>
-                <p className="text-gray-700 mb-6 leading-relaxed italic">
-                  DotSpark is calm, focused, and made for those who think deeper.
-                </p>
-                <div className="text-center">
+                <div className="flex-grow">
+                  <p className="text-gray-700 mb-3 leading-relaxed">
+                    Create your own Neura to reflect and save your thoughts.
+                  </p>
+                  <p className="text-gray-700 mb-3 leading-relaxed">
+                    Start Thought Circles with people you trust to share ideas and learn from each other.
+                  </p>
+                  <p className="text-gray-700 mb-6 leading-relaxed">
+                    Join the Social Cloud to connect with other ThinQers and help build a collective brain powered by human thought.
+                  </p>
+                </div>
+                <div className="text-center mt-auto">
                   <Button
                     onClick={() => setLocation("/auth")}
                     className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white px-8 py-3 rounded-full text-base"
@@ -635,24 +634,23 @@ export default function HomePage() {
               </div>
 
               {/* Mobile Section */}
-              <div className="bg-white rounded-2xl p-8 border border-gray-200 shadow-sm">
+              <div className="bg-white rounded-2xl p-8 border border-gray-200 shadow-sm flex flex-col h-full">
                 <div className="flex items-start gap-3 mb-4">
                   <span className="text-3xl">📱</span>
                   <h3 className="text-2xl font-bold text-gray-900 mt-1">If you're on Mobile</h3>
                 </div>
-                <p className="text-gray-700 mb-3 leading-relaxed">
-                  If you're on mobile, you can begin right here through WhatsApp.
-                </p>
-                <p className="text-gray-700 mb-3 leading-relaxed">
-                  Share your thoughts, create or join your Circles, and stay connected with the network anytime.
-                </p>
-                <p className="text-gray-700 mb-3 leading-relaxed">
-                  When you log in from desktop, you'll see your full Neura and Thought Cloud — all your reflections beautifully organized in one place.
-                </p>
-                <p className="text-gray-700 mb-6 leading-relaxed italic">
-                  However you choose to start, DotSpark is calm, focused, and made for those who think deeper.
-                </p>
-                <div className="text-center">
+                <div className="flex-grow">
+                  <p className="text-gray-700 mb-3 leading-relaxed">
+                    If you're on mobile, you can begin right here through WhatsApp.
+                  </p>
+                  <p className="text-gray-700 mb-3 leading-relaxed">
+                    Share your thoughts, create or join your Circles, and stay connected with the network anytime.
+                  </p>
+                  <p className="text-gray-700 mb-6 leading-relaxed">
+                    When you log in from desktop, you'll see your full Neura and Thought Cloud — all your reflections beautifully organized in one place.
+                  </p>
+                </div>
+                <div className="text-center mt-auto">
                   <a
                     href="https://chat.whatsapp.com/E6Mwv20MUrCG58xuVJQNTv"
                     target="_blank"
