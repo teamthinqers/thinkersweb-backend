@@ -31,7 +31,7 @@ export default function AuthPage() {
         if (isMobileBrowser()) {
           setLocation('/mobile-landing');
         } else {
-          setLocation('/myneura');
+          setLocation('/mydotspark');
         }
       }
     }
