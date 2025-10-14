@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
-import { Brain, Users, Sparkles, ArrowRight, CheckCircle, Network, Zap } from "lucide-react";
+import { Brain, Users, Sparkles, ArrowRight, CheckCircle, Network, Zap, MessageCircle } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth-new";
 
 export default function HomePage() {
@@ -52,6 +52,15 @@ export default function HomePage() {
                 className="text-sm font-medium text-gray-700 hover:text-amber-600"
               >
                 Preview
+              </Button>
+              <Button
+                variant="default"
+                size="sm"
+                onClick={() => window.open('https://wa.me/YOUR_WHATSAPP_NUMBER', '_blank')}
+                className="bg-[#25D366] hover:bg-[#20BA5A] text-white flex items-center gap-2"
+              >
+                <MessageCircle className="h-4 w-4" />
+                WhatsApp
               </Button>
               <Button
                 variant="default"
