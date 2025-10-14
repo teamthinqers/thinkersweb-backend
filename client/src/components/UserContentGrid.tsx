@@ -11,7 +11,8 @@ interface DashboardUser {
   firebaseUid?: string;
   fullName?: string | null;
   bio?: string | null;
-  avatarUrl?: string | null;
+  avatar?: string | null;
+  linkedinPhotoUrl?: string | null;
 }
 
 interface Dot {

@@ -200,7 +200,7 @@ export default function Network() {
                 <Card key={connection.id}>
                   <CardHeader className="flex flex-row items-center gap-4">
                     <Avatar className="h-12 w-12">
-                      <AvatarImage src={connection.user.avatarUrl || ""} />
+                      <AvatarImage src={connection.user.linkedinPhotoUrl || connection.user.avatar || ""} />
                       <AvatarFallback>
                         {getUserInitials(connection.user.fullName || connection.user.username)}
                       </AvatarFallback>
@@ -263,7 +263,7 @@ export default function Network() {
                 <Card key={request.id}>
                   <CardHeader className="flex flex-row items-center gap-4">
                     <Avatar className="h-12 w-12">
-                      <AvatarImage src={request.user.avatarUrl || ""} />
+                      <AvatarImage src={request.user.linkedinPhotoUrl || request.user.avatar || ""} />
                       <AvatarFallback>
                         {getUserInitials(request.user.fullName || request.user.username)}
                       </AvatarFallback>

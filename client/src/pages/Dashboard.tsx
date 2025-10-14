@@ -49,7 +49,6 @@ const Dashboard: React.FC = () => {
           id: persistentUser.id,
           email: persistentUser.email,
           fullName: persistentUser.name,
-          displayName: persistentUser.name,
           uid: persistentUser.id.toString()
         } as any;
         console.log('Dashboard using persistent user:', user.email);
@@ -60,8 +59,8 @@ const Dashboard: React.FC = () => {
       user: user ? {
         email: user.email, 
         fullName: user.fullName, 
-        displayName: user.displayName,
-        avatarUrl: user.avatarUrl,
+        avatar: user.avatar,
+        linkedinPhotoUrl: user.linkedinPhotoUrl,
         id: user.id
       } : 'none', 
       isLoading,
