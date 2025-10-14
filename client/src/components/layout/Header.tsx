@@ -261,8 +261,8 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" size="icon" className="rounded-full p-0 h-9 w-9">
                     <Avatar className="h-8 w-8 border-2 border-white shadow">
-                      {(user?.photoURL || (user as any)?.avatarUrl) ? (
-                        <AvatarImage src={user?.photoURL || (user as any)?.avatarUrl} alt={(user?.displayName || (user as any)?.fullName) || 'User'} />
+                      {(user?.photoURL || (user as any)?.avatar || (user as any)?.linkedinPhotoUrl) ? (
+                        <AvatarImage src={user?.photoURL || (user as any)?.avatar || (user as any)?.linkedinPhotoUrl} alt={(user?.displayName || (user as any)?.fullName) || 'User'} />
                       ) : (
                         <AvatarFallback className="bg-primary text-white">
                           {(user?.displayName || (user as any)?.fullName) ? (user?.displayName || (user as any)?.fullName).charAt(0).toUpperCase() : 'U'}
@@ -408,8 +408,8 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
                 <DropdownMenuTrigger asChild>
                   <div className="flex items-center cursor-pointer">
                     <Avatar className="h-8 w-8 border-2 border-white shadow">
-                      {(user?.photoURL || (user as any)?.avatarUrl) ? (
-                        <AvatarImage src={user?.photoURL || (user as any)?.avatarUrl} alt={(user?.displayName || (user as any)?.fullName) || 'User'} />
+                      {(user?.photoURL || (user as any)?.avatar || (user as any)?.linkedinPhotoUrl) ? (
+                        <AvatarImage src={user?.photoURL || (user as any)?.avatar || (user as any)?.linkedinPhotoUrl} alt={(user?.displayName || (user as any)?.fullName) || 'User'} />
                       ) : (
                         <AvatarFallback className="bg-primary text-white">
                           {(user?.displayName || (user as any)?.fullName) ? (user?.displayName || (user as any)?.fullName).charAt(0).toUpperCase() : 'U'}
