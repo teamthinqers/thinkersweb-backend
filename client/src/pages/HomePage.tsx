@@ -593,7 +593,7 @@ export default function HomePage() {
                 <div className="text-center mt-auto">
                   <Button
                     onClick={() => setLocation("/auth")}
-                    className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-8 py-3 rounded-full text-base"
+                    className="bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-500 hover:to-amber-600 text-white px-8 py-3 rounded-full text-base"
                   >
                     ✨ Get Started on Desktop
                   </Button>
