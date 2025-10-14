@@ -46,17 +46,9 @@ export default function HomePage() {
                 About
               </Button>
               <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setLocation("/preview")}
-                className="text-sm font-medium text-gray-700 hover:text-amber-600"
-              >
-                Preview
-              </Button>
-              <Button
                 variant="default"
                 size="sm"
-                onClick={() => window.open('https://wa.me/16067157733?text=Hey%20DotSpark%20%F0%9F%91%8B', '_blank')}
+                onClick={() => window.open('https://wa.me/16067157733?text=Hey%20DotSpark%20:wave:', '_blank')}
                 className="bg-[#25D366] hover:bg-[#20BA5A] text-white flex items-center gap-2"
               >
                 <MessageCircle className="h-4 w-4" />
@@ -68,7 +60,7 @@ export default function HomePage() {
                 onClick={() => setLocation("/auth")}
                 className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600"
               >
-                Sign In
+                Sign In / Register
               </Button>
             </nav>
           </div>
