@@ -566,19 +566,27 @@ export default function HomePage() {
                   
                   <div className="space-y-6 text-lg text-gray-700 leading-relaxed">
                     <p>
-                      Thank you for taking a moment to pause, reflect, and reach here.
+                      Thank you for taking a moment to pause and reach here.
                     </p>
                     
                     <p>
-                      The world today is flooded with big data, but I've always believed that true intelligence lives in the small, distilled pieces of human data — the kind that can't be measured, only felt.
+                      We live in a world obsessed with big data and faster systems. But real intelligence doesn't come from scale — it comes from small, distilled human moments that can't be measured, only felt.
                     </p>
                     
                     <p>
-                      DotSpark was born from that belief. It's a space for those who choose to think, connect, and reflect deeply. I'm on a mission to build a network of ThinQers who see thinking not as an act of isolation, but as a bridge to collective understanding.
+                      That belief is what shaped DotSpark. A space built for those who choose to ThinQ, to reflect deeply, and to turn thought into connection.
+                    </p>
+                    
+                    <p>
+                      AI helped me create this platform, but the spark behind it was human. It came from curiosity, from conversations, and from the kind of reflection that still makes us who we are.
+                    </p>
+                    
+                    <p>
+                      One person choosing to ThinQ can make a difference. But when many such minds come together, something remarkable begins to form — a collective brain, a connected intelligence powered by human thought.
                     </p>
                     
                     <p className="font-medium text-gray-800">
-                      Because I believe the next evolution of intelligence won't be artificial. It will be <span className="font-bold bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent">Connected Human Intelligence</span> — and it will be far more powerful than AI.
+                      That is the future I believe in. Not artificial. <span className="font-bold bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent">Deeply human.</span>
                     </p>
                   </div>
 
