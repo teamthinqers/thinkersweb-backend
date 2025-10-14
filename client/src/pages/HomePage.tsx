@@ -291,11 +291,11 @@ export default function HomePage() {
                   
                   <div className="space-y-5 text-base lg:text-lg text-gray-700 leading-relaxed">
                     <p>
-                      In a world obsessed with <span className="font-semibold text-gray-900">Artificial Intelligence</span>, we're forgetting what made us intelligent in the first place — <span className="font-semibold text-gray-900">Thinking</span>.
+                      In a world obsessed with Artificial Intelligence, we're forgetting what made us intelligent in the first place — <span className="font-semibold text-gray-900">Thinking</span>.
                     </p>
                     
                     <p>
-                      DotSpark was built for those who choose to <span className="text-2xl lg:text-3xl font-bold bg-gradient-to-r from-amber-500 to-orange-500 bg-clip-text text-transparent">ThinQ</span>, for those who believe human intelligence still holds untapped potential, and that when it connects, it becomes far more powerful than AI.
+                      DotSpark was built for those who choose to <span className="text-2xl lg:text-3xl font-bold bg-gradient-to-r from-amber-500 to-orange-500 bg-clip-text text-transparent">ThinQ</span>, for those who believe <span className="font-semibold text-gray-900">Human Intelligence</span> still holds untapped potential, and that when it connects, it becomes far more powerful than AI.
                     </p>
                   </div>
                 </div>
