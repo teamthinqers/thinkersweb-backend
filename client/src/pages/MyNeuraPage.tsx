@@ -534,7 +534,7 @@ function SocialPerspectivesModal({
                 <div key={msg.id} className="bg-white rounded-lg p-3 border border-gray-200 shadow-sm">
                   <div className="flex items-start gap-2">
                     <Avatar className="h-8 w-8">
-                      <AvatarImage src={msg.user?.avatar} />
+                      <AvatarImage src={msg.user?.linkedinPhotoUrl || msg.user?.avatar} />
                       <AvatarFallback className="bg-gray-500 text-white text-xs">
                         {msg.user?.fullName?.[0] || 'U'}
                       </AvatarFallback>
