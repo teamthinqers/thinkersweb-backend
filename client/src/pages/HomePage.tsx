@@ -224,9 +224,9 @@ export default function HomePage() {
           </div>
 
           {/* Why DotSpark Section */}
-          <div className="features-section py-16 lg:py-20">
-            <div className="max-w-6xl mx-auto px-4">
-              <div className="grid lg:grid-cols-2 gap-12 items-center">
+          <div className="features-section min-h-screen flex items-center py-12">
+            <div className="max-w-6xl mx-auto px-4 w-full">
+              <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
                 
                 {/* Left - Visual */}
                 <div className="relative order-2 lg:order-1">
