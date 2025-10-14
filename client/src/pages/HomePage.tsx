@@ -10,6 +10,7 @@ export default function HomePage() {
 
   // Redirect logged-in users to /myneura
   useEffect(() => {
+    console.log("🚀 NEW HOMEPAGE LOADED - VERSION 2.0");
     if (!isLoading && user) {
       setLocation("/myneura");
     }
