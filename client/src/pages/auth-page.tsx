@@ -68,27 +68,30 @@ export default function AuthPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-amber-50/50 via-white to-orange-50/30">
-      {/* Logo at top left */}
-      <div className="absolute top-6 left-6">
-        <img 
-          src="/dotspark-logo-combined.png?v=1" 
-          alt="DotSpark" 
-          className="h-8 w-auto cursor-pointer" 
-          onClick={() => setLocation("/")}
-        />
-      </div>
-
-      {/* Back button at top right */}
-      <div className="absolute top-6 right-6">
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => setLocation("/")}
-          className="text-sm font-medium text-gray-700 border-gray-300 hover:border-amber-500 hover:text-amber-600 hover:bg-amber-50 transition-all duration-300"
-        >
-          <ArrowLeft className="h-4 w-4 mr-2" />
-          Back
-        </Button>
+      {/* Header - Mobile responsive */}
+      <div className="absolute top-0 left-0 right-0 z-10">
+        <div className="flex items-center justify-between px-4 py-4 sm:px-6 sm:py-6">
+          {/* Logo - Hidden on mobile, visible on desktop */}
+          <div className="hidden sm:block">
+            <img 
+              src="/dotspark-logo-combined.png?v=1" 
+              alt="DotSpark" 
+              className="h-8 w-auto cursor-pointer" 
+              onClick={() => setLocation("/")}
+            />
+          </div>
+          
+          {/* Back button - Always visible */}
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setLocation("/")}
+            className="text-sm font-medium text-gray-700 border-gray-300 hover:border-amber-500 hover:text-amber-600 hover:bg-amber-50 transition-all duration-300 ml-auto"
+          >
+            <ArrowLeft className="h-4 w-4 sm:mr-2" />
+            <span className="hidden sm:inline">Back</span>
+          </Button>
+        </div>
       </div>
 
       {/* Centered content */}
