@@ -132,7 +132,7 @@ export default function HomePage() {
                     const featuresSection = document.querySelector('.features-section');
                     featuresSection?.scrollIntoView({ behavior: 'smooth' });
                   }}
-                  className="border-2 border-amber-500 text-amber-600 hover:bg-amber-50 px-8 py-6 text-lg font-semibold transform hover:scale-105 transition-all duration-300"
+                  className="border-2 border-amber-500 text-amber-600 hover:bg-amber-50 px-10 py-6 text-lg font-semibold transform hover:scale-105 transition-all duration-300"
                 >
                   Know Why?
                 </Button>
