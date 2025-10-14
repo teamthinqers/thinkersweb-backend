@@ -11,7 +11,8 @@ import {
   Brain, 
   User,
   MessageSquare,
-  Users
+  Users,
+  FileText
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useToast } from "@/hooks/use-toast";
@@ -309,6 +310,20 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
                       DotSpark Social
                     </Link>
                   </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem asChild>
+                    <Link href="/privacy" className="cursor-pointer w-full">
+                      <FileText className="mr-2 h-4 w-4" />
+                      Privacy Policy
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link href="/terms" className="cursor-pointer w-full">
+                      <FileText className="mr-2 h-4 w-4" />
+                      Terms of Use
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={handleLogout} className="text-red-600">
                     <LogOut className="mr-2 h-4 w-4" />
                     <span>Sign out</span>
@@ -457,6 +472,20 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
                       DotSpark Social
                     </Link>
                   </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem asChild>
+                    <Link href="/privacy" className="cursor-pointer w-full">
+                      <FileText className="mr-2 h-4 w-4" />
+                      Privacy Policy
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link href="/terms" className="cursor-pointer w-full">
+                      <FileText className="mr-2 h-4 w-4" />
+                      Terms of Use
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={handleLogout} className="text-red-600">
                     <LogOut className="mr-2 h-4 w-4" />
                     <span>Sign out</span>
