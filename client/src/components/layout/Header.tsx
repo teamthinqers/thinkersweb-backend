@@ -209,11 +209,8 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
       <header className="bg-gradient-to-r from-amber-50 to-orange-50 border-b border-amber-200 px-2 py-3 flex items-center justify-between shadow-sm">
         {isMobile ? (
           <>
-            {/* Logo on left that's clickable to My Neura */}
-            <div 
-              className="cursor-pointer active:opacity-80 transition-opacity"
-              onClick={() => setLocation("/my-neura")}
-            >
+            {/* Logo on left */}
+            <div>
               <img src="/dotspark-logo-icon.png?v=2" alt="DotSpark" className="h-9 w-9 object-contain rounded" />
             </div>
             

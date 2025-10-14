@@ -574,7 +574,7 @@ export default function HomePage() {
             
             <div className="grid md:grid-cols-2 gap-6 items-end">
               {/* Desktop Section */}
-              <div className="bg-gradient-to-br from-amber-50/50 to-orange-50/50 rounded-2xl p-8 border border-amber-100 flex flex-col h-full">
+              <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-8 border border-blue-100 flex flex-col h-full">
                 <div className="flex items-start gap-3 mb-4">
                   <span className="text-3xl">🖥️</span>
                   <h3 className="text-2xl font-bold text-gray-900 mt-1">If you're on Desktop</h3>
@@ -593,7 +593,7 @@ export default function HomePage() {
                 <div className="text-center mt-auto">
                   <Button
                     onClick={() => setLocation("/auth")}
-                    className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white px-8 py-3 rounded-full text-base"
+                    className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-8 py-3 rounded-full text-base"
                   >
                     ✨ Get Started on Desktop
                   </Button>
@@ -601,7 +601,7 @@ export default function HomePage() {
               </div>
 
               {/* Mobile Section */}
-              <div className="bg-gradient-to-br from-slate-50 to-gray-100 rounded-2xl p-8 border border-slate-200 shadow-sm flex flex-col h-full">
+              <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-2xl p-8 border border-purple-100 shadow-sm flex flex-col h-full">
                 <div className="flex items-start gap-3 mb-4">
                   <span className="text-3xl">📱</span>
                   <h3 className="text-2xl font-bold text-gray-900 mt-1">If you're on Mobile</h3>
