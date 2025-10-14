@@ -7,7 +7,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { useAuth } from '@/hooks/use-auth-new';
 import { useToast } from '@/hooks/use-toast';
-import { X, PenTool, Sparkles, Crown, ArrowLeft, Loader2, ImageIcon, Layers } from 'lucide-react';
+import { X, PenTool, Sparkles, Crown, ArrowLeft, Loader2, ImageIcon, Layers, ArrowDown } from 'lucide-react';
 import { SiWhatsapp, SiLinkedin, SiOpenai } from 'react-icons/si';
 import { apiRequest, queryClient } from '@/lib/queryClient';
 import { useQuery } from '@tanstack/react-query';
@@ -18,9 +18,9 @@ interface FloatingDotProps {
 }
 
 export default function FloatingDot({ onClick, currentPage }: FloatingDotProps) {
-  // Default position: bottom right corner (accounting for dot size and padding)
+  // Default position: bottom left corner (accounting for dot size and padding)
   const [position, setPosition] = useState({ 
-    x: window.innerWidth - 100, 
+    x: 40, 
     y: window.innerHeight - 100 
   });
   const [isDragging, setIsDragging] = useState(false);
@@ -418,6 +418,13 @@ export default function FloatingDot({ onClick, currentPage }: FloatingDotProps) 
         onClick={handleClick}
       >
         <div className="relative">
+          {/* Arrow Indicator - Points to the floating dot */}
+          {!hasMoved && !isDragging && (
+            <div className="absolute -top-16 left-1/2 transform -translate-x-1/2 animate-bounce">
+              <ArrowDown className="h-8 w-8 text-amber-600" strokeWidth={3} />
+            </div>
+          )}
+          
           {/* DotSpark logo - spins fast when dragging, pulses when idle */}
           <img 
             src="/dotspark-logo-transparent.png?v=1" 
