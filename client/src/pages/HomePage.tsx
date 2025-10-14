@@ -529,6 +529,46 @@ export default function HomePage() {
             </div>
           </div>
 
+          {/* From the Founder Section */}
+          <div className="py-20 lg:py-24 bg-white">
+            <div className="max-w-4xl mx-auto px-4">
+              <div className="text-center mb-12">
+                <h2 className="text-4xl lg:text-5xl font-bold bg-gradient-to-r from-amber-500 to-orange-500 bg-clip-text text-transparent mb-4">
+                  From the Founder
+                </h2>
+              </div>
+
+              <div className="bg-gradient-to-br from-amber-50/50 to-orange-50/50 rounded-2xl p-8 lg:p-12 border border-amber-100 shadow-lg">
+                <p className="text-lg text-gray-700 leading-relaxed mb-6">
+                  Hey ThinQers,
+                </p>
+                
+                <div className="space-y-6 text-lg text-gray-700 leading-relaxed mb-8">
+                  <p>
+                    Thank you for taking a moment to pause, reflect, and reach here.
+                  </p>
+                  
+                  <p>
+                    The world today is flooded with big data, but I've always believed that true intelligence lives in the small, distilled pieces of human data — the kind that can't be measured, only felt.
+                  </p>
+                  
+                  <p>
+                    DotSpark was born from that belief. It's a space for those who choose to think, connect, and reflect deeply. I'm on a mission to build a network of ThinQers who see thinking not as an act of isolation, but as a bridge to collective understanding.
+                  </p>
+                  
+                  <p className="font-medium text-gray-800">
+                    Because I believe the next evolution of intelligence won't be artificial. It will be <span className="font-bold bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent">Connected Human Intelligence</span> — and it will be far more powerful than AI.
+                  </p>
+                </div>
+
+                <div className="border-t border-amber-200 pt-6">
+                  <p className="text-xl font-bold text-gray-900">Aravindh Rajendran</p>
+                  <p className="text-gray-600">Founder, DotSpark</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
           {/* Features Grid */}
           <div className="grid md:grid-cols-3 gap-8 mb-20">
             <div className="p-6 rounded-xl bg-white shadow-sm border border-gray-100">
