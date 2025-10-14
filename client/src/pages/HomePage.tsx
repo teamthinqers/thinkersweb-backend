@@ -601,7 +601,7 @@ export default function HomePage() {
               </div>
 
               {/* Mobile Section */}
-              <div className="bg-white rounded-2xl p-8 border border-gray-200 shadow-sm flex flex-col h-full">
+              <div className="bg-gradient-to-br from-slate-50 to-gray-100 rounded-2xl p-8 border border-slate-200 shadow-sm flex flex-col h-full">
                 <div className="flex items-start gap-3 mb-4">
                   <span className="text-3xl">📱</span>
                   <h3 className="text-2xl font-bold text-gray-900 mt-1">If you're on Mobile</h3>
