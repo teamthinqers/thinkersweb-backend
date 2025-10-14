@@ -61,19 +61,27 @@ export default function MobileLandingPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50 dark:from-gray-950 dark:to-amber-950">
       {/* Header */}
-      <div className="sticky top-0 z-50 backdrop-blur-md bg-white/90 dark:bg-gray-950/90 border-b shadow-sm">
-        <div className="container mx-auto px-4 py-3">
-          <div className="flex items-center gap-2.5">
-            <img 
-              src="/dotspark-icon.png" 
-              alt="DotSpark" 
-              className="h-10 w-10" 
-            />
-            <div>
-              <h1 className="text-lg font-bold bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent">
+      <div className="sticky top-0 z-50 backdrop-blur-lg bg-gradient-to-r from-amber-500/10 via-orange-500/10 to-amber-500/10 border-b border-amber-200/30">
+        <div className="container mx-auto px-4 py-4">
+          <div className="flex items-center justify-center gap-3">
+            {/* Logo with glow effect */}
+            <div className="relative">
+              <div className="absolute inset-0 bg-gradient-to-r from-amber-500 to-orange-500 rounded-full blur-md opacity-40"></div>
+              <img 
+                src="/dotspark-icon.png" 
+                alt="DotSpark" 
+                className="relative h-12 w-12 drop-shadow-lg" 
+              />
+            </div>
+            
+            {/* Brand text */}
+            <div className="flex flex-col items-start">
+              <h1 className="text-xl font-bold bg-gradient-to-r from-amber-600 via-orange-600 to-amber-600 bg-clip-text text-transparent tracking-tight">
                 DotSpark
               </h1>
-              <p className="text-[10px] text-gray-500 dark:text-gray-400">A Human Intelligence Network</p>
+              <p className="text-xs font-medium text-amber-700/80 dark:text-amber-400/70 tracking-wide">
+                A Human Intelligence Network
+              </p>
             </div>
           </div>
         </div>
