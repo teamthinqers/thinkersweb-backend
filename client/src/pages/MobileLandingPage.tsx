@@ -75,21 +75,6 @@ export default function MobileLandingPage() {
       <div className="container mx-auto px-4 py-8 max-w-lg">
         {/* Welcome Section */}
         <div className="text-center mb-8">
-          <div className="inline-block mb-4">
-            <div className="relative group">
-              <div className="absolute -inset-4 bg-gradient-to-r from-amber-500/30 via-orange-500/30 to-amber-500/30 rounded-full blur-2xl opacity-60"></div>
-              <div className="relative flex items-center gap-2 justify-center">
-                <img 
-                  src="/dotspark-icon.png" 
-                  alt="DotSpark" 
-                  className="h-12 w-12 drop-shadow-2xl" 
-                />
-                <span className="text-2xl font-bold bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent">
-                  DotSpark
-                </span>
-              </div>
-            </div>
-          </div>
           <h2 className="text-2xl font-bold mb-2">Welcome to DotSpark!</h2>
           <p className="text-muted-foreground">
             {user?.fullName || user?.email}
