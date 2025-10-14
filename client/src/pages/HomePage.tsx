@@ -326,8 +326,8 @@ export default function HomePage() {
                     {/* Central Person */}
                     <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20">
                       <div className="relative">
-                        <div className="absolute inset-0 bg-gradient-to-r from-amber-300 to-orange-300 rounded-full blur-xl opacity-30 animate-pulse"></div>
-                        <div className="relative w-20 h-20 bg-gradient-to-br from-amber-400 to-orange-400 rounded-full flex items-center justify-center shadow-xl">
+                        <div className="absolute inset-0 bg-gradient-to-r from-indigo-400 to-purple-400 rounded-full blur-xl opacity-30 animate-pulse"></div>
+                        <div className="relative w-20 h-20 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full flex items-center justify-center shadow-xl">
                           <User className="w-10 h-10 text-white" />
                         </div>
                       </div>
@@ -337,7 +337,7 @@ export default function HomePage() {
                     {[...Array(6)].map((_, i) => (
                       <div
                         key={i}
-                        className="absolute top-1/2 left-1/2 w-3 h-3 bg-gradient-to-br from-amber-400 to-orange-400 rounded-full shadow-lg"
+                        className="absolute top-1/2 left-1/2 w-3 h-3 bg-gradient-to-br from-indigo-400 to-purple-400 rounded-full shadow-lg"
                         style={{
                           animation: `orbit 8s linear infinite`,
                           animationDelay: `${-i * 1.33}s`,
@@ -362,7 +362,7 @@ export default function HomePage() {
                     <h3 className="text-2xl font-bold text-gray-900">
                       Self Reflection
                     </h3>
-                    <p className="text-sm font-semibold text-amber-600">Where Thinking Begins</p>
+                    <p className="text-sm font-semibold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">Where Thinking Begins</p>
                     <p className="text-gray-700 leading-relaxed">
                       Every journey starts with a thought. DotSpark gives you a private space to capture those thoughts — not for validation, but for clarity.
                     </p>
@@ -382,10 +382,10 @@ export default function HomePage() {
                       </div>
                     </div>
 
-                    {/* 5 Profile Silhouettes */}
-                    {[...Array(5)].map((_, i) => {
-                      const angle = (i * 72 - 90) * (Math.PI / 180);
-                      const radius = 70;
+                    {/* 3 Profile Avatars Around */}
+                    {[...Array(3)].map((_, i) => {
+                      const angle = (i * 120 + 30) * (Math.PI / 180);
+                      const radius = 80;
                       const x = Math.cos(angle) * radius;
                       const y = Math.sin(angle) * radius;
                       
@@ -408,33 +408,6 @@ export default function HomePage() {
                         </div>
                       );
                     })}
-
-                    {/* Connection Lines */}
-                    <svg className="absolute inset-0 w-full h-full" style={{ zIndex: 1 }}>
-                      {[...Array(5)].map((_, i) => {
-                        const angle1 = (i * 72 - 90) * (Math.PI / 180);
-                        const angle2 = ((i + 1) * 72 - 90) * (Math.PI / 180);
-                        const radius = 70;
-                        const x1 = Math.cos(angle1) * radius + 50;
-                        const y1 = Math.sin(angle1) * radius + 50;
-                        const x2 = Math.cos(angle2) * radius + 50;
-                        const y2 = Math.sin(angle2) * radius + 50;
-                        
-                        return (
-                          <line
-                            key={i}
-                            x1={`${x1}%`}
-                            y1={`${y1}%`}
-                            x2={`${x2}%`}
-                            y2={`${y2}%`}
-                            stroke="#A855F7"
-                            strokeWidth="1.5"
-                            strokeDasharray="3,3"
-                            className="opacity-40"
-                          />
-                        );
-                      })}
-                    </svg>
                   </div>
 
                   <div className="space-y-4">
