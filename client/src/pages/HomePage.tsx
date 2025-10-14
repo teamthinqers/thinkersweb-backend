@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Brain, Users, Sparkles, ArrowRight, CheckCircle, Network, Zap, MessageCircle, Lightbulb, User } from "lucide-react";
+import { SiWhatsapp } from "react-icons/si";
 import { useAuth } from "@/hooks/use-auth-new";
 
 export default function HomePage() {
@@ -50,10 +51,9 @@ export default function HomePage() {
                 variant="default"
                 size="sm"
                 onClick={() => window.open('https://wa.me/16067157733?text=Hey%20DotSpark%20:wave:', '_blank')}
-                className="bg-[#25D366] hover:bg-[#20BA5A] text-white flex items-center gap-2"
+                className="bg-[#25D366] hover:bg-[#20BA5A] text-white"
               >
-                <MessageCircle className="h-4 w-4" />
-                WhatsApp
+                <SiWhatsapp className="h-5 w-5" />
               </Button>
               <Button
                 variant="default"
