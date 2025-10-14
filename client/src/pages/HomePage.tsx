@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
-import { Brain, Users, Sparkles, ArrowRight, CheckCircle, Network, Zap, MessageCircle, Lightbulb, User } from "lucide-react";
+import { Brain, Users, Sparkles, ArrowRight, CheckCircle, Network, Zap, MessageCircle, Lightbulb, User, Target } from "lucide-react";
 import { SiWhatsapp } from "react-icons/si";
 import { useAuth } from "@/hooks/use-auth-new";
 
@@ -372,6 +372,16 @@ export default function HomePage() {
                 {/* Pillar 2: Thought Circles */}
                 <div className="text-center space-y-6">
                   <div className="relative w-full max-w-xs mx-auto h-64">
+                    {/* Central Target Icon */}
+                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20">
+                      <div className="relative">
+                        <div className="absolute inset-0 bg-purple-400 rounded-full blur-xl opacity-30 animate-pulse"></div>
+                        <div className="relative w-20 h-20 bg-gradient-to-br from-purple-500 to-purple-600 rounded-full flex items-center justify-center shadow-xl">
+                          <Target className="w-10 h-10 text-white" />
+                        </div>
+                      </div>
+                    </div>
+
                     {/* 5 Profile Silhouettes */}
                     {[...Array(5)].map((_, i) => {
                       const angle = (i * 72 - 90) * (Math.PI / 180);
@@ -390,8 +400,8 @@ export default function HomePage() {
                           }}
                         >
                           <div className="relative">
-                            <div className="absolute inset-0 bg-amber-300 rounded-full blur-sm opacity-30"></div>
-                            <div className="relative w-14 h-14 bg-gradient-to-br from-gray-400 to-gray-500 rounded-full flex items-center justify-center shadow-lg">
+                            <div className="absolute inset-0 bg-purple-300 rounded-full blur-sm opacity-30"></div>
+                            <div className="relative w-14 h-14 bg-gradient-to-br from-purple-400 to-purple-500 rounded-full flex items-center justify-center shadow-lg">
                               <User className="w-7 h-7 text-white" />
                             </div>
                           </div>
@@ -417,7 +427,7 @@ export default function HomePage() {
                             y1={`${y1}%`}
                             x2={`${x2}%`}
                             y2={`${y2}%`}
-                            stroke="#f59e0b"
+                            stroke="#A855F7"
                             strokeWidth="1.5"
                             strokeDasharray="3,3"
                             className="opacity-40"
@@ -431,7 +441,7 @@ export default function HomePage() {
                     <h3 className="text-2xl font-bold text-gray-900">
                       Thought Circles
                     </h3>
-                    <p className="text-sm font-semibold text-amber-600">Think, Share, Evolve</p>
+                    <p className="text-sm font-semibold text-purple-600">Think, Share, Evolve</p>
                     <p className="text-gray-700 leading-relaxed">
                       ThinQers create private Thought Circles to explore perspectives and refine their thinking together. It's not about debate — it's about discovery.
                     </p>
@@ -441,11 +451,14 @@ export default function HomePage() {
                 {/* Pillar 3: The Social Brain */}
                 <div className="text-center space-y-6">
                   <div className="relative w-full max-w-xs mx-auto h-64">
-                    {/* Central Core */}
+                    {/* Central Core - Pulsating */}
                     <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20">
                       <div className="relative">
-                        <div className="absolute inset-0 bg-gradient-to-r from-amber-400 to-orange-400 rounded-full blur-2xl opacity-40 animate-pulse"></div>
-                        <div className="relative w-16 h-16 bg-gradient-to-br from-amber-500 to-orange-500 rounded-full shadow-2xl"></div>
+                        <div className="absolute inset-0 bg-gradient-to-r from-orange-400 to-red-400 rounded-full blur-2xl opacity-40 animate-pulse"></div>
+                        <div className="absolute -inset-4 bg-gradient-to-r from-orange-300 to-red-300 rounded-full blur-xl opacity-20 animate-ping" style={{ animationDuration: '2s' }}></div>
+                        <div className="relative w-16 h-16 bg-gradient-to-br from-orange-500 to-red-500 rounded-full shadow-2xl flex items-center justify-center animate-pulse" style={{ animationDuration: '1.5s' }}>
+                          <Brain className="w-8 h-8 text-white" />
+                        </div>
                       </div>
                     </div>
 
@@ -466,7 +479,7 @@ export default function HomePage() {
                             animationDelay: `${i * 0.1}s`
                           }}
                         >
-                          <div className="w-2 h-2 bg-gradient-to-br from-amber-400 to-orange-400 rounded-full shadow-lg"></div>
+                          <div className="w-2 h-2 bg-gradient-to-br from-orange-400 to-red-400 rounded-full shadow-lg"></div>
                         </div>
                       );
                     })}
@@ -486,16 +499,16 @@ export default function HomePage() {
                             y1="50%"
                             x2={`${x}%`}
                             y2={`${y}%`}
-                            stroke="url(#neuralGradient)"
+                            stroke="url(#socialGradient)"
                             strokeWidth="1"
                             className="opacity-30"
                           />
                         );
                       })}
                       <defs>
-                        <linearGradient id="neuralGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                          <stop offset="0%" stopColor="#f59e0b" />
-                          <stop offset="100%" stopColor="#f97316" />
+                        <linearGradient id="socialGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                          <stop offset="0%" stopColor="#f97316" />
+                          <stop offset="100%" stopColor="#ef4444" />
                         </linearGradient>
                       </defs>
                     </svg>
@@ -505,7 +518,7 @@ export default function HomePage() {
                     <h3 className="text-2xl font-bold text-gray-900">
                       The Social Brain
                     </h3>
-                    <p className="text-sm font-semibold text-amber-600">Where Intelligence Connects</p>
+                    <p className="text-sm font-semibold bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent">Where Intelligence Connects</p>
                     <p className="text-gray-700 leading-relaxed">
                       When ideas from many circles converge, a collective brain begins to form — where ThinQers co-create and grow shared intelligence.
                     </p>
