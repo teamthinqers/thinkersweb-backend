@@ -84,25 +84,34 @@ export default function HomePage() {
 
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-20 relative z-10">
           {/* Hero Section */}
-          <div className="text-center mb-24 space-y-8">
-            {/* DotSpark Logo with Animation */}
+          <div className="text-center mb-24 space-y-12">
+            {/* DotSpark Logo with Premium Styling */}
             <div className="inline-block animate-fade-in-up">
               <div className="relative group">
-                <div className="absolute inset-0 bg-gradient-to-r from-amber-400 to-orange-400 rounded-full blur-xl opacity-50 group-hover:opacity-75 transition-opacity duration-500"></div>
+                {/* Premium glow effect */}
+                <div className="absolute -inset-4 bg-gradient-to-r from-amber-500/30 via-orange-500/30 to-amber-500/30 rounded-full blur-2xl opacity-60 group-hover:opacity-90 transition-all duration-700"></div>
+                <div className="absolute -inset-2 bg-gradient-to-r from-amber-400/20 to-orange-400/20 rounded-full blur-xl"></div>
+                
                 <img 
                   src="/dotspark-logo-combined.png?v=2" 
                   alt="DotSpark" 
-                  className="relative h-24 w-auto mx-auto drop-shadow-2xl transform group-hover:scale-105 transition-transform duration-300" 
+                  className="relative h-32 w-auto mx-auto drop-shadow-2xl transform group-hover:scale-110 transition-all duration-500 ease-out filter brightness-110" 
                 />
               </div>
             </div>
 
-            {/* Tagline */}
-            <h1 className="text-6xl md:text-7xl font-bold mb-6 animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
-              <span className="bg-gradient-to-r from-amber-600 via-orange-600 to-amber-600 bg-clip-text text-transparent bg-[length:200%_auto] animate-gradient">
-                A Human Intelligence Network
-              </span>
-            </h1>
+            {/* Premium Tagline */}
+            <div className="animate-fade-in-up space-y-4" style={{ animationDelay: '0.2s' }}>
+              <h1 className="text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tight leading-tight">
+                <span className="inline-block bg-gradient-to-r from-amber-600 via-orange-600 to-amber-500 bg-clip-text text-transparent drop-shadow-sm">
+                  A Human Intelligence
+                </span>
+                <br />
+                <span className="inline-block bg-gradient-to-r from-orange-600 via-amber-600 to-orange-500 bg-clip-text text-transparent drop-shadow-sm">
+                  Network
+                </span>
+              </h1>
+            </div>
 
             {/* CTA Button */}
             <div className="flex items-center justify-center animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
