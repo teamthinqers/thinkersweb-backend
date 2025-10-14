@@ -199,10 +199,9 @@ whatsappWebhookRouter.post('/', async (req: Request, res: Response) => {
               .where(eq(whatsappConversationStates.phoneNumber, standardizedPhone));
             
             // Welcome the user
-            const welcomeName = user.fullName || 'there';
             await sendWhatsAppMessage(
               normalizedPhone,
-              `✅ Welcome back, ${welcomeName}! Your WhatsApp is now linked to your DotSpark account.\n\nFrom now on, any message you send here will be saved as a thought. Your previous WhatsApp chats remain private and are never synced.\n\nTry sending your first thought! 💭`
+              "✅ Welcome ThinQer, now you can easily interact with DotSpark using this chat window anytime !!"
             );
             
             res.status(200).send('User linked successfully');
