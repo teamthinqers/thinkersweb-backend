@@ -100,7 +100,7 @@ export default function MobileLandingPage() {
         {/* Option Cards */}
         <div className="space-y-3">
           {/* WhatsApp Connection */}
-          <Card className="border-2 border-amber-200 dark:border-amber-800 hover:border-amber-400 dark:hover:border-amber-600 transition-colors">
+          <Card className="border-2 border-green-200 dark:border-green-800 hover:border-green-400 dark:hover:border-green-600 transition-colors bg-gradient-to-br from-green-50/90 via-emerald-50/70 to-green-50/90 backdrop-blur-sm shadow-lg">
             <CardContent className="p-4">
               <div className="flex items-start gap-3">
                 <div className="flex-shrink-0 w-10 h-10 rounded-full bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center">
@@ -126,7 +126,7 @@ export default function MobileLandingPage() {
           </Card>
 
           {/* Community Access */}
-          <Card className="border-2 border-amber-200 dark:border-amber-800 hover:border-amber-400 dark:hover:border-amber-600 transition-colors">
+          <Card className="border-2 border-amber-200 dark:border-amber-800 hover:border-amber-400 dark:hover:border-amber-600 transition-colors bg-gradient-to-br from-amber-50/90 via-orange-50/70 to-amber-50/90 backdrop-blur-sm shadow-lg">
             <CardContent className="p-4">
               <div className="flex items-start gap-3">
                 <div className="flex-shrink-0 w-10 h-10 rounded-full bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center">
