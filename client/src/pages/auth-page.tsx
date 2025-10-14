@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
@@ -10,7 +10,15 @@ export default function AuthPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [, setLocation] = useLocation();
   const { toast } = useToast();
-  const { loginWithGoogle, checkAuth } = useAuth();
+  const { user, isLoading: authLoading, loginWithGoogle, checkAuth } = useAuth();
+  
+  // Redirect if user is already authenticated
+  useEffect(() => {
+    if (!authLoading && user) {
+      console.log("✅ User authenticated, redirecting...");
+      getRedirectPath();
+    }
+  }, [user, authLoading]);
   
   const getRedirectPath = () => {
     if (typeof window !== 'undefined') {
@@ -33,8 +41,14 @@ export default function AuthPage() {
     try {
       setIsLoading(true);
       await loginWithGoogle();
-      await checkAuth();
-      getRedirectPath();
+      
+      // For mobile redirect flow, the function returns immediately
+      // The redirect will be handled by the useEffect above after coming back
+      // For desktop popup flow, we need to manually trigger redirect
+      if (!isMobileBrowser()) {
+        await checkAuth();
+        getRedirectPath();
+      }
     } catch (error) {
       console.error("❌ Google sign in error:", error);
       setIsLoading(false);

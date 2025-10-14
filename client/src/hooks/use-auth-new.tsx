@@ -37,6 +37,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     const handleRedirectResult = async () => {
       try {
+        setIsLoading(true);
         const result = await getRedirectResult(firebaseAuth);
         if (result && result.user) {
           console.log("✅ Got redirect result from Google sign-in");
@@ -47,17 +48,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           const data = await response.json() as { user: User; isNewUser: boolean };
           
           if (response.ok && data && data.user) {
+            console.log("✅ Backend session created from redirect");
             setUser(data.user);
+          } else {
+            throw new Error("Failed to create session from redirect");
           }
           
           // Sign out from Firebase
           await firebaseAuth.signOut();
+        } else {
+          // No redirect result, check normal auth status
+          await checkAuth();
         }
       } catch (err) {
         console.error("Redirect result error:", err);
+        setError("Failed to complete sign-in");
+        await checkAuth();
       } finally {
-        // After checking redirect, check normal auth status
-        checkAuth();
+        setIsLoading(false);
       }
     };
     
