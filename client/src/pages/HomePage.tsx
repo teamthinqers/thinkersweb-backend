@@ -612,11 +612,17 @@ export default function HomePage() {
                   <span className="text-3xl">🖥️</span>
                   <h3 className="text-2xl font-bold text-gray-900 mt-1">If you're on Desktop</h3>
                 </div>
-                <p className="text-gray-700 mb-4 leading-relaxed">
-                  You can explore the full DotSpark experience here.
+                <p className="text-gray-700 mb-3 leading-relaxed">
+                  Create your own Neura to reflect and save your thoughts.
                 </p>
-                <p className="text-gray-700 mb-6 leading-relaxed">
-                  Create your private space for reflection, start ThinQing, and connect your thoughts into ideas that grow. It's calm, focused, and designed for deeper thinking.
+                <p className="text-gray-700 mb-3 leading-relaxed">
+                  Start Thought Circles with people you trust to share ideas and learn from each other.
+                </p>
+                <p className="text-gray-700 mb-3 leading-relaxed">
+                  Join the Social Cloud to connect with other ThinQers and help build a collective brain powered by human thought.
+                </p>
+                <p className="text-gray-700 mb-6 leading-relaxed italic">
+                  DotSpark is calm, focused, and made for those who think deeper.
                 </p>
                 <div className="text-center">
                   <Button
