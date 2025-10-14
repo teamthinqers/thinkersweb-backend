@@ -7,9 +7,10 @@ import { Card, CardContent } from "@/components/ui/card";
 import { isMobileBrowser } from "@/lib/mobile-detection";
 
 export default function MobileLandingPage() {
-  const { user, isLoading } = useAuth();
+  const { user, isLoading, logout } = useAuth();
   const [, setLocation] = useLocation();
   const [userEmail, setUserEmail] = useState<string>("");
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   useEffect(() => {
     // Force cache clear on mount
@@ -49,6 +50,22 @@ export default function MobileLandingPage() {
     window.open(communityUrl, "_blank");
   };
 
+  const handleBackToHome = async () => {
+    try {
+      setIsLoggingOut(true);
+      console.log("🔓 Signing out user and returning to homepage...");
+      await logout();
+      console.log("✅ Logout successful, redirecting to homepage");
+      setLocation("/");
+    } catch (error) {
+      console.error("❌ Logout error:", error);
+      // Still redirect even if logout fails
+      setLocation("/");
+    } finally {
+      setIsLoggingOut(false);
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50 dark:from-gray-950 dark:to-amber-950">
@@ -68,10 +85,15 @@ export default function MobileLandingPage() {
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => setLocation("/")}
+              onClick={handleBackToHome}
+              disabled={isLoggingOut}
               className="text-amber-700 hover:text-amber-900 hover:bg-amber-100/50"
             >
-              <ArrowLeft className="h-5 w-5" />
+              {isLoggingOut ? (
+                <Loader2 className="h-5 w-5 animate-spin" />
+              ) : (
+                <ArrowLeft className="h-5 w-5" />
+              )}
             </Button>
 
             {/* Logo and Brand - Centered */}
