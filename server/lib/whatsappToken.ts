@@ -26,10 +26,10 @@ export function parseWhatsAppToken(token: string): number | null {
 
 /**
  * Extract token from WhatsApp message
- * Looks for pattern [ID:xxxxx] in the message
+ * Looks for pattern #xxxxx in the message
  */
 export function extractTokenFromMessage(message: string): string | null {
-  const tokenPattern = /\[ID:([^\]]+)\]/;
+  const tokenPattern = /#([A-Za-z0-9+/=]+)/;
   const match = message.match(tokenPattern);
   return match ? match[1] : null;
 }
@@ -50,8 +50,8 @@ export function extractUserIdFromMessage(message: string): number | null {
 
 /**
  * Clean message by removing the token
- * Returns the original message without the [ID:xxxxx] part
+ * Returns the original message without the #xxxxx part
  */
 export function cleanMessageFromToken(message: string): string {
-  return message.replace(/\s*\[ID:[^\]]+\]\s*/g, '').trim();
+  return message.replace(/\s*#[A-Za-z0-9+/=]+\s*/g, '').trim();
 }

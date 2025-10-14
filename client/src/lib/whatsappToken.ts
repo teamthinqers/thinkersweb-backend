@@ -36,10 +36,10 @@ export function parseWhatsAppToken(token: string): number | null {
 
 /**
  * Extract token from WhatsApp message
- * Looks for pattern [ID:xxxxx] in the message
+ * Looks for pattern #xxxxx in the message
  */
 export function extractTokenFromMessage(message: string): string | null {
-  const tokenPattern = /\[ID:([^\]]+)\]/;
+  const tokenPattern = /#([A-Za-z0-9+/=]+)/;
   const match = message.match(tokenPattern);
   return match ? match[1] : null;
 }
@@ -48,13 +48,12 @@ export function extractTokenFromMessage(message: string): string | null {
  * Generate WhatsApp message with embedded token for logged-in users
  */
 export function generateWhatsAppMessage(userId: number | null): string {
-  // Using Unicode escape to ensure emoji displays correctly
-  const baseMessage = "Hey DotSpark \u{1F44B}";
+  const baseMessage = "Hey DotSpark :wave:";
   
   if (!userId) {
     return baseMessage;
   }
   
   const token = generateWhatsAppToken(userId);
-  return `${baseMessage} [ID:${token}]`;
+  return `${baseMessage} #${token}`;
 }
