@@ -223,6 +223,87 @@ export default function HomePage() {
             </div>
           </div>
 
+          {/* Why DotSpark Section */}
+          <div className="features-section py-20 lg:py-32">
+            <div className="max-w-6xl mx-auto">
+              <div className="grid lg:grid-cols-2 gap-16 items-center">
+                
+                {/* Left - Visual */}
+                <div className="relative order-2 lg:order-1">
+                  <div className="relative w-full max-w-md mx-auto aspect-square">
+                    
+                    {/* Central Brain/Thought Icon */}
+                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20">
+                      <div className="relative">
+                        {/* Glow effect */}
+                        <div className="absolute inset-0 bg-gradient-to-r from-amber-400 to-orange-400 rounded-full blur-3xl opacity-50 animate-pulse"></div>
+                        
+                        {/* Main icon */}
+                        <div className="relative w-32 h-32 bg-gradient-to-br from-amber-500 to-orange-500 rounded-full flex items-center justify-center shadow-2xl">
+                          <Lightbulb className="w-16 h-16 text-white" />
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Thought Waves */}
+                    {[1, 2, 3, 4].map((i) => (
+                      <div
+                        key={i}
+                        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 border-2 border-amber-400/30 rounded-full"
+                        style={{
+                          width: `${i * 80 + 100}px`,
+                          height: `${i * 80 + 100}px`,
+                          animation: `pulse ${2 + i * 0.5}s ease-in-out infinite`,
+                          animationDelay: `${i * 0.3}s`
+                        }}
+                      />
+                    ))}
+
+                    {/* Floating Thought Particles */}
+                    {[...Array(8)].map((_, i) => {
+                      const angle = (i * 45) * (Math.PI / 180);
+                      const radius = 150;
+                      const x = Math.cos(angle) * radius;
+                      const y = Math.sin(angle) * radius;
+                      
+                      return (
+                        <div
+                          key={`thought-${i}`}
+                          className="absolute top-1/2 left-1/2"
+                          style={{
+                            transform: `translate(calc(-50% + ${x}px), calc(-50% + ${y}px))`,
+                            animation: `float ${3 + (i % 3)}s ease-in-out infinite`,
+                            animationDelay: `${i * 0.2}s`
+                          }}
+                        >
+                          <div className="w-3 h-3 bg-gradient-to-br from-amber-400 to-orange-400 rounded-full shadow-lg"></div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* Right - Content */}
+                <div className="order-1 lg:order-2 space-y-6">
+                  <h2 className="text-4xl lg:text-5xl font-bold bg-gradient-to-r from-amber-500 to-orange-500 bg-clip-text text-transparent">
+                    Why DotSpark
+                  </h2>
+                  
+                  <div className="space-y-6 text-lg lg:text-xl text-gray-700 leading-relaxed">
+                    <p>
+                      In a world obsessed with artificial intelligence, we're forgetting what made us intelligent in the first place — <span className="font-semibold text-gray-900">Thinking</span>.
+                    </p>
+                    
+                    <p>
+                      DotSpark was built for those who choose to <span className="font-bold bg-gradient-to-r from-amber-500 to-orange-500 bg-clip-text text-transparent">ThinQ</span> — who believe human intelligence still holds untapped potential, and that when it connects, it becomes far more powerful than AI.
+                    </p>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+
           {/* Features Grid */}
           <div className="grid md:grid-cols-3 gap-8 mb-20">
             <div className="p-6 rounded-xl bg-white shadow-sm border border-gray-100">
