@@ -1,7 +1,7 @@
 import { useState, ReactNode, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Menu, Brain, Users, User, LogOut, Sparkles, UsersRound, Search, Bell, CheckCheck, MessageSquare, FileText, Trophy, Lightbulb } from 'lucide-react';
+import { Menu, Brain, Users, User, LogOut, Sparkles, UsersRound, Search, Bell, CheckCheck, MessageSquare, FileText, Trophy, Lightbulb, CircleDot } from 'lucide-react';
 import { SiWhatsapp } from 'react-icons/si';
 import { Link, useLocation } from 'wouter';
 import SparkIcon from '@/components/ui/spark-icon';
@@ -326,7 +326,7 @@ export default function SharedAuthLayout({ children }: SharedAuthLayoutProps) {
                     : 'hover:bg-yellow-50'
                 }`}
               >
-                <UsersRound className={`w-5 h-5 ${isOnThoughtCircles ? 'text-white' : 'text-yellow-600'}`} />
+                <CircleDot className={`w-5 h-5 ${isOnThoughtCircles ? 'text-white' : 'text-yellow-600'}`} />
                 {isSidebarOpen && <span className={`ml-3 text-sm font-medium ${isOnThoughtCircles ? 'text-white' : 'text-yellow-600'}`}>My Thought Circles</span>}
               </Button>
             </Link>
@@ -602,9 +602,9 @@ export default function SharedAuthLayout({ children }: SharedAuthLayoutProps) {
                 <SheetTrigger asChild>
                   <Button variant="ghost" size="sm" className="p-0">
                     <Avatar className="h-8 w-8">
-                      <AvatarImage src={(user as any).avatar || (user as any).linkedinPhotoUrl || (user as any).photoURL || undefined} />
+                      <AvatarImage src={(user as any).linkedinPhotoUrl || (user as any).avatar || undefined} />
                       <AvatarFallback className="text-xs">
-                        {(user as any).displayName?.[0]?.toUpperCase() || 'U'}
+                        {(user as any).fullName?.[0]?.toUpperCase() || 'U'}
                       </AvatarFallback>
                     </Avatar>
                   </Button>
@@ -615,13 +615,13 @@ export default function SharedAuthLayout({ children }: SharedAuthLayoutProps) {
                     <div className="p-4 border-b border-gray-200">
                       <div className="flex items-center gap-3">
                         <Avatar className="h-12 w-12">
-                          <AvatarImage src={(user as any).avatar || (user as any).linkedinPhotoUrl || (user as any).photoURL || undefined} />
+                          <AvatarImage src={(user as any).linkedinPhotoUrl || (user as any).avatar || undefined} />
                           <AvatarFallback>
-                            {(user as any).displayName?.[0]?.toUpperCase() || 'U'}
+                            {(user as any).fullName?.[0]?.toUpperCase() || 'U'}
                           </AvatarFallback>
                         </Avatar>
                         <div className="flex-1 min-w-0">
-                          <p className="font-semibold truncate">{(user as any).displayName || 'User'}</p>
+                          <p className="font-semibold truncate">{(user as any).fullName || 'User'}</p>
                           <p className="text-sm text-gray-500 truncate">{user.email}</p>
                         </div>
                       </div>

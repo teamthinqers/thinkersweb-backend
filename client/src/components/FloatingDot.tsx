@@ -401,8 +401,8 @@ export default function FloatingDot({ onClick, currentPage }: FloatingDotProps) 
     document.addEventListener('mouseup', handleMouseUp);
   };
 
-  const displayName = (user as any)?.fullName || (user as any)?.displayName || "User";
-  const userAvatar = (user as any)?.avatar || (user as any)?.linkedinPhotoUrl || (user as any)?.photoURL;
+  const displayName = (user as any)?.fullName || "User";
+  const userAvatar = (user as any)?.linkedinPhotoUrl || (user as any)?.avatar;
 
   return (
     <>
