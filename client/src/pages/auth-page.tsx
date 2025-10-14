@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/use-auth-new";
 import { ArrowLeft } from "lucide-react";
+import { isMobileBrowser } from "@/lib/mobile-detection";
 
 export default function AuthPage() {
   const [isLoading, setIsLoading] = useState(false);
@@ -18,7 +19,12 @@ export default function AuthPage() {
       if (redirect) {
         setLocation(`/${redirect}`);
       } else {
-        setLocation('/myneura');
+        // Check if user is on mobile browser and redirect accordingly
+        if (isMobileBrowser()) {
+          setLocation('/mobile-landing');
+        } else {
+          setLocation('/myneura');
+        }
       }
     }
   };

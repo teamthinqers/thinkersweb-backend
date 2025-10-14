@@ -644,8 +644,22 @@ export function setupNewAuth(app: Express) {
         }
 
         console.log(`✅ Session created for LinkedIn user ${dbUser.id}`);
-        // Redirect to MyDotSpark page after successful login (landing page)
-        res.redirect('/mydotspark');
+        
+        // Check if user is on mobile browser
+        const userAgent = req.headers['user-agent'] || '';
+        const mobileRegex = /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini|mobile/i;
+        const isMobile = mobileRegex.test(userAgent.toLowerCase());
+        const isWhatsAppBrowser = /whatsapp/i.test(userAgent);
+        const isMobileBrowser = isMobile && !isWhatsAppBrowser;
+        
+        // Redirect to mobile landing page for mobile browsers, otherwise to MyDotSpark
+        if (isMobileBrowser) {
+          console.log(`📱 Mobile browser detected, redirecting to mobile landing`);
+          res.redirect('/mobile-landing');
+        } else {
+          console.log(`💻 Desktop browser detected, redirecting to mydotspark`);
+          res.redirect('/mydotspark');
+        }
       });
 
     } catch (error) {

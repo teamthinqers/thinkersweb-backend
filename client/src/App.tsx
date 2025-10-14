@@ -33,6 +33,7 @@ import WhatsAppAdmin from "@/pages/WhatsAppAdmin";
 import WhatsAppTest from "@/pages/WhatsAppTest";
 import WhatsAppEntries from "@/pages/WhatsAppEntries";
 import AdminPage from "@/pages/AdminPage";
+import MobileLandingPage from "@/pages/MobileLandingPage";
 import FixedEntries from "@/pages/FixedEntries";
 import ActivateDotSpark from "@/pages/ActivateDotSpark";
 import ActivateNeura from "@/pages/ActivateNeura";
@@ -201,6 +202,7 @@ function Router() {
       <Route path="/privacy-policy" component={PrivacyPolicy} />
       <Route path="/terms-of-use" component={TermsOfUse} />
       <Route path="/preview" component={PreviewPage} />
+      <Route path="/mobile-landing" component={MobileLandingPage} />
       <Route path="/social" component={SocialFeedPage} />
       <Route path="/myneura" component={MyNeuraPage} />
       <Route path="/mydotspark" component={MyDotSparkPage} />
