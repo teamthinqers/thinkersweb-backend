@@ -211,11 +211,10 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
           <>
             {/* Logo on left that's clickable to My Neura */}
             <div 
-              className="flex items-center gap-2 cursor-pointer active:opacity-80 transition-opacity"
+              className="cursor-pointer active:opacity-80 transition-opacity"
               onClick={() => setLocation("/my-neura")}
             >
-              <img src="/dotspark-logo-icon.png?v=2" alt="DotSpark" className="h-8 w-8 object-contain rounded" />
-              <span className="text-lg font-semibold text-amber-700 dark:text-amber-300">DotSpark</span>
+              <img src="/dotspark-logo-icon.png?v=2" alt="DotSpark" className="h-9 w-9 object-contain rounded" />
             </div>
             
             <div className="flex items-center space-x-2">
