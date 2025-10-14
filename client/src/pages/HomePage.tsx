@@ -624,7 +624,7 @@ export default function HomePage() {
                 </div>
                 <div className="text-center mt-auto">
                   <a
-                    href="https://chat.whatsapp.com/E6Mwv20MUrCG58xuVJQNTv"
+                    href="https://wa.me/16067157733"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-2 px-8 py-3 bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white font-semibold rounded-full transition-all duration-300 hover:scale-105 text-base"
