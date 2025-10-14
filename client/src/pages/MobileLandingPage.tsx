@@ -77,17 +77,17 @@ export default function MobileLandingPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50 dark:from-gray-950 dark:to-amber-950">
-      {/* Header */}
-      <div className="sticky top-0 z-50 backdrop-blur-lg bg-gradient-to-r from-amber-500/10 via-orange-500/10 to-amber-500/10 border-b border-amber-200/30">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            {/* Back button */}
+      {/* Header - More spacious and centered */}
+      <div className="sticky top-0 z-50 backdrop-blur-xl bg-gradient-to-b from-white/95 via-amber-50/90 to-orange-50/80 border-b border-amber-200/40 shadow-sm">
+        <div className="container mx-auto px-4 py-5">
+          {/* Back button - Top left */}
+          <div className="absolute top-4 left-4">
             <Button
               variant="ghost"
               size="sm"
               onClick={handleBackToHome}
               disabled={isLoggingOut}
-              className="text-amber-700 hover:text-amber-900 hover:bg-amber-100/50"
+              className="text-amber-700 hover:text-amber-900 hover:bg-amber-100/50 rounded-full"
             >
               {isLoggingOut ? (
                 <Loader2 className="h-5 w-5 animate-spin" />
@@ -95,99 +95,135 @@ export default function MobileLandingPage() {
                 <ArrowLeft className="h-5 w-5" />
               )}
             </Button>
+          </div>
 
-            {/* Logo and Brand - Centered */}
-            <div className="flex items-center gap-3 absolute left-1/2 transform -translate-x-1/2">
-              {/* Logo with glow effect */}
-              <div className="relative">
-                <div className="absolute inset-0 bg-gradient-to-r from-amber-500 to-orange-500 rounded-full blur-md opacity-40"></div>
+          {/* Logo and Brand - Centered with more space */}
+          <div className="flex flex-col items-center justify-center gap-3 pt-2">
+            {/* Logo with enhanced glow effect */}
+            <div className="relative">
+              <div className="absolute inset-0 bg-gradient-to-r from-amber-400 to-orange-500 rounded-full blur-xl opacity-50 animate-pulse"></div>
+              <div className="relative bg-white rounded-full p-2 shadow-lg">
                 <img 
                   src="/dotspark-icon.png" 
                   alt="DotSpark" 
-                  className="relative h-12 w-12 drop-shadow-lg" 
+                  className="h-14 w-14 drop-shadow-lg" 
                 />
               </div>
-              
-              {/* Brand text */}
-              <div className="flex flex-col items-start">
-                <h1 className="text-xl font-bold bg-gradient-to-r from-amber-600 via-orange-600 to-amber-600 bg-clip-text text-transparent tracking-tight">
-                  DotSpark
-                </h1>
-                <p className="text-xs font-medium text-amber-700/80 dark:text-amber-400/70 tracking-wide">
-                  A Human Intelligence Network
-                </p>
-              </div>
             </div>
-
-            {/* Spacer for layout balance */}
-            <div className="w-10"></div>
+            
+            {/* Brand text - More spacious */}
+            <div className="flex flex-col items-center gap-1">
+              <h1 className="text-2xl font-bold bg-gradient-to-r from-amber-600 via-orange-600 to-amber-600 bg-clip-text text-transparent tracking-tight">
+                DotSpark
+              </h1>
+              <p className="text-xs font-medium text-amber-700/70 dark:text-amber-400/70 tracking-wide">
+                A Human Intelligence Network
+              </p>
+            </div>
           </div>
         </div>
       </div>
 
       {/* Main Content */}
-      <div className="container mx-auto px-4 py-4 max-w-lg">
-        {/* Welcome Section */}
-        <div className="text-center mb-4">
-          <h2 className="text-xl font-bold mb-2">Welcome to DotSpark!</h2>
-          <p className="text-base font-medium text-gray-700 dark:text-gray-300">
-            {user?.fullName || user?.email}
+      <div className="container mx-auto px-4 py-8 max-w-lg">
+        {/* Welcome Section - More elegant */}
+        <div className="text-center mb-8">
+          <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-amber-100/80 to-orange-100/80 rounded-full mb-4 shadow-sm">
+            <Sparkles className="h-4 w-4 text-amber-600" />
+            <span className="text-sm font-semibold text-amber-900">Welcome Back!</span>
+          </div>
+          <p className="text-lg font-medium text-gray-800 dark:text-gray-200">
+            {user?.fullName || user?.email?.split('@')[0]}
           </p>
         </div>
 
-        {/* Option Cards */}
-        <div className="space-y-3">
-          {/* WhatsApp Connection */}
-          <Card className="border-2 border-green-200 dark:border-green-800 hover:border-green-400 dark:hover:border-green-600 transition-colors bg-gradient-to-br from-green-50/90 via-emerald-50/70 to-green-50/90 backdrop-blur-sm shadow-lg">
-            <CardContent className="p-4">
-              <div className="flex items-start gap-3">
-                <div className="flex-shrink-0 w-10 h-10 rounded-full bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center">
-                  <MessageCircle className="h-5 w-5 text-white" />
-                </div>
-                <div className="flex-1">
-                  <h3 className="text-base font-semibold mb-1">Connect via WhatsApp</h3>
-                  <p className="text-xs text-muted-foreground mb-3">
-                    Stay connected and capture your thoughts on the go. Get seamless access to your DotSpark directly from Whatsapp.
+        {/* Option Cards - Redesigned */}
+        <div className="space-y-5">
+          {/* WhatsApp Connection - More stylish */}
+          <div 
+            onClick={handleWhatsAppConnect}
+            className="group relative cursor-pointer"
+          >
+            <div className="absolute -inset-0.5 bg-gradient-to-r from-green-500 to-emerald-500 rounded-2xl blur opacity-30 group-hover:opacity-60 transition duration-500"></div>
+            <Card className="relative border-0 bg-gradient-to-br from-green-50 via-emerald-50 to-green-50 dark:from-green-950 dark:to-emerald-950 rounded-2xl shadow-xl overflow-hidden transform group-hover:scale-[1.02] transition-all duration-300">
+              <CardContent className="p-6">
+                {/* Decorative circles */}
+                <div className="absolute -top-8 -right-8 w-32 h-32 bg-green-400/20 rounded-full blur-2xl"></div>
+                <div className="absolute -bottom-8 -left-8 w-32 h-32 bg-emerald-400/20 rounded-full blur-2xl"></div>
+                
+                <div className="relative">
+                  {/* Icon with animation */}
+                  <div className="flex items-center gap-4 mb-4">
+                    <div className="flex-shrink-0 w-14 h-14 rounded-2xl bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-300 group-hover:scale-110">
+                      <MessageCircle className="h-7 w-7 text-white" />
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100 mb-1">
+                        Connect via WhatsApp
+                      </h3>
+                      <p className="text-xs text-green-700 dark:text-green-400 font-medium">
+                        Start capturing thoughts instantly
+                      </p>
+                    </div>
+                  </div>
+                  
+                  <p className="text-sm text-gray-600 dark:text-gray-300 mb-5 leading-relaxed">
+                    Stay connected and capture your thoughts on the go. Get seamless access to your DotSpark directly from WhatsApp.
                   </p>
-                  <Button
-                    onClick={handleWhatsAppConnect}
-                    size="sm"
-                    className="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white"
-                  >
-                    <MessageCircle className="h-3.5 w-3.5 mr-1.5" />
-                    Continue with WhatsApp
-                    <ArrowRight className="h-3.5 w-3.5 ml-1.5" />
-                  </Button>
+                  
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm font-semibold text-green-700 dark:text-green-400">
+                      Tap to connect
+                    </span>
+                    <ArrowRight className="h-5 w-5 text-green-600 group-hover:translate-x-1 transition-transform duration-300" />
+                  </div>
                 </div>
-              </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+          </div>
 
-          {/* Community Access */}
-          <Card className="border-2 border-amber-200 dark:border-amber-800 hover:border-amber-400 dark:hover:border-amber-600 transition-colors bg-gradient-to-br from-amber-50/90 via-orange-50/70 to-amber-50/90 backdrop-blur-sm shadow-lg">
-            <CardContent className="p-4">
-              <div className="flex items-start gap-3">
-                <div className="flex-shrink-0 w-10 h-10 rounded-full bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center">
-                  <Users className="h-5 w-5 text-white" />
-                </div>
-                <div className="flex-1">
-                  <h3 className="text-base font-semibold mb-1">Join the Community</h3>
-                  <p className="text-xs text-muted-foreground mb-3">
+          {/* Community Access - More stylish */}
+          <div 
+            onClick={handleJoinCommunity}
+            className="group relative cursor-pointer"
+          >
+            <div className="absolute -inset-0.5 bg-gradient-to-r from-amber-500 to-orange-500 rounded-2xl blur opacity-30 group-hover:opacity-60 transition duration-500"></div>
+            <Card className="relative border-0 bg-gradient-to-br from-amber-50 via-orange-50 to-amber-50 dark:from-amber-950 dark:to-orange-950 rounded-2xl shadow-xl overflow-hidden transform group-hover:scale-[1.02] transition-all duration-300">
+              <CardContent className="p-6">
+                {/* Decorative circles */}
+                <div className="absolute -top-8 -right-8 w-32 h-32 bg-amber-400/20 rounded-full blur-2xl"></div>
+                <div className="absolute -bottom-8 -left-8 w-32 h-32 bg-orange-400/20 rounded-full blur-2xl"></div>
+                
+                <div className="relative">
+                  {/* Icon with animation */}
+                  <div className="flex items-center gap-4 mb-4">
+                    <div className="flex-shrink-0 w-14 h-14 rounded-2xl bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-300 group-hover:scale-110">
+                      <Users className="h-7 w-7 text-white" />
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100 mb-1">
+                        Join ThinQers Community
+                      </h3>
+                      <p className="text-xs text-amber-700 dark:text-amber-400 font-medium">
+                        Connect with fellow thinkers
+                      </p>
+                    </div>
+                  </div>
+                  
+                  <p className="text-sm text-gray-600 dark:text-gray-300 mb-5 leading-relaxed">
                     Explore shared insights, connect with others, and discover collective intelligence from our growing community.
                   </p>
-                  <Button
-                    onClick={handleJoinCommunity}
-                    size="sm"
-                    className="w-full bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 text-white"
-                  >
-                    <Users className="h-3.5 w-3.5 mr-1.5" />
-                    Explore Community
-                    <ArrowRight className="h-3.5 w-3.5 ml-1.5" />
-                  </Button>
+                  
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm font-semibold text-amber-700 dark:text-amber-400">
+                      Tap to join
+                    </span>
+                    <ArrowRight className="h-5 w-5 text-amber-600 group-hover:translate-x-1 transition-transform duration-300" />
+                  </div>
                 </div>
-              </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+          </div>
         </div>
       </div>
     </div>
