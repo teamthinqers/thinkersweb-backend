@@ -6,6 +6,7 @@ import { db } from "@db";
 import { whatsappUsers, entries, whatsappConversationStates, users } from "@shared/schema";
 import { eq } from "drizzle-orm";
 import { extractUserIdFromMessage, cleanMessageFromToken } from './lib/whatsappToken';
+import { generateSmartWhatsAppResponse } from './whatsapp-ai';
 
 // Create a router for WhatsApp webhook endpoints
 const whatsappWebhookRouter = Router();
@@ -173,10 +174,16 @@ whatsappWebhookRouter.post('/', async (req: Request, res: Response) => {
           // Validate email format
           const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
           if (!emailRegex.test(emailInput)) {
-            await sendWhatsAppMessage(
-              normalizedPhone,
-              "That doesn't look like a valid email address. Please share your email ID in the format: name@example.com"
-            );
+            // Invalid email format - use AI to respond smartly
+            const aiResponse = await generateSmartWhatsAppResponse({
+              phoneNumber: standardizedPhone,
+              conversationState: 'awaiting_email',
+              userMessage: messageText,
+              emailValidationError: true,
+              attemptedEmail: emailInput
+            });
+            
+            await sendWhatsAppMessage(normalizedPhone, aiResponse);
             res.status(200).send('Invalid email format');
             return;
           }
@@ -207,11 +214,16 @@ whatsappWebhookRouter.post('/', async (req: Request, res: Response) => {
             res.status(200).send('User linked successfully');
             return;
           } else {
-            // Email not found
-            await sendWhatsAppMessage(
-              normalizedPhone,
-              `This email (${emailInput}) is not registered with DotSpark.\n\nPlease register first at: https://dotspark.in/auth\n\nAfter registration, come back and send me "Hey DotSpark" to link your account! 👋`
-            );
+            // Email not found - use AI to respond smartly
+            const aiResponse = await generateSmartWhatsAppResponse({
+              phoneNumber: standardizedPhone,
+              conversationState: 'awaiting_email',
+              userMessage: messageText,
+              emailNotFound: true,
+              attemptedEmail: emailInput
+            });
+            
+            await sendWhatsAppMessage(normalizedPhone, aiResponse);
             
             // Delete the conversation state
             await db.delete(whatsappConversationStates)
@@ -225,18 +237,12 @@ whatsappWebhookRouter.post('/', async (req: Request, res: Response) => {
           const expiresAt = new Date();
           expiresAt.setMinutes(expiresAt.getMinutes() + 15); // 15 minute timeout
           
-          // Check if they already had a conversation state (returning after registration)
-          const isGreeting = messageText.trim().toLowerCase().match(/^(hey|hi|hello)/i);
-          const hadPreviousState = conversationState !== undefined;
-          
-          let responseMessage;
-          if (hadPreviousState && isGreeting) {
-            // Returning user - be smart about it
-            responseMessage = "Hey! I hope you got registered. Can you please share your email ID?";
-          } else {
-            // First time or not a greeting - full instructions
-            responseMessage = "Hey! Can you please share your email ID registered with DotSpark?\n\nIf not registered, please use the below link to register:\nhttps://dotspark.in/auth";
-          }
+          // Use AI to generate smart, contextual response
+          const responseMessage = await generateSmartWhatsAppResponse({
+            phoneNumber: standardizedPhone,
+            conversationState: conversationState ? 'awaiting_email' : null,
+            userMessage: messageText
+          });
           
           // Create or update conversation state
           await db.insert(whatsappConversationStates).values({
