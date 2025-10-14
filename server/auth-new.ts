@@ -305,7 +305,7 @@ export function setupNewAuth(app: Express) {
           const randomPassword = randomBytes(16).toString('hex') + '.' + randomBytes(16).toString('hex');
           
           const result = await db.execute(sql`
-            INSERT INTO users (username, email, hashed_password, firebase_uid, full_name_old, avatar, dot_spark_activated)
+            INSERT INTO users (username, email, hashed_password, firebase_uid, full_name_old, avatar, dotspark_activated)
             VALUES (${username}, ${email}, ${randomPassword}, ${uid}, ${displayName || username}, ${photoURL}, true)
             RETURNING *
           `);
@@ -586,7 +586,7 @@ export function setupNewAuth(app: Express) {
               linkedin_profile_url,
               linkedin_photo_url,
               avatar,
-              dot_spark_activated
+              dotspark_activated
             )
             VALUES (
               ${username}, 
