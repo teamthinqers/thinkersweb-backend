@@ -1,7 +1,8 @@
-import { createContext, useContext, useState, useCallback, ReactNode } from "react";
-import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import { createContext, useContext, useState, useCallback, ReactNode, useEffect } from "react";
+import { GoogleAuthProvider, signInWithPopup, signInWithRedirect, getRedirectResult } from "firebase/auth";
 import { auth as firebaseAuth } from "@/lib/firebase";
 import { apiRequest } from "@/lib/queryClient";
+import { isMobileBrowser } from "@/lib/mobile-detection";
 
 // User type matching backend
 export interface User {
@@ -31,6 +32,37 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  // Check for redirect result on mount (for mobile Google login)
+  useEffect(() => {
+    const handleRedirectResult = async () => {
+      try {
+        const result = await getRedirectResult(firebaseAuth);
+        if (result && result.user) {
+          console.log("✅ Got redirect result from Google sign-in");
+          const idToken = await result.user.getIdToken();
+          
+          // Exchange token for backend session
+          const response = await apiRequest('POST', '/api/auth/login', { idToken });
+          const data = await response.json() as { user: User; isNewUser: boolean };
+          
+          if (response.ok && data && data.user) {
+            setUser(data.user);
+          }
+          
+          // Sign out from Firebase
+          await firebaseAuth.signOut();
+        }
+      } catch (err) {
+        console.error("Redirect result error:", err);
+      } finally {
+        // After checking redirect, check normal auth status
+        checkAuth();
+      }
+    };
+    
+    handleRedirectResult();
+  }, []);
 
   // Check authentication status from backend session
   const checkAuth = useCallback(async () => {
@@ -64,8 +96,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setIsLoading(true);
       setError(null);
       
-      // Step 1: Open Google OAuth popup via Firebase
       const provider = new GoogleAuthProvider();
+      
+      // Use redirect flow for mobile devices (more reliable)
+      // Use popup flow for desktop devices (better UX)
+      if (isMobileBrowser()) {
+        console.log("📱 Mobile detected - using redirect flow for Google sign-in");
+        await signInWithRedirect(firebaseAuth, provider);
+        // The result will be handled in the useEffect with getRedirectResult
+        return;
+      }
+      
+      // Desktop: Use popup flow
+      console.log("💻 Desktop detected - using popup flow for Google sign-in");
       const result = await signInWithPopup(firebaseAuth, provider);
       const firebaseUser = result.user;
 
