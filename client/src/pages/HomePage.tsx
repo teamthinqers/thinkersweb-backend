@@ -326,8 +326,8 @@ export default function HomePage() {
                     {/* Central Person */}
                     <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20">
                       <div className="relative">
-                        <div className="absolute inset-0 bg-gradient-to-r from-blue-400 to-indigo-400 rounded-full blur-xl opacity-30 animate-pulse"></div>
-                        <div className="relative w-20 h-20 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full flex items-center justify-center shadow-xl">
+                        <div className="absolute inset-0 bg-gradient-to-r from-amber-400 to-orange-400 rounded-full blur-xl opacity-30 animate-pulse"></div>
+                        <div className="relative w-20 h-20 bg-gradient-to-br from-amber-500 to-orange-500 rounded-full flex items-center justify-center shadow-xl">
                           <User className="w-10 h-10 text-white" />
                         </div>
                       </div>
@@ -337,7 +337,7 @@ export default function HomePage() {
                     {[...Array(6)].map((_, i) => (
                       <div
                         key={i}
-                        className="absolute top-1/2 left-1/2 w-3 h-3 bg-gradient-to-br from-blue-400 to-indigo-400 rounded-full shadow-lg"
+                        className="absolute top-1/2 left-1/2 w-3 h-3 bg-gradient-to-br from-amber-400 to-orange-400 rounded-full shadow-lg"
                         style={{
                           animation: `orbit 8s linear infinite`,
                           animationDelay: `${-i * 1.33}s`,
@@ -362,7 +362,7 @@ export default function HomePage() {
                     <h3 className="text-2xl font-bold text-gray-900">
                       Self Reflection
                     </h3>
-                    <p className="text-sm font-semibold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">Where Thinking Begins</p>
+                    <p className="text-sm font-semibold text-amber-600">Where Thinking Begins</p>
                     <p className="text-gray-700 leading-relaxed">
                       Every journey starts with a thought. DotSpark gives you a private space to capture those thoughts — not for validation, but for clarity.
                     </p>
@@ -511,32 +511,47 @@ export default function HomePage() {
                 </h2>
               </div>
 
-              <div className="bg-gradient-to-br from-amber-50/50 to-orange-50/50 rounded-2xl p-8 lg:p-12 border border-amber-100 shadow-lg">
-                <p className="text-lg text-gray-700 leading-relaxed mb-6">
-                  Hey ThinQers,
-                </p>
-                
-                <div className="space-y-6 text-lg text-gray-700 leading-relaxed mb-8">
-                  <p>
-                    Thank you for taking a moment to pause, reflect, and reach here.
-                  </p>
-                  
-                  <p>
-                    The world today is flooded with big data, but I've always believed that true intelligence lives in the small, distilled pieces of human data — the kind that can't be measured, only felt.
-                  </p>
-                  
-                  <p>
-                    DotSpark was born from that belief. It's a space for those who choose to think, connect, and reflect deeply. I'm on a mission to build a network of ThinQers who see thinking not as an act of isolation, but as a bridge to collective understanding.
-                  </p>
-                  
-                  <p className="font-medium text-gray-800">
-                    Because I believe the next evolution of intelligence won't be artificial. It will be <span className="font-bold bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent">Connected Human Intelligence</span> — and it will be far more powerful than AI.
-                  </p>
+              <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+                {/* Founder Photo */}
+                <div className="order-2 lg:order-1 flex justify-center">
+                  <div className="relative">
+                    <div className="absolute inset-0 bg-gradient-to-r from-amber-400 to-orange-400 rounded-2xl blur-2xl opacity-20"></div>
+                    <img 
+                      src="/founder-photo.jpg" 
+                      alt="Aravindh Rajendran - Founder of DotSpark" 
+                      className="relative rounded-2xl shadow-2xl w-full max-w-sm object-cover"
+                    />
+                  </div>
                 </div>
 
-                <div className="border-t border-amber-200 pt-6">
-                  <p className="text-xl font-bold text-gray-900">Aravindh Rajendran</p>
-                  <p className="text-gray-600">Founder, DotSpark</p>
+                {/* Message */}
+                <div className="order-1 lg:order-2 space-y-6">
+                  <p className="text-lg text-gray-700 leading-relaxed">
+                    Hey ThinQers,
+                  </p>
+                  
+                  <div className="space-y-6 text-lg text-gray-700 leading-relaxed">
+                    <p>
+                      Thank you for taking a moment to pause, reflect, and reach here.
+                    </p>
+                    
+                    <p>
+                      The world today is flooded with big data, but I've always believed that true intelligence lives in the small, distilled pieces of human data — the kind that can't be measured, only felt.
+                    </p>
+                    
+                    <p>
+                      DotSpark was born from that belief. It's a space for those who choose to think, connect, and reflect deeply. I'm on a mission to build a network of ThinQers who see thinking not as an act of isolation, but as a bridge to collective understanding.
+                    </p>
+                    
+                    <p className="font-medium text-gray-800">
+                      Because I believe the next evolution of intelligence won't be artificial. It will be <span className="font-bold bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent">Connected Human Intelligence</span> — and it will be far more powerful than AI.
+                    </p>
+                  </div>
+
+                  <div className="border-t border-gray-200 pt-6">
+                    <p className="text-xl font-bold text-gray-900">Aravindh Rajendran</p>
+                    <p className="text-gray-600">Founder, DotSpark</p>
+                  </div>
                 </div>
               </div>
             </div>
