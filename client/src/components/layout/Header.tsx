@@ -234,7 +234,7 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
                 onClick={() => setLocation("/social-neura")}
                 className="text-xs font-semibold text-gray-800 border-gray-400 hover:border-red-600 hover:text-red-700 hover:bg-red-50 transition-all duration-300 px-2"
               >
-                <Brain className="h-4 w-4 mr-1" />
+                <Brain className="h-4 w-4 mr-1 text-red-500" />
                 Social
               </Button>
               
@@ -247,7 +247,7 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
               >
                 <div className="flex items-center gap-1">
                   <div className="relative">
-                    <Brain className="h-4 w-4" />
+                    <Brain className="h-4 w-4 text-amber-600" />
                     {isActivated && <div className="absolute -top-1 -right-1 w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse"></div>}
                   </div>
                   <span>My Neura</span>
@@ -374,7 +374,7 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
                 onClick={() => setLocation("/social-neura")}
                 className="text-sm font-semibold text-gray-800 border-gray-400 hover:border-red-600 hover:text-red-700 hover:bg-red-50 transition-all duration-300 px-4"
               >
-                <Brain className="h-4 w-4 mr-2" />
+                <Brain className="h-4 w-4 mr-2 text-red-500" />
                 Social
               </Button>
               
@@ -387,7 +387,7 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
               >
                 <div className="flex items-center gap-2">
                   <div className="relative">
-                    <Brain className="h-4 w-4" />
+                    <Brain className="h-4 w-4 text-amber-600" />
                     {isActivated && <div className="absolute -top-1 -right-1 w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>}
                   </div>
                   <span>My Neura</span>
