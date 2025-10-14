@@ -472,7 +472,7 @@ export default function SharedAuthLayout({ children }: SharedAuthLayoutProps) {
               variant="ghost"
               size="sm"
               onClick={() => {
-                const message = "Hey DotSpark :wave:";
+                const message = "Hey DotSpark";
                 const encodedMessage = encodeURIComponent(message);
                 window.open(`https://wa.me/16067157733?text=${encodedMessage}`, '_blank');
               }}
