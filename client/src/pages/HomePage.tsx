@@ -613,7 +613,7 @@ export default function HomePage() {
                   <div>
                     <h3 className="text-lg font-semibold mb-1">My Neura - Personal Thoughts</h3>
                     <p className="text-gray-600">
-                      Capture and organize your personal thoughts, insights, and reflections in your private neural space. Build your knowledge network with dots, wheels, and chakras.
+                      Start capturing your daily insights as dots. Group related thoughts into wheels for specific goals. Connect everything into chakras to map your life's purpose. Your private neural space grows with you.
                     </p>
                   </div>
                 </div>
@@ -625,7 +625,7 @@ export default function HomePage() {
                   <div>
                     <h3 className="text-lg font-semibold mb-1">ThinQ Circles - Brainstorm Together</h3>
                     <p className="text-gray-600">
-                      Create private brainstorming spaces with your think partners. Collaborate on ideas, share perspectives, and build collective understanding in focused circles.
+                      Create a Circle, invite your think partners, set a brainstorming topic, and collaborate in real-time. Perfect for project planning, problem-solving, or exploring ideas together privately.
                     </p>
                   </div>
                 </div>
@@ -637,7 +637,7 @@ export default function HomePage() {
                   <div>
                     <h3 className="text-lg font-semibold mb-1">Social Neura - Collective Intelligence</h3>
                     <p className="text-gray-600">
-                      Contribute your insights to the global thought network. Help build collective neural strength by sharing knowledge and learning from the ThinQers community.
+                      Browse community thoughts, save valuable insights to your Neura, and when ready, share your best ideas publicly. Every contribution strengthens the collective brain we're building together.
                     </p>
                   </div>
                 </div>
