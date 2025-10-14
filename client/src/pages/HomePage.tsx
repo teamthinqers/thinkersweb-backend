@@ -313,7 +313,7 @@ export default function HomePage() {
                   Inside the Network
                 </h2>
                 <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-                  Three pillars of human intelligence, amplified
+                  Three pillars of Human Intelligence, amplified
                 </p>
               </div>
 
