@@ -67,19 +67,79 @@ export default function HomePage() {
         </div>
       </header>
 
-      {/* About Content */}
-      <main className="flex-1">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-16">
+      {/* Hero Content */}
+      <main className="flex-1 relative overflow-hidden">
+        {/* Animated Background Elements */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          {/* Floating Gradient Orbs */}
+          <div className="absolute top-20 left-10 w-72 h-72 bg-gradient-to-br from-amber-200/40 to-orange-200/40 rounded-full blur-3xl animate-pulse"></div>
+          <div className="absolute bottom-20 right-10 w-96 h-96 bg-gradient-to-br from-orange-200/30 to-amber-200/30 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }}></div>
+          
+          {/* Animated Dots */}
+          <div className="absolute top-1/4 left-1/4 w-2 h-2 bg-amber-400 rounded-full animate-ping" style={{ animationDelay: '0.5s' }}></div>
+          <div className="absolute top-1/3 right-1/3 w-2 h-2 bg-orange-400 rounded-full animate-ping" style={{ animationDelay: '1.5s' }}></div>
+          <div className="absolute bottom-1/3 left-1/3 w-2 h-2 bg-amber-500 rounded-full animate-ping" style={{ animationDelay: '2s' }}></div>
+        </div>
+
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-20 relative z-10">
           {/* Hero Section */}
-          <div className="text-center mb-20">
-            <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-r from-amber-500 to-orange-500 mb-6">
-              <Brain className="h-8 w-8 text-white" />
+          <div className="text-center mb-24 space-y-8">
+            {/* DotSpark Logo with Animation */}
+            <div className="inline-block animate-fade-in-up">
+              <div className="relative group">
+                <div className="absolute inset-0 bg-gradient-to-r from-amber-400 to-orange-400 rounded-full blur-xl opacity-50 group-hover:opacity-75 transition-opacity duration-500"></div>
+                <img 
+                  src="/dotspark-logo-combined.png?v=2" 
+                  alt="DotSpark" 
+                  className="relative h-24 w-auto mx-auto drop-shadow-2xl transform group-hover:scale-105 transition-transform duration-300" 
+                />
+              </div>
             </div>
-            <h1 className="text-5xl font-bold mb-6 bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent">
-              Welcome to DotSpark
+
+            {/* Tagline */}
+            <h1 className="text-6xl md:text-7xl font-bold mb-6 animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
+              <span className="bg-gradient-to-r from-amber-600 via-orange-600 to-amber-600 bg-clip-text text-transparent bg-[length:200%_auto] animate-gradient">
+                A Human Intelligence Network
+              </span>
             </h1>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              A collective intelligence platform where thoughts connect, insights emerge, and knowledge flows naturally.
+
+            {/* Dual CTA Buttons */}
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-6 animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
+              {/* Desktop CTA */}
+              <div className="group">
+                <Button
+                  size="lg"
+                  onClick={() => setLocation("/auth")}
+                  className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white px-10 py-7 text-lg font-semibold shadow-2xl hover:shadow-amber-500/50 transform hover:scale-105 transition-all duration-300"
+                >
+                  <div className="flex flex-col items-center">
+                    <span className="text-xl">Get Started</span>
+                    <span className="text-xs opacity-90 font-normal mt-1">Desktop</span>
+                  </div>
+                </Button>
+              </div>
+
+              {/* WhatsApp CTA */}
+              <div className="group">
+                <Button
+                  size="lg"
+                  onClick={() => window.open('https://wa.me/16067157733?text=Hey%20DotSpark%20:wave:', '_blank')}
+                  className="bg-gradient-to-r from-[#25D366] to-[#20BA5A] hover:from-[#20BA5A] hover:to-[#1DA851] text-white px-10 py-7 text-lg font-semibold shadow-2xl hover:shadow-green-500/50 transform hover:scale-105 transition-all duration-300"
+                >
+                  <div className="flex flex-col items-center gap-1">
+                    <div className="flex items-center gap-2">
+                      <MessageCircle className="h-5 w-5" />
+                      <span className="text-xl">DotSpark WhatsApp</span>
+                    </div>
+                    <span className="text-xs opacity-90 font-normal">for mobiles</span>
+                  </div>
+                </Button>
+              </div>
+            </div>
+
+            {/* Subtle Subtext */}
+            <p className="text-gray-500 text-sm max-w-md mx-auto animate-fade-in-up" style={{ animationDelay: '0.6s' }}>
+              Join the collective intelligence revolution. Share thoughts, discover insights, and grow together.
             </p>
           </div>
 
