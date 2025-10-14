@@ -375,8 +375,8 @@ export default function HomePage() {
                     {/* Central Target Icon */}
                     <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20">
                       <div className="relative">
-                        <div className="absolute inset-0 bg-amber-400 rounded-full blur-xl opacity-30 animate-pulse"></div>
-                        <div className="relative w-20 h-20 bg-gradient-to-br from-amber-500 to-orange-500 rounded-full flex items-center justify-center shadow-xl">
+                        <div className="absolute inset-0 bg-yellow-400 rounded-full blur-xl opacity-30 animate-pulse"></div>
+                        <div className="relative w-20 h-20 bg-gradient-to-br from-yellow-500 to-orange-500 rounded-full flex items-center justify-center shadow-xl">
                           <Target className="w-10 h-10 text-white" />
                         </div>
                       </div>
@@ -400,8 +400,8 @@ export default function HomePage() {
                           }}
                         >
                           <div className="relative">
-                            <div className="absolute inset-0 bg-amber-300 rounded-full blur-sm opacity-30"></div>
-                            <div className="relative w-14 h-14 bg-gradient-to-br from-amber-400 to-orange-400 rounded-full flex items-center justify-center shadow-lg">
+                            <div className="absolute inset-0 bg-yellow-300 rounded-full blur-sm opacity-30"></div>
+                            <div className="relative w-14 h-14 bg-gradient-to-br from-yellow-400 to-orange-400 rounded-full flex items-center justify-center shadow-lg">
                               <User className="w-7 h-7 text-white" />
                             </div>
                           </div>
@@ -414,7 +414,7 @@ export default function HomePage() {
                     <h3 className="text-2xl font-bold text-gray-900">
                       Thought Circles
                     </h3>
-                    <p className="text-sm font-semibold text-amber-600">Think, Share, Evolve</p>
+                    <p className="text-sm font-semibold bg-gradient-to-r from-yellow-600 to-orange-600 bg-clip-text text-transparent">Think, Share, Evolve</p>
                     <p className="text-gray-700 leading-relaxed">
                       ThinQers create private Thought Circles to explore perspectives and refine their thinking together. It's not about debate — it's about discovery.
                     </p>
