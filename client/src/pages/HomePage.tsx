@@ -23,27 +23,32 @@ export default function HomePage() {
       <header className="sticky top-0 z-50 border-b border-amber-200/50 bg-white/95 backdrop-blur-md shadow-sm">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex h-16 items-center justify-between">
-            {/* Logo */}
+            {/* Logo - Icon only on mobile, full logo on desktop */}
             <div className="flex items-center">
-              <div 
-                className="flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity"
-                onClick={() => setLocation("/")}
-              >
+              <div className="cursor-pointer hover:opacity-80 transition-opacity">
+                {/* Mobile: Icon only, non-clickable */}
+                <img 
+                  src="/dotspark-icon.png" 
+                  alt="DotSpark" 
+                  className="h-9 w-9 md:hidden object-contain" 
+                />
+                {/* Desktop: Full logo, clickable */}
                 <img 
                   src="/dotspark-logo-combined.png?v=1" 
                   alt="DotSpark" 
-                  className="h-10 w-auto object-contain" 
+                  className="h-10 w-auto object-contain hidden md:block cursor-pointer" 
+                  onClick={() => setLocation("/")}
                 />
               </div>
             </div>
 
-            {/* Navigation */}
-            <nav className="flex items-center gap-6">
+            {/* Navigation - Evenly spaced on mobile */}
+            <nav className="flex items-center gap-2 md:gap-6">
               <Button
                 variant="outline"
                 size="sm"
                 onClick={() => setLocation("/")}
-                className="text-sm font-semibold text-gray-800 border-gray-400 hover:border-amber-600 hover:text-amber-700 hover:bg-amber-50 transition-all duration-300 px-5"
+                className="text-xs md:text-sm font-semibold text-gray-800 border-gray-400 hover:border-amber-600 hover:text-amber-700 hover:bg-amber-50 transition-all duration-300 px-3 md:px-5"
               >
                 About
               </Button>
@@ -51,7 +56,7 @@ export default function HomePage() {
                 variant="outline"
                 size="sm"
                 onClick={() => setLocation("/auth")}
-                className="text-sm font-semibold text-gray-800 border-gray-400 hover:border-amber-600 hover:text-amber-700 hover:bg-amber-50 transition-all duration-300 px-5"
+                className="text-xs md:text-sm font-semibold text-gray-800 border-gray-400 hover:border-amber-600 hover:text-amber-700 hover:bg-amber-50 transition-all duration-300 px-3 md:px-5 whitespace-nowrap"
               >
                 Sign In / Register
               </Button>
@@ -59,7 +64,7 @@ export default function HomePage() {
                 variant="default"
                 size="sm"
                 onClick={() => window.open('https://wa.me/16067157733?text=Hey%20DotSpark%20:wave:', '_blank')}
-                className="bg-[#25D366] hover:bg-[#20BA5A] text-white"
+                className="bg-[#25D366] hover:bg-[#20BA5A] text-white p-2 md:p-2"
               >
                 <SiWhatsapp className="h-5 w-5" />
               </Button>
