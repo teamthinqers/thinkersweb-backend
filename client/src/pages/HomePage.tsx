@@ -224,13 +224,13 @@ export default function HomePage() {
           </div>
 
           {/* Why DotSpark Section */}
-          <div className="features-section py-20 lg:py-32">
-            <div className="max-w-6xl mx-auto">
-              <div className="grid lg:grid-cols-2 gap-16 items-center">
+          <div className="features-section py-16 lg:py-20">
+            <div className="max-w-6xl mx-auto px-4">
+              <div className="grid lg:grid-cols-2 gap-12 items-center">
                 
                 {/* Left - Visual */}
                 <div className="relative order-2 lg:order-1">
-                  <div className="relative w-full max-w-md mx-auto aspect-square">
+                  <div className="relative w-full max-w-sm mx-auto" style={{ height: '300px' }}>
                     
                     {/* Central Brain/Thought Icon */}
                     <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20">
@@ -284,18 +284,18 @@ export default function HomePage() {
                 </div>
 
                 {/* Right - Content */}
-                <div className="order-1 lg:order-2 space-y-6">
-                  <h2 className="text-4xl lg:text-5xl font-bold bg-gradient-to-r from-amber-500 to-orange-500 bg-clip-text text-transparent">
+                <div className="order-1 lg:order-2 space-y-5">
+                  <h2 className="text-3xl lg:text-4xl font-bold bg-gradient-to-r from-amber-500 to-orange-500 bg-clip-text text-transparent">
                     Why DotSpark
                   </h2>
                   
-                  <div className="space-y-6 text-lg lg:text-xl text-gray-700 leading-relaxed">
+                  <div className="space-y-5 text-base lg:text-lg text-gray-700 leading-relaxed">
                     <p>
                       In a world obsessed with <span className="font-semibold text-gray-900">Artificial Intelligence</span>, we're forgetting what made us intelligent in the first place — <span className="font-semibold text-gray-900">Thinking</span>.
                     </p>
                     
                     <p>
-                      DotSpark was built for those who choose to <span className="text-3xl font-bold bg-gradient-to-r from-amber-500 to-orange-500 bg-clip-text text-transparent">ThinQ</span>, for those who believe human intelligence still holds untapped potential, and that when it connects, it becomes far more powerful than AI.
+                      DotSpark was built for those who choose to <span className="text-2xl lg:text-3xl font-bold bg-gradient-to-r from-amber-500 to-orange-500 bg-clip-text text-transparent">ThinQ</span>, for those who believe human intelligence still holds untapped potential, and that when it connects, it becomes far more powerful than AI.
                     </p>
                   </div>
                 </div>
