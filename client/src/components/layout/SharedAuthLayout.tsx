@@ -1,7 +1,7 @@
 import { useState, ReactNode, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Menu, Brain, Users, User, LogOut, Sparkles, UsersRound, Search, Bell, CheckCheck, MessageSquare, FileText, Trophy, Lightbulb } from 'lucide-react';
+import { Menu, Brain, Users, User, LogOut, Sparkles, UsersRound, Search, Bell, CheckCheck, MessageSquare, FileText, Trophy, Lightbulb, MessageCircle } from 'lucide-react';
 import { Link, useLocation } from 'wouter';
 import SparkIcon from '@/components/ui/spark-icon';
 import { useAuth } from '@/hooks/use-auth-new';
@@ -458,6 +458,18 @@ export default function SharedAuthLayout({ children }: SharedAuthLayoutProps) {
                 )}
               </Button>
             </Link>
+
+            {/* WhatsApp Button */}
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => window.open('https://wa.me/YOUR_WHATSAPP_NUMBER', '_blank')}
+              className="flex items-center gap-2 px-4 py-2 bg-[#25D366] hover:bg-[#20BA5A] rounded-xl transition-all duration-300 hover:scale-105 shadow-lg"
+              title="WhatsApp"
+            >
+              <MessageCircle className="h-5 w-5 text-white" />
+              <span className="text-white font-medium">WhatsApp</span>
+            </Button>
 
             {/* Notifications Bell with Dropdown */}
             <div className="relative" ref={notificationsRef}>
