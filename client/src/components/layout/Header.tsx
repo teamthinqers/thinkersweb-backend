@@ -216,29 +216,41 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
             </div>
             
             <div className="flex items-center space-x-2">
-              {/* Neura status indicator - just brain icon with green indicator */}
-              <div className="bg-gradient-to-r from-amber-700 to-primary text-white h-9 w-9 p-0 shadow-md rounded-md flex items-center justify-center">
-                <div className="relative">
-                  <Brain className={`h-5 w-5 ${isActivated ? 'text-green-300' : 'text-white'}`} />
-                  {isActivated && <div className="absolute -top-0.5 -right-0.5 w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse"></div>}
-                </div>
-              </div>
-              
-              {/* Social Neura button with brain icon */}
+              {/* My DotSpark button - Mobile */}
               <Button
-                variant="ghost"
+                variant="outline"
                 size="sm"
-                className="bg-gradient-to-r from-orange-500 to-red-500 text-white shadow-md hover:bg-gradient-to-r hover:from-orange-600 hover:to-red-600 transition-all duration-300 ml-2"
+                onClick={() => setLocation("/my-neura")}
+                className="text-xs font-semibold text-gray-800 border-gray-400 hover:border-amber-600 hover:text-amber-700 hover:bg-amber-50 transition-all duration-300 px-2"
+              >
+                <img src="/dotspark-logo-icon.png?v=2" alt="DotSpark" className="h-4 w-4 mr-1 object-contain rounded" />
+                My DotSpark
+              </Button>
+              
+              {/* Social button - Mobile */}
+              <Button
+                variant="outline"
+                size="sm"
                 onClick={() => setLocation("/social-neura")}
+                className="text-xs font-semibold text-gray-800 border-gray-400 hover:border-red-600 hover:text-red-700 hover:bg-red-50 transition-all duration-300 px-2"
+              >
+                <Brain className="h-4 w-4 mr-1" />
+                Social
+              </Button>
+              
+              {/* My Neura button - Mobile */}
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setLocation("/dashboard")}
+                className="text-xs font-semibold text-gray-800 border-gray-400 hover:border-amber-600 hover:text-amber-700 hover:bg-amber-50 transition-all duration-300 px-2"
               >
                 <div className="flex items-center gap-1">
                   <div className="relative">
-                    <Brain className="h-4 w-4 animate-pulse hover:animate-bounce transition-all duration-300" />
-                    <div className="absolute inset-0 animate-ping opacity-30">
-                      <Brain className="h-4 w-4" />
-                    </div>
+                    <Brain className="h-4 w-4" />
+                    {isActivated && <div className="absolute -top-1 -right-1 w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse"></div>}
                   </div>
-                  <span className="text-xs">Social</span>
+                  <span>My Neura</span>
                 </div>
               </Button>
               
@@ -344,64 +356,47 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
           </>
         ) : (
           <>
-            <div className="flex items-center">
+            <div className="flex items-center gap-3">
               <Button
-                variant="ghost"
+                variant="outline"
                 size="sm"
-                className="mr-4 text-gray-600 hover:text-primary"
-                onClick={goToLandingPage}
+                onClick={() => setLocation("/my-neura")}
+                className="text-sm font-semibold text-gray-800 border-gray-400 hover:border-amber-600 hover:text-amber-700 hover:bg-amber-50 transition-all duration-300 px-4"
               >
-                <HomeIcon className="h-5 w-5 mr-1" />
-                <span className="hidden sm:inline">Home</span>
+                <img src="/dotspark-logo-icon.png?v=2?v=2" alt="DotSpark" className="h-4 w-4 mr-2 object-contain rounded" />
+                My DotSpark
               </Button>
               
+              {/* Social button */}
               <Button
-                variant="ghost"
+                variant="outline"
                 size="sm"
-                className="mr-4 text-gray-600 hover:text-primary"
-                onClick={() => setLocation("/my-neura")}
+                onClick={() => setLocation("/social-neura")}
+                className="text-sm font-semibold text-gray-800 border-gray-400 hover:border-red-600 hover:text-red-700 hover:bg-red-50 transition-all duration-300 px-4"
               >
-                <img src="/dotspark-logo-icon.png?v=2?v=2" alt="DotSpark" className="h-5 w-5 mr-1 object-contain rounded" />
-                <span className="hidden sm:inline">My DotSpark</span>
+                <Brain className="h-4 w-4 mr-2" />
+                Social
+              </Button>
+              
+              {/* My Neura button */}
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setLocation("/dashboard")}
+                className="text-sm font-semibold text-gray-800 border-gray-400 hover:border-amber-600 hover:text-amber-700 hover:bg-amber-50 transition-all duration-300 px-4"
+              >
+                <div className="flex items-center gap-2">
+                  <div className="relative">
+                    <Brain className="h-4 w-4" />
+                    {isActivated && <div className="absolute -top-1 -right-1 w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>}
+                  </div>
+                  <span>My Neura</span>
+                </div>
               </Button>
 
             </div>
 
             <div className="ml-4 flex items-center">
-              
-              {/* My Neura with brain icon and green indicator */}
-              <Button
-                variant="ghost"
-                size="sm"
-                className="mr-3 bg-gradient-to-r from-amber-700 to-primary text-white shadow-md hover:bg-gradient-to-r hover:from-amber-800 hover:to-primary"
-                onClick={() => setLocation("/dashboard")}
-              >
-                <div className="flex items-center gap-2">
-                  <div className="relative">
-                    <Brain className={`h-5 w-5 ${isActivated ? 'text-green-300' : 'text-white'}`} />
-                    {isActivated && <div className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>}
-                  </div>
-                  <span className="text-sm font-medium">My Neura</span>
-                </div>
-              </Button>
-              
-              {/* Social Neura button with brain icon */}
-              <Button
-                variant="ghost"
-                size="sm"
-                className="mr-3 bg-gradient-to-r from-red-500 to-orange-600 text-white shadow-md hover:bg-gradient-to-r hover:from-red-600 hover:to-orange-700 transition-all duration-300"
-                onClick={() => setLocation("/social-neura")}
-              >
-                <div className="flex items-center gap-2">
-                  <div className="relative">
-                    <Brain className="h-5 w-5 animate-pulse hover:animate-bounce transition-all duration-300" />
-                    <div className="absolute inset-0 animate-ping opacity-30">
-                      <Brain className="h-5 w-5" />
-                    </div>
-                  </div>
-                  <span className="text-sm font-medium">Social</span>
-                </div>
-              </Button>
               
               {/* Notifications Bell */}
               <Button
