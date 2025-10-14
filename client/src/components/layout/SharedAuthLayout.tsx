@@ -444,7 +444,7 @@ export default function SharedAuthLayout({ children }: SharedAuthLayoutProps) {
                 className="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-gray-800 border-gray-400 hover:border-red-600 hover:text-red-700 hover:bg-red-50 transition-all duration-300"
                 title="Social"
               >
-                <Brain className="h-4 w-4" />
+                <Brain className="h-4 w-4 text-red-500" />
                 <span>Social</span>
               </Button>
             </Link>
@@ -458,7 +458,7 @@ export default function SharedAuthLayout({ children }: SharedAuthLayoutProps) {
                 title="My Neura"
               >
                 <div className="relative">
-                  <Brain className="h-4 w-4" />
+                  <Brain className="h-4 w-4 text-amber-600" />
                   {isOnMyNeura && (
                     <div className="absolute -top-1 -right-1 w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
                   )}
