@@ -326,8 +326,8 @@ export default function HomePage() {
                     {/* Central Person */}
                     <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20">
                       <div className="relative">
-                        <div className="absolute inset-0 bg-gradient-to-r from-amber-400 to-orange-400 rounded-full blur-xl opacity-30 animate-pulse"></div>
-                        <div className="relative w-20 h-20 bg-gradient-to-br from-amber-500 to-orange-500 rounded-full flex items-center justify-center shadow-xl">
+                        <div className="absolute inset-0 bg-gradient-to-r from-blue-400 to-indigo-400 rounded-full blur-xl opacity-30 animate-pulse"></div>
+                        <div className="relative w-20 h-20 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full flex items-center justify-center shadow-xl">
                           <User className="w-10 h-10 text-white" />
                         </div>
                       </div>
@@ -337,7 +337,7 @@ export default function HomePage() {
                     {[...Array(6)].map((_, i) => (
                       <div
                         key={i}
-                        className="absolute top-1/2 left-1/2 w-3 h-3 bg-gradient-to-br from-amber-400 to-orange-400 rounded-full shadow-lg"
+                        className="absolute top-1/2 left-1/2 w-3 h-3 bg-gradient-to-br from-blue-400 to-indigo-400 rounded-full shadow-lg"
                         style={{
                           animation: `orbit 8s linear infinite`,
                           animationDelay: `${-i * 1.33}s`,
@@ -362,7 +362,7 @@ export default function HomePage() {
                     <h3 className="text-2xl font-bold text-gray-900">
                       Self Reflection
                     </h3>
-                    <p className="text-sm font-semibold text-amber-600">Where Thinking Begins</p>
+                    <p className="text-sm font-semibold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">Where Thinking Begins</p>
                     <p className="text-gray-700 leading-relaxed">
                       Every journey starts with a thought. DotSpark gives you a private space to capture those thoughts — not for validation, but for clarity.
                     </p>
