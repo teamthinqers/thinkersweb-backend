@@ -61,42 +61,54 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   // Check for redirect result on mount (for mobile Google login)
   useEffect(() => {
+    let processed = false;
+    
     const handleRedirectResult = async () => {
+      if (processed) return;
+      processed = true;
+      
       try {
         setIsLoading(true);
+        console.log("🔍 Checking for redirect result...");
         const result = await getRedirectResult(firebaseAuth);
+        
         if (result && result.user) {
           console.log("✅ Got redirect result from Google sign-in");
           const idToken = await result.user.getIdToken();
           
           // Exchange token for backend session
+          console.log("🔄 Exchanging token for backend session...");
           const response = await apiRequest('POST', '/api/auth/login', { idToken });
           const data = await response.json() as { user: User; isNewUser: boolean };
           
           if (response.ok && data && data.user) {
-            console.log("✅ Backend session created from redirect");
+            console.log("✅ Backend session created from redirect, user:", data.user.email);
             setUser(data.user);
+            setError(null);
+            
+            // Sign out from Firebase
+            await firebaseAuth.signOut();
+            console.log("✅ Firebase signed out, ready for app redirect");
           } else {
             throw new Error("Failed to create session from redirect");
           }
-          
-          // Sign out from Firebase
-          await firebaseAuth.signOut();
         } else {
+          console.log("ℹ️ No redirect result found, checking existing session...");
           // No redirect result, check normal auth status
           await checkAuth();
         }
       } catch (err) {
-        console.error("Redirect result error:", err);
+        console.error("❌ Redirect result error:", err);
         setError("Failed to complete sign-in");
         await checkAuth();
       } finally {
         setIsLoading(false);
+        console.log("✅ Auth check complete, isLoading now false");
       }
     };
     
     handleRedirectResult();
-  }, [checkAuth]);
+  }, []);
 
   // Login with Google OAuth
   const loginWithGoogle = useCallback(async () => {

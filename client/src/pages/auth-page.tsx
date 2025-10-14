@@ -14,8 +14,11 @@ export default function AuthPage() {
   
   // Redirect if user is already authenticated
   useEffect(() => {
+    console.log("🔍 Auth state check:", { user: user?.email, authLoading });
     if (!authLoading && user) {
-      console.log("✅ User authenticated, redirecting...");
+      console.log("✅ User authenticated, determining redirect path...");
+      const isMobile = isMobileBrowser();
+      console.log("📱 Is mobile browser:", isMobile);
       getRedirectPath();
     }
   }, [user, authLoading]);
