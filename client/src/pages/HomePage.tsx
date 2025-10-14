@@ -56,7 +56,7 @@ export default function HomePage() {
               <Button
                 variant="default"
                 size="sm"
-                onClick={() => window.open('https://wa.me/YOUR_WHATSAPP_NUMBER', '_blank')}
+                onClick={() => window.open('https://wa.me/16067157733', '_blank')}
                 className="bg-[#25D366] hover:bg-[#20BA5A] text-white flex items-center gap-2"
               >
                 <MessageCircle className="h-4 w-4" />
