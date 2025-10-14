@@ -14,6 +14,8 @@ import NewLandingPage from "@/pages/NewLandingPage";
 import HomePage from "@/pages/HomePage";
 import PreviewPage from "@/pages/PreviewPage";
 import SocialFeedPage from "@/pages/SocialFeedPage";
+import PrivacyPage from "@/pages/PrivacyPage";
+import TermsPage from "@/pages/TermsPage";
 import CognitiveIdentityPage from "@/pages/CognitiveIdentityPage";
 import LearningEnginePage from "@/pages/LearningEnginePage";
 import LogoPage from "@/pages/LogoPage";
@@ -192,6 +194,8 @@ function Router() {
     <Switch>
       <Route path="/test-minimal" component={() => <div>Basic Test</div>} />
       <Route path="/" component={HomePage} />
+      <Route path="/privacy" component={PrivacyPage} />
+      <Route path="/terms" component={TermsPage} />
       <Route path="/preview" component={PreviewPage} />
       <Route path="/social" component={SocialFeedPage} />
       <Route path="/myneura" component={MyNeuraPage} />

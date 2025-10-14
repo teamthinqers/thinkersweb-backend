@@ -708,7 +708,22 @@ export default function HomePage() {
       {/* Footer */}
       <footer className="border-t bg-white py-8">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center text-gray-600 text-sm">
-          <p>© 2025 DotSpark. Building collective Human Intelligence Network.</p>
+          <p className="mb-3">© 2025 DotSpark. Building collective Human Intelligence Network.</p>
+          <div className="flex items-center justify-center gap-4">
+            <button
+              onClick={() => setLocation("/privacy")}
+              className="text-gray-500 hover:text-amber-600 transition-colors underline"
+            >
+              Privacy Policy
+            </button>
+            <span className="text-gray-400">•</span>
+            <button
+              onClick={() => setLocation("/terms")}
+              className="text-gray-500 hover:text-amber-600 transition-colors underline"
+            >
+              Terms of Use
+            </button>
+          </div>
         </div>
       </footer>
     </div>
