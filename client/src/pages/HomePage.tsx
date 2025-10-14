@@ -562,9 +562,14 @@ export default function HomePage() {
                     </div>
                   </div>
                   
-                  <button className="px-8 py-4 bg-gradient-to-r from-amber-500 to-orange-500 text-white font-bold text-lg rounded-full shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-300">
+                  <a 
+                    href="https://chat.whatsapp.com/E6Mwv20MUrCG58xuVJQNTv" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="inline-block px-8 py-4 bg-gradient-to-r from-amber-500 to-orange-500 text-white font-bold text-lg rounded-full shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-300"
+                  >
                     Join ThinQers Community
-                  </button>
+                  </a>
                 </div>
               </div>
             </div>
