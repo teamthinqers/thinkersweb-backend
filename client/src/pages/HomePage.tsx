@@ -383,20 +383,18 @@ export default function HomePage() {
                     </div>
 
                     {/* 3 Profile Avatars Around */}
-                    {[...Array(3)].map((_, i) => {
-                      const angle = (i * 120 + 30) * (Math.PI / 180);
-                      const radius = 80;
-                      const x = Math.cos(angle) * radius;
-                      const y = Math.sin(angle) * radius;
+                    {[0, 120, 240].map((angle, i) => {
+                      const radian = (angle * Math.PI) / 180;
+                      const radius = 90;
+                      const x = Math.cos(radian) * radius;
+                      const y = Math.sin(radian) * radius;
                       
                       return (
                         <div
                           key={i}
-                          className="absolute top-1/2 left-1/2"
+                          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
                           style={{
-                            transform: `translate(calc(-50% + ${x}px), calc(-50% + ${y}px))`,
-                            animation: `float ${3 + (i % 2)}s ease-in-out infinite`,
-                            animationDelay: `${i * 0.3}s`
+                            transform: `translate(calc(-50% + ${x}px), calc(-50% + ${y}px))`
                           }}
                         >
                           <div className="relative">
