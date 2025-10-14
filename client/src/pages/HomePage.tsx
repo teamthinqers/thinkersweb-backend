@@ -82,9 +82,9 @@ export default function HomePage() {
           <div className="absolute bottom-1/3 left-1/3 w-2 h-2 bg-amber-500 rounded-full animate-ping" style={{ animationDelay: '2s' }}></div>
         </div>
 
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-20 relative z-10">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           {/* Hero Section - Split Layout */}
-          <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center min-h-[600px]">
+          <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center min-h-screen py-12 lg:py-20">
             
             {/* Left Column - Content */}
             <div className="space-y-8 lg:space-y-10 text-center lg:text-left">
