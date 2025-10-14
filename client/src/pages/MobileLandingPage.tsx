@@ -96,7 +96,7 @@ export default function MobileLandingPage() {
                 <div className="flex-1">
                   <h3 className="text-lg font-semibold mb-1">Connect via WhatsApp</h3>
                   <p className="text-sm text-muted-foreground mb-4">
-                    Stay connected and capture your insights on the go. Get instant updates and seamless access to your DotSpark directly from WhatsApp.
+                    Stay connected and capture your thoughts on the go. Get seamless access to your DotSpark directly from Whatsapp.
                   </p>
                   <Button
                     onClick={handleWhatsAppConnect}
