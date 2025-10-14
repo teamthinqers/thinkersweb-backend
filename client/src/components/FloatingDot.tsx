@@ -238,17 +238,14 @@ export default function FloatingDot({ onClick, currentPage }: FloatingDotProps) 
   };
 
   useEffect(() => {
-    const savedPosition = localStorage.getItem('floatingDotPosition');
-    if (savedPosition) {
-      const parsed = JSON.parse(savedPosition);
-      setPosition(parsed);
-    } else {
-      // Default to bottom right corner
-      setPosition({
-        x: window.innerWidth - 100,
-        y: window.innerHeight - 100
-      });
-    }
+    // Clear old saved position to force everyone to the new bottom left default
+    localStorage.removeItem('floatingDotPosition');
+    
+    // Set to bottom left corner
+    setPosition({
+      x: 40,
+      y: window.innerHeight - 100
+    });
   }, []);
 
   // Listen for custom event to open the dialog
