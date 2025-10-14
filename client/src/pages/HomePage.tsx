@@ -599,55 +599,57 @@ export default function HomePage() {
           </div>
 
           {/* How It Works */}
-          <div className="max-w-4xl mx-auto">
+          <div className="max-w-6xl mx-auto">
             <h2 className="text-3xl font-bold text-center mb-4">How It Works</h2>
             <p className="text-center text-gray-600 mb-12 text-lg">
               DotSpark is built for deep ThinQing — and every thinker has their own way to begin.
             </p>
             
-            {/* Desktop Section */}
-            <div className="mb-8 bg-gradient-to-br from-amber-50/50 to-orange-50/50 rounded-2xl p-8 border border-amber-100">
-              <div className="flex items-start gap-3 mb-4">
-                <span className="text-3xl">🖥️</span>
-                <h3 className="text-2xl font-bold text-gray-900 mt-1">If you're on Desktop</h3>
+            <div className="grid md:grid-cols-2 gap-6">
+              {/* Desktop Section */}
+              <div className="bg-gradient-to-br from-amber-50/50 to-orange-50/50 rounded-2xl p-8 border border-amber-100">
+                <div className="flex items-start gap-3 mb-4">
+                  <span className="text-3xl">🖥️</span>
+                  <h3 className="text-2xl font-bold text-gray-900 mt-1">If you're on Desktop</h3>
+                </div>
+                <p className="text-gray-700 mb-4 leading-relaxed">
+                  You can explore the full DotSpark experience here.
+                </p>
+                <p className="text-gray-700 mb-6 leading-relaxed">
+                  Create your private space for reflection, start ThinQing, and connect your thoughts into ideas that grow. It's calm, focused, and designed for deeper thinking.
+                </p>
+                <div className="text-center">
+                  <Button
+                    onClick={() => setLocation("/auth")}
+                    className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white px-8 py-3 rounded-full text-base"
+                  >
+                    ✨ Get Started on Desktop
+                  </Button>
+                </div>
               </div>
-              <p className="text-gray-700 mb-4 leading-relaxed">
-                You can explore the full DotSpark experience here.
-              </p>
-              <p className="text-gray-700 mb-6 leading-relaxed">
-                Create your private space for reflection, start ThinQing, and connect your thoughts into ideas that grow. It's calm, focused, and designed for deeper thinking.
-              </p>
-              <div className="text-center">
-                <Button
-                  onClick={() => setLocation("/auth")}
-                  className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white px-8 py-3 rounded-full text-base"
-                >
-                  ✨ Get Started on Desktop
-                </Button>
-              </div>
-            </div>
 
-            {/* Mobile Section */}
-            <div className="bg-gradient-to-br from-green-50/50 to-emerald-50/50 rounded-2xl p-8 border border-green-100">
-              <div className="flex items-start gap-3 mb-4">
-                <span className="text-3xl">📱</span>
-                <h3 className="text-2xl font-bold text-gray-900 mt-1">If you're on Mobile</h3>
-              </div>
-              <p className="text-gray-700 mb-4 leading-relaxed">
-                DotSpark works best on desktop, but you can still begin right here.
-              </p>
-              <p className="text-gray-700 mb-6 leading-relaxed">
-                Share your first thought through WhatsApp — we'll save it safely in your Neura. Later, when you log in from desktop, you can see your full cloud of thoughts, circles, and sparks evolve beautifully.
-              </p>
-              <div className="text-center">
-                <a
-                  href="https://chat.whatsapp.com/E6Mwv20MUrCG58xuVJQNTv"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 px-8 py-3 bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white font-semibold rounded-full transition-all duration-300 hover:scale-105 text-base"
-                >
-                  💬 Connect via WhatsApp
-                </a>
+              {/* Mobile Section */}
+              <div className="bg-white rounded-2xl p-8 border border-gray-200 shadow-sm">
+                <div className="flex items-start gap-3 mb-4">
+                  <span className="text-3xl">📱</span>
+                  <h3 className="text-2xl font-bold text-gray-900 mt-1">If you're on Mobile</h3>
+                </div>
+                <p className="text-gray-700 mb-4 leading-relaxed">
+                  DotSpark works best on desktop, but you can still begin right here.
+                </p>
+                <p className="text-gray-700 mb-6 leading-relaxed">
+                  Share your first thought through WhatsApp — we'll save it safely in your Neura. Later, when you log in from desktop, you can see your full cloud of thoughts, circles, and sparks evolve beautifully.
+                </p>
+                <div className="text-center">
+                  <a
+                    href="https://chat.whatsapp.com/E6Mwv20MUrCG58xuVJQNTv"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 px-8 py-3 bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white font-semibold rounded-full transition-all duration-300 hover:scale-105 text-base"
+                  >
+                    💬 Connect via WhatsApp
+                  </a>
+                </div>
               </div>
             </div>
           </div>
