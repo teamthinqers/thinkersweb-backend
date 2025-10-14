@@ -155,13 +155,15 @@ export default function HomePage() {
                   </div>
                 </div>
 
-                {/* Mind Nodes - Outer Ring */}
+                {/* Human Nodes - Outer Ring */}
                 {[...Array(12)].map((_, i) => {
                   const angle = (i * 30) * (Math.PI / 180);
                   const radius = 220;
                   const x = Math.cos(angle) * radius;
                   const y = Math.sin(angle) * radius;
                   const sizes = [56, 48, 52, 48, 56, 52, 48, 56, 52, 48, 56, 48];
+                  const icons = [Users, Users, Brain, Users, Users, Brain, Users, Users, Brain, Users, Users, Brain];
+                  const Icon = icons[i];
                   
                   return (
                     <div
@@ -179,7 +181,7 @@ export default function HomePage() {
                           className="relative bg-gradient-to-br from-amber-400/90 to-orange-400/90 rounded-full flex items-center justify-center shadow-xl backdrop-blur-sm border border-white/20"
                           style={{ width: sizes[i], height: sizes[i] }}
                         >
-                          <Brain className="w-6 h-6 text-white/90" />
+                          <Icon className="w-6 h-6 text-white/90" />
                         </div>
                       </div>
                     </div>
