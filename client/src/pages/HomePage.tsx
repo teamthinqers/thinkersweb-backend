@@ -547,7 +547,7 @@ export default function HomePage() {
                     </p>
                     
                     <p>
-                      One person choosing to ThinQ can make a difference. But when many such minds come together, something remarkable begins to form — a collective brain, a connected intelligence powered by human thought.
+                      One person choosing to ThinQ can make a difference. But when many such minds come together, something remarkable begins to form — a collective brain, a connected intelligence powered by human thoughts.
                     </p>
                     
                     <p className="font-medium text-gray-800">
