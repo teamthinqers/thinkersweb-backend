@@ -56,10 +56,10 @@ export default function HomePage() {
                 <SiWhatsapp className="h-5 w-5" />
               </Button>
               <Button
-                variant="default"
+                variant="outline"
                 size="sm"
                 onClick={() => setLocation("/auth")}
-                className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600"
+                className="text-sm font-medium text-gray-700 border-gray-300 hover:border-amber-500 hover:text-amber-600 hover:bg-amber-50 transition-all duration-300"
               >
                 Sign In / Register
               </Button>
