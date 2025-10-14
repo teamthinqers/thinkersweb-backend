@@ -293,11 +293,11 @@ export default function SharedAuthLayout({ children }: SharedAuthLayoutProps) {
                 className={`${isSidebarOpen ? 'w-full justify-start h-10' : 'w-10 h-10'} rounded-xl transition-all duration-300 ${
                   isOnSocial 
                     ? 'bg-red-500 text-white hover:bg-red-600' 
-                    : 'hover:bg-red-50 hover:text-red-600'
+                    : 'hover:bg-red-50'
                 }`}
               >
-                <Brain className={`w-5 h-5 ${isOnSocial ? '' : 'animate-pulse'}`} />
-                {isSidebarOpen && <span className="ml-3 text-sm font-medium">Social</span>}
+                <Brain className={`w-5 h-5 ${isOnSocial ? 'text-white' : 'text-red-500 animate-pulse'}`} />
+                {isSidebarOpen && <span className={`ml-3 text-sm font-medium ${isOnSocial ? 'text-white' : 'text-red-600'}`}>Social</span>}
               </Button>
             </Link>
             
@@ -308,11 +308,11 @@ export default function SharedAuthLayout({ children }: SharedAuthLayoutProps) {
                 className={`${isSidebarOpen ? 'w-full justify-start h-10' : 'w-10 h-10'} rounded-xl transition-all duration-300 ${
                   isOnMyNeura 
                     ? 'bg-gradient-to-br from-amber-500 via-amber-600 to-orange-600 text-white hover:from-amber-600 hover:via-amber-700 hover:to-orange-700' 
-                    : 'hover:bg-amber-50 hover:text-amber-600'
+                    : 'hover:bg-amber-50'
                 }`}
               >
-                <Brain className="w-5 h-5" />
-                {isSidebarOpen && <span className="ml-3 text-sm font-medium">My Neura</span>}
+                <Brain className={`w-5 h-5 ${isOnMyNeura ? 'text-white' : 'text-amber-600'}`} />
+                {isSidebarOpen && <span className={`ml-3 text-sm font-medium ${isOnMyNeura ? 'text-white' : 'text-amber-600'}`}>My Neura</span>}
               </Button>
             </Link>
 
@@ -323,11 +323,11 @@ export default function SharedAuthLayout({ children }: SharedAuthLayoutProps) {
                 className={`${isSidebarOpen ? 'w-full justify-start h-10' : 'w-10 h-10'} rounded-xl transition-all duration-300 ${
                   isOnThoughtCircles 
                     ? 'bg-gradient-to-br from-yellow-400 via-amber-500 to-yellow-600 text-white hover:from-yellow-500 hover:via-amber-600 hover:to-yellow-700' 
-                    : 'hover:bg-yellow-50 hover:text-yellow-600'
+                    : 'hover:bg-yellow-50'
                 }`}
               >
-                <UsersRound className="w-5 h-5" />
-                {isSidebarOpen && <span className="ml-3 text-sm font-medium">My Thought Circles</span>}
+                <UsersRound className={`w-5 h-5 ${isOnThoughtCircles ? 'text-white' : 'text-yellow-600'}`} />
+                {isSidebarOpen && <span className={`ml-3 text-sm font-medium ${isOnThoughtCircles ? 'text-white' : 'text-yellow-600'}`}>My Thought Circles</span>}
               </Button>
             </Link>
           </div>
