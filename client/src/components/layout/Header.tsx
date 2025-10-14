@@ -261,11 +261,11 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" size="icon" className="rounded-full p-0 h-9 w-9">
                     <Avatar className="h-8 w-8 border-2 border-white shadow">
-                      {(user?.photoURL || (user as any)?.avatar || (user as any)?.linkedinPhotoUrl) ? (
-                        <AvatarImage src={user?.photoURL || (user as any)?.avatar || (user as any)?.linkedinPhotoUrl} alt={(user?.displayName || (user as any)?.fullName) || 'User'} />
+                      {((user as any)?.avatar || (user as any)?.linkedinPhotoUrl) ? (
+                        <AvatarImage src={(user as any)?.avatar || (user as any)?.linkedinPhotoUrl} alt={(user as any)?.fullName || 'User'} />
                       ) : (
                         <AvatarFallback className="bg-primary text-white">
-                          {(user?.displayName || (user as any)?.fullName) ? (user?.displayName || (user as any)?.fullName).charAt(0).toUpperCase() : 'U'}
+                          {(user as any)?.fullName ? (user as any)?.fullName.charAt(0).toUpperCase() : 'U'}
                         </AvatarFallback>
                       )}
                     </Avatar>
@@ -275,7 +275,7 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
                   <div className="p-2 text-sm">
                     <p className="font-medium">
                       {(() => {
-                        const fullName = (user as any)?.fullName || user?.displayName;
+                        const fullName = (user as any)?.fullName;
                         if (fullName) {
                           return fullName.split(' ')[0]; // Extract first name
                         }
@@ -408,11 +408,11 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
                 <DropdownMenuTrigger asChild>
                   <div className="flex items-center cursor-pointer">
                     <Avatar className="h-8 w-8 border-2 border-white shadow">
-                      {(user?.photoURL || (user as any)?.avatar || (user as any)?.linkedinPhotoUrl) ? (
-                        <AvatarImage src={user?.photoURL || (user as any)?.avatar || (user as any)?.linkedinPhotoUrl} alt={(user?.displayName || (user as any)?.fullName) || 'User'} />
+                      {((user as any)?.avatar || (user as any)?.linkedinPhotoUrl) ? (
+                        <AvatarImage src={(user as any)?.avatar || (user as any)?.linkedinPhotoUrl} alt={(user as any)?.fullName || 'User'} />
                       ) : (
                         <AvatarFallback className="bg-primary text-white">
-                          {(user?.displayName || (user as any)?.fullName) ? (user?.displayName || (user as any)?.fullName).charAt(0).toUpperCase() : 'U'}
+                          {(user as any)?.fullName ? (user as any)?.fullName.charAt(0).toUpperCase() : 'U'}
                         </AvatarFallback>
                       )}
                     </Avatar>
@@ -423,7 +423,7 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
                   <div className="p-2 text-sm">
                     <p className="font-medium">
                       {(() => {
-                        const fullName = (user as any)?.fullName || user?.displayName;
+                        const fullName = (user as any)?.fullName;
                         if (fullName) {
                           return fullName.split(' ')[0]; // Extract first name
                         }
