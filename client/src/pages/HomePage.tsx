@@ -48,20 +48,20 @@ export default function HomePage() {
                 About
               </Button>
               <Button
-                variant="default"
-                size="sm"
-                onClick={() => window.open('https://wa.me/16067157733?text=Hey%20DotSpark%20:wave:', '_blank')}
-                className="bg-[#25D366] hover:bg-[#20BA5A] text-white"
-              >
-                <SiWhatsapp className="h-5 w-5" />
-              </Button>
-              <Button
                 variant="outline"
                 size="sm"
                 onClick={() => setLocation("/auth")}
                 className="text-sm font-medium text-gray-700 border-gray-300 hover:border-amber-500 hover:text-amber-600 hover:bg-amber-50 transition-all duration-300"
               >
                 Sign In / Register
+              </Button>
+              <Button
+                variant="default"
+                size="sm"
+                onClick={() => window.open('https://wa.me/16067157733?text=Hey%20DotSpark%20:wave:', '_blank')}
+                className="bg-[#25D366] hover:bg-[#20BA5A] text-white"
+              >
+                <SiWhatsapp className="h-5 w-5" />
               </Button>
             </nav>
           </div>
