@@ -652,22 +652,6 @@ export default function HomePage() {
             </div>
           </div>
 
-          {/* CTA Section */}
-          <div className="mt-20 text-center">
-            <div className="inline-block p-8 rounded-2xl bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200">
-              <h2 className="text-2xl font-bold mb-4">Ready to Start?</h2>
-              <p className="text-gray-600 mb-6">
-                Join DotSpark and begin building your knowledge network today.
-              </p>
-              <Button
-                size="lg"
-                onClick={() => setLocation("/auth")}
-                className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white px-8"
-              >
-                Get Started <ArrowRight className="ml-2 h-5 w-5" />
-              </Button>
-            </div>
-          </div>
         </div>
       </main>
 
