@@ -319,7 +319,7 @@ export default function SharedAuthLayout({ children }: SharedAuthLayoutProps) {
             <Link href="/thinq-circle">
               <Button 
                 variant="ghost" 
-                title="My Thought Circles"
+                title="My ThinQ Circles"
                 className={`${isSidebarOpen ? 'w-full justify-start h-10' : 'w-10 h-10'} rounded-xl transition-all duration-300 ${
                   isOnThoughtCircles 
                     ? 'bg-gradient-to-br from-yellow-400 via-amber-500 to-yellow-600 text-white hover:from-yellow-500 hover:via-amber-600 hover:to-yellow-700' 
@@ -327,7 +327,7 @@ export default function SharedAuthLayout({ children }: SharedAuthLayoutProps) {
                 }`}
               >
                 <Target className={`w-5 h-5 ${isOnThoughtCircles ? 'text-white' : 'text-yellow-600'}`} />
-                {isSidebarOpen && <span className={`ml-3 text-sm font-medium ${isOnThoughtCircles ? 'text-white' : 'text-yellow-600'}`}>My Thought Circles</span>}
+                {isSidebarOpen && <span className={`ml-3 text-sm font-medium ${isOnThoughtCircles ? 'text-white' : 'text-yellow-600'}`}>My ThinQ Circles</span>}
               </Button>
             </Link>
           </div>
