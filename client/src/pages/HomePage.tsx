@@ -601,39 +601,60 @@ export default function HomePage() {
           {/* How It Works */}
           <div className="max-w-4xl mx-auto">
             <h2 className="text-3xl font-bold text-center mb-12">How It Works</h2>
-            <div className="space-y-8">
-              <div className="flex items-start gap-4">
-                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-gradient-to-r from-amber-500 to-orange-500 flex items-center justify-center text-white font-semibold">
-                  1
+            
+            {/* Desktop Features */}
+            <div className="mb-8">
+              <p className="text-sm font-semibold text-amber-600 mb-6 text-center">On Desktop</p>
+              <div className="space-y-6">
+                <div className="flex items-start gap-4">
+                  <div className="flex-shrink-0 w-8 h-8 rounded-full bg-gradient-to-r from-amber-500 to-orange-500 flex items-center justify-center text-white font-semibold">
+                    1
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-semibold mb-1">My Neura - Personal Thoughts</h3>
+                    <p className="text-gray-600">
+                      Capture and organize your personal thoughts, insights, and reflections in your private neural space. Build your knowledge network with dots, wheels, and chakras.
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <h3 className="text-lg font-semibold mb-1">Create Your Thoughts</h3>
-                  <p className="text-gray-600">
-                    Add thoughts with headings, summaries, emotions, and optional images. Each thought is a "dot" in your knowledge network.
-                  </p>
+
+                <div className="flex items-start gap-4">
+                  <div className="flex-shrink-0 w-8 h-8 rounded-full bg-gradient-to-r from-amber-500 to-orange-500 flex items-center justify-center text-white font-semibold">
+                    2
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-semibold mb-1">ThinQ Circles - Brainstorm Together</h3>
+                    <p className="text-gray-600">
+                      Create private brainstorming spaces with your think partners. Collaborate on ideas, share perspectives, and build collective understanding in focused circles.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-4">
+                  <div className="flex-shrink-0 w-8 h-8 rounded-full bg-gradient-to-r from-amber-500 to-orange-500 flex items-center justify-center text-white font-semibold">
+                    3
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-semibold mb-1">Social Neura - Collective Intelligence</h3>
+                    <p className="text-gray-600">
+                      Contribute your insights to the global thought network. Help build collective neural strength by sharing knowledge and learning from the ThinQers community.
+                    </p>
+                  </div>
                 </div>
               </div>
+            </div>
 
-              <div className="flex items-start gap-4">
-                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-gradient-to-r from-amber-500 to-orange-500 flex items-center justify-center text-white font-semibold">
-                  2
+            {/* Mobile Access */}
+            <div className="pt-8 border-t border-gray-200">
+              <p className="text-sm font-semibold text-amber-600 mb-6 text-center">On Mobile</p>
+              <div className="flex items-start gap-4 bg-gradient-to-r from-green-50 to-emerald-50 p-6 rounded-xl border border-green-100">
+                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-gradient-to-r from-green-500 to-emerald-500 flex items-center justify-center text-white font-semibold">
+                  <MessageCircle className="h-4 w-4" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-semibold mb-1">Explore Connections</h3>
+                  <h3 className="text-lg font-semibold mb-1">WhatsApp Integration</h3>
                   <p className="text-gray-600">
-                    View your thoughts as an interactive cloud, discover patterns, and see how ideas relate to each other.
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex items-start gap-4">
-                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-gradient-to-r from-amber-500 to-orange-500 flex items-center justify-center text-white font-semibold">
-                  3
-                </div>
-                <div>
-                  <h3 className="text-lg font-semibold mb-1">Share & Learn</h3>
-                  <p className="text-gray-600">
-                    Make thoughts public to contribute to collective intelligence, or keep them private for personal reflection.
+                    Connect with your Neura anytime, anywhere. Send thoughts via WhatsApp and access your neural network on the go — seamless mobile-first experience.
                   </p>
                 </div>
               </div>
