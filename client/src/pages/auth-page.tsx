@@ -97,25 +97,27 @@ export default function AuthPage() {
           <div className="grid md:grid-cols-2 gap-6">
             
             {/* Sign In Card */}
-            <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-10">
-              {/* DotSpark branding - Same as Hero */}
+            <div className="bg-gradient-to-br from-amber-50/80 via-orange-50/50 to-amber-50/80 backdrop-blur-sm rounded-2xl shadow-xl border border-amber-200/50 p-10">
+              {/* DotSpark branding - Better aligned */}
               <div className="text-center mb-8">
-                <div className="inline-block mb-6">
+                <div className="inline-block mb-4">
                   <div className="relative group">
                     <div className="absolute -inset-4 bg-gradient-to-r from-amber-500/30 via-orange-500/30 to-amber-500/30 rounded-full blur-2xl opacity-60 group-hover:opacity-90 transition-all duration-500"></div>
+                    {/* Logo and Name aligned horizontally */}
                     <div className="relative flex items-center gap-3 justify-center">
                       <img 
                         src="/dotspark-icon.png" 
                         alt="DotSpark" 
-                        className="h-14 w-14 transform group-hover:scale-110 group-hover:rotate-12 transition-all duration-500 drop-shadow-2xl" 
+                        className="h-12 w-12 transform group-hover:scale-110 group-hover:rotate-12 transition-all duration-500 drop-shadow-2xl" 
                       />
-                      <span className="text-2xl font-bold bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent">
+                      <span className="text-2xl font-bold bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent leading-none">
                         DotSpark
                       </span>
                     </div>
                   </div>
                 </div>
-                <h1 className="text-2xl font-medium leading-tight bg-gradient-to-r from-amber-600 via-orange-500 to-amber-600 bg-clip-text text-transparent" style={{ fontFamily: 'Inter, -apple-system, system-ui, sans-serif', letterSpacing: '-0.02em' }}>
+                {/* Slogan centered below */}
+                <h1 className="text-lg font-medium leading-tight bg-gradient-to-r from-amber-600 via-orange-500 to-amber-600 bg-clip-text text-transparent" style={{ fontFamily: 'Inter, -apple-system, system-ui, sans-serif', letterSpacing: '-0.02em' }}>
                   A Human Intelligence Network
                 </h1>
               </div>
@@ -140,7 +142,7 @@ export default function AuthPage() {
                     <span className="w-full border-t border-gray-300" />
                   </div>
                   <div className="relative flex justify-center text-xs uppercase">
-                    <span className="bg-white px-2 text-gray-500">or</span>
+                    <span className="bg-amber-50 px-2 text-gray-500">or</span>
                   </div>
                 </div>
 
@@ -181,7 +183,7 @@ export default function AuthPage() {
             </div>
 
             {/* ThinQers Community Card */}
-            <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-10 flex flex-col">
+            <div className="bg-gradient-to-br from-emerald-50/80 via-green-50/50 to-emerald-50/80 backdrop-blur-sm rounded-2xl shadow-xl border border-emerald-200/50 p-10 flex flex-col">
               <div className="text-center mb-6">
                 <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-r from-green-500 to-emerald-500 mb-4">
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white" className="w-9 h-9">
