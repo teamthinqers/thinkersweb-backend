@@ -463,7 +463,7 @@ export default function SharedAuthLayout({ children }: SharedAuthLayoutProps) {
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => window.open('https://wa.me/16067157733', '_blank')}
+              onClick={() => window.open('https://wa.me/16067157733?text=Hey%20DotSpark%20%F0%9F%91%8B', '_blank')}
               className="flex items-center gap-2 px-4 py-2 bg-[#25D366] hover:bg-[#20BA5A] rounded-xl transition-all duration-300 hover:scale-105 shadow-lg"
               title="WhatsApp"
             >
