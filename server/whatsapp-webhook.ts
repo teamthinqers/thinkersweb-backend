@@ -5,6 +5,7 @@ import twilio from 'twilio';
 import { db } from "@db";
 import { whatsappUsers, entries } from "@shared/schema";
 import { eq } from "drizzle-orm";
+import { extractUserIdFromMessage, cleanMessageFromToken } from './lib/whatsappToken';
 
 // Create a router for WhatsApp webhook endpoints
 const whatsappWebhookRouter = Router();
@@ -138,6 +139,38 @@ whatsappWebhookRouter.post('/', async (req: Request, res: Response) => {
         
       console.log(`⭐️ Looking up user for WhatsApp number: ${normalizedPhone} (standardized: ${standardizedPhone})`);
       
+      // Check for embedded user token in the message
+      const tokenUserId = extractUserIdFromMessage(messageText);
+      
+      if (tokenUserId) {
+        console.log(`🔑 Found user token in message! User ID: ${tokenUserId}`);
+        
+        // Auto-link this phone number to the user account
+        const existingLink = await db.query.whatsappUsers.findFirst({
+          where: eq(whatsappUsers.phoneNumber, standardizedPhone)
+        });
+        
+        if (!existingLink) {
+          console.log(`🔗 Auto-linking phone ${standardizedPhone} to user ID ${tokenUserId}`);
+          
+          await db.insert(whatsappUsers).values({
+            userId: tokenUserId,
+            phoneNumber: standardizedPhone,
+            active: true
+          });
+          
+          console.log(`✅ Successfully auto-linked phone to user account!`);
+          
+          // Send confirmation message
+          await sendWhatsAppMessage(
+            normalizedPhone,
+            "✅ Your WhatsApp is now linked to your DotSpark account! You can now send thoughts and interact with DotSpark via WhatsApp. Try sending a message!"
+          );
+        } else {
+          console.log(`ℹ️ Phone ${standardizedPhone} already linked to user ID ${existingLink.userId}`);
+        }
+      }
+      
       // Check if this phone is linked to a user account - try both formats
       let whatsappUser = await db.query.whatsappUsers.findFirst({
         where: eq(whatsappUsers.phoneNumber, standardizedPhone)
@@ -172,6 +205,9 @@ whatsappWebhookRouter.post('/', async (req: Request, res: Response) => {
       try {
         console.log(`⭐️ Creating entry for WhatsApp message from user ID: ${userId}`);
         
+        // Clean the message text by removing the token (if present)
+        const cleanedMessage = cleanMessageFromToken(messageText);
+        
         const timestamp = new Date().toLocaleString('en-US', {
           year: 'numeric',
           month: 'numeric',
@@ -186,7 +222,7 @@ whatsappWebhookRouter.post('/', async (req: Request, res: Response) => {
         const entryData = {
           userId: userId,
           title: `WhatsApp - ${timestamp}`,
-          content: messageText,
+          content: cleanedMessage,
           visibility: "private",
           isFavorite: false,
           createdAt: now,
@@ -220,8 +256,9 @@ whatsappWebhookRouter.post('/', async (req: Request, res: Response) => {
         console.error("⛔️ Error creating entry for WhatsApp message:", entryError);
       }
       
-      // Process the message and get a response
-      const response = await processWhatsAppMessage(from, messageText);
+      // Process the message (with cleaned text) and get a response
+      const cleanedMessage = cleanMessageFromToken(messageText);
+      const response = await processWhatsAppMessage(from, cleanedMessage);
       
       // Create a TwiML response to send back to the user
       const twiml = new twilio.twiml.MessagingResponse();
