@@ -50,6 +50,7 @@ router.get('/', async (req, res) => {
             id: true,
             fullName: true,
             avatar: true,
+            linkedinPhotoUrl: true,
             email: true,
           }
         }
@@ -78,6 +79,7 @@ router.get('/', async (req, res) => {
               id: true,
               fullName: true,
               avatar: true,
+              linkedinPhotoUrl: true,
               email: true,
             }
           }
@@ -96,6 +98,7 @@ router.get('/', async (req, res) => {
             id: users.id,
             fullName: users.fullName,
             avatar: users.avatar,
+            linkedinPhotoUrl: users.linkedinPhotoUrl,
           })
           .from(savedThoughts)
           .innerJoin(users, eq(savedThoughts.userId, users.id))
@@ -429,6 +432,7 @@ router.get('/myneura', async (req, res) => {
             id: true,
             fullName: true,
             avatar: true,
+            linkedinPhotoUrl: true,
             email: true,
           }
         }
@@ -446,6 +450,8 @@ router.get('/myneura', async (req, res) => {
                 id: true,
                 fullName: true,
                 avatar: true,
+                linkedinPhotoUrl: true,
+                avatarUrl: true,
                 email: true,
               }
             }
