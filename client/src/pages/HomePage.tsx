@@ -104,38 +104,15 @@ export default function HomePage() {
               </span>
             </h1>
 
-            {/* Dual CTA Buttons */}
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-6 animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
-              {/* Desktop CTA */}
-              <div className="group">
-                <Button
-                  size="lg"
-                  onClick={() => setLocation("/auth")}
-                  className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white px-10 py-7 text-lg font-semibold shadow-2xl hover:shadow-amber-500/50 transform hover:scale-105 transition-all duration-300"
-                >
-                  <div className="flex flex-col items-center">
-                    <span className="text-xl">Get Started</span>
-                    <span className="text-xs opacity-90 font-normal mt-1">Desktop</span>
-                  </div>
-                </Button>
-              </div>
-
-              {/* WhatsApp CTA */}
-              <div className="group">
-                <Button
-                  size="lg"
-                  onClick={() => window.open('https://wa.me/16067157733?text=Hey%20DotSpark%20:wave:', '_blank')}
-                  className="bg-gradient-to-r from-[#25D366] to-[#20BA5A] hover:from-[#20BA5A] hover:to-[#1DA851] text-white px-10 py-7 text-lg font-semibold shadow-2xl hover:shadow-green-500/50 transform hover:scale-105 transition-all duration-300"
-                >
-                  <div className="flex flex-col items-center gap-1">
-                    <div className="flex items-center gap-2">
-                      <MessageCircle className="h-5 w-5" />
-                      <span className="text-xl">DotSpark WhatsApp</span>
-                    </div>
-                    <span className="text-xs opacity-90 font-normal">for mobiles</span>
-                  </div>
-                </Button>
-              </div>
+            {/* CTA Button */}
+            <div className="flex items-center justify-center animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
+              <Button
+                size="lg"
+                onClick={() => setLocation("/auth")}
+                className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white px-12 py-6 text-xl font-semibold shadow-2xl hover:shadow-amber-500/50 transform hover:scale-105 transition-all duration-300"
+              >
+                Get Started
+              </Button>
             </div>
 
             {/* Subtle Subtext */}
