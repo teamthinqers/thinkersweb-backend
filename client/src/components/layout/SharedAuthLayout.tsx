@@ -1,7 +1,7 @@
 import { useState, ReactNode, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Menu, Brain, Users, User, LogOut, Sparkles, UsersRound, Search, Bell, CheckCheck, MessageSquare, FileText, Trophy, Lightbulb, CircleDot } from 'lucide-react';
+import { Menu, Brain, Users, User, LogOut, Sparkles, UsersRound, Search, Bell, CheckCheck, MessageSquare, FileText, Trophy, Lightbulb, CircleDot, Shield } from 'lucide-react';
 import { SiWhatsapp } from 'react-icons/si';
 import { Link, useLocation } from 'wouter';
 import SparkIcon from '@/components/ui/spark-icon';
@@ -634,6 +634,18 @@ export default function SharedAuthLayout({ children }: SharedAuthLayoutProps) {
                           <Button variant="ghost" className="w-full justify-start text-sm h-9">
                             <User className="w-4 h-4 mr-3" />
                             Profile
+                          </Button>
+                        </Link>
+                        <Link href="/privacy-policy">
+                          <Button variant="ghost" className="w-full justify-start text-sm h-9">
+                            <Shield className="w-4 h-4 mr-3" />
+                            Privacy Policy
+                          </Button>
+                        </Link>
+                        <Link href="/terms-of-use">
+                          <Button variant="ghost" className="w-full justify-start text-sm h-9">
+                            <FileText className="w-4 h-4 mr-3" />
+                            Terms of Use
                           </Button>
                         </Link>
                       </div>

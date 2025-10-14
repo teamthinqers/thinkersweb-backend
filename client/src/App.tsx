@@ -26,6 +26,8 @@ import PublicProfile from "@/pages/PublicProfile";
 import MyDotSparkPage from "@/pages/MyDotSparkPage";
 import ThoughtCirclePage from "@/pages/ThoughtCirclePage";
 import ThinQCirclePage from "@/pages/ThinQCirclePage";
+import PrivacyPolicy from "@/pages/PrivacyPolicy";
+import TermsOfUse from "@/pages/TermsOfUse";
 import JoinCircleInvitePage from "@/pages/JoinCircleInvitePage";
 import WhatsAppAdmin from "@/pages/WhatsAppAdmin";
 import WhatsAppTest from "@/pages/WhatsAppTest";
@@ -195,6 +197,8 @@ function Router() {
       <Route path="/" component={HomePage} />
       <Route path="/privacy" component={PrivacyPage} />
       <Route path="/terms" component={TermsPage} />
+      <Route path="/privacy-policy" component={PrivacyPolicy} />
+      <Route path="/terms-of-use" component={TermsOfUse} />
       <Route path="/preview" component={PreviewPage} />
       <Route path="/social" component={SocialFeedPage} />
       <Route path="/myneura" component={MyNeuraPage} />
