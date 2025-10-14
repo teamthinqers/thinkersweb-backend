@@ -40,7 +40,7 @@ Global Floating Dot Mode Switching: Added flip button functionality to switch be
 - **Core Entities**: Users, Entries, Categories, Tags, Connections, Shared Entries.
 - **AI/Neural Extensions**: Tunable AI (DotSpark Core), cognitive alignment (CogniShield), content analysis/generation (OpenAI), conversational AI for entry creation, and automatic Python logic integration.
 - **WhatsApp Integration**: Twilio/Meta WhatsApp Business API for message processing, user registration, and automated responses.
-- **Authentication System**: Supports both traditional session-based and Firebase Google OAuth, with dual user support and protected routes.
+- **Authentication System**: Supports both traditional session-based and Firebase Google OAuth, with dual user support and protected routes. Uses popup-based authentication flow for all devices (desktop and mobile) for reliability - Firebase redirect flow proved unreliable on mobile browsers.
 - **Data Flow**: Structured flows for entry creation (web/WhatsApp to OpenAI to DB), WhatsApp message processing, and authentication management.
 - **UI/UX Decisions**:
     - **Color Schemes**: Amber/orange theme for cognitive elements (dots, wheels, chakras), purple for AI-related functionality, red-orange for social features.
