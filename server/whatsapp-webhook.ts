@@ -222,9 +222,22 @@ whatsappWebhookRouter.post('/', async (req: Request, res: Response) => {
             return;
           }
         } else {
-          // First message from unlinked user - ask for email
+          // First message from unlinked user
           const expiresAt = new Date();
           expiresAt.setMinutes(expiresAt.getMinutes() + 15); // 15 minute timeout
+          
+          // Check if they already had a conversation state (returning after registration)
+          const isGreeting = messageText.trim().toLowerCase().match(/^(hey|hi|hello)/i);
+          const hadPreviousState = conversationState !== undefined;
+          
+          let responseMessage;
+          if (hadPreviousState && isGreeting) {
+            // Returning user - be smart about it
+            responseMessage = "Hey! I hope you got registered. Can you please share your email ID?";
+          } else {
+            // First time or not a greeting - full instructions
+            responseMessage = "Hey! Can you please share your email ID registered with DotSpark?\n\nIf not registered, please use the below link to register:\nhttps://dotspark.in/auth";
+          }
           
           // Create or update conversation state
           await db.insert(whatsappConversationStates).values({
@@ -241,10 +254,7 @@ whatsappWebhookRouter.post('/', async (req: Request, res: Response) => {
             }
           });
           
-          await sendWhatsAppMessage(
-            normalizedPhone,
-            "Hey! Can you please share your email ID registered with DotSpark?\n\nIf not registered, please use the below link to register:\nhttps://dotspark.in/auth"
-          );
+          await sendWhatsAppMessage(normalizedPhone, responseMessage);
           
           res.status(200).send('Awaiting email');
           return;
