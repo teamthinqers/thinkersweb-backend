@@ -78,10 +78,9 @@ export default function AuthPage() {
                     </div>
                   </div>
                 </div>
-                <h1 className="text-2xl font-medium leading-tight bg-gradient-to-r from-amber-600 via-orange-500 to-amber-600 bg-clip-text text-transparent mb-2" style={{ fontFamily: 'Inter, -apple-system, system-ui, sans-serif', letterSpacing: '-0.02em' }}>
+                <h1 className="text-2xl font-medium leading-tight bg-gradient-to-r from-amber-600 via-orange-500 to-amber-600 bg-clip-text text-transparent" style={{ fontFamily: 'Inter, -apple-system, system-ui, sans-serif', letterSpacing: '-0.02em' }}>
                   A Human Intelligence Network
                 </h1>
-                <p className="text-gray-600 text-sm">Sign in to start thinking deeper</p>
               </div>
               
               <div className="space-y-3">
