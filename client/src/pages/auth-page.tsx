@@ -55,21 +55,22 @@ export default function AuthPage() {
         />
       </div>
 
+      {/* Back button at top right */}
+      <div className="absolute top-6 right-6">
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => setLocation("/")}
+          className="text-sm font-medium text-gray-700 border-gray-300 hover:border-amber-500 hover:text-amber-600 hover:bg-amber-50 transition-all duration-300"
+        >
+          <ArrowLeft className="h-4 w-4 mr-2" />
+          Back
+        </Button>
+      </div>
+
       {/* Centered content */}
       <div className="flex items-center justify-center min-h-screen px-4 py-12">
         <div className="w-full max-w-4xl">
-          {/* Back button above the cards */}
-          <div className="mb-4">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setLocation("/")}
-              className="text-sm font-medium text-gray-700 border-gray-300 hover:border-amber-500 hover:text-amber-600 hover:bg-amber-50 transition-all duration-300"
-            >
-              <ArrowLeft className="h-4 w-4 mr-2" />
-              Back
-            </Button>
-          </div>
           <div className="grid md:grid-cols-2 gap-6">
             
             {/* Sign In Card */}
