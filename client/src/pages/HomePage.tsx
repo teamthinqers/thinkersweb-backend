@@ -295,7 +295,7 @@ export default function HomePage() {
                     </p>
                     
                     <p>
-                      DotSpark was built for those who choose to <span className="text-3xl font-bold bg-gradient-to-r from-amber-500 to-orange-500 bg-clip-text text-transparent">ThinQ</span> — who believe human intelligence still holds untapped potential, and that when it connects, it becomes far more powerful than AI.
+                      DotSpark was built for those who choose to <span className="text-3xl font-bold bg-gradient-to-r from-amber-500 to-orange-500 bg-clip-text text-transparent">ThinQ</span>, for those who believe human intelligence still holds untapped potential, and that when it connects, it becomes far more powerful than AI.
                     </p>
                   </div>
                 </div>
