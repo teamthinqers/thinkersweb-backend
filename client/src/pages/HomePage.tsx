@@ -110,7 +110,7 @@ export default function HomePage() {
 
               {/* Tagline */}
               <div className="animate-fade-in-up space-y-4" style={{ animationDelay: '0.15s' }}>
-                <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight leading-[1.1] bg-gradient-to-r from-amber-600 via-orange-500 to-amber-600 bg-clip-text text-transparent" style={{ fontFamily: 'system-ui, -apple-system, "Segoe UI", sans-serif', letterSpacing: '-0.02em' }}>
+                <h1 className="text-4xl md:text-5xl lg:text-6xl font-semibold italic tracking-tight leading-[1.15] bg-gradient-to-r from-amber-600 via-orange-500 to-amber-600 bg-clip-text text-transparent" style={{ fontFamily: '"SF Pro Display", -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", sans-serif', letterSpacing: '-0.03em' }}>
                   A Human Intelligence Network
                 </h1>
               </div>
