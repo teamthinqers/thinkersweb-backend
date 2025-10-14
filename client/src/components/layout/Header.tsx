@@ -306,7 +306,7 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
                     <Link href="/my-neura" className="cursor-pointer w-full">
-                      <img src="/dotspark-logo-icon.png?v=2?v=2" alt="DotSpark" className="mr-2 h-4 w-4 object-contain rounded" />
+                      <img src="/dotspark-logo-icon.png?v=2" alt="DotSpark" className="mr-2 h-4 w-4 object-contain rounded" />
                       My DotSpark
                     </Link>
                   </DropdownMenuItem>
@@ -363,7 +363,7 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
                 onClick={() => setLocation("/my-neura")}
                 className="text-sm font-semibold text-gray-800 border-gray-400 hover:border-amber-600 hover:text-amber-700 hover:bg-amber-50 transition-all duration-300 px-4"
               >
-                <img src="/dotspark-logo-icon.png?v=2?v=2" alt="DotSpark" className="h-4 w-4 mr-2 object-contain rounded" />
+                <img src="/dotspark-logo-icon.png?v=2" alt="DotSpark" className="h-4 w-4 mr-2 object-contain rounded" />
                 My DotSpark
               </Button>
               
@@ -451,7 +451,7 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
                     <Link href="/my-neura" className="cursor-pointer w-full">
-                      <img src="/dotspark-logo-icon.png?v=2?v=2" alt="DotSpark" className="mr-2 h-4 w-4 object-contain rounded" />
+                      <img src="/dotspark-logo-icon.png?v=2" alt="DotSpark" className="mr-2 h-4 w-4 object-contain rounded" />
                       My DotSpark
                     </Link>
                   </DropdownMenuItem>
@@ -503,7 +503,7 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
               }} 
               className="cursor-pointer flex items-center active:opacity-80 transition-opacity"
             >
-              <img src="/dotspark-logo-wordmark.png?v=2?v=2" alt="DotSpark" className="h-10 w-auto rounded-sm" />
+              <img src="/dotspark-logo-wordmark.png?v=2" alt="DotSpark" className="h-10 w-auto rounded-sm" />
             </div>
             <Button 
               variant="ghost" 
