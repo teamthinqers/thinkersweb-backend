@@ -82,52 +82,125 @@ export default function HomePage() {
           <div className="absolute bottom-1/3 left-1/3 w-2 h-2 bg-amber-500 rounded-full animate-ping" style={{ animationDelay: '2s' }}></div>
         </div>
 
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-20 relative z-10">
-          {/* Hero Section */}
-          <div className="text-center mb-24 space-y-12">
-            {/* DotSpark Logo with Premium Styling */}
-            <div className="inline-block animate-fade-in-up">
-              <div className="relative group">
-                {/* Premium glow effect */}
-                <div className="absolute -inset-4 bg-gradient-to-r from-amber-500/30 via-orange-500/30 to-amber-500/30 rounded-full blur-2xl opacity-60 group-hover:opacity-90 transition-all duration-700"></div>
-                <div className="absolute -inset-2 bg-gradient-to-r from-amber-400/20 to-orange-400/20 rounded-full blur-xl"></div>
-                
-                <img 
-                  src="/dotspark-logo-combined.png?v=2" 
-                  alt="DotSpark" 
-                  className="relative h-32 w-auto mx-auto drop-shadow-2xl transform group-hover:scale-110 transition-all duration-500 ease-out filter brightness-110" 
-                />
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-20 relative z-10">
+          {/* Hero Section - Split Layout */}
+          <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center min-h-[600px]">
+            
+            {/* Left Column - Content */}
+            <div className="space-y-8 lg:space-y-10 text-center lg:text-left">
+              {/* DotSpark Logo */}
+              <div className="inline-block animate-fade-in-up">
+                <div className="relative group">
+                  <div className="absolute -inset-3 bg-gradient-to-r from-amber-500/20 via-orange-500/20 to-amber-500/20 rounded-full blur-xl opacity-60 group-hover:opacity-90 transition-all duration-500"></div>
+                  <img 
+                    src="/dotspark-logo-combined.png?v=2" 
+                    alt="DotSpark" 
+                    className="relative h-20 lg:h-24 w-auto drop-shadow-xl transform group-hover:scale-105 transition-all duration-300" 
+                  />
+                </div>
+              </div>
+
+              {/* Tagline */}
+              <div className="animate-fade-in-up space-y-3" style={{ animationDelay: '0.15s' }}>
+                <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight leading-tight">
+                  <span className="inline-block bg-gradient-to-r from-amber-600 via-orange-600 to-amber-500 bg-clip-text text-transparent">
+                    A Human Intelligence
+                  </span>
+                  <br />
+                  <span className="inline-block bg-gradient-to-r from-orange-600 via-amber-600 to-orange-500 bg-clip-text text-transparent">
+                    Network
+                  </span>
+                </h1>
+              </div>
+
+              {/* Subtitle */}
+              <p className="text-lg lg:text-xl text-gray-600 max-w-lg mx-auto lg:mx-0 animate-fade-in-up" style={{ animationDelay: '0.3s' }}>
+                Connect your thoughts, discover insights, and grow your collective intelligence with others.
+              </p>
+
+              {/* CTA Button */}
+              <div className="flex justify-center lg:justify-start animate-fade-in-up" style={{ animationDelay: '0.45s' }}>
+                <Button
+                  size="lg"
+                  onClick={() => setLocation("/auth")}
+                  className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white px-10 py-6 text-lg font-semibold shadow-2xl hover:shadow-amber-500/50 transform hover:scale-105 transition-all duration-300"
+                >
+                  Get Started
+                </Button>
               </div>
             </div>
 
-            {/* Premium Tagline */}
-            <div className="animate-fade-in-up space-y-4" style={{ animationDelay: '0.2s' }}>
-              <h1 className="text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tight leading-tight">
-                <span className="inline-block bg-gradient-to-r from-amber-600 via-orange-600 to-amber-500 bg-clip-text text-transparent drop-shadow-sm">
-                  A Human Intelligence
-                </span>
-                <br />
-                <span className="inline-block bg-gradient-to-r from-orange-600 via-amber-600 to-orange-500 bg-clip-text text-transparent drop-shadow-sm">
-                  Network
-                </span>
-              </h1>
-            </div>
+            {/* Right Column - Neural Network Illustration */}
+            <div className="relative hidden lg:flex items-center justify-center animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
+              <div className="relative w-full max-w-lg aspect-square">
+                {/* Central Node - Brain/Hub */}
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10">
+                  <div className="relative">
+                    <div className="absolute inset-0 bg-gradient-to-r from-amber-400 to-orange-400 rounded-full blur-2xl opacity-40 animate-pulse"></div>
+                    <div className="relative w-24 h-24 bg-gradient-to-br from-amber-500 to-orange-500 rounded-full flex items-center justify-center shadow-2xl">
+                      <Brain className="w-12 h-12 text-white" />
+                    </div>
+                  </div>
+                </div>
 
-            {/* CTA Button */}
-            <div className="flex items-center justify-center animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
-              <Button
-                size="lg"
-                onClick={() => setLocation("/auth")}
-                className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white px-12 py-6 text-xl font-semibold shadow-2xl hover:shadow-amber-500/50 transform hover:scale-105 transition-all duration-300"
-              >
-                Get Started
-              </Button>
-            </div>
+                {/* Connecting Nodes - Representing People */}
+                {[...Array(6)].map((_, i) => {
+                  const angle = (i * 60) * (Math.PI / 180);
+                  const radius = 180;
+                  const x = Math.cos(angle) * radius;
+                  const y = Math.sin(angle) * radius;
+                  
+                  return (
+                    <div
+                      key={i}
+                      className="absolute top-1/2 left-1/2 animate-pulse"
+                      style={{
+                        transform: `translate(calc(-50% + ${x}px), calc(-50% + ${y}px))`,
+                        animationDelay: `${i * 0.2}s`,
+                        animationDuration: '3s'
+                      }}
+                    >
+                      <div className="relative">
+                        <div className="absolute inset-0 bg-gradient-to-r from-amber-300 to-orange-300 rounded-full blur-lg opacity-30"></div>
+                        <div className="relative w-16 h-16 bg-gradient-to-br from-amber-400 to-orange-400 rounded-full flex items-center justify-center shadow-xl">
+                          <Users className="w-8 h-8 text-white" />
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
 
-            {/* Subtle Subtext */}
-            <p className="text-gray-500 text-sm max-w-md mx-auto animate-fade-in-up" style={{ animationDelay: '0.6s' }}>
-              Join the collective intelligence revolution. Share thoughts, discover insights, and grow together.
-            </p>
+                {/* Connection Lines */}
+                <svg className="absolute inset-0 w-full h-full" style={{ zIndex: 1 }}>
+                  {[...Array(6)].map((_, i) => {
+                    const angle = (i * 60) * (Math.PI / 180);
+                    const radius = 180;
+                    const x = Math.cos(angle) * radius + 50;
+                    const y = Math.sin(angle) * radius + 50;
+                    
+                    return (
+                      <line
+                        key={i}
+                        x1="50%"
+                        y1="50%"
+                        x2={`${x}%`}
+                        y2={`${y}%`}
+                        stroke="url(#gradient)"
+                        strokeWidth="2"
+                        strokeDasharray="5,5"
+                        className="opacity-40"
+                      />
+                    );
+                  })}
+                  <defs>
+                    <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stopColor="#f59e0b" />
+                      <stop offset="100%" stopColor="#f97316" />
+                    </linearGradient>
+                  </defs>
+                </svg>
+              </div>
+            </div>
           </div>
 
           {/* Features Grid */}
