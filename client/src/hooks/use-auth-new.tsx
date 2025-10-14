@@ -33,6 +33,32 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  // Check authentication status from backend session
+  const checkAuth = useCallback(async () => {
+    try {
+      setIsLoading(true);
+      setError(null);
+      
+      const response = await fetch('/api/auth/me', {
+        method: 'GET',
+        credentials: 'include', // Important: include session cookie
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setUser(data.user || null);
+      } else {
+        setUser(null);
+      }
+    } catch (err) {
+      console.error("Auth check error:", err);
+      setUser(null);
+      setError("Failed to check authentication");
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
   // Check for redirect result on mount (for mobile Google login)
   useEffect(() => {
     const handleRedirectResult = async () => {
@@ -70,33 +96,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     };
     
     handleRedirectResult();
-  }, []);
-
-  // Check authentication status from backend session
-  const checkAuth = useCallback(async () => {
-    try {
-      setIsLoading(true);
-      setError(null);
-      
-      const response = await fetch('/api/auth/me', {
-        method: 'GET',
-        credentials: 'include', // Important: include session cookie
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        setUser(data.user || null);
-      } else {
-        setUser(null);
-      }
-    } catch (err) {
-      console.error("Auth check error:", err);
-      setUser(null);
-      setError("Failed to check authentication");
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
+  }, [checkAuth]);
 
   // Login with Google OAuth
   const loginWithGoogle = useCallback(async () => {
