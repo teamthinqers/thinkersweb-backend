@@ -48,7 +48,8 @@ export function extractTokenFromMessage(message: string): string | null {
  * Generate WhatsApp message with embedded token for logged-in users
  */
 export function generateWhatsAppMessage(userId: number | null): string {
-  const baseMessage = "Hey DotSpark 👋";
+  // Using Unicode escape to ensure emoji displays correctly
+  const baseMessage = "Hey DotSpark \u{1F44B}";
   
   if (!userId) {
     return baseMessage;
