@@ -510,58 +510,46 @@ export default function HomePage() {
                 </h2>
               </div>
 
-              <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
-                {/* Message - Left Side */}
-                <div className="space-y-6">
-                  <p className="text-lg text-gray-700 leading-relaxed">
-                    Hey ThinQers,
-                  </p>
-                  
-                  <div className="space-y-6 text-lg text-gray-700 leading-relaxed">
-                    <p>
-                      Thank you for taking a moment to pause and reach here.
-                    </p>
-                    
-                    <p>
-                      We live in a world obsessed with big data and faster systems. But real intelligence doesn't come from scale — it comes from small, distilled human moments that can't be measured, only felt.
-                    </p>
-                    
-                    <p>
-                      That belief is what shaped DotSpark. A space built for those who choose to ThinQ, to reflect deeply, and to turn thought into connection.
-                    </p>
-                    
-                    <p>
-                      AI helped me create this platform, but the spark behind it was human. It came from curiosity, from conversations, and from the kind of reflection that still makes us who we are.
-                    </p>
-                    
-                    <p>
-                      One person choosing to ThinQ can make a difference. But when many such minds come together, something remarkable begins to form — a collective brain, a connected intelligence powered by human thoughts.
-                    </p>
-                    
-                    <p className="font-medium text-gray-800">
-                      That is the future I believe in. Not artificial. <span className="font-bold bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent">Deeply human.</span>
-                    </p>
-                  </div>
-
-                  <div className="border-t border-gray-200 pt-6">
-                    <p className="text-xl font-bold text-gray-900">Aravindh Rajendran</p>
-                    <p className="text-gray-600">Founder, DotSpark</p>
-                  </div>
-                </div>
-
-                {/* Founder Photo - Right Side */}
-                <div className="flex flex-col items-center space-y-6">
+              <div className="max-w-5xl mx-auto text-center space-y-8">
+                {/* Founder Photo - Circular at Top */}
+                <div className="flex justify-center">
                   <div className="relative">
-                    <div className="absolute inset-0 bg-gradient-to-r from-amber-400 to-orange-400 rounded-2xl blur-2xl opacity-20"></div>
-                    <div className="relative rounded-2xl shadow-2xl overflow-hidden">
+                    <div className="absolute inset-0 bg-gradient-to-r from-amber-400 to-orange-400 rounded-full blur-2xl opacity-30"></div>
+                    <div className="relative w-32 h-32 rounded-full overflow-hidden shadow-2xl ring-4 ring-white">
                       <img 
                         src="/founder-photo.jpg" 
                         alt="Aravindh Rajendran - Founder of DotSpark" 
-                        className="w-full max-w-sm object-cover object-top h-96"
+                        className="w-full h-full object-cover object-top"
                       />
                     </div>
                   </div>
+                </div>
+
+                {/* Founder Name */}
+                <div>
+                  <p className="text-2xl font-bold text-gray-900">Aravindh Rajendran</p>
+                  <p className="text-gray-600 mt-1">Founder, DotSpark</p>
+                </div>
+
+                {/* Message - Condensed */}
+                <div className="max-w-3xl mx-auto space-y-4 text-base text-gray-700 leading-relaxed">
+                  <p className="italic">"Hey ThinQers, thank you for taking a moment to pause and reach here."</p>
                   
+                  <p>
+                    We live in a world obsessed with big data and faster systems. But real intelligence doesn't come from scale — it comes from small, distilled human moments that can't be measured, only felt.
+                  </p>
+                  
+                  <p>
+                    That belief shaped DotSpark. A space for those who choose to ThinQ, to reflect deeply, and to turn thought into connection. AI helped me create this platform, but the spark behind it was human.
+                  </p>
+                  
+                  <p className="font-medium text-gray-800">
+                    One person choosing to ThinQ can make a difference. But when many minds come together, something remarkable forms — a collective brain, a connected intelligence powered by human thoughts. That is the future I believe in. Not artificial. <span className="font-bold bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent">Deeply human.</span>
+                  </p>
+                </div>
+
+                {/* CTA Button */}
+                <div className="pt-4">
                   <a 
                     href="https://chat.whatsapp.com/E6Mwv20MUrCG58xuVJQNTv" 
                     target="_blank" 
