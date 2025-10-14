@@ -374,9 +374,14 @@ export function setupNewAuth(app: Express) {
         res.status(isNewUser ? 201 : 200).json({ user: sessionUser, isNewUser });
       });
 
-    } catch (error) {
-      console.error("Login error:", error);
-      res.status(500).json({ error: "Login failed" });
+    } catch (error: any) {
+      console.error("❌ LOGIN ERROR - Full details:", error);
+      console.error("❌ Error message:", error.message);
+      console.error("❌ Error stack:", error.stack);
+      res.status(500).json({ 
+        error: "Login failed",
+        details: process.env.NODE_ENV === 'development' ? error.message : undefined
+      });
     }
   });
 
