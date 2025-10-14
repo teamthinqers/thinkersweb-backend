@@ -55,17 +55,19 @@ export default function MobileLandingPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50 dark:from-gray-950 dark:to-amber-950">
       {/* Header */}
-      <div className="sticky top-0 z-50 backdrop-blur-md bg-white/80 dark:bg-gray-950/80 border-b">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center">
-              <Sparkles className="h-5 w-5 text-white" />
-            </div>
+      <div className="sticky top-0 z-50 backdrop-blur-md bg-white/90 dark:bg-gray-950/90 border-b shadow-sm">
+        <div className="container mx-auto px-4 py-3">
+          <div className="flex items-center gap-2.5">
+            <img 
+              src="/dotspark-icon.png" 
+              alt="DotSpark" 
+              className="h-10 w-10" 
+            />
             <div>
-              <h1 className="text-xl font-bold bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent">
+              <h1 className="text-lg font-bold bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent">
                 DotSpark
               </h1>
-              <p className="text-xs text-muted-foreground">A Human Intelligence Network</p>
+              <p className="text-[10px] text-gray-500 dark:text-gray-400">A Human Intelligence Network</p>
             </div>
           </div>
         </div>
@@ -76,7 +78,7 @@ export default function MobileLandingPage() {
         {/* Welcome Section */}
         <div className="text-center mb-4">
           <h2 className="text-xl font-bold mb-2">Welcome to DotSpark!</h2>
-          <p className="text-sm text-muted-foreground">
+          <p className="text-base font-medium text-gray-700 dark:text-gray-300">
             {user?.fullName || user?.email}
           </p>
         </div>
