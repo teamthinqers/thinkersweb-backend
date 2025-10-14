@@ -523,9 +523,9 @@ export default function HomePage() {
                       <div className="absolute inset-0 bg-gradient-to-r from-amber-400 to-orange-400 rounded-2xl blur-2xl opacity-30"></div>
                       <div className="relative rounded-2xl shadow-2xl overflow-hidden ring-4 ring-white/50">
                         <img 
-                          src="/founder-photo.jpg" 
+                          src="/aravindh-profile.jpg" 
                           alt="Aravindh Rajendran - Founder of DotSpark" 
-                          className="w-full h-80 object-cover object-top"
+                          className="w-full h-80 object-cover object-center"
                         />
                       </div>
                     </div>
