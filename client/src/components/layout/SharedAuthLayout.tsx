@@ -285,21 +285,6 @@ export default function SharedAuthLayout({ children }: SharedAuthLayoutProps) {
                 {isSidebarOpen && <span className="ml-3 text-sm font-medium">My DotSpark</span>}
               </Button>
             </Link>
-
-            <Link href="/social">
-              <Button 
-                variant="ghost" 
-                title="Social"
-                className={`${isSidebarOpen ? 'w-full justify-start h-10' : 'w-10 h-10'} rounded-xl transition-all duration-300 ${
-                  isOnSocial 
-                    ? 'bg-red-500 text-white hover:bg-red-600' 
-                    : 'hover:bg-red-50'
-                }`}
-              >
-                <Brain className={`w-5 h-5 ${isOnSocial ? 'text-white' : 'text-red-500 animate-pulse'}`} />
-                {isSidebarOpen && <span className={`ml-3 text-sm font-medium ${isOnSocial ? 'text-white' : 'text-red-600'}`}>Social</span>}
-              </Button>
-            </Link>
             
             <Link href="/myneura">
               <Button 
@@ -328,6 +313,21 @@ export default function SharedAuthLayout({ children }: SharedAuthLayoutProps) {
               >
                 <Target className={`w-5 h-5 ${isOnThoughtCircles ? 'text-white' : 'text-yellow-600'}`} />
                 {isSidebarOpen && <span className={`ml-3 text-sm font-medium ${isOnThoughtCircles ? 'text-white' : 'text-yellow-600'}`}>My ThinQ Circles</span>}
+              </Button>
+            </Link>
+
+            <Link href="/social">
+              <Button 
+                variant="ghost" 
+                title="Social"
+                className={`${isSidebarOpen ? 'w-full justify-start h-10' : 'w-10 h-10'} rounded-xl transition-all duration-300 ${
+                  isOnSocial 
+                    ? 'bg-red-500 text-white hover:bg-red-600' 
+                    : 'hover:bg-red-50'
+                }`}
+              >
+                <Brain className={`w-5 h-5 ${isOnSocial ? 'text-white' : 'text-red-500 animate-pulse'}`} />
+                {isSidebarOpen && <span className={`ml-3 text-sm font-medium ${isOnSocial ? 'text-white' : 'text-red-600'}`}>Social</span>}
               </Button>
             </Link>
           </div>
