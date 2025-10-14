@@ -84,10 +84,10 @@ export default function HomePage() {
 
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           {/* Hero Section - Split Layout */}
-          <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center min-h-screen py-12 lg:py-20">
+          <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 items-center min-h-[85vh] lg:min-h-screen py-8 lg:py-20">
             
             {/* Left Column - Content */}
-            <div className="space-y-8 lg:space-y-10 text-center lg:text-left">
+            <div className="space-y-5 lg:space-y-10 text-center lg:text-left">
               {/* DotSpark Logo */}
               <div className="inline-block animate-fade-in-up">
                 <div className="relative group">
@@ -95,13 +95,13 @@ export default function HomePage() {
                   <div className="absolute -inset-4 bg-gradient-to-r from-amber-500/30 via-orange-500/30 to-amber-500/30 rounded-full blur-2xl opacity-60 group-hover:opacity-90 transition-all duration-500"></div>
                   
                   {/* Logo with Text */}
-                  <div className="relative flex items-center gap-4">
+                  <div className="relative flex items-center gap-3 lg:gap-4">
                     <img 
                       src="/dotspark-icon.png" 
                       alt="DotSpark" 
-                      className="h-16 w-16 lg:h-20 lg:w-20 transform group-hover:scale-110 group-hover:rotate-12 transition-all duration-500 drop-shadow-2xl" 
+                      className="h-12 w-12 lg:h-20 lg:w-20 transform group-hover:scale-110 group-hover:rotate-12 transition-all duration-500 drop-shadow-2xl" 
                     />
-                    <span className="text-3xl lg:text-4xl font-bold bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent">
+                    <span className="text-2xl lg:text-4xl font-bold bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent">
                       DotSpark
                     </span>
                   </div>
@@ -109,21 +109,21 @@ export default function HomePage() {
               </div>
 
               {/* Tagline */}
-              <div className="animate-fade-in-up space-y-6" style={{ animationDelay: '0.15s' }}>
+              <div className="animate-fade-in-up space-y-3 lg:space-y-6" style={{ animationDelay: '0.15s' }}>
                 <div className="space-y-2">
-                  <h1 className="text-[2.75rem] md:text-5xl lg:text-6xl font-medium leading-[1.1] bg-gradient-to-r from-amber-600 via-orange-500 to-amber-600 bg-clip-text text-transparent" style={{ fontFamily: 'Inter, -apple-system, system-ui, sans-serif', letterSpacing: '-0.04em' }}>
+                  <h1 className="text-3xl md:text-5xl lg:text-6xl font-medium leading-[1.1] bg-gradient-to-r from-amber-600 via-orange-500 to-amber-600 bg-clip-text text-transparent" style={{ fontFamily: 'Inter, -apple-system, system-ui, sans-serif', letterSpacing: '-0.04em' }}>
                     A Human Intelligence Network
                   </h1>
                 </div>
               </div>
 
               {/* Subtitle */}
-              <p className="text-lg lg:text-xl text-gray-600/90 max-w-xl mx-auto lg:mx-0 animate-fade-in-up font-normal leading-relaxed" style={{ animationDelay: '0.3s', letterSpacing: '-0.005em' }}>
+              <p className="text-base lg:text-xl text-gray-600/90 max-w-xl mx-auto lg:mx-0 animate-fade-in-up font-normal leading-relaxed" style={{ animationDelay: '0.3s', letterSpacing: '-0.005em' }}>
                 Where human thoughts connect, evolve, and give rise to a collective intelligence that feels deeply human.
               </p>
 
               {/* CTA Buttons */}
-              <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start animate-fade-in-up" style={{ animationDelay: '0.45s' }}>
+              <div className="flex flex-col sm:flex-row gap-3 lg:gap-4 justify-center lg:justify-start animate-fade-in-up" style={{ animationDelay: '0.45s' }}>
                 <Button
                   size="lg"
                   variant="outline"
@@ -132,14 +132,14 @@ export default function HomePage() {
                     const featuresSection = document.querySelector('.features-section');
                     featuresSection?.scrollIntoView({ behavior: 'smooth' });
                   }}
-                  className="border-2 border-amber-500 text-amber-600 hover:bg-amber-50 w-full sm:w-48 py-6 text-lg font-semibold transform hover:scale-105 transition-all duration-300"
+                  className="border-2 border-amber-500 text-amber-600 hover:bg-amber-50 w-full sm:w-48 py-5 lg:py-6 text-base lg:text-lg font-semibold transform hover:scale-105 transition-all duration-300"
                 >
                   Know Why?
                 </Button>
                 <Button
                   size="lg"
                   onClick={() => setLocation("/auth")}
-                  className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white w-full sm:w-48 py-6 text-lg font-semibold shadow-2xl hover:shadow-amber-500/50 transform hover:scale-105 transition-all duration-300"
+                  className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white w-full sm:w-48 py-5 lg:py-6 text-base lg:text-lg font-semibold shadow-2xl hover:shadow-amber-500/50 transform hover:scale-105 transition-all duration-300"
                 >
                   Get Started
                 </Button>
@@ -224,13 +224,13 @@ export default function HomePage() {
           </div>
 
           {/* Why DotSpark Section */}
-          <div className="features-section min-h-screen flex items-center py-12">
+          <div className="features-section min-h-[85vh] lg:min-h-screen flex items-center py-8 lg:py-12">
             <div className="max-w-6xl mx-auto px-4 w-full">
-              <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+              <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 items-center">
                 
                 {/* Left - Visual */}
                 <div className="relative order-2 lg:order-1">
-                  <div className="relative w-full max-w-sm mx-auto" style={{ height: '300px' }}>
+                  <div className="relative w-full max-w-sm mx-auto h-48 lg:h-80">
                     
                     {/* Central Brain/Thought Icon */}
                     <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20">
@@ -239,37 +239,37 @@ export default function HomePage() {
                         <div className="absolute inset-0 bg-gradient-to-r from-amber-400 to-orange-400 rounded-full blur-3xl opacity-50 animate-pulse"></div>
                         
                         {/* Main icon - Pulsating */}
-                        <div className="relative w-32 h-32 bg-gradient-to-br from-amber-500 to-orange-500 rounded-full flex items-center justify-center shadow-2xl animate-pulse" style={{ animationDuration: '2s' }}>
-                          <Lightbulb className="w-16 h-16 text-white animate-pulse" style={{ animationDuration: '1.5s' }} />
+                        <div className="relative w-20 h-20 lg:w-32 lg:h-32 bg-gradient-to-br from-amber-500 to-orange-500 rounded-full flex items-center justify-center shadow-2xl animate-pulse" style={{ animationDuration: '2s' }}>
+                          <Lightbulb className="w-10 h-10 lg:w-16 lg:h-16 text-white animate-pulse" style={{ animationDuration: '1.5s' }} />
                         </div>
                       </div>
                     </div>
 
                     {/* Thought Waves */}
-                    {[1, 2, 3, 4].map((i) => (
+                    {[1, 2, 3].map((i) => (
                       <div
                         key={i}
                         className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 border-2 border-amber-400/30 rounded-full"
                         style={{
-                          width: `${i * 80 + 100}px`,
-                          height: `${i * 80 + 100}px`,
+                          width: `${i * 50 + 60}px`,
+                          height: `${i * 50 + 60}px`,
                           animation: `pulse ${2 + i * 0.5}s ease-in-out infinite`,
                           animationDelay: `${i * 0.3}s`
                         }}
                       />
                     ))}
 
-                    {/* Floating Thought Particles */}
+                    {/* Floating Thought Particles - Hidden on mobile */}
                     {[...Array(8)].map((_, i) => {
                       const angle = (i * 45) * (Math.PI / 180);
-                      const radius = 150;
+                      const radius = 90;
                       const x = Math.cos(angle) * radius;
                       const y = Math.sin(angle) * radius;
                       
                       return (
                         <div
                           key={`thought-${i}`}
-                          className="absolute top-1/2 left-1/2"
+                          className="hidden lg:block absolute top-1/2 left-1/2"
                           style={{
                             transform: `translate(calc(-50% + ${x}px), calc(-50% + ${y}px))`,
                             animation: `float ${3 + (i % 3)}s ease-in-out infinite`,
@@ -284,18 +284,18 @@ export default function HomePage() {
                 </div>
 
                 {/* Right - Content */}
-                <div className="order-1 lg:order-2 space-y-5">
-                  <h2 className="text-3xl lg:text-4xl font-bold bg-gradient-to-r from-amber-500 to-orange-500 bg-clip-text text-transparent">
+                <div className="order-1 lg:order-2 space-y-4 lg:space-y-5">
+                  <h2 className="text-2xl lg:text-4xl font-bold bg-gradient-to-r from-amber-500 to-orange-500 bg-clip-text text-transparent">
                     Why DotSpark
                   </h2>
                   
-                  <div className="space-y-5 text-base lg:text-lg text-gray-700 leading-relaxed">
+                  <div className="space-y-4 lg:space-y-5 text-sm lg:text-lg text-gray-700 leading-relaxed">
                     <p>
                       In a world obsessed with Artificial Intelligence, we're forgetting what made us intelligent in the first place — <span className="font-semibold text-gray-900">Thinking</span>.
                     </p>
                     
                     <p>
-                      DotSpark was built for those who choose to <span className="text-2xl lg:text-3xl font-bold bg-gradient-to-r from-amber-500 to-orange-500 bg-clip-text text-transparent">ThinQ</span>, for those who believe <span className="font-semibold text-gray-900">Human Intelligence</span> still holds untapped potential, and that when it connects, it becomes far more powerful than AI.
+                      DotSpark was built for those who choose to <span className="text-xl lg:text-3xl font-bold bg-gradient-to-r from-amber-500 to-orange-500 bg-clip-text text-transparent">ThinQ</span>, for those who believe <span className="font-semibold text-gray-900">Human Intelligence</span> still holds untapped potential, and that when it connects, it becomes far more powerful than AI.
                     </p>
                   </div>
                 </div>
