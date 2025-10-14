@@ -1,7 +1,7 @@
 import { useAuth } from "@/hooks/use-auth-new";
 import { useLocation } from "wouter";
 import { useEffect, useState } from "react";
-import { Loader2, MessageCircle, Users, Sparkles, ArrowRight } from "lucide-react";
+import { Loader2, MessageCircle, Users, Sparkles, ArrowRight, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { isMobileBrowser } from "@/lib/mobile-detection";
@@ -63,26 +63,42 @@ export default function MobileLandingPage() {
       {/* Header */}
       <div className="sticky top-0 z-50 backdrop-blur-lg bg-gradient-to-r from-amber-500/10 via-orange-500/10 to-amber-500/10 border-b border-amber-200/30">
         <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-center gap-3">
-            {/* Logo with glow effect */}
-            <div className="relative">
-              <div className="absolute inset-0 bg-gradient-to-r from-amber-500 to-orange-500 rounded-full blur-md opacity-40"></div>
-              <img 
-                src="/dotspark-icon.png" 
-                alt="DotSpark" 
-                className="relative h-12 w-12 drop-shadow-lg" 
-              />
+          <div className="flex items-center justify-between">
+            {/* Back button */}
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setLocation("/")}
+              className="text-amber-700 hover:text-amber-900 hover:bg-amber-100/50"
+            >
+              <ArrowLeft className="h-5 w-5" />
+            </Button>
+
+            {/* Logo and Brand - Centered */}
+            <div className="flex items-center gap-3 absolute left-1/2 transform -translate-x-1/2">
+              {/* Logo with glow effect */}
+              <div className="relative">
+                <div className="absolute inset-0 bg-gradient-to-r from-amber-500 to-orange-500 rounded-full blur-md opacity-40"></div>
+                <img 
+                  src="/dotspark-icon.png" 
+                  alt="DotSpark" 
+                  className="relative h-12 w-12 drop-shadow-lg" 
+                />
+              </div>
+              
+              {/* Brand text */}
+              <div className="flex flex-col items-start">
+                <h1 className="text-xl font-bold bg-gradient-to-r from-amber-600 via-orange-600 to-amber-600 bg-clip-text text-transparent tracking-tight">
+                  DotSpark
+                </h1>
+                <p className="text-xs font-medium text-amber-700/80 dark:text-amber-400/70 tracking-wide">
+                  A Human Intelligence Network
+                </p>
+              </div>
             </div>
-            
-            {/* Brand text */}
-            <div className="flex flex-col items-start">
-              <h1 className="text-xl font-bold bg-gradient-to-r from-amber-600 via-orange-600 to-amber-600 bg-clip-text text-transparent tracking-tight">
-                DotSpark
-              </h1>
-              <p className="text-xs font-medium text-amber-700/80 dark:text-amber-400/70 tracking-wide">
-                A Human Intelligence Network
-              </p>
-            </div>
+
+            {/* Spacer for layout balance */}
+            <div className="w-10"></div>
           </div>
         </div>
       </div>
