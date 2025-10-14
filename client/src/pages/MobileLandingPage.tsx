@@ -72,39 +72,37 @@ export default function MobileLandingPage() {
       </div>
 
       {/* Main Content */}
-      <div className="container mx-auto px-4 py-8 max-w-lg">
+      <div className="container mx-auto px-4 py-4 max-w-lg">
         {/* Welcome Section */}
-        <div className="text-center mb-8">
-          <h2 className="text-2xl font-bold mb-2">Welcome to DotSpark!</h2>
-          <p className="text-muted-foreground">
+        <div className="text-center mb-4">
+          <h2 className="text-xl font-bold mb-2">Welcome to DotSpark!</h2>
+          <p className="text-sm text-muted-foreground">
             {user?.fullName || user?.email}
-          </p>
-          <p className="text-sm text-muted-foreground mt-2">
-            You're now part of our human intelligence network. Choose how you'd like to continue:
           </p>
         </div>
 
         {/* Option Cards */}
-        <div className="space-y-4">
+        <div className="space-y-3">
           {/* WhatsApp Connection */}
           <Card className="border-2 border-amber-200 dark:border-amber-800 hover:border-amber-400 dark:hover:border-amber-600 transition-colors">
-            <CardContent className="p-6">
-              <div className="flex items-start gap-4">
-                <div className="flex-shrink-0 w-12 h-12 rounded-full bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center">
-                  <MessageCircle className="h-6 w-6 text-white" />
+            <CardContent className="p-4">
+              <div className="flex items-start gap-3">
+                <div className="flex-shrink-0 w-10 h-10 rounded-full bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center">
+                  <MessageCircle className="h-5 w-5 text-white" />
                 </div>
                 <div className="flex-1">
-                  <h3 className="text-lg font-semibold mb-1">Connect via WhatsApp</h3>
-                  <p className="text-sm text-muted-foreground mb-4">
+                  <h3 className="text-base font-semibold mb-1">Connect via WhatsApp</h3>
+                  <p className="text-xs text-muted-foreground mb-3">
                     Stay connected and capture your thoughts on the go. Get seamless access to your DotSpark directly from Whatsapp.
                   </p>
                   <Button
                     onClick={handleWhatsAppConnect}
+                    size="sm"
                     className="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white"
                   >
-                    <MessageCircle className="h-4 w-4 mr-2" />
+                    <MessageCircle className="h-3.5 w-3.5 mr-1.5" />
                     Continue with WhatsApp
-                    <ArrowRight className="h-4 w-4 ml-2" />
+                    <ArrowRight className="h-3.5 w-3.5 ml-1.5" />
                   </Button>
                 </div>
               </div>
@@ -113,23 +111,24 @@ export default function MobileLandingPage() {
 
           {/* Community Access */}
           <Card className="border-2 border-amber-200 dark:border-amber-800 hover:border-amber-400 dark:hover:border-amber-600 transition-colors">
-            <CardContent className="p-6">
-              <div className="flex items-start gap-4">
-                <div className="flex-shrink-0 w-12 h-12 rounded-full bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center">
-                  <Users className="h-6 w-6 text-white" />
+            <CardContent className="p-4">
+              <div className="flex items-start gap-3">
+                <div className="flex-shrink-0 w-10 h-10 rounded-full bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center">
+                  <Users className="h-5 w-5 text-white" />
                 </div>
                 <div className="flex-1">
-                  <h3 className="text-lg font-semibold mb-1">Join the Community</h3>
-                  <p className="text-sm text-muted-foreground mb-4">
+                  <h3 className="text-base font-semibold mb-1">Join the Community</h3>
+                  <p className="text-xs text-muted-foreground mb-3">
                     Explore shared insights, connect with others, and discover collective intelligence from our growing community.
                   </p>
                   <Button
                     onClick={handleJoinCommunity}
+                    size="sm"
                     className="w-full bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 text-white"
                   >
-                    <Users className="h-4 w-4 mr-2" />
+                    <Users className="h-3.5 w-3.5 mr-1.5" />
                     Explore Community
-                    <ArrowRight className="h-4 w-4 ml-2" />
+                    <ArrowRight className="h-3.5 w-3.5 ml-1.5" />
                   </Button>
                 </div>
               </div>
