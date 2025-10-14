@@ -725,6 +725,12 @@ export default function MyNeuraPage() {
               {/* Left: Navigation sections */}
               <div className="flex items-center gap-4">
               
+              {/* My Neura Heading */}
+              <div className="flex items-center gap-2 mr-4">
+                <Brain className="h-5 w-5 text-amber-600" />
+                <h1 className="text-lg font-bold text-amber-900">My Neura</h1>
+              </div>
+              
               {/* 1. Cognitive Identity - button and icon in one line */}
               <Link href="/cognitive-identity" className="flex items-center gap-2">
                 <Button
