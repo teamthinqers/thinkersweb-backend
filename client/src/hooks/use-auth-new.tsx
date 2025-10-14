@@ -59,104 +59,28 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
-  // Check for redirect result on mount (for mobile Google login)
+  // Check auth status on mount
   useEffect(() => {
     let processed = false;
     
-    const handleRedirectResult = async () => {
+    const initAuth = async () => {
       if (processed) return;
       processed = true;
       
       try {
         setIsLoading(true);
-        
-        // Check if we're returning from a redirect
-        const redirectInProgress = localStorage.getItem('auth_redirect_in_progress');
-        const redirectTimestamp = localStorage.getItem('auth_redirect_timestamp');
-        
-        console.log("🔍 Checking for redirect result...", {
-          redirectInProgress,
-          timeSinceRedirect: redirectTimestamp ? Date.now() - parseInt(redirectTimestamp) : null
-        });
-        
-        const result = await getRedirectResult(firebaseAuth);
-        
-        if (result && result.user) {
-          console.log("✅ Got redirect result from Google sign-in");
-          // Clear redirect flags
-          localStorage.removeItem('auth_redirect_in_progress');
-          localStorage.removeItem('auth_redirect_timestamp');
-          
-          const idToken = await result.user.getIdToken();
-          
-          // Exchange token for backend session
-          console.log("🔄 Exchanging token for backend session...");
-          const response = await apiRequest('POST', '/api/auth/login', { idToken });
-          const data = await response.json() as { user: User; isNewUser: boolean };
-          
-          if (response.ok && data && data.user) {
-            console.log("✅ Backend session created from redirect, user:", data.user.email);
-            setUser(data.user);
-            setError(null);
-            
-            // Sign out from Firebase
-            await firebaseAuth.signOut();
-            console.log("✅ Firebase signed out, ready for app redirect");
-          } else {
-            throw new Error("Failed to create session from redirect");
-          }
-        } else {
-          // Check if we were expecting a redirect result but didn't get one
-          if (redirectInProgress) {
-            const timeSinceRedirect = redirectTimestamp ? Date.now() - parseInt(redirectTimestamp) : 0;
-            if (timeSinceRedirect < 10000) { // Less than 10 seconds ago
-              console.log("⏳ Waiting for redirect result...");
-              // Wait a bit and try again
-              await new Promise(resolve => setTimeout(resolve, 1000));
-              const retryResult = await getRedirectResult(firebaseAuth);
-              if (retryResult && retryResult.user) {
-                console.log("✅ Got redirect result on retry");
-                localStorage.removeItem('auth_redirect_in_progress');
-                localStorage.removeItem('auth_redirect_timestamp');
-                
-                const idToken = await retryResult.user.getIdToken();
-                const response = await apiRequest('POST', '/api/auth/login', { idToken });
-                const data = await response.json() as { user: User; isNewUser: boolean };
-                
-                if (response.ok && data && data.user) {
-                  console.log("✅ Backend session created from redirect (retry)");
-                  setUser(data.user);
-                  setError(null);
-                  await firebaseAuth.signOut();
-                } else {
-                  throw new Error("Failed to create session from redirect");
-                }
-                return;
-              }
-            }
-            // Clear stale redirect flags
-            console.log("🧹 Clearing stale redirect flags");
-            localStorage.removeItem('auth_redirect_in_progress');
-            localStorage.removeItem('auth_redirect_timestamp');
-          }
-          
-          console.log("ℹ️ No redirect result found, checking existing session...");
-          // No redirect result, check normal auth status
-          await checkAuth();
-        }
-      } catch (err) {
-        console.error("❌ Redirect result error:", err);
-        localStorage.removeItem('auth_redirect_in_progress');
-        localStorage.removeItem('auth_redirect_timestamp');
-        setError("Failed to complete sign-in");
+        console.log("🔍 Checking existing session...");
         await checkAuth();
+      } catch (err) {
+        console.error("❌ Auth check error:", err);
+        setError("Failed to check authentication");
       } finally {
         setIsLoading(false);
-        console.log("✅ Auth check complete, isLoading now false");
+        console.log("✅ Auth check complete");
       }
     };
     
-    handleRedirectResult();
+    initAuth();
   }, []);
 
   // Login with Google OAuth
@@ -167,20 +91,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       
       const provider = new GoogleAuthProvider();
       
-      // Use redirect flow for mobile devices (more reliable)
-      // Use popup flow for desktop devices (better UX)
-      if (isMobileBrowser()) {
-        console.log("📱 Mobile detected - using redirect flow for Google sign-in");
-        // Set a flag to track that we're in the middle of a redirect flow
-        localStorage.setItem('auth_redirect_in_progress', 'true');
-        localStorage.setItem('auth_redirect_timestamp', Date.now().toString());
-        await signInWithRedirect(firebaseAuth, provider);
-        // The result will be handled in the useEffect with getRedirectResult
-        return;
-      }
-      
-      // Desktop: Use popup flow
-      console.log("💻 Desktop detected - using popup flow for Google sign-in");
+      // Try popup flow for all devices (more reliable than redirect)
+      console.log("🔐 Starting Google sign-in with popup flow...");
       const result = await signInWithPopup(firebaseAuth, provider);
       const firebaseUser = result.user;
 
