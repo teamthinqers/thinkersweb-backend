@@ -83,7 +83,6 @@ import { useAuth, AuthProvider } from "@/hooks/use-auth-new";
 import { AuthInitializer } from "@/components/AuthProvider";
 
 import { PWAInstallButton } from "@/components/ui/pwa-install-button";
-import { IosPwaInstallPrompt } from "@/components/ui/ios-pwa-install-prompt";
 import { isRunningAsStandalone } from "@/lib/pwaUtils";
 
 
@@ -413,8 +412,6 @@ function App() {
           )}
           <Router />
           <Toaster />
-          {/* iOS PWA Install Prompt */}
-          <IosPwaInstallPrompt />
           {/* PWA Install Floating Button (only visible when installable) */}
           <div className="fixed bottom-4 right-4 left-4 md:left-auto z-50">
             <PWAInstallButton size="lg" className="w-full md:w-auto" />
