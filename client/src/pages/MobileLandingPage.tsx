@@ -12,6 +12,9 @@ export default function MobileLandingPage() {
   const [userEmail, setUserEmail] = useState<string>("");
 
   useEffect(() => {
+    // Force cache clear on mount
+    console.log("🔄 Mobile Landing Page v2.1 - October 14, 2025");
+    
     // If not mobile browser, redirect to main app
     if (!isMobileBrowser()) {
       setLocation("/mydotspark");
@@ -30,17 +33,20 @@ export default function MobileLandingPage() {
   }, [user, isLoading, setLocation]);
 
   const handleWhatsAppConnect = () => {
-    // WhatsApp number for DotSpark
+    // WhatsApp BOT number for DotSpark
     const phoneNumber = "16067157733";
     const message = encodeURIComponent(
       `Hi! I just signed up with DotSpark using ${userEmail}. I'd like to connect my WhatsApp to stay updated with my insights and community.`
     );
     const whatsappUrl = `https://wa.me/${phoneNumber}?text=${message}`;
-    window.location.href = whatsappUrl; // Use location.href instead of window.open for better mobile compatibility
+    console.log("📱 Opening WhatsApp BOT:", whatsappUrl);
+    window.location.href = whatsappUrl;
   };
 
   const handleJoinCommunity = () => {
-    window.open("https://chat.whatsapp.com/E6Mwv20MUrCG58xuVJQNTv", "_blank");
+    const communityUrl = "https://chat.whatsapp.com/E6Mwv20MUrCG58xuVJQNTv";
+    console.log("👥 Opening WhatsApp COMMUNITY:", communityUrl);
+    window.open(communityUrl, "_blank");
   };
 
   if (isLoading) {
