@@ -1,7 +1,7 @@
 import { useState, ReactNode, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Menu, Brain, Users, User, LogOut, Sparkles, UsersRound, Search, Bell, CheckCheck, MessageSquare, FileText, Trophy, Lightbulb, CircleDot, Shield } from 'lucide-react';
+import { Menu, Brain, Users, User, LogOut, Sparkles, UsersRound, Search, Bell, CheckCheck, MessageSquare, FileText, Trophy, Lightbulb, Target, Shield } from 'lucide-react';
 import { SiWhatsapp } from 'react-icons/si';
 import { Link, useLocation } from 'wouter';
 import SparkIcon from '@/components/ui/spark-icon';
@@ -326,7 +326,7 @@ export default function SharedAuthLayout({ children }: SharedAuthLayoutProps) {
                     : 'hover:bg-yellow-50'
                 }`}
               >
-                <CircleDot className={`w-5 h-5 ${isOnThoughtCircles ? 'text-white' : 'text-yellow-600'}`} />
+                <Target className={`w-5 h-5 ${isOnThoughtCircles ? 'text-white' : 'text-yellow-600'}`} />
                 {isSidebarOpen && <span className={`ml-3 text-sm font-medium ${isOnThoughtCircles ? 'text-white' : 'text-yellow-600'}`}>My Thought Circles</span>}
               </Button>
             </Link>
