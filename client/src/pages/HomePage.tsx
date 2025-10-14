@@ -640,11 +640,17 @@ export default function HomePage() {
                   <span className="text-3xl">📱</span>
                   <h3 className="text-2xl font-bold text-gray-900 mt-1">If you're on Mobile</h3>
                 </div>
-                <p className="text-gray-700 mb-4 leading-relaxed">
-                  DotSpark works best on desktop, but you can still begin right here.
+                <p className="text-gray-700 mb-3 leading-relaxed">
+                  If you're on mobile, you can begin right here through WhatsApp.
                 </p>
-                <p className="text-gray-700 mb-6 leading-relaxed">
-                  Share your first thought through WhatsApp — we'll save it safely in your Neura. Later, when you log in from desktop, you can see your full cloud of thoughts, circles, and sparks evolve beautifully.
+                <p className="text-gray-700 mb-3 leading-relaxed">
+                  Share your thoughts, create or join your Circles, and stay connected with the network anytime.
+                </p>
+                <p className="text-gray-700 mb-3 leading-relaxed">
+                  When you log in from desktop, you'll see your full Neura and Thought Cloud — all your reflections beautifully organized in one place.
+                </p>
+                <p className="text-gray-700 mb-6 leading-relaxed italic">
+                  However you choose to start, DotSpark is calm, focused, and made for those who think deeper.
                 </p>
                 <div className="text-center">
                   <a
