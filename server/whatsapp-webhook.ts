@@ -3,7 +3,7 @@ import { processWhatsAppMessage } from './whatsapp';
 import axios from 'axios';
 import twilio from 'twilio';
 import { db } from "@db";
-import { whatsappUsers, entries } from "@shared/schema";
+import { whatsappUsers, entries, whatsappConversationStates, users } from "@shared/schema";
 import { eq } from "drizzle-orm";
 import { extractUserIdFromMessage, cleanMessageFromToken } from './lib/whatsappToken';
 
@@ -139,46 +139,13 @@ whatsappWebhookRouter.post('/', async (req: Request, res: Response) => {
         
       console.log(`⭐️ Looking up user for WhatsApp number: ${normalizedPhone} (standardized: ${standardizedPhone})`);
       
-      // Check for embedded user token in the message
-      const tokenUserId = extractUserIdFromMessage(messageText);
-      
-      if (tokenUserId) {
-        console.log(`🔑 Found user token in message! User ID: ${tokenUserId}`);
-        
-        // Auto-link this phone number to the user account
-        const existingLink = await db.query.whatsappUsers.findFirst({
-          where: eq(whatsappUsers.phoneNumber, standardizedPhone)
-        });
-        
-        if (!existingLink) {
-          console.log(`🔗 Auto-linking phone ${standardizedPhone} to user ID ${tokenUserId}`);
-          
-          await db.insert(whatsappUsers).values({
-            userId: tokenUserId,
-            phoneNumber: standardizedPhone,
-            active: true
-          });
-          
-          console.log(`✅ Successfully auto-linked phone to user account!`);
-          
-          // Send confirmation message with clear privacy messaging
-          await sendWhatsAppMessage(
-            normalizedPhone,
-            "✅ Your WhatsApp is now linked!\n\nFrom now on, any message you send here will be saved to your DotSpark account. Your previous WhatsApp chats remain private and are never synced.\n\nTry sending your first thought! 💭"
-          );
-        } else {
-          console.log(`ℹ️ Phone ${standardizedPhone} already linked to user ID ${existingLink.userId}`);
-        }
-      }
-      
-      // Check if this phone is linked to a user account - try both formats
+      // Check if this phone is already linked to a user account
       let whatsappUser = await db.query.whatsappUsers.findFirst({
         where: eq(whatsappUsers.phoneNumber, standardizedPhone)
       });
       
       // If not found with standardized format, try the original format
       if (!whatsappUser) {
-        console.log(`⚠️ User not found with standardized phone, trying original format`);
         whatsappUser = await db.query.whatsappUsers.findFirst({
           where: eq(whatsappUsers.phoneNumber, normalizedPhone)
         });
@@ -186,32 +153,114 @@ whatsappWebhookRouter.post('/', async (req: Request, res: Response) => {
 
       let userId;
       
-      // Only proceed if user has a linked account - no demo user fallback
+      // If already linked, proceed normally
       if (whatsappUser && whatsappUser.userId) {
         userId = whatsappUser.userId;
         console.log(`⭐️ Found linked user ID: ${userId} for phone ${normalizedPhone}`);
       } else {
-        console.log(`⚠️ No linked user found for phone ${normalizedPhone}. User must register first.`);
-        // Send message prompting user to register and exit
-        await sendWhatsAppMessage(
-          normalizedPhone,
-          "Hi! To use DotSpark via WhatsApp, please first create an account at https://www.dotspark.in and link your phone number. Thank you!"
-        );
-        res.status(200).send('User must register first');
-        return;
+        // Not linked - check conversation state
+        console.log(`⚠️ No linked user found for phone ${normalizedPhone}. Checking conversation state...`);
+        
+        // Check if we're awaiting email from this user
+        const conversationState = await db.query.whatsappConversationStates.findFirst({
+          where: eq(whatsappConversationStates.phoneNumber, standardizedPhone)
+        });
+        
+        if (conversationState && conversationState.state === 'awaiting_email' && new Date(conversationState.expiresAt) > new Date()) {
+          // User is sending their email
+          const emailInput = messageText.trim().toLowerCase();
+          
+          // Validate email format
+          const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+          if (!emailRegex.test(emailInput)) {
+            await sendWhatsAppMessage(
+              normalizedPhone,
+              "That doesn't look like a valid email address. Please share your email ID in the format: name@example.com"
+            );
+            res.status(200).send('Invalid email format');
+            return;
+          }
+          
+          // Look up user by email
+          const user = await db.query.users.findFirst({
+            where: eq(users.email, emailInput)
+          });
+          
+          if (user) {
+            // Email found - link the account!
+            await db.insert(whatsappUsers).values({
+              userId: user.id,
+              phoneNumber: standardizedPhone,
+              active: true
+            });
+            
+            // Delete the conversation state
+            await db.delete(whatsappConversationStates)
+              .where(eq(whatsappConversationStates.phoneNumber, standardizedPhone));
+            
+            // Welcome the user
+            const welcomeName = user.fullName || 'there';
+            await sendWhatsAppMessage(
+              normalizedPhone,
+              `✅ Welcome back, ${welcomeName}! Your WhatsApp is now linked to your DotSpark account.\n\nFrom now on, any message you send here will be saved as a thought. Your previous WhatsApp chats remain private and are never synced.\n\nTry sending your first thought! 💭`
+            );
+            
+            res.status(200).send('User linked successfully');
+            return;
+          } else {
+            // Email not found
+            await sendWhatsAppMessage(
+              normalizedPhone,
+              `This email (${emailInput}) is not registered with DotSpark.\n\nPlease register first at: https://dotspark.in/auth\n\nAfter registration, come back and send me "Hey DotSpark" to link your account! 👋`
+            );
+            
+            // Delete the conversation state
+            await db.delete(whatsappConversationStates)
+              .where(eq(whatsappConversationStates.phoneNumber, standardizedPhone));
+            
+            res.status(200).send('Email not found');
+            return;
+          }
+        } else {
+          // First message from unlinked user - ask for email
+          const expiresAt = new Date();
+          expiresAt.setMinutes(expiresAt.getMinutes() + 15); // 15 minute timeout
+          
+          // Create or update conversation state
+          await db.insert(whatsappConversationStates).values({
+            phoneNumber: standardizedPhone,
+            state: 'awaiting_email',
+            stateData: null,
+            expiresAt: expiresAt
+          }).onConflictDoUpdate({
+            target: whatsappConversationStates.phoneNumber,
+            set: {
+              state: 'awaiting_email',
+              expiresAt: expiresAt,
+              updatedAt: new Date()
+            }
+          });
+          
+          await sendWhatsAppMessage(
+            normalizedPhone,
+            "Hey! Can you please share your email ID registered with DotSpark?\n\nIf not registered, please use the below link to register:\nhttps://dotspark.in/auth"
+          );
+          
+          res.status(200).send('Awaiting email');
+          return;
+        }
       }
       
-      // Create an entry for the received message (skip if it's a linking message)
+      // Create an entry for the received message (skip if it's the initial greeting)
       try {
-        // Check if this message contains a linking token
-        const hasToken = extractUserIdFromMessage(messageText) !== null;
+        // Check if this is the initial greeting message
+        const isGreeting = messageText.trim().toLowerCase().includes('hey dotspark');
         
-        // Only create entry if this is NOT a linking message
-        if (!hasToken) {
+        // Only create entry if this is NOT a greeting message
+        if (!isGreeting) {
           console.log(`⭐️ Creating entry for WhatsApp message from user ID: ${userId}`);
           
-          // Clean the message text by removing any tokens (if present)
-          const cleanedMessage = cleanMessageFromToken(messageText);
+          const cleanedMessage = messageText;
           
           const timestamp = new Date().toLocaleString('en-US', {
             year: 'numeric',
@@ -258,15 +307,14 @@ whatsappWebhookRouter.post('/', async (req: Request, res: Response) => {
             console.error(`⛔️ Failed to create entry! No entry returned after insert.`);
           }
         } else {
-          console.log(`ℹ️ Skipping entry creation for linking message`);
+          console.log(`ℹ️ Skipping entry creation for greeting message`);
         }
       } catch (entryError) {
         console.error("⛔️ Error creating entry for WhatsApp message:", entryError);
       }
       
-      // Process the message (with cleaned text) and get a response
-      const cleanedMessage = cleanMessageFromToken(messageText);
-      const response = await processWhatsAppMessage(from, cleanedMessage);
+      // Process the message and get a response
+      const response = await processWhatsAppMessage(from, messageText);
       
       // Create a TwiML response to send back to the user
       const twiml = new twilio.twiml.MessagingResponse();

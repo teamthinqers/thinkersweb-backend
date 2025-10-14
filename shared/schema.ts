@@ -602,6 +602,16 @@ export const whatsappOtpVerifications = pgTable("whatsapp_otp_verifications", {
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
+export const whatsappConversationStates = pgTable("whatsapp_conversation_states", {
+  id: serial("id").primaryKey(),
+  phoneNumber: text("phone_number").notNull().unique(),
+  state: text("state").notNull(), // 'awaiting_email', 'linked', etc.
+  stateData: text("state_data"), // JSON string for additional data
+  expiresAt: timestamp("expires_at").notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
 // Legacy relations
 export const entriesRelations = relations(entries, ({ one }) => ({
   user: one(users, { fields: [entries.userId], references: [users.id] }),
