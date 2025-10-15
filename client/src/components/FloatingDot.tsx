@@ -44,7 +44,8 @@ export default function FloatingDot({ onClick, currentPage }: FloatingDotProps) 
   const [showLayersScreen, setShowLayersScreen] = useState(false);
   const [heading, setHeading] = useState('');
   const [summary, setSummary] = useState('');
-  const [emotion, setEmotion] = useState('');
+  const [emotions, setEmotions] = useState<string[]>([]);
+  const [emotionInput, setEmotionInput] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [keywords, setKeywords] = useState('');
   const [anchor, setAnchor] = useState('');
@@ -77,11 +78,43 @@ export default function FloatingDot({ onClick, currentPage }: FloatingDotProps) 
   
   const userCircles = circlesResponse?.circles || [];
 
+  // Toggle emotion (add/remove from array)
+  const toggleEmotion = (emotion: string) => {
+    setEmotions(prev => 
+      prev.includes(emotion) 
+        ? prev.filter(e => e !== emotion)
+        : [...prev, emotion]
+    );
+  };
+
+  // Add custom emotion from input
+  const addCustomEmotion = () => {
+    const trimmed = emotionInput.trim();
+    if (trimmed && !emotions.includes(trimmed)) {
+      setEmotions(prev => [...prev, trimmed]);
+      setEmotionInput('');
+    }
+  };
+
+  // Handle Enter key or comma to add emotion
+  const handleEmotionKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter' || e.key === ',') {
+      e.preventDefault();
+      addCustomEmotion();
+    }
+  };
+
+  // Remove emotion from array
+  const removeEmotion = (emotionToRemove: string) => {
+    setEmotions(prev => prev.filter(e => e !== emotionToRemove));
+  };
+
   // Reset all form fields to initial state
   const resetForm = () => {
     setHeading('');
     setSummary('');
-    setEmotion('');
+    setEmotions([]);
+    setEmotionInput('');
     setKeywords('');
     setAnchor('');
     setAnalogies('');
@@ -141,12 +174,15 @@ export default function FloatingDot({ onClick, currentPage }: FloatingDotProps) 
 
     setIsSubmitting(true);
     try {
+      // Prepare emotions as JSON string
+      const emotionsJson = emotions.length > 0 ? JSON.stringify(emotions) : null;
+
       if (editMode && editThoughtId) {
         // Update existing thought
         await apiRequest('PATCH', `/api/thoughts/${editThoughtId}`, {
           heading: heading.trim(),
           summary: summary.trim(),
-          emotions: emotion.trim() || null,
+          emotions: emotionsJson,
           keywords: keywords.trim() || null,
           anchor: anchor.trim() || null,
           analogies: analogies.trim() || null,
@@ -161,7 +197,7 @@ export default function FloatingDot({ onClick, currentPage }: FloatingDotProps) 
         const thoughtResponse: any = await apiRequest('POST', '/api/thoughts', {
           heading: heading.trim(),
           summary: summary.trim(),
-          emotion: emotion.trim() || null,
+          emotions: emotionsJson,
           visibility: 'personal',
           channel: 'write',
           keywords: keywords.trim() || null,
@@ -186,7 +222,7 @@ export default function FloatingDot({ onClick, currentPage }: FloatingDotProps) 
         await apiRequest('POST', '/api/thoughts', {
           heading: heading.trim(),
           summary: summary.trim(),
-          emotion: emotion.trim() || null,
+          emotions: emotionsJson,
           visibility: targetNeura === 'social' ? 'social' : 'personal',
           channel: 'write',
           keywords: keywords.trim() || null,
@@ -260,7 +296,15 @@ export default function FloatingDot({ onClick, currentPage }: FloatingDotProps) 
         setEditThoughtId(thought.id);
         setHeading(thought.heading || '');
         setSummary(thought.summary || '');
-        setEmotion(thought.emotions || '');
+        
+        // Parse emotions JSON array
+        try {
+          const emotionsArray = thought.emotions ? JSON.parse(thought.emotions) : [];
+          setEmotions(Array.isArray(emotionsArray) ? emotionsArray : []);
+        } catch {
+          setEmotions([]);
+        }
+        
         setKeywords(thought.keywords || '');
         setAnchor(thought.anchor || '');
         setAnalogies(thought.analogies || '');
@@ -271,7 +315,8 @@ export default function FloatingDot({ onClick, currentPage }: FloatingDotProps) 
         setEditThoughtId(null);
         setHeading('');
         setSummary('');
-        setEmotion('');
+        setEmotions([]);
+        setEmotionInput('');
         setKeywords('');
         setAnchor('');
         setAnalogies('');
@@ -702,26 +747,53 @@ export default function FloatingDot({ onClick, currentPage }: FloatingDotProps) 
                         <Label htmlFor="emotion" className="text-sm font-medium text-gray-700">
                           Emotions Tag
                         </Label>
+                        
+                        {/* Selected Emotions Display */}
+                        {emotions.length > 0 && (
+                          <div className="flex flex-wrap gap-2 p-3 bg-amber-50 rounded-lg border border-amber-200">
+                            {emotions.map((emotion, idx) => (
+                              <div 
+                                key={idx} 
+                                className="flex items-center gap-1 px-3 py-1 bg-gradient-to-r from-amber-500 to-orange-500 text-white rounded-full text-sm"
+                              >
+                                <span>{emotion}</span>
+                                <button
+                                  type="button"
+                                  onClick={() => removeEmotion(emotion)}
+                                  className="ml-1 hover:bg-white/20 rounded-full p-0.5"
+                                  disabled={isSubmitting}
+                                >
+                                  <X className="h-3 w-3" />
+                                </button>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                        
+                        {/* Manual Input */}
                         <Input
                           id="emotion"
-                          value={emotion}
-                          onChange={(e) => setEmotion(e.target.value)}
-                          placeholder="What emotions are attached with this thought?"
+                          value={emotionInput}
+                          onChange={(e) => setEmotionInput(e.target.value)}
+                          onKeyDown={handleEmotionKeyDown}
+                          onBlur={addCustomEmotion}
+                          placeholder="Type custom emotion and press Enter or comma"
                           className="border-gray-300 focus:border-amber-500 focus:ring-amber-500"
                           disabled={isSubmitting}
                         />
-                        {/* Emotion Tag Buttons */}
+                        
+                        {/* Emotion Tag Buttons - Quick Select */}
                         <div className="flex flex-wrap gap-2 pt-2">
                           {emotionOptions.map((emotionOption) => (
                             <Button
                               key={emotionOption}
                               type="button"
-                              onClick={() => setEmotion(emotionOption)}
+                              onClick={() => toggleEmotion(emotionOption)}
                               variant="outline"
                               size="sm"
                               disabled={isSubmitting}
                               className={`${
-                                emotion === emotionOption
+                                emotions.includes(emotionOption)
                                   ? 'bg-amber-100 border-amber-400 text-amber-800'
                                   : 'hover:bg-gray-100'
                               }`}
