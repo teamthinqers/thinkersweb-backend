@@ -267,7 +267,7 @@ export async function processWhatsAppMessage(from: string, messageText: string):
     else if (isDefaultPrompt && !isFirstTimeUser && !isActivationAttempt) {
       console.log(`Default prompt detected from returning user ${from} (not an activation attempt)`);
       const returningUserGreeting = 
-        "Welcome ThinQer, DotSpark feels privileged you have in the circle. Please join the curated community of ThinQers as they would love to have you there:\n\n" +
+        "Welcome ThinQer, DotSpark feels privileged to have you in the circle. Please join the curated community of ThinQers as they would love to have you there:\n\n" +
         "https://chat.whatsapp.com/E6Mwv20MUrCG58xuVJQNTv";
       
       await sendWhatsAppReply(from, returningUserGreeting);
@@ -488,7 +488,7 @@ export async function processWhatsAppMessage(from: string, messageText: string):
       
       // Initial welcome message for first-time users
       welcomeMessage = 
-        "Welcome ThinQer, DotSpark feels privileged you have in the circle. Please join the curated community of ThinQers as they would love to have you there:\n\n" +
+        "Welcome ThinQer, DotSpark feels privileged to have you in the circle. Please join the curated community of ThinQers as they would love to have you there:\n\n" +
         "https://chat.whatsapp.com/E6Mwv20MUrCG58xuVJQNTv";
       
       await sendWhatsAppReply(from, welcomeMessage);
