@@ -411,8 +411,8 @@ export const notificationsRelations = relations(notifications, ({ one }) => ({
 
 // New thought system schemas
 export const insertThoughtSchema = createInsertSchema(thoughts, {
-  heading: (schema) => schema.min(1, "Heading is required").max(100, "Heading too long"),
-  summary: (schema) => schema.min(1, "Your thought cannot be empty").max(1000, "Thought is too long (max 1000 characters)"),
+  heading: (schema) => schema.min(1, "Heading is required").max(200, "Heading too long"),
+  summary: (schema) => schema.min(1, "Your thought cannot be empty").max(5000, "Thought is too long (max 5000 characters)"),
   emotions: (schema) => schema.optional(),
   visibility: (schema) => schema.refine(val => ['personal', 'social'].includes(val), "Visibility must be personal or social"),
 });
