@@ -159,9 +159,9 @@ async function analyzeUserIntentAndSaveThought(
   try {
     console.log(`🤖 Analyzing intent for: "${messageText}"`);
     
-    // Use GPT-5 to determine intent and extract thought details
+    // Use GPT-4 to determine intent and extract thought details (GPT-5 may not be available yet)
     const completion = await openai.chat.completions.create({
-      model: "gpt-5-preview",
+      model: "gpt-4o",
       messages: [
         {
           role: "system",
@@ -242,6 +242,13 @@ Examples:
     
   } catch (error) {
     console.error("❌ Error in AI thought analysis:", error);
+    console.error("Error details:", JSON.stringify(error, null, 2));
+    
+    // Check if it's an OpenAI API error
+    if (error instanceof Error) {
+      console.error("Error message:", error.message);
+      console.error("Error stack:", error.stack);
+    }
     
     const errorMessage = `Sorry, I had trouble processing that. Please try sharing your thought again.`;
     await sendWhatsAppReply(phoneNumber, errorMessage);
