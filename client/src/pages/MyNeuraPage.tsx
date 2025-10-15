@@ -927,21 +927,10 @@ export default function MyNeuraPage() {
                     {thoughts.map((thought) => (
                       <Card 
                         key={thought.id} 
-                        className="hover:shadow-lg transition-all cursor-pointer border-l-4 border-l-amber-500 relative pt-8"
+                        className="hover:shadow-lg transition-all cursor-pointer border-l-4 border-l-amber-500 relative pb-8"
                         onClick={() => setSelectedThought(thought)}
                       >
-                        {/* Channel Watermark Badge - Circular at top center */}
-                        <div className="absolute -top-5 left-1/2 transform -translate-x-1/2 z-10">
-                          <div className="h-12 w-12 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center shadow-lg border-4 border-white">
-                            {thought.channel === 'write' && <PenTool className="h-6 w-6 text-white" />}
-                            {thought.channel === 'whatsapp' && <SiWhatsapp className="h-6 w-6 text-white" />}
-                            {thought.channel === 'linkedin' && <SiLinkedin className="h-6 w-6 text-white" />}
-                            {thought.channel === 'chatgpt' && <SiOpenai className="h-6 w-6 text-white" />}
-                            {!thought.channel && <PenTool className="h-6 w-6 text-white" />}
-                          </div>
-                        </div>
-                        
-                        <CardHeader className="pb-3 pt-6">
+                        <CardHeader className="pb-3">
                           <div className="flex items-center gap-3 mb-3">
                             {thought.isSaved ? (
                               <>
@@ -1001,6 +990,17 @@ export default function MyNeuraPage() {
                             {thought.summary}
                           </p>
                         </CardContent>
+                        
+                        {/* Channel Watermark Badge - Circular at bottom center */}
+                        <div className="absolute -bottom-4 left-1/2 transform -translate-x-1/2">
+                          <div className="h-10 w-10 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center shadow-lg border-4 border-white">
+                            {thought.channel === 'write' && <PenTool className="h-5 w-5 text-white" />}
+                            {thought.channel === 'whatsapp' && <SiWhatsapp className="h-5 w-5 text-white" />}
+                            {thought.channel === 'linkedin' && <SiLinkedin className="h-5 w-5 text-white" />}
+                            {thought.channel === 'chatgpt' && <SiOpenai className="h-5 w-5 text-white" />}
+                            {!thought.channel && <PenTool className="h-5 w-5 text-white" />}
+                          </div>
+                        </div>
                       </Card>
                     ))}
                   </div>
@@ -1076,14 +1076,7 @@ export default function MyNeuraPage() {
                           className="text-left hover:opacity-80 transition-opacity cursor-pointer focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2 rounded-md p-1"
                         >
                           <p className="font-semibold text-gray-900">My Thought</p>
-                          <div className="flex items-center gap-2">
-                            <p className="text-sm text-gray-500">Created {new Date(selectedThought.createdAt).toLocaleString()}</p>
-                            {/* Channel watermark */}
-                            {selectedThought.channel === 'write' && <PenTool className="h-3.5 w-3.5 text-amber-500" />}
-                            {selectedThought.channel === 'whatsapp' && <SiWhatsapp className="h-3.5 w-3.5 text-green-600" />}
-                            {selectedThought.channel === 'linkedin' && <SiLinkedin className="h-3.5 w-3.5 text-blue-600" />}
-                            {selectedThought.channel === 'chatgpt' && <SiOpenai className="h-3.5 w-3.5 text-purple-600" />}
-                          </div>
+                          <p className="text-sm text-gray-500">Created {new Date(selectedThought.createdAt).toLocaleString()}</p>
                         </button>
                       </>
                     )}
