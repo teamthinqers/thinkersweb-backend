@@ -267,7 +267,8 @@ export async function processWhatsAppMessage(from: string, messageText: string):
     else if (isDefaultPrompt && !isFirstTimeUser && !isActivationAttempt) {
       console.log(`Default prompt detected from returning user ${from} (not an activation attempt)`);
       const returningUserGreeting = 
-        "Hi ThinQer, please share what's on your mind and I'll organize it into a three-layer dot (Summary, Anchor, Pulse) for you.";
+        "Welcome ThinQer, DotSpark feels privileged you have in the circle. Please join the curated community of ThinQers as they would love to have you there:\n\n" +
+        "https://chat.whatsapp.com/E6Mwv20MUrCG58xuVJQNTv";
       
       await sendWhatsAppReply(from, returningUserGreeting);
       
@@ -486,38 +487,12 @@ export async function processWhatsAppMessage(from: string, messageText: string):
       let welcomeMessage;
       
       // Initial welcome message for first-time users
-      // Keep this shorter to avoid overwhelming new users
       welcomeMessage = 
-        "Hey there, welcome to DotSpark — your thinking companion.\n\n" +
-        "You can ask me anything right here — ideas, decisions, frameworks, or thoughts you want to unpack.\n\n" +
-        "Want to go deeper and make DotSpark truly yours?\n" +
-        "👉 https://www.dotspark.in/my-neura — set up your personal Neura and unlock your authentic intelligence.\n\n" +
-        "Think Sharper. Stay You.";
+        "Welcome ThinQer, DotSpark feels privileged you have in the circle. Please join the curated community of ThinQers as they would love to have you there:\n\n" +
+        "https://chat.whatsapp.com/E6Mwv20MUrCG58xuVJQNTv";
       
       await sendWhatsAppReply(from, welcomeMessage);
       console.log(`Sent welcome message to first-time user at ${from}`);
-      
-      // After a 2 second delay, send a more detailed message with features
-      setTimeout(async () => {
-        try {
-          const detailedWelcome = 
-            "Your Neura can help with:\n\n" +
-            "🧠 *Processing Knowledge* - Share what you're reading and learning\n" +
-            "💬 *Exploring Questions* - I'll analyze complex topics for you\n" + 
-            "💡 *Extending Ideas* - Let me help your thoughts go further\n" +
-            "📊 *Organizing Information* - I'll structure and connect your insights\n" +
-            "🔍 *Providing Clarity* - Get clearer perspective on challenging concepts\n" +
-            "⚡ *Accelerating Growth* - Enhance your professional learning journey\n\n" +
-            "Quick commands:\n" +
-            "• Type 'link' to connect your WhatsApp to your web dashboard\n" +
-            "• Type 'help' to see this guide again\n\n" +
-            "Just chat naturally - your neural extension adapts to your unique thinking style!";
-        
-          await sendWhatsAppReply(from, detailedWelcome);
-        } catch (error) {
-          console.error("Error sending delayed detailed welcome:", error);
-        }
-      }, 2000);
       
       // Update the lastMessageSentAt timestamp to mark this user as welcomed
       try {
