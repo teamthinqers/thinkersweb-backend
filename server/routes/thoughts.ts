@@ -722,7 +722,7 @@ router.get('/stats', async (req, res) => {
       ));
     const savedSparksCount = sparksResult[0]?.count || 0;
 
-    // Count total perspectives (on social thoughts - visibility='social' OR sharedToSocial=true, excluding soft-deleted)
+    // Count total perspectives (on social thoughts - visibility='social' OR sharedToSocial=true, excluding soft-deleted, PUBLIC only)
     const platformPerspectivesResult = await db
       .select({ count: sql<number>`count(*)` })
       .from(perspectivesMessages)
@@ -733,7 +733,8 @@ router.get('/stats', async (req, res) => {
           eq(thoughts.visibility, 'social'),
           eq(thoughts.sharedToSocial, true)
         ),
-        eq(perspectivesMessages.isDeleted, false)
+        eq(perspectivesMessages.isDeleted, false),
+        eq(perspectivesMessages.visibilityScope, 'public') // Only count public perspectives visible to everyone
       ));
     const perspectivesCount = platformPerspectivesResult[0]?.count || 0;
 
