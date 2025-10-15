@@ -1,10 +1,13 @@
 import { eq, and, gt, desc, sql } from "drizzle-orm";
 import crypto from "crypto";
+import OpenAI from "openai";
 
 import { db } from "../db";
-import { whatsappUsers, whatsappOtpVerifications, users, entries } from "../shared/schema";
+import { whatsappUsers, whatsappOtpVerifications, users, entries, thoughts } from "../shared/schema";
 import { hashPassword } from "./auth";
 import { processLearningEntry, generateAdvancedResponse } from "./openai";
+
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 /**
  * Interface for incoming Twilio WhatsApp message
@@ -145,6 +148,107 @@ export async function sendWhatsAppReply(to: string, message: string): Promise<bo
 }
 
 /**
+ * AI-powered function to analyze user intent and save thoughts to MyNeura
+ */
+async function analyzeUserIntentAndSaveThought(
+  userId: number, 
+  userName: string, 
+  messageText: string,
+  phoneNumber: string
+): Promise<{ success: boolean; message: string }> {
+  try {
+    console.log(`🤖 Analyzing intent for: "${messageText}"`);
+    
+    // Use GPT to determine intent and extract thought details
+    const completion = await openai.chat.completions.create({
+      model: "gpt-4o-mini",
+      messages: [
+        {
+          role: "system",
+          content: `You are DotSpark's WhatsApp assistant. Analyze the user's message and determine:
+1. Is it a greeting/casual message or an actual thought to save?
+2. If it's a thought, extract a concise heading (max 200 chars) and summary (same as message, max 5000 chars).
+
+Respond with JSON:
+{
+  "isGreeting": true/false,
+  "heading": "extracted heading" or null,
+  "summary": "the user's message" or null
+}
+
+Examples:
+- "Hey" or "Hi" → {"isGreeting": true, "heading": null, "summary": null}
+- "I learned something today" → {"isGreeting": false, "heading": "Learning Experience", "summary": "I learned something today"}
+- "Just realized that collaboration beats competition" → {"isGreeting": false, "heading": "Collaboration Over Competition", "summary": "Just realized that collaboration beats competition"}`
+        },
+        {
+          role: "user",
+          content: messageText
+        }
+      ],
+      response_format: { type: "json_object" },
+      temperature: 0.7
+    });
+    
+    const analysis = JSON.parse(completion.choices[0].message.content || "{}");
+    console.log(`📊 Analysis result:`, analysis);
+    
+    // If it's a greeting, ask what's on their mind
+    if (analysis.isGreeting) {
+      const greetingResponse = `Hey ${userName}, what's on your mind today? Please let me know and I will post it to your Neura accordingly.`;
+      await sendWhatsAppReply(phoneNumber, greetingResponse);
+      
+      return {
+        success: true,
+        message: greetingResponse
+      };
+    }
+    
+    // If it's a thought, save it to MyNeura with WhatsApp watermark
+    if (analysis.heading && analysis.summary) {
+      const [newThought] = await db.insert(thoughts).values({
+        userId: userId,
+        heading: analysis.heading,
+        summary: analysis.summary,
+        channel: 'whatsapp', // WhatsApp watermark
+        visibility: 'personal', // Save to personal MyNeura
+        createdAt: new Date()
+      }).returning();
+      
+      console.log(`💾 Saved thought ${newThought.id} to MyNeura for user ${userId}`);
+      
+      const confirmationMessage = `✅ Your thought has been saved to your MyNeura! You can view and build on it at https://www.dotspark.in/myneura`;
+      await sendWhatsAppReply(phoneNumber, confirmationMessage);
+      
+      return {
+        success: true,
+        message: confirmationMessage
+      };
+    }
+    
+    // Fallback
+    const fallbackMessage = `I didn't quite catch that. Could you share your thought again? I'll make sure to save it to your MyNeura.`;
+    await sendWhatsAppReply(phoneNumber, fallbackMessage);
+    
+    return {
+      success: true,
+      message: fallbackMessage
+    };
+    
+  } catch (error) {
+    console.error("❌ Error in AI thought analysis:", error);
+    
+    const errorMessage = `Sorry, I had trouble processing that. Please try sharing your thought again.`;
+    await sendWhatsAppReply(phoneNumber, errorMessage);
+    
+    return {
+      success: false,
+      message: errorMessage
+    };
+  }
+}
+
+/**
  * Process a message from the DotSpark WhatsApp chatbot using conversational AI
  */
 export async function processWhatsAppMessage(from: string, messageText: string): Promise<{
@@ -191,6 +295,87 @@ export async function processWhatsAppMessage(from: string, messageText: string):
         success: true,
         message: "Hi! To use DotSpark via WhatsApp, please get back to me after registering your account with www.dotspark.in. Thank you!"
       };
+    }
+    
+    // === INTELLIGENT ONBOARDING FLOW ===
+    // Check onboarding state and guide users through the journey
+    
+    const onboardingState = whatsappUserRecord;
+    console.log(`📋 Onboarding state:`, {
+      communityLinkSent: onboardingState?.communityLinkSent,
+      instructionsSent: onboardingState?.instructionsSent,
+      onboardingCompleted: onboardingState?.onboardingCompleted
+    });
+    
+    // Get user's full name for personalized messages
+    const user = await db.query.users.findFirst({
+      where: eq(users.id, userId)
+    });
+    const userName = user?.fullName?.split(' ')[0] || 'ThinQer';
+    
+    // Stage 1: Send community link (first interaction)
+    if (!onboardingState?.communityLinkSent) {
+      console.log(`🎯 Stage 1: Sending community link to ${userName}`);
+      
+      const communityMessage = 
+        `Welcome ${userName}, DotSpark feels privileged to have you in the circle. Please join the curated community of ThinQers as they would love to have you there:\n\n` +
+        `https://chat.whatsapp.com/E6Mwv20MUrCG58xuVJQNTv`;
+      
+      await sendWhatsAppReply(from, communityMessage);
+      
+      // Mark community link as sent
+      if (onboardingState) {
+        await db.update(whatsappUsers)
+          .set({ communityLinkSent: true, lastMessageSentAt: new Date() })
+          .where(eq(whatsappUsers.id, onboardingState.id));
+      } else {
+        // Create new record if doesn't exist
+        await db.insert(whatsappUsers).values({
+          userId: userId,
+          phoneNumber: standardizedPhone,
+          communityLinkSent: true,
+          lastMessageSentAt: new Date()
+        });
+      }
+      
+      return {
+        success: true,
+        message: communityMessage
+      };
+    }
+    
+    // Stage 2: Send MyNeura instructions (after community link sent)
+    if (onboardingState?.communityLinkSent && !onboardingState?.instructionsSent) {
+      console.log(`🎯 Stage 2: Sending MyNeura instructions to ${userName}`);
+      
+      const instructionsMessage = 
+        `Now please feel free to share your valuable thoughts here and I will safely post it to your personal reflection space MyNeura in DotSpark. You can access and build on it anytime by visiting https://www.dotspark.in/myneura in your Desktop. Thank you`;
+      
+      await sendWhatsAppReply(from, instructionsMessage);
+      
+      // Mark instructions as sent and onboarding completed
+      await db.update(whatsappUsers)
+        .set({ 
+          instructionsSent: true, 
+          onboardingCompleted: true,
+          lastMessageSentAt: new Date() 
+        })
+        .where(eq(whatsappUsers.id, onboardingState.id));
+      
+      return {
+        success: true,
+        message: instructionsMessage
+      };
+    }
+    
+    // Stage 3: Fully onboarded - Use AI for intelligent thought capture
+    if (onboardingState?.onboardingCompleted) {
+      console.log(`🤖 Stage 3: AI-powered thought capture for ${userName}`);
+      
+      // Use GPT to determine if this is a greeting or actual thought
+      const response = await analyzeUserIntentAndSaveThought(userId, userName, messageText, from);
+      
+      return response;
     }
     
     // Check for our default prompt message with broader matching
