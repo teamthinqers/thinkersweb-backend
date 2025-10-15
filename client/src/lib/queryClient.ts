@@ -53,6 +53,19 @@ export async function apiRequest(
       credentials: "include",
     });
 
+    // Check if the response is OK, if not throw an error
+    if (!res.ok) {
+      const errorText = await res.text().catch(() => res.statusText);
+      const errorMessage = errorText || `Request failed with status ${res.status}`;
+      
+      // Special handling for authentication errors
+      if (res.status === 401) {
+        throw new Error('Please sign in to continue');
+      }
+      
+      throw new Error(errorMessage);
+    }
+
     return res;
   } catch (error) {
     console.error("API request error:", error);
