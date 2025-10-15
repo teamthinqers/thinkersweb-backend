@@ -663,6 +663,8 @@ export default function MyNeuraPage() {
       queryClient.invalidateQueries({ queryKey: ['/api/thoughts/myneura'] });
       queryClient.invalidateQueries({ queryKey: ['/api/thoughts/user/sparks-count'] });
       queryClient.invalidateQueries({ queryKey: ['/api/thoughts/neural-strength'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/social/dots'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/dots'] });
       setSelectedThought(null);
       toast({
         title: "Thought deleted",

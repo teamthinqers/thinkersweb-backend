@@ -4,6 +4,8 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Mic, Type, X, Volume2, Trash2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useMutation } from "@tanstack/react-query";
+import { apiRequest, queryClient } from "@/lib/queryClient";
 
 interface Dot {
   id: string;
@@ -28,6 +30,36 @@ interface DotFullViewProps {
 
 const DotFullView: React.FC<DotFullViewProps> = ({ dot, onClose, onDelete }) => {
   const { toast } = useToast();
+
+  // Delete mutation with proper cache invalidation
+  const deleteMutation = useMutation({
+    mutationFn: async () => {
+      return await apiRequest('DELETE', `/api/dots/${dot.id}`, {});
+    },
+    onSuccess: () => {
+      // Invalidate all relevant caches
+      queryClient.invalidateQueries({ queryKey: ['/api/social/dots'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/dots'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/thoughts/myneura'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/user/dots'] });
+      
+      toast({
+        title: "Dot Deleted",
+        description: "Your dot has been successfully deleted.",
+      });
+
+      onDelete?.(dot.id);
+      onClose();
+    },
+    onError: (error) => {
+      console.error('Delete error:', error);
+      toast({
+        title: "Error",
+        description: "Failed to delete dot. Please try again.",
+        variant: "destructive",
+      });
+    },
+  });
 
   const handlePlayVoice = (audioUrl: string, layer: string) => {
     if (!audioUrl) {
@@ -60,30 +92,8 @@ const DotFullView: React.FC<DotFullViewProps> = ({ dot, onClose, onDelete }) => 
     }
   };
 
-  const handleDelete = async () => {
-    try {
-      const response = await fetch(`/api/dots/${dot.id}`, {
-        method: 'DELETE',
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to delete dot');
-      }
-
-      toast({
-        title: "Dot Deleted",
-        description: "Your dot has been successfully deleted.",
-      });
-
-      onDelete?.(dot.id);
-      onClose();
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to delete dot. Please try again.",
-        variant: "destructive",
-      });
-    }
+  const handleDelete = () => {
+    deleteMutation.mutate();
   };
 
   return (
