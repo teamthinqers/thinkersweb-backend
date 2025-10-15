@@ -954,9 +954,16 @@ export default function MyNeuraPage() {
                                 </Avatar>
                                 <div className="flex-1">
                                   <p className="font-semibold text-gray-900">My Thought</p>
-                                  <p className="text-xs text-gray-500">
-                                    {new Date(thought.createdAt).toLocaleDateString()}
-                                  </p>
+                                  <div className="flex items-center gap-1.5">
+                                    <p className="text-xs text-gray-500">
+                                      {new Date(thought.createdAt).toLocaleDateString()}
+                                    </p>
+                                    {/* Channel watermark */}
+                                    {thought.channel === 'write' && <PenTool className="h-3 w-3 text-amber-500" title="Write mode" />}
+                                    {thought.channel === 'whatsapp' && <SiWhatsapp className="h-3 w-3 text-green-600" title="WhatsApp" />}
+                                    {thought.channel === 'linkedin' && <SiLinkedin className="h-3 w-3 text-blue-600" title="LinkedIn" />}
+                                    {thought.channel === 'chatgpt' && <SiOpenai className="h-3 w-3 text-purple-600" title="ChatGPT" />}
+                                  </div>
                                 </div>
                               </>
                             )}
@@ -1065,7 +1072,14 @@ export default function MyNeuraPage() {
                           className="text-left hover:opacity-80 transition-opacity cursor-pointer focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2 rounded-md p-1"
                         >
                           <p className="font-semibold text-gray-900">My Thought</p>
-                          <p className="text-sm text-gray-500">Created {new Date(selectedThought.createdAt).toLocaleString()}</p>
+                          <div className="flex items-center gap-2">
+                            <p className="text-sm text-gray-500">Created {new Date(selectedThought.createdAt).toLocaleString()}</p>
+                            {/* Channel watermark */}
+                            {selectedThought.channel === 'write' && <PenTool className="h-3.5 w-3.5 text-amber-500" title="Write mode" />}
+                            {selectedThought.channel === 'whatsapp' && <SiWhatsapp className="h-3.5 w-3.5 text-green-600" title="WhatsApp" />}
+                            {selectedThought.channel === 'linkedin' && <SiLinkedin className="h-3.5 w-3.5 text-blue-600" title="LinkedIn" />}
+                            {selectedThought.channel === 'chatgpt' && <SiOpenai className="h-3.5 w-3.5 text-purple-600" title="ChatGPT" />}
+                          </div>
                         </button>
                       </>
                     )}
