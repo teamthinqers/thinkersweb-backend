@@ -14,6 +14,7 @@ import { SiWhatsapp, SiLinkedin, SiOpenai } from 'react-icons/si';
 import { useAuth } from "@/hooks/use-auth-new";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { invalidateThoughtCaches, INVALIDATION_PATTERNS } from "@/lib/cache-invalidation";
 import {
   Dialog,
   DialogContent,
@@ -288,9 +289,9 @@ export default function SocialFeedPage() {
     mutationFn: async (thoughtId: number) => {
       return apiRequest("DELETE", `/api/thoughts/${thoughtId}`, {});
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/thoughts'] });
-      queryClient.invalidateQueries({ queryKey: ['/api/thoughts/stats'] });
+    onSuccess: async () => {
+      // Invalidate all caches using centralized helper
+      await invalidateThoughtCaches(INVALIDATION_PATTERNS.DELETE);
       setSelectedDot(null);
       toast({
         title: "Thought deleted",
