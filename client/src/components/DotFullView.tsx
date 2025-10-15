@@ -5,7 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Mic, Type, X, Volume2, Trash2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useMutation } from "@tanstack/react-query";
-import { apiRequest, queryClient } from "@/lib/queryClient";
+import { apiRequest } from "@/lib/queryClient";
+import { invalidateThoughtCaches, INVALIDATION_PATTERNS } from "@/lib/cache-invalidation";
 
 interface Dot {
   id: string;
@@ -36,12 +37,9 @@ const DotFullView: React.FC<DotFullViewProps> = ({ dot, onClose, onDelete }) => 
     mutationFn: async () => {
       return await apiRequest('DELETE', `/api/dots/${dot.id}`, {});
     },
-    onSuccess: () => {
-      // Invalidate all relevant caches
-      queryClient.invalidateQueries({ queryKey: ['/api/social/dots'] });
-      queryClient.invalidateQueries({ queryKey: ['/api/dots'] });
-      queryClient.invalidateQueries({ queryKey: ['/api/thoughts/myneura'] });
-      queryClient.invalidateQueries({ queryKey: ['/api/user/dots'] });
+    onSuccess: async () => {
+      // Invalidate all relevant caches using centralized helper
+      await invalidateThoughtCaches(INVALIDATION_PATTERNS.DELETE);
       
       toast({
         title: "Dot Deleted",

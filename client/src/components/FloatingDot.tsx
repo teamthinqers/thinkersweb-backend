@@ -11,6 +11,7 @@ import { X, PenTool, Sparkles, Crown, ArrowLeft, Loader2, ImageIcon, Layers, Arr
 import { SiWhatsapp, SiLinkedin, SiOpenai } from 'react-icons/si';
 import { apiRequest, queryClient } from '@/lib/queryClient';
 import { useQuery } from '@tanstack/react-query';
+import { invalidateThoughtCaches, INVALIDATION_PATTERNS } from '@/lib/cache-invalidation';
 
 interface FloatingDotProps {
   onClick?: () => void;
@@ -238,16 +239,15 @@ export default function FloatingDot({ onClick, currentPage }: FloatingDotProps) 
         });
       }
 
-      // Invalidate queries to refresh the data
-      await queryClient.invalidateQueries({ queryKey: ['/api/thoughts/myneura'] });
-      await queryClient.invalidateQueries({ queryKey: ['/api/thoughts'] });
-      await queryClient.invalidateQueries({ queryKey: ['/api/thoughts/stats'] });
-      await queryClient.invalidateQueries({ queryKey: ['/api/thoughts/neural-strength'] });
-      await queryClient.invalidateQueries({ queryKey: ['/api/social/dots'] });
-      await queryClient.invalidateQueries({ queryKey: ['/api/dots'] });
-      if (selectedCircleId) {
-        await queryClient.invalidateQueries({ queryKey: [`/api/thinq-circles/${selectedCircleId}/thoughts`] });
-        await queryClient.invalidateQueries({ queryKey: [`/api/thinq-circles/${selectedCircleId}`] });
+      // Invalidate queries to refresh the data using centralized helper
+      if (editMode) {
+        await invalidateThoughtCaches(INVALIDATION_PATTERNS.UPDATE);
+      } else if (selectedCircleId) {
+        await invalidateThoughtCaches({ ...INVALIDATION_PATTERNS.CREATE_PERSONAL, ...INVALIDATION_PATTERNS.SHARE_TO_CIRCLE(selectedCircleId) });
+      } else if (targetNeura === 'social') {
+        await invalidateThoughtCaches(INVALIDATION_PATTERNS.CREATE_SOCIAL);
+      } else {
+        await invalidateThoughtCaches(INVALIDATION_PATTERNS.CREATE_PERSONAL);
       }
 
       // Reset form and close dialog
