@@ -166,8 +166,11 @@ async function analyzeUserIntentAndSaveThought(
         {
           role: "system",
           content: `You are DotSpark's WhatsApp assistant. Analyze the user's message and determine:
-1. Is it a greeting/casual message or an actual thought to save?
+1. Is it a greeting/casual conversation or an actual thought/insight to save?
 2. If it's a thought, extract a concise heading (max 200 chars) and summary (same as message, max 5000 chars).
+
+Casual messages include: greetings (hi, hey, hello), questions (how are you, what's up), simple responses (ok, sure, thanks), or general chit-chat.
+Thoughts include: insights, learnings, ideas, reflections, experiences worth saving.
 
 Respond with JSON:
 {
@@ -177,9 +180,11 @@ Respond with JSON:
 }
 
 Examples:
-- "Hey" or "Hi" → {"isGreeting": true, "heading": null, "summary": null}
+- "Hey" or "Hi" or "How are you" → {"isGreeting": true, "heading": null, "summary": null}
+- "What's up" or "How's it going" → {"isGreeting": true, "heading": null, "summary": null}
 - "I learned something today" → {"isGreeting": false, "heading": "Learning Experience", "summary": "I learned something today"}
-- "Just realized that collaboration beats competition" → {"isGreeting": false, "heading": "Collaboration Over Competition", "summary": "Just realized that collaboration beats competition"}`
+- "Just realized that collaboration beats competition" → {"isGreeting": false, "heading": "Collaboration Over Competition", "summary": "Just realized that collaboration beats competition"}
+- "Had an amazing insight about productivity" → {"isGreeting": false, "heading": "Productivity Insight", "summary": "Had an amazing insight about productivity"}`
         },
         {
           role: "user",
@@ -371,6 +376,24 @@ export async function processWhatsAppMessage(from: string, messageText: string):
     // Stage 3: Fully onboarded - Use AI for intelligent thought capture
     if (onboardingState?.onboardingCompleted) {
       console.log(`🤖 Stage 3: AI-powered thought capture for ${userName}`);
+      
+      // First check for simple acknowledgments that shouldn't be analyzed as thoughts
+      const acknowledgments = ['sure', 'ok', 'okay', 'thanks', 'thank you', 'got it', 'alright', 'yes', 'yup', 'yeah', 'cool', 'great', 'nice'];
+      const isAcknowledgment = acknowledgments.some(ack => 
+        messageText.toLowerCase().trim() === ack || 
+        messageText.toLowerCase().trim() === ack + '!'
+      );
+      
+      if (isAcknowledgment) {
+        console.log(`📝 Simple acknowledgment detected: "${messageText}"`);
+        const promptMessage = `Hey ${userName}, what's on your mind today? Share your thoughts and I'll save them to your MyNeura.`;
+        await sendWhatsAppReply(from, promptMessage);
+        
+        return {
+          success: true,
+          message: promptMessage
+        };
+      }
       
       // Use GPT to determine if this is a greeting or actual thought
       const response = await analyzeUserIntentAndSaveThought(userId, userName, messageText, from);
