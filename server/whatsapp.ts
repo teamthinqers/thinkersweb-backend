@@ -189,7 +189,7 @@ export async function processWhatsAppMessage(from: string, messageText: string):
       
       return {
         success: true,
-        message: "Hi! To use DotSpark via WhatsApp, please first create an account at https://www.dotspark.in and link your phone number. Thank you!"
+        message: "Hi! To use DotSpark via WhatsApp, please get back to me after registering your account with www.dotspark.in. Thank you!"
       };
     }
     
