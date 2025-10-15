@@ -2,7 +2,7 @@ import { eq, and, gt, desc, sql } from "drizzle-orm";
 import crypto from "crypto";
 
 import { db } from "../db";
-import { whatsappUsers, whatsappOtpVerifications, users, entries, thoughts } from "../shared/schema";
+import { whatsappUsers, whatsappOtpVerifications, users, entries } from "../shared/schema";
 import { hashPassword } from "./auth";
 import { processLearningEntry, generateAdvancedResponse } from "./openai";
 
