@@ -7,7 +7,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { useAuth } from '@/hooks/use-auth-new';
 import { useToast } from '@/hooks/use-toast';
-import { X, PenTool, Sparkles, Crown, ArrowLeft, Loader2, ImageIcon, Layers, ArrowDown } from 'lucide-react';
+import { X, PenTool, Sparkles, Crown, ArrowLeft, Loader2, ImageIcon, Layers, ArrowDown, GripVertical } from 'lucide-react';
 import { SiWhatsapp, SiLinkedin, SiOpenai } from 'react-icons/si';
 import { apiRequest, queryClient } from '@/lib/queryClient';
 import { useQuery } from '@tanstack/react-query';
@@ -520,11 +520,15 @@ export default function FloatingDot({ onClick, currentPage }: FloatingDotProps) 
               <CardContent className="p-6">
                 {/* Header - Draggable */}
                 <div 
-                  className={`flex items-start justify-between mb-6 ${isDraggingDialog ? 'cursor-move' : ''}`}
+                  className={`flex items-start justify-between mb-6 ${isDraggingDialog ? 'cursor-grabbing' : 'cursor-grab'}`}
                   onMouseDown={handleDialogMouseDown}
                 >
                   {/* User Info */}
                   <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-1 text-gray-400 hover:text-gray-600 transition-colors">
+                      <GripVertical className="h-5 w-5" />
+                      <div className="text-xs font-medium hidden sm:block">Drag</div>
+                    </div>
                     <Avatar className="h-12 w-12">
                       <AvatarImage src={userAvatar} />
                       <AvatarFallback className="bg-gradient-to-br from-amber-500 to-orange-500 text-white">
