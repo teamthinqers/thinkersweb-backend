@@ -429,7 +429,7 @@ export async function processWhatsAppMessage(from: string, messageText: string):
         
         // Send activation success message with account email confirmation
         const activationMessage = "✅ *You're in. Connection successful.*\n\n" +
-          `👋 Welcome to DotSpark, your personal neural extension — built to mirror your mind, not overwrite it.\n\n` +
+          `Welcome to DotSpark, your personal neural extension — built to mirror your mind, not overwrite it.\n\n` +
           `From here on, DotSpark will help you think sharper, reflect deeper, and make decisions aligned with your style.\n\n` +
           `Whether it's untangling a thought, framing a choice, or sharpening your clarity — just say it.\n\n` +
           `This is your space to think. Let's begin.\n\n\n` +
@@ -488,7 +488,7 @@ export async function processWhatsAppMessage(from: string, messageText: string):
       // Initial welcome message for first-time users
       // Keep this shorter to avoid overwhelming new users
       welcomeMessage = 
-        "👋 Hey there, welcome to DotSpark — your thinking companion.\n\n" +
+        "Hey there, welcome to DotSpark — your thinking companion.\n\n" +
         "You can ask me anything right here — ideas, decisions, frameworks, or thoughts you want to unpack.\n\n" +
         "Want to go deeper and make DotSpark truly yours?\n" +
         "👉 https://www.dotspark.in/my-neura — set up your personal Neura and unlock your authentic intelligence.\n\n" +
@@ -651,7 +651,7 @@ export async function processWhatsAppMessage(from: string, messageText: string):
         success: true,
         message: "🔗 *Connect Your Account*\n\n" +
           "To connect your WhatsApp to your DotSpark account, please send a message in this format:\n\n" +
-          "\"Hey DotSpark, please connect my Neural Extension via WhatsApp. My DotSpark account is your-email@example.com\"\n\n" +
+          "\"Hey DotSpark please connect my Neural Extension via WhatsApp. My DotSpark account is your-email@example.com\"\n\n" +
           "Replace your-email@example.com with the email you used to register for DotSpark.\n\n" +
           "Don't have a DotSpark account yet? Visit www.dotspark.in to create one first."
       };
