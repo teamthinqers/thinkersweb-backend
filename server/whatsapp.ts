@@ -159,9 +159,9 @@ async function analyzeUserIntentAndSaveThought(
   try {
     console.log(`🤖 Analyzing intent for: "${messageText}"`);
     
-    // Use GPT to determine intent and extract thought details
+    // Use GPT-5 to determine intent and extract thought details
     const completion = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
+      model: "gpt-5-preview",
       messages: [
         {
           role: "system",
