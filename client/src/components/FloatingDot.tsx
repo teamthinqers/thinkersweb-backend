@@ -243,6 +243,8 @@ export default function FloatingDot({ onClick, currentPage }: FloatingDotProps) 
       await queryClient.invalidateQueries({ queryKey: ['/api/thoughts'] });
       await queryClient.invalidateQueries({ queryKey: ['/api/thoughts/stats'] });
       await queryClient.invalidateQueries({ queryKey: ['/api/thoughts/neural-strength'] });
+      await queryClient.invalidateQueries({ queryKey: ['/api/social/dots'] });
+      await queryClient.invalidateQueries({ queryKey: ['/api/dots'] });
       if (selectedCircleId) {
         await queryClient.invalidateQueries({ queryKey: [`/api/thinq-circles/${selectedCircleId}/thoughts`] });
         await queryClient.invalidateQueries({ queryKey: [`/api/thinq-circles/${selectedCircleId}`] });
