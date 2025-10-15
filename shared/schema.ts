@@ -589,6 +589,10 @@ export const whatsappUsers = pgTable("whatsapp_users", {
   phoneNumber: text("phone_number").notNull().unique(),
   active: boolean("active").default(true).notNull(),
   lastMessageSentAt: timestamp("last_message_sent_at"),
+  // Onboarding tracking
+  communityLinkSent: boolean("community_link_sent").default(false).notNull(),
+  instructionsSent: boolean("instructions_sent").default(false).notNull(),
+  onboardingCompleted: boolean("onboarding_completed").default(false).notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
