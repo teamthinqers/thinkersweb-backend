@@ -183,9 +183,11 @@ whatsappWebhookRouter.post('/', async (req: Request, res: Response) => {
               attemptedEmail: emailInput
             });
             
-            await sendWhatsAppMessage(normalizedPhone, aiResponse);
-            res.status(200).send('Invalid email format');
-            return;
+            // For Twilio, respond with TwiML
+            const twiml = new twilio.twiml.MessagingResponse();
+            twiml.message(aiResponse);
+            res.set('Content-Type', 'text/xml');
+            return res.send(twiml.toString());
           }
           
           // Look up user by email
@@ -205,14 +207,11 @@ whatsappWebhookRouter.post('/', async (req: Request, res: Response) => {
             await db.delete(whatsappConversationStates)
               .where(eq(whatsappConversationStates.phoneNumber, standardizedPhone));
             
-            // Welcome the user
-            await sendWhatsAppMessage(
-              normalizedPhone,
-              "✅ Welcome ThinQer, now you can easily interact with DotSpark using this chat window anytime !!"
-            );
-            
-            res.status(200).send('User linked successfully');
-            return;
+            // Welcome the user with TwiML
+            const twiml = new twilio.twiml.MessagingResponse();
+            twiml.message("✅ Welcome ThinQer, now you can easily interact with DotSpark using this chat window anytime !!");
+            res.set('Content-Type', 'text/xml');
+            return res.send(twiml.toString());
           } else {
             // Email not found - use AI to respond smartly
             const aiResponse = await generateSmartWhatsAppResponse({
@@ -223,14 +222,15 @@ whatsappWebhookRouter.post('/', async (req: Request, res: Response) => {
               attemptedEmail: emailInput
             });
             
-            await sendWhatsAppMessage(normalizedPhone, aiResponse);
-            
             // Delete the conversation state
             await db.delete(whatsappConversationStates)
               .where(eq(whatsappConversationStates.phoneNumber, standardizedPhone));
             
-            res.status(200).send('Email not found');
-            return;
+            // For Twilio, respond with TwiML
+            const twiml = new twilio.twiml.MessagingResponse();
+            twiml.message(aiResponse);
+            res.set('Content-Type', 'text/xml');
+            return res.send(twiml.toString());
           }
         } else {
           // First message from unlinked user
@@ -259,10 +259,11 @@ whatsappWebhookRouter.post('/', async (req: Request, res: Response) => {
             }
           });
           
-          await sendWhatsAppMessage(normalizedPhone, responseMessage);
-          
-          res.status(200).send('Awaiting email');
-          return;
+          // For Twilio, respond with TwiML
+          const twiml = new twilio.twiml.MessagingResponse();
+          twiml.message(responseMessage);
+          res.set('Content-Type', 'text/xml');
+          return res.send(twiml.toString());
         }
       }
       
