@@ -104,6 +104,7 @@ export default function AdminPage() {
   const [newMemberPhone, setNewMemberPhone] = useState('');
   const [newMemberName, setNewMemberName] = useState('');
   const [bulkImportText, setBulkImportText] = useState('');
+  const [nudgeMessage, setNudgeMessage] = useState("Hey! 👋 I noticed you tried reaching out to DotSpark earlier. I'm here to help! Just send me your registered email to get started, or visit dotspark.app to sign up if you're new. 😊");
 
   // Check if user is admin
   const isAdmin = user?.email === 'aravindhraj1410@gmail.com';
@@ -512,7 +513,7 @@ export default function AdminPage() {
       {/* WhatsApp Bot Monitoring Section */}
       <div className="bg-white dark:bg-gray-950 rounded-lg border shadow-sm mt-8">
         <div className="p-6 border-b">
-          <div className="flex justify-between items-start">
+          <div className="flex justify-between items-start mb-4">
             <div className="flex items-center gap-3">
               <PhoneCall className="h-6 w-6 text-green-600" />
               <div>
@@ -524,7 +525,6 @@ export default function AdminPage() {
               <Button
                 onClick={() => {
                   if (confirm(`Send nudge messages to all ${conversationAttempts.length} stuck users?`)) {
-                    const nudgeMessage = "Hey! 👋 I noticed you tried reaching out to DotSpark earlier. I'm here to help! Just send me your registered email to get started, or visit dotspark.app to sign up if you're new. 😊";
                     conversationAttempts.forEach(attempt => {
                       broadcastMutation.mutate({ phoneNumber: attempt.phoneNumber, message: nudgeMessage });
                     });
@@ -536,6 +536,18 @@ export default function AdminPage() {
                 Nudge All ({conversationAttempts.length})
               </Button>
             )}
+          </div>
+          
+          {/* Custom Nudge Message */}
+          <div className="space-y-2">
+            <label className="text-sm font-medium">Custom Nudge Message</label>
+            <Textarea
+              placeholder="Your nudge message..."
+              value={nudgeMessage}
+              onChange={(e) => setNudgeMessage(e.target.value)}
+              className="min-h-[80px]"
+            />
+            <p className="text-xs text-muted-foreground">This message will be sent when you click any Nudge button below</p>
           </div>
         </div>
 
@@ -563,7 +575,6 @@ export default function AdminPage() {
                         size="sm"
                         variant="outline"
                         onClick={() => {
-                          const nudgeMessage = "Hey! 👋 I noticed you tried reaching out to DotSpark earlier. I'm here to help! Just send me your registered email to get started, or visit dotspark.app to sign up if you're new. 😊";
                           broadcastMutation.mutate({ phoneNumber: attempt.phoneNumber, message: nudgeMessage });
                         }}
                         disabled={broadcastMutation.isPending}
