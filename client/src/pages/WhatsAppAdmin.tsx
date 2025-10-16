@@ -160,13 +160,34 @@ export default function WhatsAppAdmin() {
       <div className="grid gap-6">
         <Card>
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <PhoneCall className="h-5 w-5" />
-              WhatsApp Bot Monitoring
-            </CardTitle>
-            <CardDescription>
-              Real-time monitoring of unregistered users attempting to contact the bot
-            </CardDescription>
+            <div className="flex justify-between items-start">
+              <div>
+                <CardTitle className="flex items-center gap-2">
+                  <PhoneCall className="h-5 w-5" />
+                  WhatsApp Bot Monitoring
+                </CardTitle>
+                <CardDescription>
+                  Real-time monitoring of unregistered users attempting to contact the bot
+                </CardDescription>
+              </div>
+              {conversationAttempts.length > 0 && (
+                <Button
+                  variant="default"
+                  onClick={() => {
+                    if (confirm(`Send nudge messages to all ${conversationAttempts.length} stuck users?`)) {
+                      const nudgeMessage = "Hey! 👋 I noticed you tried reaching out to DotSpark earlier. I'm here to help! Just send me your registered email to get started, or visit dotspark.app to sign up if you're new. 😊";
+                      conversationAttempts.forEach(attempt => {
+                        broadcastMutation.mutate({ phoneNumber: attempt.phoneNumber, message: nudgeMessage });
+                      });
+                    }
+                  }}
+                  disabled={broadcastMutation.isPending}
+                >
+                  <Send className="h-4 w-4 mr-2" />
+                  Nudge All ({conversationAttempts.length})
+                </Button>
+              )}
+            </div>
           </CardHeader>
           <CardContent>
             {attemptsLoading ? (
@@ -187,9 +208,23 @@ export default function WhatsAppAdmin() {
                         <PhoneCall className="h-4 w-4 text-primary" />
                         <span className="font-medium">{attempt.phoneNumber}</span>
                       </div>
-                      <div className="text-xs text-muted-foreground flex items-center gap-1">
-                        <Clock className="h-3 w-3" />
-                        {new Date(attempt.updatedAt).toLocaleString()}
+                      <div className="flex items-center gap-2">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => {
+                            const nudgeMessage = "Hey! 👋 I noticed you tried reaching out to DotSpark earlier. I'm here to help! Just send me your registered email to get started, or visit dotspark.app to sign up if you're new. 😊";
+                            broadcastMutation.mutate({ phoneNumber: attempt.phoneNumber, message: nudgeMessage });
+                          }}
+                          disabled={broadcastMutation.isPending}
+                        >
+                          <Send className="h-3 w-3 mr-1" />
+                          Nudge
+                        </Button>
+                        <div className="text-xs text-muted-foreground flex items-center gap-1">
+                          <Clock className="h-3 w-3" />
+                          {new Date(attempt.updatedAt).toLocaleString()}
+                        </div>
                       </div>
                     </div>
                     
