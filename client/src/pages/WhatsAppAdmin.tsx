@@ -123,81 +123,6 @@ export default function WhatsAppAdmin() {
       <div className="grid gap-6">
         <Card>
           <CardHeader>
-            <CardTitle>Register WhatsApp Number</CardTitle>
-            <CardDescription>
-              Add a test phone number to allow it to interact with the DotSpark WhatsApp chatbot without verification.
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={handleSubmit} className="flex gap-2">
-              <Input
-                type="text"
-                placeholder="+1234567890"
-                value={phoneNumber}
-                onChange={(e) => setPhoneNumber(e.target.value)}
-                className="flex-grow"
-              />
-              <Button 
-                type="submit" 
-                disabled={registerMutation.isPending}
-              >
-                {registerMutation.isPending ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Registering...
-                  </>
-                ) : (
-                  "Register Number"
-                )}
-              </Button>
-            </form>
-          </CardContent>
-          <CardFooter className="text-sm text-muted-foreground">
-            Numbers must include country code (e.g., +1 for USA, +44 for UK).
-          </CardFooter>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>Registered Numbers</CardTitle>
-            <CardDescription>
-              Currently registered WhatsApp numbers in the system.
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            {isLoading ? (
-              <div className="flex justify-center py-4">
-                <Loader2 className="h-6 w-6 animate-spin text-primary" />
-              </div>
-            ) : registeredNumbers?.length === 0 ? (
-              <div className="flex flex-col items-center justify-center py-6 text-center">
-                <AlertTriangle className="h-12 w-12 text-muted-foreground mb-2" />
-                <p className="text-muted-foreground">No WhatsApp numbers registered yet.</p>
-              </div>
-            ) : (
-              <div className="border rounded-md divide-y">
-                {registeredNumbers?.map((number: WhatsAppUser) => (
-                  <div key={number.id} className="flex justify-between items-center p-3">
-                    <div className="flex items-center gap-2">
-                      <CheckCircle2 className="h-5 w-5 text-green-500" />
-                      <span className="font-medium">{number.phone_number}</span>
-                    </div>
-                    <Button 
-                      variant="ghost" 
-                      size="icon"
-                      onClick={() => handleDeactivate(number.id, number.phone_number)}
-                    >
-                      <Trash2 className="h-5 w-5 text-muted-foreground hover:text-destructive" />
-                    </Button>
-                  </div>
-                ))}
-              </div>
-            )}
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <PhoneCall className="h-5 w-5" />
               WhatsApp Bot Monitoring
@@ -276,6 +201,81 @@ export default function WhatsAppAdmin() {
           <CardFooter className="text-sm text-muted-foreground">
             Auto-refreshes every 10 seconds • Showing last 100 attempts
           </CardFooter>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Register WhatsApp Number</CardTitle>
+            <CardDescription>
+              Add a test phone number to allow it to interact with the DotSpark WhatsApp chatbot without verification.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={handleSubmit} className="flex gap-2">
+              <Input
+                type="text"
+                placeholder="+1234567890"
+                value={phoneNumber}
+                onChange={(e) => setPhoneNumber(e.target.value)}
+                className="flex-grow"
+              />
+              <Button 
+                type="submit" 
+                disabled={registerMutation.isPending}
+              >
+                {registerMutation.isPending ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Registering...
+                  </>
+                ) : (
+                  "Register Number"
+                )}
+              </Button>
+            </form>
+          </CardContent>
+          <CardFooter className="text-sm text-muted-foreground">
+            Numbers must include country code (e.g., +1 for USA, +44 for UK).
+          </CardFooter>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Registered Numbers</CardTitle>
+            <CardDescription>
+              Currently registered WhatsApp numbers in the system.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            {isLoading ? (
+              <div className="flex justify-center py-4">
+                <Loader2 className="h-6 w-6 animate-spin text-primary" />
+              </div>
+            ) : registeredNumbers?.length === 0 ? (
+              <div className="flex flex-col items-center justify-center py-6 text-center">
+                <AlertTriangle className="h-12 w-12 text-muted-foreground mb-2" />
+                <p className="text-muted-foreground">No WhatsApp numbers registered yet.</p>
+              </div>
+            ) : (
+              <div className="border rounded-md divide-y">
+                {registeredNumbers?.map((number: WhatsAppUser) => (
+                  <div key={number.id} className="flex justify-between items-center p-3">
+                    <div className="flex items-center gap-2">
+                      <CheckCircle2 className="h-5 w-5 text-green-500" />
+                      <span className="font-medium">{number.phone_number}</span>
+                    </div>
+                    <Button 
+                      variant="ghost" 
+                      size="icon"
+                      onClick={() => handleDeactivate(number.id, number.phone_number)}
+                    >
+                      <Trash2 className="h-5 w-5 text-muted-foreground hover:text-destructive" />
+                    </Button>
+                  </div>
+                ))}
+              </div>
+            )}
+          </CardContent>
         </Card>
       </div>
     </div>
