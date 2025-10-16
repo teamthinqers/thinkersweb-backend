@@ -663,6 +663,48 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // WhatsApp Admin: Send message to any number (broadcast feature)
+  app.post(`${apiPrefix}/whatsapp/admin/broadcast`, requireAuth, async (req: AuthenticatedRequest, res: Response) => {
+    try {
+      const { phoneNumber, message } = req.body;
+      
+      if (!phoneNumber || !message) {
+        return res.status(400).json({ error: 'Phone number and message are required' });
+      }
+      
+      // Send via Twilio
+      const accountSid = process.env.TWILIO_ACCOUNT_SID;
+      const authToken = process.env.TWILIO_AUTH_TOKEN;
+      const fromNumber = process.env.TWILIO_PHONE_NUMBER;
+      
+      if (!accountSid || !authToken || !fromNumber) {
+        return res.status(500).json({ error: 'Twilio credentials not configured' });
+      }
+      
+      const client = twilio(accountSid, authToken);
+      
+      const result = await client.messages.create({
+        body: message,
+        from: `whatsapp:${fromNumber}`,
+        to: `whatsapp:${phoneNumber}`
+      });
+      
+      console.log(`✅ Broadcast message sent to ${phoneNumber} (SID: ${result.sid})`);
+      
+      res.status(200).json({ 
+        success: true, 
+        messageSid: result.sid,
+        to: phoneNumber
+      });
+    } catch (err: any) {
+      console.error("Failed to send broadcast message:", err);
+      res.status(500).json({ 
+        error: 'Failed to send message',
+        details: err.message 
+      });
+    }
+  });
+
   // Chat endpoint with conditional CogniShield monitoring
   app.post(`${apiPrefix}/chat`, async (req: Request, res: Response) => {
     const startTime = Date.now();

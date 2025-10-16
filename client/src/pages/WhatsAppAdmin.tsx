@@ -2,10 +2,11 @@ import { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/use-auth-new";
 import { apiRequest, getQueryFn } from '@/lib/queryClient';
-import { Loader2, AlertTriangle, CheckCircle2, Trash2, Clock, PhoneCall } from 'lucide-react';
+import { Loader2, AlertTriangle, CheckCircle2, Trash2, Clock, PhoneCall, Send } from 'lucide-react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
 interface WhatsAppUser {
@@ -30,6 +31,8 @@ export default function WhatsAppAdmin() {
   const { toast } = useToast();
   const { user } = useAuth();
   const [phoneNumber, setPhoneNumber] = useState('');
+  const [broadcastPhone, setBroadcastPhone] = useState('');
+  const [broadcastMessage, setBroadcastMessage] = useState('');
   const queryClient = useQueryClient();
 
   const { data: registeredNumbers = [], isLoading } = useQuery<WhatsAppUser[]>({
@@ -88,6 +91,28 @@ export default function WhatsAppAdmin() {
     }
   });
 
+  const broadcastMutation = useMutation({
+    mutationFn: async ({ phoneNumber, message }: { phoneNumber: string; message: string }) => {
+      const res = await apiRequest('POST', '/api/whatsapp/admin/broadcast', { phoneNumber, message });
+      return await res.json();
+    },
+    onSuccess: (data) => {
+      toast({
+        title: "Message sent successfully",
+        description: `Your message has been sent to ${data.to}`,
+      });
+      setBroadcastPhone('');
+      setBroadcastMessage('');
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "Failed to send message",
+        description: error.message,
+        variant: "destructive",
+      });
+    }
+  });
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!phoneNumber) {
@@ -105,6 +130,19 @@ export default function WhatsAppAdmin() {
     if (confirm(`Are you sure you want to deactivate ${phoneNumber}?`)) {
       deactivateMutation.mutate(id);
     }
+  };
+
+  const handleBroadcast = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!broadcastPhone || !broadcastMessage) {
+      toast({
+        title: "Missing information",
+        description: "Please enter both phone number and message",
+        variant: "destructive",
+      });
+      return;
+    }
+    broadcastMutation.mutate({ phoneNumber: broadcastPhone, message: broadcastMessage });
   };
 
   return (
@@ -195,6 +233,61 @@ export default function WhatsAppAdmin() {
           </CardContent>
           <CardFooter className="text-sm text-muted-foreground">
             Auto-refreshes every 10 seconds • Showing last 100 attempts
+          </CardFooter>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Send className="h-5 w-5" />
+              Send Message to Any Number
+            </CardTitle>
+            <CardDescription>
+              Send WhatsApp messages to anyone, even if they haven't registered yet. Perfect for community announcements!
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={handleBroadcast} className="space-y-4">
+              <div>
+                <label className="text-sm font-medium mb-1 block">Phone Number</label>
+                <Input
+                  type="text"
+                  placeholder="+1234567890"
+                  value={broadcastPhone}
+                  onChange={(e) => setBroadcastPhone(e.target.value)}
+                  className="w-full"
+                />
+              </div>
+              <div>
+                <label className="text-sm font-medium mb-1 block">Message</label>
+                <Textarea
+                  placeholder="Enter your message here..."
+                  value={broadcastMessage}
+                  onChange={(e) => setBroadcastMessage(e.target.value)}
+                  className="w-full min-h-[100px]"
+                />
+              </div>
+              <Button 
+                type="submit" 
+                disabled={broadcastMutation.isPending}
+                className="w-full"
+              >
+                {broadcastMutation.isPending ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Sending...
+                  </>
+                ) : (
+                  <>
+                    <Send className="mr-2 h-4 w-4" />
+                    Send Message
+                  </>
+                )}
+              </Button>
+            </form>
+          </CardContent>
+          <CardFooter className="text-sm text-muted-foreground">
+            Messages are sent via Twilio WhatsApp. Works with any number worldwide.
           </CardFooter>
         </Card>
 
