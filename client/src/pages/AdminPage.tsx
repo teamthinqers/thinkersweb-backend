@@ -104,7 +104,7 @@ export default function AdminPage() {
   const [newMemberPhone, setNewMemberPhone] = useState('');
   const [newMemberName, setNewMemberName] = useState('');
   const [bulkImportText, setBulkImportText] = useState('');
-  const [nudgeMessage, setNudgeMessage] = useState("Hey! 👋 I noticed you tried reaching out to DotSpark earlier. I'm here to help! Just send me your registered email to get started, or visit dotspark.app to sign up if you're new. 😊");
+  const [nudgeMessage, setNudgeMessage] = useState("Hey! 👋 I noticed you tried reaching out to DotSpark earlier. I'm here to help! Just send me your registered email to get started, or visit https://www.dotspark.in to sign up if you're new. 😊");
 
   // Check if user is admin
   const isAdmin = user?.email === 'aravindhraj1410@gmail.com';
