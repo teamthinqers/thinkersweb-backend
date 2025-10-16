@@ -1,6 +1,13 @@
-import { useQuery } from "@tanstack/react-query";
+import { useState } from 'react';
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/hooks/use-auth-new";
-import { Loader2, Users, Shield, CheckCircle2, XCircle, Calendar, Target } from "lucide-react";
+import { Loader2, Users, Shield, CheckCircle2, XCircle, Calendar, Target, PhoneCall, Send, Clock, AlertTriangle, Trash2, Upload } from "lucide-react";
+import { apiRequest, getQueryFn } from '@/lib/queryClient';
+import { useToast } from "@/hooks/use-toast";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { format } from "date-fns";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import {
@@ -65,8 +72,38 @@ interface ThinQCircle {
   members: CircleMember[];
 }
 
+interface ConversationAttempt {
+  id: number;
+  phoneNumber: string;
+  state: string;
+  stateData?: string;
+  expiresAt: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+interface CommunityMember {
+  id: number;
+  phoneNumber: string;
+  name?: string;
+  tags?: string;
+  notes?: string;
+  source: string;
+  lastMessagedAt?: string;
+  createdAt: string;
+}
+
 export default function AdminPage() {
   const { user, isLoading: authLoading } = useAuth();
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+  
+  // WhatsApp state
+  const [broadcastPhone, setBroadcastPhone] = useState('');
+  const [broadcastMessage, setBroadcastMessage] = useState('');
+  const [newMemberPhone, setNewMemberPhone] = useState('');
+  const [newMemberName, setNewMemberName] = useState('');
+  const [bulkImportText, setBulkImportText] = useState('');
 
   // Check if user is admin
   const isAdmin = user?.email === 'aravindhraj1410@gmail.com';
@@ -79,6 +116,66 @@ export default function AdminPage() {
   }>({
     queryKey: ['/api/admin/users'],
     enabled: !!user && isAdmin,
+  });
+
+  // WhatsApp queries
+  const { data: conversationAttempts = [], isLoading: attemptsLoading } = useQuery<ConversationAttempt[]>({
+    queryKey: ['/api/whatsapp/admin/attempts'],
+    queryFn: getQueryFn({ on401: "returnNull" }),
+    enabled: !!user && isAdmin,
+    refetchInterval: 10000
+  });
+
+  const { data: communityMembers = [], isLoading: membersLoading } = useQuery<CommunityMember[]>({
+    queryKey: ['/api/community-members'],
+    queryFn: getQueryFn({ on401: "returnNull" }),
+    enabled: !!user && isAdmin
+  });
+
+  // WhatsApp mutations
+  const broadcastMutation = useMutation({
+    mutationFn: async ({ phoneNumber, message }: { phoneNumber: string; message: string }) => {
+      const res = await apiRequest('POST', '/api/whatsapp/admin/broadcast', { phoneNumber, message });
+      return await res.json();
+    },
+    onSuccess: (data) => {
+      toast({ title: "Message sent successfully", description: `Your message has been sent to ${data.to}` });
+      setBroadcastPhone('');
+      setBroadcastMessage('');
+    },
+    onError: (error: Error) => {
+      toast({ title: "Failed to send message", description: error.message, variant: "destructive" });
+    }
+  });
+
+  const addMemberMutation = useMutation({
+    mutationFn: async ({ phoneNumber, name }: { phoneNumber: string; name?: string }) => {
+      const res = await apiRequest('POST', '/api/community-members', { phoneNumber, name });
+      return await res.json();
+    },
+    onSuccess: () => {
+      toast({ title: "Member added successfully" });
+      setNewMemberPhone('');
+      setNewMemberName('');
+      queryClient.invalidateQueries({ queryKey: ['/api/community-members'] });
+    },
+    onError: (error: Error) => {
+      toast({ title: "Failed to add member", description: error.message, variant: "destructive" });
+    }
+  });
+
+  const deleteMemberMutation = useMutation({
+    mutationFn: async (id: number) => {
+      const res = await apiRequest('DELETE', `/api/community-members/${id}`);
+      return await res.json();
+    },
+    onSuccess: () => {
+      toast({ title: "Member removed successfully" });
+      queryClient.invalidateQueries({ queryKey: ['/api/community-members'] });
+    },
+    onError: (error: Error) => {
+      toast({ title: "Failed to remove member", description: error.message, variant: "destructive" });
+    }
   });
 
   if (authLoading) {
@@ -410,6 +507,214 @@ export default function AdminPage() {
             </Accordion>
           </div>
         )}
+      </div>
+
+      {/* WhatsApp Bot Monitoring Section */}
+      <div className="bg-white dark:bg-gray-950 rounded-lg border shadow-sm mt-8">
+        <div className="p-6 border-b">
+          <div className="flex justify-between items-start">
+            <div className="flex items-center gap-3">
+              <PhoneCall className="h-6 w-6 text-green-600" />
+              <div>
+                <h2 className="text-xl font-semibold">WhatsApp Bot Monitoring</h2>
+                <p className="text-sm text-muted-foreground mt-1">Real-time monitoring of unregistered users attempting to contact the bot</p>
+              </div>
+            </div>
+            {conversationAttempts.length > 0 && (
+              <Button
+                onClick={() => {
+                  if (confirm(`Send nudge messages to all ${conversationAttempts.length} stuck users?`)) {
+                    const nudgeMessage = "Hey! 👋 I noticed you tried reaching out to DotSpark earlier. I'm here to help! Just send me your registered email to get started, or visit dotspark.app to sign up if you're new. 😊";
+                    conversationAttempts.forEach(attempt => {
+                      broadcastMutation.mutate({ phoneNumber: attempt.phoneNumber, message: nudgeMessage });
+                    });
+                  }
+                }}
+                disabled={broadcastMutation.isPending}
+              >
+                <Send className="h-4 w-4 mr-2" />
+                Nudge All ({conversationAttempts.length})
+              </Button>
+            )}
+          </div>
+        </div>
+
+        {attemptsLoading ? (
+          <div className="flex items-center justify-center py-12">
+            <Loader2 className="h-8 w-8 animate-spin text-primary" />
+          </div>
+        ) : conversationAttempts.length === 0 ? (
+          <div className="flex flex-col items-center justify-center py-12 text-muted-foreground">
+            <Clock className="h-12 w-12 mb-4 opacity-50" />
+            <p>No conversation attempts yet</p>
+          </div>
+        ) : (
+          <div className="p-6">
+            <div className="border rounded-md divide-y max-h-96 overflow-y-auto">
+              {conversationAttempts.map((attempt) => (
+                <div key={attempt.id} className="p-4 hover:bg-accent/50 transition-colors">
+                  <div className="flex justify-between items-start mb-2">
+                    <div className="flex items-center gap-2">
+                      <PhoneCall className="h-4 w-4 text-primary" />
+                      <span className="font-medium">{attempt.phoneNumber}</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => {
+                          const nudgeMessage = "Hey! 👋 I noticed you tried reaching out to DotSpark earlier. I'm here to help! Just send me your registered email to get started, or visit dotspark.app to sign up if you're new. 😊";
+                          broadcastMutation.mutate({ phoneNumber: attempt.phoneNumber, message: nudgeMessage });
+                        }}
+                        disabled={broadcastMutation.isPending}
+                      >
+                        <Send className="h-3 w-3 mr-1" />
+                        Nudge
+                      </Button>
+                      <div className="text-xs text-muted-foreground flex items-center gap-1">
+                        <Clock className="h-3 w-3" />
+                        {new Date(attempt.updatedAt).toLocaleString()}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="space-y-1 text-sm">
+                    <div className="flex items-center gap-2">
+                      <span className="text-muted-foreground">State:</span>
+                      <Badge variant={attempt.state === 'awaiting_email' ? 'secondary' : 'default'}>
+                        {attempt.state}
+                      </Badge>
+                    </div>
+                    <div className="text-xs text-muted-foreground">
+                      First contact: {new Date(attempt.createdAt).toLocaleString()}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Community Members Section */}
+      <div className="grid md:grid-cols-2 gap-8 mt-8">
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Users className="h-5 w-5" />
+              Community Members ({communityMembers.length})
+            </CardTitle>
+            <CardDescription>
+              Manage your community phone numbers for broadcasts
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              <div className="flex gap-2">
+                <Input
+                  type="text"
+                  placeholder="+1234567890"
+                  value={newMemberPhone}
+                  onChange={(e) => setNewMemberPhone(e.target.value)}
+                />
+                <Input
+                  type="text"
+                  placeholder="Name (optional)"
+                  value={newMemberName}
+                  onChange={(e) => setNewMemberName(e.target.value)}
+                />
+                <Button 
+                  onClick={() => addMemberMutation.mutate({ phoneNumber: newMemberPhone, name: newMemberName })}
+                  disabled={addMemberMutation.isPending || !newMemberPhone}
+                >
+                  Add
+                </Button>
+              </div>
+              
+              <div className="border rounded-md divide-y max-h-96 overflow-y-auto">
+                {membersLoading ? (
+                  <div className="flex justify-center py-4">
+                    <Loader2 className="h-6 w-6 animate-spin" />
+                  </div>
+                ) : communityMembers.length === 0 ? (
+                  <div className="flex flex-col items-center justify-center py-6 text-muted-foreground">
+                    <Users className="h-12 w-12 mb-2 opacity-50" />
+                    <p>No members added yet</p>
+                  </div>
+                ) : (
+                  communityMembers.map((member) => (
+                    <div key={member.id} className="flex justify-between items-center p-3">
+                      <div>
+                        <p className="font-medium">{member.phoneNumber}</p>
+                        {member.name && <p className="text-sm text-muted-foreground">{member.name}</p>}
+                        {member.lastMessagedAt && (
+                          <p className="text-xs text-muted-foreground">
+                            Last messaged: {new Date(member.lastMessagedAt).toLocaleString()}
+                          </p>
+                        )}
+                      </div>
+                      <Button 
+                        variant="ghost" 
+                        size="icon"
+                        onClick={() => {
+                          if (confirm(`Remove ${member.phoneNumber}?`)) {
+                            deleteMemberMutation.mutate(member.id);
+                          }
+                        }}
+                      >
+                        <Trash2 className="h-4 w-4 text-muted-foreground hover:text-destructive" />
+                      </Button>
+                    </div>
+                  ))
+                )}
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Send className="h-5 w-5" />
+              Broadcast Message
+            </CardTitle>
+            <CardDescription>
+              Send WhatsApp messages to any number
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              <Input
+                type="text"
+                placeholder="+1234567890"
+                value={broadcastPhone}
+                onChange={(e) => setBroadcastPhone(e.target.value)}
+              />
+              <Textarea
+                placeholder="Your message..."
+                value={broadcastMessage}
+                onChange={(e) => setBroadcastMessage(e.target.value)}
+                className="min-h-[100px]"
+              />
+              <Button 
+                onClick={() => broadcastMutation.mutate({ phoneNumber: broadcastPhone, message: broadcastMessage })}
+                disabled={broadcastMutation.isPending || !broadcastPhone || !broadcastMessage}
+                className="w-full"
+              >
+                {broadcastMutation.isPending ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Sending...
+                  </>
+                ) : (
+                  <>
+                    <Send className="mr-2 h-4 w-4" />
+                    Send Message
+                  </>
+                )}
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );

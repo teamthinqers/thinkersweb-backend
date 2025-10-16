@@ -616,6 +616,20 @@ export const whatsappConversationStates = pgTable("whatsapp_conversation_states"
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
+export const communityMembers = pgTable("community_members", {
+  id: serial("id").primaryKey(),
+  phoneNumber: text("phone_number").notNull().unique(),
+  name: text("name"),
+  tags: text("tags"), // Comma-separated tags like "vip,early-adopter"
+  notes: text("notes"),
+  addedBy: integer("added_by").references(() => users.id),
+  source: text("source").default("manual"), // 'manual', 'group', 'import'
+  active: boolean("active").default(true).notNull(),
+  lastMessagedAt: timestamp("last_messaged_at"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
 // Legacy relations
 export const entriesRelations = relations(entries, ({ one }) => ({
   user: one(users, { fields: [entries.userId], references: [users.id] }),

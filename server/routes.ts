@@ -9,6 +9,7 @@ import {
   whatsappOtpVerifications,
   whatsappUsers,
   whatsappConversationStates,
+  communityMembers,
   wheels,
   dots,
   chakras,
@@ -691,6 +692,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       console.log(`✅ Broadcast message sent to ${phoneNumber} (SID: ${result.sid})`);
       
+      // Update last_messaged_at if this number is in community members
+      await db.update(communityMembers)
+        .set({ lastMessagedAt: new Date() })
+        .where(eq(communityMembers.phoneNumber, phoneNumber))
+        .catch(() => {}); // Ignore if not in list
+      
       res.status(200).json({ 
         success: true, 
         messageSid: result.sid,
@@ -702,6 +709,101 @@ export async function registerRoutes(app: Express): Promise<Server> {
         error: 'Failed to send message',
         details: err.message 
       });
+    }
+  });
+
+  // Community Members: Get all
+  app.get(`${apiPrefix}/community-members`, requireAuth, async (req: AuthenticatedRequest, res: Response) => {
+    try {
+      const members = await db.query.communityMembers.findMany({
+        where: eq(communityMembers.active, true),
+        orderBy: desc(communityMembers.createdAt)
+      });
+      res.status(200).json(members);
+    } catch (err) {
+      console.error("Failed to get community members:", err);
+      res.status(500).json({ error: 'Failed to get community members' });
+    }
+  });
+
+  // Community Members: Add single member
+  app.post(`${apiPrefix}/community-members`, requireAuth, async (req: AuthenticatedRequest, res: Response) => {
+    try {
+      const { phoneNumber, name, tags, notes } = req.body;
+      const userId = req.user?.id;
+      
+      if (!phoneNumber) {
+        return res.status(400).json({ error: 'Phone number is required' });
+      }
+      
+      const [member] = await db.insert(communityMembers)
+        .values({
+          phoneNumber,
+          name,
+          tags,
+          notes,
+          addedBy: userId,
+          source: 'manual'
+        })
+        .returning();
+      
+      res.status(201).json(member);
+    } catch (err: any) {
+      if (err.code === '23505') { // Unique violation
+        res.status(400).json({ error: 'This phone number is already in the community list' });
+      } else {
+        console.error("Failed to add community member:", err);
+        res.status(500).json({ error: 'Failed to add community member' });
+      }
+    }
+  });
+
+  // Community Members: Bulk import
+  app.post(`${apiPrefix}/community-members/bulk`, requireAuth, async (req: AuthenticatedRequest, res: Response) => {
+    try {
+      const { members } = req.body; // Array of { phoneNumber, name?, tags?, notes? }
+      const userId = req.user?.id;
+      
+      if (!Array.isArray(members) || members.length === 0) {
+        return res.status(400).json({ error: 'Members array is required' });
+      }
+      
+      const inserted = await db.insert(communityMembers)
+        .values(members.map((m: any) => ({
+          phoneNumber: m.phoneNumber,
+          name: m.name,
+          tags: m.tags,
+          notes: m.notes,
+          addedBy: userId,
+          source: 'import'
+        })))
+        .onConflictDoNothing()
+        .returning();
+      
+      res.status(201).json({ 
+        success: true, 
+        added: inserted.length,
+        skipped: members.length - inserted.length 
+      });
+    } catch (err) {
+      console.error("Failed to bulk import members:", err);
+      res.status(500).json({ error: 'Failed to bulk import members' });
+    }
+  });
+
+  // Community Members: Delete
+  app.delete(`${apiPrefix}/community-members/:id`, requireAuth, async (req: AuthenticatedRequest, res: Response) => {
+    try {
+      const id = parseInt(req.params.id);
+      
+      await db.update(communityMembers)
+        .set({ active: false })
+        .where(eq(communityMembers.id, id));
+      
+      res.status(200).json({ success: true });
+    } catch (err) {
+      console.error("Failed to delete community member:", err);
+      res.status(500).json({ error: 'Failed to delete community member' });
     }
   });
 

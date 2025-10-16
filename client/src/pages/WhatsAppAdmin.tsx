@@ -6,7 +6,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/use-auth-new";
 import { apiRequest, getQueryFn } from '@/lib/queryClient';
-import { Loader2, AlertTriangle, CheckCircle2, Trash2, Clock, PhoneCall, Send } from 'lucide-react';
+import { Loader2, AlertTriangle, CheckCircle2, Trash2, Clock, PhoneCall, Send, Users, Upload } from 'lucide-react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
 interface WhatsAppUser {
@@ -27,12 +27,26 @@ interface ConversationAttempt {
   updatedAt: string; // Drizzle returns camelCase
 }
 
+interface CommunityMember {
+  id: number;
+  phoneNumber: string;
+  name?: string;
+  tags?: string;
+  notes?: string;
+  source: string;
+  lastMessagedAt?: string;
+  createdAt: string;
+}
+
 export default function WhatsAppAdmin() {
   const { toast } = useToast();
   const { user } = useAuth();
   const [phoneNumber, setPhoneNumber] = useState('');
   const [broadcastPhone, setBroadcastPhone] = useState('');
   const [broadcastMessage, setBroadcastMessage] = useState('');
+  const [newMemberPhone, setNewMemberPhone] = useState('');
+  const [newMemberName, setNewMemberName] = useState('');
+  const [bulkImportText, setBulkImportText] = useState('');
   const queryClient = useQueryClient();
 
   const { data: registeredNumbers = [], isLoading } = useQuery<WhatsAppUser[]>({
