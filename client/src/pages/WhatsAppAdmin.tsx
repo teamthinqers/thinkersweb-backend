@@ -18,13 +18,12 @@ interface WhatsAppUser {
 
 interface ConversationAttempt {
   id: number;
-  phone_number: string;
+  phoneNumber: string; // Drizzle returns camelCase
   state: string;
-  created_at: string;
-  updated_at: string;
-  email_validation_error?: boolean;
-  email_not_found?: boolean;
-  attempted_email?: string;
+  stateData?: string;
+  expiresAt: string;
+  createdAt: string; // Drizzle returns camelCase
+  updatedAt: string; // Drizzle returns camelCase
 }
 
 export default function WhatsAppAdmin() {
@@ -148,11 +147,11 @@ export default function WhatsAppAdmin() {
                     <div className="flex justify-between items-start mb-2">
                       <div className="flex items-center gap-2">
                         <PhoneCall className="h-4 w-4 text-primary" />
-                        <span className="font-medium">{attempt.phone_number}</span>
+                        <span className="font-medium">{attempt.phoneNumber}</span>
                       </div>
                       <div className="text-xs text-muted-foreground flex items-center gap-1">
                         <Clock className="h-3 w-3" />
-                        {new Date(attempt.updated_at).toLocaleString()}
+                        {new Date(attempt.updatedAt).toLocaleString()}
                       </div>
                     </div>
                     
@@ -168,29 +167,25 @@ export default function WhatsAppAdmin() {
                         </span>
                       </div>
                       
-                      {attempt.attempted_email && (
-                        <div className="flex items-center gap-2">
-                          <span className="text-muted-foreground">Attempted Email:</span>
-                          <span className="font-mono text-xs">{attempt.attempted_email}</span>
-                        </div>
-                      )}
-                      
-                      {attempt.email_validation_error && (
-                        <div className="flex items-center gap-2 text-red-600 dark:text-red-400">
-                          <AlertTriangle className="h-4 w-4" />
-                          <span>Invalid email format</span>
-                        </div>
-                      )}
-                      
-                      {attempt.email_not_found && (
-                        <div className="flex items-center gap-2 text-orange-600 dark:text-orange-400">
-                          <AlertTriangle className="h-4 w-4" />
-                          <span>Email not registered</span>
-                        </div>
-                      )}
+                      {attempt.stateData && (() => {
+                        try {
+                          const data = JSON.parse(attempt.stateData);
+                          return data.attemptedEmail ? (
+                            <div className="flex items-center gap-2">
+                              <span className="text-muted-foreground">Attempted Email:</span>
+                              <span className="font-mono text-xs">{data.attemptedEmail}</span>
+                            </div>
+                          ) : null;
+                        } catch {
+                          return null;
+                        }
+                      })()}
                       
                       <div className="text-xs text-muted-foreground pt-1">
-                        First contact: {new Date(attempt.created_at).toLocaleString()}
+                        First contact: {new Date(attempt.createdAt).toLocaleString()}
+                      </div>
+                      <div className="text-xs text-muted-foreground">
+                        Expires: {new Date(attempt.expiresAt).toLocaleString()}
                       </div>
                     </div>
                   </div>
