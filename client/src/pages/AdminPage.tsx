@@ -25,6 +25,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 interface AdminUser {
   id: number;
@@ -105,6 +106,9 @@ export default function AdminPage() {
   const [newMemberName, setNewMemberName] = useState('');
   const [bulkImportText, setBulkImportText] = useState('');
   const [nudgeMessage, setNudgeMessage] = useState("Hey! 👋 I noticed you tried reaching out to DotSpark earlier. I'm here to help! Just send me your registered email to get started, or visit https://www.dotspark.in to sign up if you're new. 😊");
+  const [individualNudgeOpen, setIndividualNudgeOpen] = useState(false);
+  const [individualNudgePhone, setIndividualNudgePhone] = useState('');
+  const [individualNudgeMessage, setIndividualNudgeMessage] = useState('');
 
   // Check if user is admin
   const isAdmin = user?.email === 'aravindhraj1410@gmail.com';
@@ -575,7 +579,9 @@ export default function AdminPage() {
                         size="sm"
                         variant="outline"
                         onClick={() => {
-                          broadcastMutation.mutate({ phoneNumber: attempt.phoneNumber, message: nudgeMessage });
+                          setIndividualNudgePhone(attempt.phoneNumber);
+                          setIndividualNudgeMessage(nudgeMessage);
+                          setIndividualNudgeOpen(true);
                         }}
                         disabled={broadcastMutation.isPending}
                       >
@@ -727,6 +733,47 @@ export default function AdminPage() {
           </CardContent>
         </Card>
       </div>
+
+      {/* Individual Nudge Dialog */}
+      <Dialog open={individualNudgeOpen} onOpenChange={setIndividualNudgeOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Send Custom Message</DialogTitle>
+            <DialogDescription>
+              Send a personalized nudge to {individualNudgePhone}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <Textarea
+              placeholder="Type your custom message..."
+              value={individualNudgeMessage}
+              onChange={(e) => setIndividualNudgeMessage(e.target.value)}
+              className="min-h-[120px]"
+            />
+          </div>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => setIndividualNudgeOpen(false)}
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={() => {
+                broadcastMutation.mutate({ 
+                  phoneNumber: individualNudgePhone, 
+                  message: individualNudgeMessage 
+                });
+                setIndividualNudgeOpen(false);
+              }}
+              disabled={broadcastMutation.isPending || !individualNudgeMessage}
+            >
+              <Send className="h-4 w-4 mr-2" />
+              Send Message
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
