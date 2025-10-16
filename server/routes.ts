@@ -8,6 +8,7 @@ import {
   users, 
   whatsappOtpVerifications,
   whatsappUsers,
+  whatsappConversationStates,
   wheels,
   dots,
   chakras,
@@ -595,6 +596,70 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (err) {
       console.error("WhatsApp direct registration error:", err);
       res.status(500).json({ success: false, error: 'Failed to register for WhatsApp DotSpark extension' });
+    }
+  });
+
+  // WhatsApp Admin: Get all registered numbers
+  app.get(`${apiPrefix}/whatsapp/admin/numbers`, requireAuth, async (req: AuthenticatedRequest, res: Response) => {
+    try {
+      const registeredNumbers = await db.query.whatsappUsers.findMany({
+        where: eq(whatsappUsers.active, true),
+        orderBy: desc(whatsappUsers.createdAt)
+      });
+      
+      res.status(200).json(registeredNumbers);
+    } catch (err) {
+      console.error("Failed to get WhatsApp numbers:", err);
+      res.status(500).json({ error: 'Failed to get registered numbers' });
+    }
+  });
+
+  // WhatsApp Admin: Register a test number
+  app.post(`${apiPrefix}/whatsapp/admin/register`, requireAuth, async (req: AuthenticatedRequest, res: Response) => {
+    try {
+      const { phoneNumber } = req.body;
+      const userId = req.user?.id;
+      
+      if (!userId || !phoneNumber) {
+        return res.status(400).json({ error: 'Phone number is required' });
+      }
+      
+      const result = await registerWhatsAppUser(userId, phoneNumber);
+      res.status(200).json(result);
+    } catch (err) {
+      console.error("Failed to register WhatsApp number:", err);
+      res.status(500).json({ error: 'Failed to register number' });
+    }
+  });
+
+  // WhatsApp Admin: Deactivate a number
+  app.delete(`${apiPrefix}/whatsapp/admin/number/:id`, requireAuth, async (req: AuthenticatedRequest, res: Response) => {
+    try {
+      const id = parseInt(req.params.id);
+      
+      await db.update(whatsappUsers)
+        .set({ active: false })
+        .where(eq(whatsappUsers.id, id));
+      
+      res.status(200).json({ success: true });
+    } catch (err) {
+      console.error("Failed to deactivate WhatsApp number:", err);
+      res.status(500).json({ error: 'Failed to deactivate number' });
+    }
+  });
+
+  // WhatsApp Admin: Get conversation attempts (monitoring)
+  app.get(`${apiPrefix}/whatsapp/admin/attempts`, requireAuth, async (req: AuthenticatedRequest, res: Response) => {
+    try {
+      const attempts = await db.query.whatsappConversationStates.findMany({
+        orderBy: desc(whatsappConversationStates.updatedAt),
+        limit: 100
+      });
+      
+      res.status(200).json(attempts);
+    } catch (err) {
+      console.error("Failed to get WhatsApp attempts:", err);
+      res.status(500).json({ error: 'Failed to get conversation attempts' });
     }
   });
 
