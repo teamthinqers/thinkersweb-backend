@@ -1,4 +1,10 @@
-import { sendWhatsAppReply } from '../server/whatsapp';
+import twilio from 'twilio';
+
+const accountSid = process.env.TWILIO_ACCOUNT_SID;
+const authToken = process.env.TWILIO_AUTH_TOKEN;
+const fromNumber = process.env.TWILIO_PHONE_NUMBER;
+
+const client = twilio(accountSid, authToken);
 
 async function sendApologyMessages() {
   const users = [
@@ -8,28 +14,27 @@ async function sendApologyMessages() {
     { phone: '+919972960079', time: 'yesterday' }
   ];
 
-  const apologyMessage = `Hey ThinQer! 👋
-
-Sorry for the delay in responding. Our DotSpark WhatsApp assistant had a temporary technical issue that's now been fixed.
-
-I'm ready to help you now! Please share your thoughts and I'll save them to your MyNeura space.
-
-Thank you for your patience! 🙏`;
+  const apologyMessage = "Apologies, there was a tech glitch because of which I was not able to respond earlier. I'm working perfectly now! Feel free to message me anytime. 😊";
 
   console.log('Sending apology messages to users who tried contacting us...\n');
 
   for (const user of users) {
     console.log(`Sending to ${user.phone} (tried ${user.time})...`);
-    const success = await sendWhatsAppReply(user.phone, apologyMessage);
     
-    if (success) {
-      console.log(`✅ Sent successfully to ${user.phone}`);
-    } else {
-      console.log(`❌ Failed to send to ${user.phone}`);
+    try {
+      const result = await client.messages.create({
+        body: apologyMessage,
+        from: fromNumber,
+        to: user.phone
+      });
+      
+      console.log(`✅ Sent successfully to ${user.phone} (SID: ${result.sid})`);
+    } catch (error) {
+      console.log(`❌ Failed to send to ${user.phone}:`, error);
     }
   }
 
-  console.log('\n✅ Apology messages sent!');
+  console.log('\n✅ Apology messages process completed!');
 }
 
 sendApologyMessages().catch(console.error);
