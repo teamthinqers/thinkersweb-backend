@@ -32,7 +32,7 @@ RULES:
 CONTEXT:
 - If user seems confused, acknowledge and guide them
 - If they make a mistake (wrong email format, typo), help them fix it
-- If their email isn't registered, encourage registration with link: https://dotspark.in/auth
+- If their email isn't registered, encourage registration with link: https://www.dotspark.in
 - Always maintain a helpful, supportive tone`;
 
   let userContext = '';
@@ -41,12 +41,12 @@ CONTEXT:
     if (context.emailValidationError) {
       userContext = `User sent: "${context.attemptedEmail}" but it's not a valid email format. Help them understand and ask again.`;
     } else if (context.emailNotFound) {
-      userContext = `User sent email: "${context.attemptedEmail}" but it's not registered with DotSpark. Encourage them to register first, give them the link (https://dotspark.in/auth), and tell them to come back after registration.`;
+      userContext = `User sent email: "${context.attemptedEmail}" but it's not registered with DotSpark. Encourage them to register first, give them the link (https://www.dotspark.in), and tell them to come back after registration.`;
     } else {
       userContext = `User sent: "${context.userMessage}". This doesn't look like an email. Gently ask them to share their email ID.`;
     }
   } else {
-    userContext = `User sent: "${context.userMessage}". This is their first message. Ask for their email ID in a friendly way. Mention the registration link if they're not registered: https://dotspark.in/auth`;
+    userContext = `User sent: "${context.userMessage}". This is their first message. Ask for their email ID in a friendly way. Mention the registration link if they're not registered: https://www.dotspark.in`;
   }
 
   try {
@@ -66,8 +66,8 @@ CONTEXT:
     console.error('AI response generation error:', error);
     // Fallback to basic response
     if (context.emailNotFound) {
-      return `This email (${context.attemptedEmail}) is not registered with DotSpark.\n\nPlease register first at: https://dotspark.in/auth\n\nAfter registration, come back and share your email to link! 👋`;
+      return `This email (${context.attemptedEmail}) is not registered with DotSpark.\n\nPlease register first at: https://www.dotspark.in\n\nAfter registration, come back and share your email to link! 👋`;
     }
-    return "Hey! Can you please share your email ID registered with DotSpark?\n\nIf not registered, please use the below link to register:\nhttps://dotspark.in/auth";
+    return "Hey! Can you please share your email ID registered with DotSpark?\n\nIf not registered, please use the below link to register:\nhttps://www.dotspark.in";
   }
 }
