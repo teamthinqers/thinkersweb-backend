@@ -26,6 +26,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Checkbox } from "@/components/ui/checkbox";
 
 interface AdminUser {
   id: number;
@@ -109,6 +110,7 @@ export default function AdminPage() {
   const [individualNudgeOpen, setIndividualNudgeOpen] = useState(false);
   const [individualNudgePhone, setIndividualNudgePhone] = useState('');
   const [individualNudgeMessage, setIndividualNudgeMessage] = useState('');
+  const [selectedContacts, setSelectedContacts] = useState<number[]>([]);
 
   // Check if user is admin
   const isAdmin = user?.email === 'aravindhraj1410@gmail.com';
@@ -144,9 +146,7 @@ export default function AdminPage() {
       return await res.json();
     },
     onSuccess: (data) => {
-      toast({ title: "Message sent successfully", description: `Your message has been sent to ${data.to}` });
-      setBroadcastPhone('');
-      setBroadcastMessage('');
+      toast({ title: "Message sent", description: `Sent to ${data.to}` });
     },
     onError: (error: Error) => {
       toast({ title: "Failed to send message", description: error.message, variant: "destructive" });
@@ -695,26 +695,131 @@ export default function AdminPage() {
               Broadcast Message
             </CardTitle>
             <CardDescription>
-              Send WhatsApp messages to any number
+              Select contacts from community members and send messages
             </CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              <Input
-                type="text"
-                placeholder="+1234567890"
-                value={broadcastPhone}
-                onChange={(e) => setBroadcastPhone(e.target.value)}
-              />
-              <Textarea
-                placeholder="Your message..."
-                value={broadcastMessage}
-                onChange={(e) => setBroadcastMessage(e.target.value)}
-                className="min-h-[100px]"
-              />
+              {/* Message Input */}
+              <div>
+                <label className="text-sm font-medium mb-2 block">Broadcast Message</label>
+                <Textarea
+                  placeholder="Your message to send to selected contacts..."
+                  value={broadcastMessage}
+                  onChange={(e) => setBroadcastMessage(e.target.value)}
+                  className="min-h-[100px]"
+                />
+              </div>
+
+              {/* Contact Selection */}
+              <div>
+                <div className="flex justify-between items-center mb-3">
+                  <label className="text-sm font-medium">Select Contacts ({selectedContacts.length} selected)</label>
+                  <div className="flex gap-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        const allIds = communityMembers.map(m => m.id);
+                        setSelectedContacts(allIds);
+                      }}
+                      disabled={communityMembers.length === 0}
+                    >
+                      Select All
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setSelectedContacts([])}
+                      disabled={selectedContacts.length === 0}
+                    >
+                      Clear
+                    </Button>
+                  </div>
+                </div>
+
+                {membersLoading ? (
+                  <div className="flex items-center justify-center py-8">
+                    <Loader2 className="h-6 w-6 animate-spin text-primary" />
+                  </div>
+                ) : communityMembers.length === 0 ? (
+                  <div className="text-center py-8 text-muted-foreground">
+                    <p>No community members yet. Add members above to start broadcasting.</p>
+                  </div>
+                ) : (
+                  <div className="border rounded-lg max-h-[300px] overflow-y-auto">
+                    {communityMembers.map((member) => (
+                      <div 
+                        key={member.id} 
+                        className="flex items-center gap-3 p-3 border-b last:border-b-0 hover:bg-accent cursor-pointer"
+                        onClick={() => {
+                          setSelectedContacts(prev =>
+                            prev.includes(member.id)
+                              ? prev.filter(id => id !== member.id)
+                              : [...prev, member.id]
+                          );
+                        }}
+                      >
+                        <Checkbox 
+                          checked={selectedContacts.includes(member.id)}
+                          onCheckedChange={(checked) => {
+                            setSelectedContacts(prev =>
+                              checked
+                                ? [...prev, member.id]
+                                : prev.filter(id => id !== member.id)
+                            );
+                          }}
+                        />
+                        <div className="flex-1">
+                          <p className="font-medium">{member.phoneNumber}</p>
+                          {member.name && (
+                            <p className="text-sm text-muted-foreground">{member.name}</p>
+                          )}
+                          {member.lastMessagedAt && (
+                            <p className="text-xs text-muted-foreground">
+                              Last messaged: {new Date(member.lastMessagedAt).toLocaleString()}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Send Button */}
               <Button 
-                onClick={() => broadcastMutation.mutate({ phoneNumber: broadcastPhone, message: broadcastMessage })}
-                disabled={broadcastMutation.isPending || !broadcastPhone || !broadcastMessage}
+                onClick={() => {
+                  if (selectedContacts.length === 0) {
+                    toast({ title: "No contacts selected", description: "Please select at least one contact", variant: "destructive" });
+                    return;
+                  }
+                  if (!broadcastMessage) {
+                    toast({ title: "No message", description: "Please enter a message to send", variant: "destructive" });
+                    return;
+                  }
+                  
+                  // Send to all selected contacts
+                  selectedContacts.forEach((contactId) => {
+                    const member = communityMembers.find(m => m.id === contactId);
+                    if (member) {
+                      broadcastMutation.mutate({ 
+                        phoneNumber: member.phoneNumber, 
+                        message: broadcastMessage 
+                      });
+                    }
+                  });
+                  
+                  toast({ 
+                    title: "Sending messages...", 
+                    description: `Sending to ${selectedContacts.length} contact(s)` 
+                  });
+                  
+                  // Clear selections after sending
+                  setSelectedContacts([]);
+                  setBroadcastMessage('');
+                }}
+                disabled={broadcastMutation.isPending || selectedContacts.length === 0 || !broadcastMessage}
                 className="w-full"
               >
                 {broadcastMutation.isPending ? (
@@ -725,7 +830,7 @@ export default function AdminPage() {
                 ) : (
                   <>
                     <Send className="mr-2 h-4 w-4" />
-                    Send Message
+                    Send to {selectedContacts.length} Contact{selectedContacts.length !== 1 ? 's' : ''}
                   </>
                 )}
               </Button>
