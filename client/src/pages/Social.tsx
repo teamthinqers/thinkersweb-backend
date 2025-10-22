@@ -106,10 +106,7 @@ export default function Social() {
   // Admin mutations
   const editMutation = useMutation({
     mutationFn: async ({ id, heading, summary }: { id: number; heading: string; summary: string }) => {
-      return await apiRequest(`/api/thoughts/${id}`, {
-        method: 'PATCH',
-        body: JSON.stringify({ heading, summary }),
-      });
+      return await apiRequest('PATCH', `/api/thoughts/${id}`, { heading, summary });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/thoughts'] });
@@ -131,9 +128,7 @@ export default function Social() {
 
   const deleteMutation = useMutation({
     mutationFn: async (id: number) => {
-      return await apiRequest(`/api/thoughts/${id}`, {
-        method: 'DELETE',
-      });
+      return await apiRequest('DELETE', `/api/thoughts/${id}`);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/thoughts'] });
