@@ -13,7 +13,7 @@ import {
   circleDots
 } from '@shared/schema';
 import { eq, desc, and, or, sql } from 'drizzle-orm';
-import { insertThoughtSchema, perspectivesMessagesInsertSchema } from '@shared/schema';
+import { insertThoughtSchema, insertGuestThoughtSchema, perspectivesMessagesInsertSchema } from '@shared/schema';
 import { storeVectorEmbedding } from '../vector-db';
 import { calculateNeuralStrength } from '../neural-strength';
 import { notifyNewThought, notifyNewPerspective, notifySparkSaved } from '../notification-helpers';
@@ -242,6 +242,40 @@ router.post('/', async (req, res) => {
     res.status(500).json({
       success: false,
       error: 'Failed to create thought',
+      details: error instanceof Error ? error.message : 'Unknown error'
+    });
+  }
+});
+
+/**
+ * POST /api/thoughts/guest
+ * Create a guest contribution (no authentication required)
+ * For external thought leaders to contribute to /social
+ */
+router.post('/guest', async (req, res) => {
+  try {
+    // Validate guest contribution data
+    const validatedData = insertGuestThoughtSchema.parse(req.body);
+
+    console.log('💭 Creating guest thought:', validatedData.heading, 'by:', validatedData.guestName);
+
+    // Create the guest thought
+    const [newThought] = await db.insert(thoughts)
+      .values(validatedData)
+      .returning();
+    
+    console.log('✅ Guest thought created with ID:', newThought.id);
+
+    res.status(201).json({
+      success: true,
+      thought: newThought,
+    });
+
+  } catch (error) {
+    console.error('Guest thought creation error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to create guest thought',
       details: error instanceof Error ? error.message : 'Unknown error'
     });
   }
