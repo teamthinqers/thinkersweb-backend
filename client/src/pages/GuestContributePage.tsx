@@ -44,7 +44,7 @@ export default function GuestContributePage() {
 
   const contributeMutation = useMutation({
     mutationFn: async (data: GuestContributionForm) => {
-      return apiRequest("/api/thoughts/guest", "POST", {
+      return apiRequest("POST", "/api/thoughts/guest", {
         ...data,
         contributorType: "guest",
         visibility: "social",
