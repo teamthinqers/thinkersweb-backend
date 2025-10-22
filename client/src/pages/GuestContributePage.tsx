@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -26,11 +26,17 @@ export default function GuestContributePage() {
   const { toast } = useToast();
   const [isSubmitted, setIsSubmitted] = useState(false);
 
+  // Extract URL parameters
+  const urlParams = new URLSearchParams(window.location.search);
+  const prefilledName = urlParams.get('name') || '';
+  const prefilledLinkedIn = urlParams.get('linkedin') || '';
+  const isPreFilled = prefilledName !== '';
+
   const form = useForm<GuestContributionForm>({
     resolver: zodResolver(guestContributionSchema),
     defaultValues: {
-      guestName: "",
-      guestLinkedInUrl: "",
+      guestName: prefilledName,
+      guestLinkedInUrl: prefilledLinkedIn,
       heading: "",
       summary: "",
     },
@@ -147,8 +153,15 @@ export default function GuestContributePage() {
                           placeholder="e.g., Dr. Jane Smith"
                           {...field}
                           className="text-base"
+                          readOnly={isPreFilled}
+                          disabled={isPreFilled}
                         />
                       </FormControl>
+                      {isPreFilled && (
+                        <FormDescription className="text-green-600">
+                          ✓ Pre-filled for you
+                        </FormDescription>
+                      )}
                       <FormMessage />
                     </FormItem>
                   )}
@@ -168,10 +181,14 @@ export default function GuestContributePage() {
                           placeholder="https://www.linkedin.com/in/yourprofile"
                           {...field}
                           className="text-base"
+                          readOnly={isPreFilled}
+                          disabled={isPreFilled}
                         />
                       </FormControl>
                       <FormDescription>
-                        If provided, clicking your avatar will open your LinkedIn profile
+                        {isPreFilled 
+                          ? "✓ Pre-filled - Your LinkedIn will be linked to your contribution" 
+                          : "If provided, clicking your avatar will open your LinkedIn profile"}
                       </FormDescription>
                       <FormMessage />
                     </FormItem>
