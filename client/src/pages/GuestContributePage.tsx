@@ -122,7 +122,7 @@ export default function GuestContributePage() {
               Share Your Thought
             </h1>
             <img 
-              src="/dotspark-logo-icon.png" 
+              src="/dotspark-icon-transparent.png" 
               alt="DotSpark" 
               className="h-10 w-10 animate-pulse"
             />
@@ -257,7 +257,7 @@ export default function GuestContributePage() {
                   {contributeMutation.isPending ? (
                     <>
                       <img 
-                        src="/dotspark-logo-icon.png" 
+                        src="/dotspark-icon-transparent.png" 
                         alt="" 
                         className="mr-2 h-5 w-5 animate-spin"
                       />
@@ -266,7 +266,7 @@ export default function GuestContributePage() {
                   ) : (
                     <>
                       <img 
-                        src="/dotspark-logo-icon.png" 
+                        src="/dotspark-icon-transparent.png" 
                         alt="" 
                         className="mr-2 h-5 w-5"
                       />
