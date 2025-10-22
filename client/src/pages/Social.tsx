@@ -1,9 +1,17 @@
-import { useQuery } from "@tanstack/react-query";
-import { Users, ArrowLeft, Sparkles, ExternalLink, User, Linkedin } from "lucide-react";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import { Users, ArrowLeft, Sparkles, ExternalLink, User, Linkedin, Pencil, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useLocation } from "wouter";
+import { useState } from "react";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { useToast } from "@/hooks/use-toast";
+import { apiRequest, queryClient } from "@/lib/queryClient";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 
 type Thought = {
   id: number;
@@ -25,12 +33,23 @@ type Thought = {
 
 export default function Social() {
   const [, setLocation] = useLocation();
+  const { toast } = useToast();
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [selectedThought, setSelectedThought] = useState<Thought | null>(null);
+  const [editHeading, setEditHeading] = useState("");
+  const [editSummary, setEditSummary] = useState("");
 
   const { data: thoughtsData, isLoading } = useQuery<{ thoughts: Thought[] }>({
     queryKey: ['/api/thoughts'],
   });
 
+  const { data: userData } = useQuery<{ user: { email: string } }>({
+    queryKey: ['/api/user'],
+  });
+
   const thoughts = thoughtsData?.thoughts || [];
+  const isAdmin = userData?.user?.email === 'aravindhraj1410@gmail.com';
 
   const handleBack = () => {
     const fromDotInterface = localStorage.getItem('dotSocialNavigation');
@@ -82,6 +101,84 @@ export default function Social() {
       return !!thought.guestLinkedInUrl;
     }
     return !!thought.user?.linkedinProfileUrl;
+  };
+
+  // Admin mutations
+  const editMutation = useMutation({
+    mutationFn: async ({ id, heading, summary }: { id: number; heading: string; summary: string }) => {
+      return await apiRequest(`/api/thoughts/${id}`, {
+        method: 'PATCH',
+        body: JSON.stringify({ heading, summary }),
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/thoughts'] });
+      toast({
+        title: "Success",
+        description: "Thought updated successfully",
+      });
+      setEditDialogOpen(false);
+      setSelectedThought(null);
+    },
+    onError: () => {
+      toast({
+        title: "Error",
+        description: "Failed to update thought",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: async (id: number) => {
+      return await apiRequest(`/api/thoughts/${id}`, {
+        method: 'DELETE',
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/thoughts'] });
+      toast({
+        title: "Success",
+        description: "Thought deleted successfully",
+      });
+      setDeleteDialogOpen(false);
+      setSelectedThought(null);
+    },
+    onError: () => {
+      toast({
+        title: "Error",
+        description: "Failed to delete thought",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const handleEdit = (thought: Thought) => {
+    setSelectedThought(thought);
+    setEditHeading(thought.heading);
+    setEditSummary(thought.summary);
+    setEditDialogOpen(true);
+  };
+
+  const handleDelete = (thought: Thought) => {
+    setSelectedThought(thought);
+    setDeleteDialogOpen(true);
+  };
+
+  const confirmEdit = () => {
+    if (selectedThought) {
+      editMutation.mutate({
+        id: selectedThought.id,
+        heading: editHeading,
+        summary: editSummary,
+      });
+    }
+  };
+
+  const confirmDelete = () => {
+    if (selectedThought) {
+      deleteMutation.mutate(selectedThought.id);
+    }
   };
 
   return (
@@ -200,6 +297,30 @@ export default function Social() {
                         })}
                       </p>
                     </div>
+
+                    {/* Admin Controls */}
+                    {isAdmin && (
+                      <div className="flex gap-2">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => handleEdit(thought)}
+                          className="text-amber-600 hover:text-amber-700 hover:bg-amber-50"
+                          title="Edit thought"
+                        >
+                          <Pencil className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => handleDelete(thought)}
+                          className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                          title="Delete thought"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    )}
                   </div>
                 </CardHeader>
 
@@ -236,6 +357,77 @@ export default function Social() {
           </div>
         )}
       </div>
+
+      {/* Edit Dialog */}
+      <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
+        <DialogContent className="sm:max-w-[600px]">
+          <DialogHeader>
+            <DialogTitle>Edit Thought</DialogTitle>
+            <DialogDescription>
+              Make changes to the thought. Click save when you're done.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="grid gap-2">
+              <Label htmlFor="heading">Heading</Label>
+              <Input
+                id="heading"
+                value={editHeading}
+                onChange={(e) => setEditHeading(e.target.value)}
+                placeholder="Thought heading"
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="summary">Thought</Label>
+              <Textarea
+                id="summary"
+                value={editSummary}
+                onChange={(e) => setEditSummary(e.target.value)}
+                placeholder="Thought content"
+                rows={6}
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => setEditDialogOpen(false)}
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={confirmEdit}
+              disabled={editMutation.isPending}
+              className="bg-gradient-to-r from-amber-600 to-orange-600"
+            >
+              {editMutation.isPending ? "Saving..." : "Save Changes"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This action cannot be undone. This will permanently delete the thought
+              "{selectedThought?.heading}".
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={confirmDelete}
+              disabled={deleteMutation.isPending}
+              className="bg-red-600 hover:bg-red-700"
+            >
+              {deleteMutation.isPending ? "Deleting..." : "Delete"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
