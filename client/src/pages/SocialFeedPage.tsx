@@ -706,7 +706,7 @@ export default function SocialFeedPage() {
                         >
                           <Avatar className={`h-12 w-12 border-2 border-amber-200 ${
                             (selectedDot.contributorType === 'guest' && selectedDot.guestLinkedInUrl) || selectedDot.user?.linkedinProfileUrl
-                              ? 'group-hover:border-blue-500 transition-colors' 
+                              ? 'group-hover:border-amber-500 transition-colors' 
                               : ''
                           }`}>
                             <AvatarImage src={selectedDot.user?.linkedinPhotoUrl || selectedDot.user?.avatar || selectedDot.user?.avatarUrl || undefined} />
@@ -719,7 +719,7 @@ export default function SocialFeedPage() {
                           <div className="flex-1">
                             <p className={`font-semibold text-gray-900 ${
                               (selectedDot.contributorType === 'guest' && selectedDot.guestLinkedInUrl) || selectedDot.user?.linkedinProfileUrl
-                                ? 'group-hover:text-blue-600 transition-colors' 
+                                ? 'group-hover:text-amber-600 transition-colors' 
                                 : ''
                             }`}>
                               {selectedDot.contributorType === 'guest' 
