@@ -603,7 +603,7 @@ export default function SocialFeedPage() {
                       <div className="flex items-start justify-between mb-4">
                         <div className="flex items-center gap-3">
                           <Avatar className="h-12 w-12 ring-2 ring-amber-100">
-                            <AvatarImage src={dot.user?.linkedinPhotoUrl || dot.user?.avatar || dot.user?.avatarUrl || undefined} />
+                            <AvatarImage src={dot.user?.linkedinPhotoUrl || dot.user?.avatar || undefined} />
                             <AvatarFallback className="bg-gradient-to-r from-amber-500 to-orange-500 text-white text-sm font-semibold">
                               {dot.user?.fullName?.[0]?.toUpperCase() || 'U'}
                             </AvatarFallback>
@@ -709,7 +709,7 @@ export default function SocialFeedPage() {
                               ? 'group-hover:border-amber-500 transition-colors' 
                               : ''
                           }`}>
-                            <AvatarImage src={selectedDot.user?.linkedinPhotoUrl || selectedDot.user?.avatar || selectedDot.user?.avatarUrl || undefined} />
+                            <AvatarImage src={selectedDot.user?.linkedinPhotoUrl || selectedDot.user?.avatar || undefined} />
                             <AvatarFallback className="bg-gradient-to-r from-amber-500 to-orange-500 text-white">
                               {selectedDot.contributorType === 'guest' 
                                 ? (selectedDot.guestName?.[0]?.toUpperCase() || 'G')
@@ -943,7 +943,7 @@ export default function SocialFeedPage() {
                           {perspectivesData.messages.map((message) => (
                             <div key={message.id} className="flex gap-3 group">
                               <Avatar className="h-8 w-8 flex-shrink-0">
-                                <AvatarImage src={message.user.linkedinPhotoUrl || message.user.avatar || message.user.avatarUrl || undefined} />
+                                <AvatarImage src={message.user.avatar || undefined} />
                                 <AvatarFallback className="bg-gradient-to-r from-amber-500 to-orange-500 text-white text-xs">
                                   {message.user.fullName?.[0]?.toUpperCase() || 'U'}
                                 </AvatarFallback>
