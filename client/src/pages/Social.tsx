@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useLocation } from "wouter";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -39,17 +39,36 @@ export default function Social() {
   const [selectedThought, setSelectedThought] = useState<Thought | null>(null);
   const [editHeading, setEditHeading] = useState("");
   const [editSummary, setEditSummary] = useState("");
+  const [isAdmin, setIsAdmin] = useState(false);
 
   const { data: thoughtsData, isLoading } = useQuery<{ thoughts: Thought[] }>({
     queryKey: ['/api/thoughts'],
   });
 
-  const { data: userData } = useQuery<{ user: { email: string } }>({
-    queryKey: ['/api/auth/me'],
-  });
-
   const thoughts = thoughtsData?.thoughts || [];
-  const isAdmin = userData?.user?.email === 'aravindhraj1410@gmail.com';
+
+  // Check admin status directly without relying on broken AuthProvider
+  useEffect(() => {
+    fetch('/api/auth/me', {
+      credentials: 'include'
+    })
+      .then(res => res.json())
+      .then(data => {
+        console.log('Admin check:', data);
+        if (data.user?.email === 'aravindhraj1410@gmail.com') {
+          setIsAdmin(true);
+          console.log('✅ Admin logged in');
+        }
+      })
+      .catch(err => console.error('Admin check failed:', err));
+  }, []);
+
+  // Debug logging
+  console.log('Social Page Debug:', {
+    thoughtsCount: thoughts.length,
+    firstThought: thoughts[0],
+    isAdmin
+  });
 
   const handleBack = () => {
     const fromDotInterface = localStorage.getItem('dotSocialNavigation');
