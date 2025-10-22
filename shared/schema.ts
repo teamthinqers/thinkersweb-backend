@@ -73,17 +73,20 @@ export const tags = pgTable("tags", {
 
 // === NEW SIMPLIFIED THOUGHT SYSTEM ===
 
-// Thoughts table - Unified personal and social thoughts
+// Thoughts table - Unified personal and social thoughts (supports guest contributions)
 export const thoughts = pgTable("thoughts", {
   id: serial("id").primaryKey(),
-  userId: integer("user_id").references(() => users.id).notNull(),
+  userId: integer("user_id").references(() => users.id), // Nullable for guest contributions
+  contributorType: text("contributor_type").notNull().default("user"), // 'user' or 'guest'
+  guestName: text("guest_name"), // For guest contributors
+  guestLinkedInUrl: text("guest_linkedin_url"), // For guest contributors with LinkedIn profiles
   heading: text("heading").notNull(),
   summary: text("summary").notNull(),
   emotions: text("emotions"), // Optional: JSON array of emotions like ["Joy", "Curiosity", "Hope"]
   imageUrl: text("image_url"), // Optional: image attachment
   visibility: text("visibility").notNull().default("personal"), // 'personal' or 'social'
   sharedToSocial: boolean("shared_to_social").default(false).notNull(), // Track if personal thought is shared to social
-  channel: text("channel").notNull().default("write"), // 'write', 'linkedin', 'whatsapp', 'chatgpt', etc.
+  channel: text("channel").notNull().default("write"), // 'write', 'linkedin', 'whatsapp', 'chatgpt', 'guest', etc.
   positionX: integer("position_x"),
   positionY: integer("position_y"),
   keywords: text("keywords"), // Optional: keywords for search
@@ -415,6 +418,20 @@ export const insertThoughtSchema = createInsertSchema(thoughts, {
   summary: (schema) => schema.min(1, "Your thought cannot be empty").max(5000, "Thought is too long (max 5000 characters)"),
   emotions: (schema) => schema.optional(),
   visibility: (schema) => schema.refine(val => ['personal', 'social'].includes(val), "Visibility must be personal or social"),
+  contributorType: (schema) => schema.refine(val => ['user', 'guest'].includes(val), "Contributor type must be user or guest"),
+  guestName: (schema) => schema.optional(),
+  guestLinkedInUrl: (schema) => schema.optional(),
+});
+
+// Guest contribution schema (requires guest fields, no userId)
+export const insertGuestThoughtSchema = z.object({
+  guestName: z.string().min(2, "Name must be at least 2 characters").max(100, "Name too long"),
+  guestLinkedInUrl: z.string().url("Invalid LinkedIn URL").optional().or(z.literal('')),
+  heading: z.string().min(1, "Heading is required").max(200, "Heading too long"),
+  summary: z.string().min(1, "Your thought cannot be empty").max(5000, "Thought is too long (max 5000 characters)"),
+  contributorType: z.literal("guest"),
+  visibility: z.literal("social"),
+  channel: z.literal("guest"),
 });
 
 export const selectThoughtSchema = createSelectSchema(thoughts);
