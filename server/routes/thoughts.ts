@@ -527,7 +527,7 @@ router.get('/myneura', async (req, res) => {
                 fullName: true,
                 avatar: true,
                 linkedinPhotoUrl: true,
-                avatarUrl: true,
+                linkedinProfileUrl: true,
                 email: true,
               }
             }
@@ -1100,7 +1100,7 @@ router.post('/:thoughtId/perspectives', async (req, res) => {
       }
     });
 
-    if (thought) {
+    if (thought && thought.userId) {
       notifyNewPerspective(userId, thoughtId, thought.heading, thought.userId).catch(err =>
         console.error('Notification error:', err)
       );
@@ -1596,7 +1596,7 @@ router.post('/:thoughtId/sparks', async (req, res) => {
       }
     });
 
-    if (thought) {
+    if (thought && thought.userId) {
       notifySparkSaved(userId, thoughtId, thought.heading, thought.userId).catch(err =>
         console.error('Notification error:', err)
       );
