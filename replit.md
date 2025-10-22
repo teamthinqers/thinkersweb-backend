@@ -10,6 +10,7 @@ Dot headings: Automatic AI-generated headings are acceptable and should remain e
 Global Floating Dot: Replaced with v2 that works universally across all pages without authentication dependencies, supports Dot/Wheel/Chakra creation with spinning wheel effect when clicked and separate create buttons in natural mode like version 1. Updated form fields to match backend structure: dots have summary/anchor/pulse layers with auto-generated one-word summary, wheels have heading/goals/timeline, chakras have heading/purpose/timeline. Added dropdown mapping for dots to wheels and wheels to chakras.
 My-Neura Settings: Simplified to show only capture mode selection (AI mode, natural mode, hybrid mode) - removed AI chat preference and AI input preference settings.
 Global Floating Dot Mode Switching: Added flip button functionality to switch between natural mode and AI mode, defaulting all users to hybrid mode. Natural mode shows separate create buttons for dots/wheels/chakras like v1. AI mode shows dummy buttons pending future implementation.
+Admin User: aravindhraj1410@gmail.com has special moderation privileges for managing Social Neura content.
 
 ## System Architecture
 
@@ -41,7 +42,9 @@ Global Floating Dot Mode Switching: Added flip button functionality to switch be
 - **AI/Neural Extensions**: Tunable AI (DotSpark Core), cognitive alignment (CogniShield), content analysis/generation (OpenAI), conversational AI for entry creation, and automatic Python logic integration.
 - **WhatsApp Integration**: Twilio/Meta WhatsApp Business API for message processing, user registration, and automated responses.
 - **Authentication System**: Supports both traditional session-based and Firebase Google OAuth, with dual user support and protected routes. Uses popup-based authentication flow for all devices (desktop and mobile) for reliability - Firebase redirect flow proved unreliable on mobile browsers.
-- **Data Flow**: Structured flows for entry creation (web/WhatsApp to OpenAI to DB), WhatsApp message processing, and authentication management.
+- **Guest Contribution System**: Allows thought leaders to contribute to Social Neura without full registration. Admin generates pre-filled links with name and LinkedIn URL, guests only need to add heading and thought content. Supports LinkedIn profile linking for both registered users and guests.
+- **Admin Moderation**: aravindhraj1410@gmail.com can edit or delete any thought in Social Neura for content quality control and testing purposes. Edit dialog allows modification of heading and thought content. Delete confirmation prevents accidental deletions.
+- **Data Flow**: Structured flows for entry creation (web/WhatsApp to OpenAI to DB), WhatsApp message processing, guest contributions, and authentication management.
 - **UI/UX Decisions**:
     - **Color Schemes**: Amber/orange theme for cognitive elements (dots, wheels, chakras), purple for AI-related functionality, red-orange for social features.
     - **Dynamic Grid Sizing**: Adaptive sizing for dots, wheels, and chakras based on content quantity, with dynamic spacing and content-aware boundaries.
