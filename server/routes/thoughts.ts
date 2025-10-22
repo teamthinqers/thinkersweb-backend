@@ -20,6 +20,11 @@ import { notifyNewThought, notifyNewPerspective, notifySparkSaved } from '../not
 
 const router = Router();
 
+// Admin check helper
+const isAdmin = (user: any): boolean => {
+  return user?.email === 'aravindhraj1410@gmail.com';
+};
+
 /**
  * GET /api/thoughts
  * Fetch social thoughts from all users for the /home thought cloud
@@ -301,7 +306,7 @@ router.patch('/:id', async (req, res) => {
       return res.status(400).json({ error: 'Invalid thought ID' });
     }
 
-    // Check if thought exists and belongs to user
+    // Check if thought exists
     const thought = await db.query.thoughts.findFirst({
       where: eq(thoughts.id, thoughtId),
     });
@@ -310,7 +315,9 @@ router.patch('/:id', async (req, res) => {
       return res.status(404).json({ error: 'Thought not found' });
     }
 
-    if (thought.userId !== userId) {
+    // Allow admin to edit any thought, otherwise check ownership
+    const userIsAdmin = isAdmin((req as any).user);
+    if (!userIsAdmin && thought.userId !== userId) {
       return res.status(403).json({ error: 'You can only edit your own thoughts' });
     }
 
@@ -364,7 +371,7 @@ router.patch('/:id', async (req, res) => {
 /**
  * DELETE /api/thoughts/:id
  * Delete a thought
- * Requires user to be the owner
+ * Requires user to be the owner OR admin
  */
 router.delete('/:id', async (req, res) => {
   try {
@@ -380,7 +387,7 @@ router.delete('/:id', async (req, res) => {
       return res.status(400).json({ error: 'Invalid thought ID' });
     }
 
-    // Check if thought exists and belongs to user
+    // Check if thought exists
     const thought = await db.query.thoughts.findFirst({
       where: eq(thoughts.id, thoughtId),
     });
@@ -389,7 +396,9 @@ router.delete('/:id', async (req, res) => {
       return res.status(404).json({ error: 'Thought not found' });
     }
 
-    if (thought.userId !== userId) {
+    // Allow admin to delete any thought, otherwise check ownership
+    const userIsAdmin = isAdmin((req as any).user);
+    if (!userIsAdmin && thought.userId !== userId) {
       return res.status(403).json({ error: 'You can only delete your own thoughts' });
     }
 
