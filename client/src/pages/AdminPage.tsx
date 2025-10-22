@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/hooks/use-auth-new";
-import { Loader2, Users, Shield, CheckCircle2, XCircle, Calendar, Target, PhoneCall, Send, Clock, AlertTriangle, Trash2, Upload } from "lucide-react";
+import { Loader2, Users, Shield, CheckCircle2, XCircle, Calendar, Target, PhoneCall, Send, Clock, AlertTriangle, Trash2, Upload, Link2, Copy, Sparkles } from "lucide-react";
 import { apiRequest, getQueryFn } from '@/lib/queryClient';
 import { useToast } from "@/hooks/use-toast";
 import { Input } from "@/components/ui/input";
@@ -111,6 +111,11 @@ export default function AdminPage() {
   const [individualNudgePhone, setIndividualNudgePhone] = useState('');
   const [individualNudgeMessage, setIndividualNudgeMessage] = useState('');
   const [selectedContacts, setSelectedContacts] = useState<number[]>([]);
+  
+  // Guest Link Generator state
+  const [guestName, setGuestName] = useState('');
+  const [guestLinkedIn, setGuestLinkedIn] = useState('');
+  const [generatedLink, setGeneratedLink] = useState('');
 
   // Check if user is admin
   const isAdmin = user?.email === 'aravindhraj1410@gmail.com';
@@ -838,6 +843,105 @@ export default function AdminPage() {
           </CardContent>
         </Card>
       </div>
+
+      {/* Guest Contribution Link Generator */}
+      <Card className="mt-8">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Link2 className="h-5 w-5" />
+            Guest Contribution Link Generator
+          </CardTitle>
+          <CardDescription>
+            Generate personalized links for thought leaders to contribute to Social
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-4">
+            {/* Name Input */}
+            <div>
+              <label className="text-sm font-medium mb-2 block">Contributor Name *</label>
+              <Input
+                placeholder="e.g., Dr. Jane Smith"
+                value={guestName}
+                onChange={(e) => setGuestName(e.target.value)}
+              />
+            </div>
+
+            {/* LinkedIn URL Input */}
+            <div>
+              <label className="text-sm font-medium mb-2 block">LinkedIn Profile URL (Optional)</label>
+              <Input
+                placeholder="https://www.linkedin.com/in/username"
+                value={guestLinkedIn}
+                onChange={(e) => setGuestLinkedIn(e.target.value)}
+              />
+              <p className="text-xs text-gray-500 mt-1">Their avatar will link to this profile when clicked</p>
+            </div>
+
+            {/* Generate Button */}
+            <Button
+              onClick={() => {
+                if (!guestName.trim()) {
+                  toast({
+                    title: "Name Required",
+                    description: "Please enter the contributor's name",
+                    variant: "destructive"
+                  });
+                  return;
+                }
+
+                const baseUrl = window.location.origin;
+                const params = new URLSearchParams();
+                params.set('name', guestName.trim());
+                if (guestLinkedIn.trim()) {
+                  params.set('linkedin', guestLinkedIn.trim());
+                }
+                const link = `${baseUrl}/guest-contribute?${params.toString()}`;
+                setGeneratedLink(link);
+                
+                toast({
+                  title: "Link Generated! 🎉",
+                  description: "You can now copy and share the link"
+                });
+              }}
+              disabled={!guestName.trim()}
+              className="w-full bg-gradient-to-r from-amber-600 to-orange-600"
+            >
+              <Sparkles className="mr-2 h-4 w-4" />
+              Generate Link
+            </Button>
+
+            {/* Generated Link Display */}
+            {generatedLink && (
+              <div className="mt-4 p-4 bg-amber-50 border-2 border-amber-200 rounded-lg">
+                <label className="text-sm font-medium mb-2 block text-amber-900">Generated Link:</label>
+                <div className="flex gap-2">
+                  <Input
+                    value={generatedLink}
+                    readOnly
+                    className="font-mono text-sm bg-white"
+                  />
+                  <Button
+                    onClick={() => {
+                      navigator.clipboard.writeText(generatedLink);
+                      toast({
+                        title: "Copied! 📋",
+                        description: "Link copied to clipboard"
+                      });
+                    }}
+                    variant="outline"
+                  >
+                    <Copy className="h-4 w-4" />
+                  </Button>
+                </div>
+                <p className="text-xs text-amber-700 mt-2">
+                  ✓ Share this link with {guestName}. They'll only need to add their heading and thought!
+                </p>
+              </div>
+            )}
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Individual Nudge Dialog */}
       <Dialog open={individualNudgeOpen} onOpenChange={setIndividualNudgeOpen}>

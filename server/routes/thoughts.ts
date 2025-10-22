@@ -51,6 +51,7 @@ router.get('/', async (req, res) => {
             fullName: true,
             avatar: true,
             linkedinPhotoUrl: true,
+            linkedinProfileUrl: true,
             email: true,
           }
         }
@@ -467,6 +468,7 @@ router.get('/myneura', async (req, res) => {
             fullName: true,
             avatar: true,
             linkedinPhotoUrl: true,
+            linkedinProfileUrl: true,
             email: true,
           }
         }

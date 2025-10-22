@@ -18,6 +18,7 @@ type Thought = {
     fullName: string;
     avatar?: string;
     linkedinPhotoUrl?: string;
+    linkedinProfileUrl?: string;
     email: string;
   };
 };
@@ -46,7 +47,10 @@ export default function Social() {
     if (thought.contributorType === 'guest' && thought.guestLinkedInUrl) {
       window.open(thought.guestLinkedInUrl, '_blank');
     }
-    // Future: For users, could navigate to their profile page
+    // If registered user with LinkedIn, open their LinkedIn profile
+    else if (thought.user?.linkedinProfileUrl) {
+      window.open(thought.user.linkedinProfileUrl, '_blank');
+    }
   };
 
   const getContributorName = (thought: Thought) => {
@@ -74,7 +78,10 @@ export default function Social() {
   };
 
   const hasLinkedIn = (thought: Thought) => {
-    return thought.contributorType === 'guest' && thought.guestLinkedInUrl;
+    if (thought.contributorType === 'guest') {
+      return !!thought.guestLinkedInUrl;
+    }
+    return !!thought.user?.linkedinProfileUrl;
   };
 
   return (
@@ -146,17 +153,18 @@ export default function Social() {
                     {/* Avatar */}
                     <div 
                       className={`flex-shrink-0 ${hasLinkedIn(thought) ? 'cursor-pointer group' : ''}`}
-                      onClick={() => handleAvatarClick(thought)}
+                      onClick={() => hasLinkedIn(thought) && handleAvatarClick(thought)}
+                      title={hasLinkedIn(thought) ? "View LinkedIn Profile" : undefined}
                     >
                       <div className="relative">
-                        <Avatar className="h-12 w-12 border-2 border-amber-300">
+                        <Avatar className={`h-12 w-12 border-2 border-amber-300 ${hasLinkedIn(thought) ? 'group-hover:border-blue-500 transition-colors' : ''}`}>
                           <AvatarImage src={getContributorAvatar(thought)} />
                           <AvatarFallback className="bg-gradient-to-br from-amber-100 to-orange-100 text-amber-700 font-semibold">
                             {getContributorInitials(thought)}
                           </AvatarFallback>
                         </Avatar>
                         {hasLinkedIn(thought) && (
-                          <div className="absolute -bottom-1 -right-1 bg-blue-600 rounded-full p-1">
+                          <div className="absolute -bottom-1 -right-1 bg-blue-600 rounded-full p-1 group-hover:bg-blue-700 transition-colors">
                             <Linkedin className="h-3 w-3 text-white" />
                           </div>
                         )}
