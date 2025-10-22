@@ -35,6 +35,7 @@ import WhatsAppEntries from "@/pages/WhatsAppEntries";
 import AdminPage from "@/pages/AdminPage";
 import MobileLandingPage from "@/pages/MobileLandingPage";
 import FixedEntries from "@/pages/FixedEntries";
+import GuestContributePage from "@/pages/GuestContributePage";
 import ActivateDotSpark from "@/pages/ActivateDotSpark";
 import ActivateNeura from "@/pages/ActivateNeura";
 import MyNeura from "@/pages/MyNeura";
@@ -204,6 +205,7 @@ function Router() {
       <Route path="/preview" component={PreviewPage} />
       <Route path="/mobile-landing" component={MobileLandingPage} />
       <Route path="/social" component={SocialFeedPage} />
+      <Route path="/guest-contribute" component={GuestContributePage} />
       <Route path="/myneura" component={MyNeuraPage} />
       <Route path="/mydotspark" component={MyDotSparkPage} />
       <Route path="/cognitive-identity" component={CognitiveIdentityPage} />
