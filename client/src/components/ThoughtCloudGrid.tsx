@@ -19,11 +19,15 @@ export interface ThoughtDot {
   sharedToSocial?: boolean;
   createdAt: string;
   username?: string;
+  contributorType?: string; // 'user' or 'guest'
+  guestName?: string; // For guest contributors
+  guestLinkedInUrl?: string; // For guest contributors with LinkedIn profiles
   user?: {
     id: number;
     fullName: string | null;
     avatar?: string | null;
     linkedinPhotoUrl?: string | null;
+    linkedinProfileUrl?: string | null;
     email?: string;
   };
   contributors?: {

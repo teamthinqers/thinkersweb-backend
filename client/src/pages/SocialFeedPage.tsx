@@ -682,15 +682,50 @@ export default function SocialFeedPage() {
                     {/* Header */}
                     <div className="flex-shrink-0 p-6 border-b border-gray-200">
                       <DialogHeader>
-                        <div className="flex items-center gap-3 mb-4">
-                          <Avatar className="h-12 w-12 border-2 border-amber-200">
+                        <div 
+                          className={`flex items-center gap-3 mb-4 ${
+                            (selectedDot.contributorType === 'guest' && selectedDot.guestLinkedInUrl) || selectedDot.user?.linkedinProfileUrl
+                              ? 'cursor-pointer group' 
+                              : ''
+                          }`}
+                          onClick={() => {
+                            // Handle guest contributor LinkedIn
+                            if (selectedDot.contributorType === 'guest' && selectedDot.guestLinkedInUrl) {
+                              window.open(selectedDot.guestLinkedInUrl, '_blank');
+                            }
+                            // Handle registered user LinkedIn
+                            else if (selectedDot.user?.linkedinProfileUrl) {
+                              window.open(selectedDot.user.linkedinProfileUrl, '_blank');
+                            }
+                          }}
+                          title={
+                            (selectedDot.contributorType === 'guest' && selectedDot.guestLinkedInUrl) || selectedDot.user?.linkedinProfileUrl
+                              ? "View LinkedIn Profile" 
+                              : undefined
+                          }
+                        >
+                          <Avatar className={`h-12 w-12 border-2 border-amber-200 ${
+                            (selectedDot.contributorType === 'guest' && selectedDot.guestLinkedInUrl) || selectedDot.user?.linkedinProfileUrl
+                              ? 'group-hover:border-blue-500 transition-colors' 
+                              : ''
+                          }`}>
                             <AvatarImage src={selectedDot.user?.linkedinPhotoUrl || selectedDot.user?.avatar || selectedDot.user?.avatarUrl || undefined} />
                             <AvatarFallback className="bg-gradient-to-r from-amber-500 to-orange-500 text-white">
-                              {selectedDot.user?.fullName?.[0]?.toUpperCase() || 'U'}
+                              {selectedDot.contributorType === 'guest' 
+                                ? (selectedDot.guestName?.[0]?.toUpperCase() || 'G')
+                                : (selectedDot.user?.fullName?.[0]?.toUpperCase() || 'U')}
                             </AvatarFallback>
                           </Avatar>
-                          <div>
-                            <p className="font-semibold text-gray-900">{selectedDot.user?.fullName || 'Anonymous'}</p>
+                          <div className="flex-1">
+                            <p className={`font-semibold text-gray-900 ${
+                              (selectedDot.contributorType === 'guest' && selectedDot.guestLinkedInUrl) || selectedDot.user?.linkedinProfileUrl
+                                ? 'group-hover:text-blue-600 transition-colors' 
+                                : ''
+                            }`}>
+                              {selectedDot.contributorType === 'guest' 
+                                ? (selectedDot.guestName || 'Guest Contributor')
+                                : (selectedDot.user?.fullName || 'Anonymous')}
+                            </p>
                             <p className="text-sm text-gray-500">Posted {new Date(selectedDot.createdAt).toLocaleString()}</p>
                           </div>
                         </div>
