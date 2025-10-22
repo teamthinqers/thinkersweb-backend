@@ -10,7 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useToast } from "@/hooks/use-toast";
-import { Sparkles, CheckCircle2, Lightbulb } from "lucide-react";
+import { CheckCircle2, Lightbulb } from "lucide-react";
 
 // Guest contribution form schema
 const guestContributionSchema = z.object({
@@ -121,7 +121,11 @@ export default function GuestContributePage() {
             <h1 className="text-4xl font-bold bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent">
               Share Your Thought
             </h1>
-            <Sparkles className="h-10 w-10 text-orange-600 animate-pulse" />
+            <img 
+              src="/dotspark-logo-icon.png" 
+              alt="DotSpark" 
+              className="h-10 w-10 animate-pulse"
+            />
           </div>
           <p className="text-lg text-gray-600 max-w-xl mx-auto">
             Contribute to DotSpark Social - A collective intelligence network where thoughts spark insights
@@ -252,12 +256,20 @@ export default function GuestContributePage() {
                 >
                   {contributeMutation.isPending ? (
                     <>
-                      <Sparkles className="mr-2 h-5 w-5 animate-spin" />
+                      <img 
+                        src="/dotspark-logo-icon.png" 
+                        alt="" 
+                        className="mr-2 h-5 w-5 animate-spin"
+                      />
                       Sharing...
                     </>
                   ) : (
                     <>
-                      <Sparkles className="mr-2 h-5 w-5" />
+                      <img 
+                        src="/dotspark-logo-icon.png" 
+                        alt="" 
+                        className="mr-2 h-5 w-5"
+                      />
                       Share My Thought
                     </>
                   )}
