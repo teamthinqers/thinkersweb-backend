@@ -137,7 +137,7 @@ export default function GuestContributePage() {
           <CardHeader>
             <CardTitle className="text-2xl text-gray-800">Your Contribution</CardTitle>
             <CardDescription>
-              Share your insights with thought leaders and learners on DotSpark
+              Please share your insights with ThinQers and Learners in DotSpark
             </CardDescription>
           </CardHeader>
           <CardContent>
