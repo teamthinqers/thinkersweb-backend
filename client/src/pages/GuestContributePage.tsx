@@ -259,7 +259,7 @@ export default function GuestContributePage() {
                       <img 
                         src="/dotspark-icon-transparent.png" 
                         alt="" 
-                        className="mr-2 h-5 w-5 animate-spin"
+                        className="mr-2 h-5 w-5 animate-spin brightness-0 invert"
                       />
                       Sharing...
                     </>
@@ -268,7 +268,7 @@ export default function GuestContributePage() {
                       <img 
                         src="/dotspark-icon-transparent.png" 
                         alt="" 
-                        className="mr-2 h-5 w-5"
+                        className="mr-2 h-5 w-5 brightness-0 invert"
                       />
                       Share My Thought
                     </>
