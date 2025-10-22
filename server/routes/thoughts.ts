@@ -49,6 +49,21 @@ router.get('/', async (req, res) => {
       limit,
       offset,
       orderBy: desc(thoughts.createdAt),
+      columns: {
+        id: true,
+        userId: true,
+        contributorType: true,
+        guestName: true,
+        guestLinkedInUrl: true,
+        heading: true,
+        summary: true,
+        emotions: true,
+        keywords: true,
+        visibility: true,
+        channel: true,
+        createdAt: true,
+        updatedAt: true,
+      },
       with: {
         user: {
           columns: {
@@ -79,6 +94,21 @@ router.get('/', async (req, res) => {
         limit,
         offset,
         orderBy: desc(thoughts.createdAt),
+        columns: {
+          id: true,
+          userId: true,
+          contributorType: true,
+          guestName: true,
+          guestLinkedInUrl: true,
+          heading: true,
+          summary: true,
+          emotions: true,
+          keywords: true,
+          visibility: true,
+          channel: true,
+          createdAt: true,
+          updatedAt: true,
+        },
         with: {
           user: {
             columns: {
@@ -86,6 +116,7 @@ router.get('/', async (req, res) => {
               fullName: true,
               avatar: true,
               linkedinPhotoUrl: true,
+              linkedinProfileUrl: true,
               email: true,
             }
           }
