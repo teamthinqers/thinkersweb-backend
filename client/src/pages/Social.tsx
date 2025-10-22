@@ -45,7 +45,7 @@ export default function Social() {
   });
 
   const { data: userData } = useQuery<{ user: { email: string } }>({
-    queryKey: ['/api/user'],
+    queryKey: ['/api/auth/me'],
   });
 
   const thoughts = thoughtsData?.thoughts || [];
