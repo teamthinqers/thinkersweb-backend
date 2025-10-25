@@ -1,7 +1,16 @@
 # DotSpark
 
 ## Overview
-DotSpark is a full-stack web application serving as a personalized learning management system with "neural extension" capabilities. It allows users to capture, organize, and share learning experiences, offering AI-powered insights and natural language processing of entries. The platform is designed to preserve natural intelligence while enhancing cognitive capabilities through tunable AI assistance. Key capabilities include comprehensive entity management (users, entries, categories, tags, connections), advanced AI/Neural Extensions (DotSpark Core, CogniShield, Neural Processing via OpenAI, conversational AI), and WhatsApp integration for seamless content capture. The project aims to provide a unique, AI-enhanced learning experience with significant market potential for personalized cognitive augmentation.
+DotSpark is a full-stack web application and native Android mobile app serving as a personalized learning management system with "neural extension" capabilities. It allows users to capture, organize, and share learning experiences, offering AI-powered insights and natural language processing of entries. The platform is designed to preserve natural intelligence while enhancing cognitive capabilities through tunable AI assistance. Key capabilities include comprehensive entity management (users, entries, categories, tags, connections), advanced AI/Neural Extensions (DotSpark Core, CogniShield, Neural Processing via OpenAI, conversational AI), and WhatsApp integration for seamless content capture. The project aims to provide a unique, AI-enhanced learning experience with significant market potential for personalized cognitive augmentation.
+
+## Mobile App Status
+- **Platform**: Native Android app built with React Native (Expo SDK 51)
+- **Goal**: EXACT replica of dotspark.in web application with complete feature parity
+- **Navigation Structure**: Completed - Tab-based navigation (MyDotSpark, MyNeura, Social, ThinQCircle) with stack navigation for detail screens (Cognitive Identity, Learning Engine)
+- **Backend Integration**: Connects to same Express backend API as web app
+- **Build System**: EAS Build for APK generation (preview builds for testing, ~15 min build time)
+- **Development Approach**: Iterative feature implementation - build APKs for testing major changes
+- **Current State**: Basic navigation scaffolding complete, ready for feature-by-feature implementation matching web experience
 
 ## User Preferences
 Preferred communication style: Simple, everyday language.
