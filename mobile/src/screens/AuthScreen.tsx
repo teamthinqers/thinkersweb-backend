@@ -1,18 +1,21 @@
 import { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { useAuth } from '../hooks/useAuth';
 
 export default function AuthScreen() {
   const { signInWithGoogle, signIn } = useAuth();
-  const [demoMode, setDemoMode] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleDemoLogin = async () => {
+    setIsLoading(true);
     try {
-      // Demo login with test credentials
-      await signIn('demo@dotspark.com', 'demo123');
+      // Login with test account credentials
+      await signIn('test@dotspark.com', 'test123');
     } catch (error) {
       console.error('Demo login failed:', error);
-      setDemoMode(true);
+      alert('Demo login failed. Please try again or use Google Sign-In.');
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -36,7 +39,7 @@ export default function AuthScreen() {
           </Text>
         </View>
 
-        {/* Sign In Buttons */}
+        {/* Google Sign In Button */}
         <TouchableOpacity
           style={styles.googleButton}
           onPress={signInWithGoogle}
@@ -45,12 +48,18 @@ export default function AuthScreen() {
           <Text style={styles.googleButtonText}>Sign in with Google</Text>
         </TouchableOpacity>
 
+        {/* Demo Test Account Button */}
         <TouchableOpacity
           style={styles.demoButton}
           onPress={handleDemoLogin}
           activeOpacity={0.8}
+          disabled={isLoading}
         >
-          <Text style={styles.demoButtonText}>Try Demo Mode</Text>
+          {isLoading ? (
+            <ActivityIndicator color="#f59e0b" />
+          ) : (
+            <Text style={styles.demoButtonText}>Login with Test Account</Text>
+          )}
         </TouchableOpacity>
 
         {/* Footer */}
@@ -148,6 +157,31 @@ const styles = StyleSheet.create({
     color: '#f59e0b',
     fontSize: 18,
     fontWeight: '600',
+  },
+  input: {
+    backgroundColor: '#f9fafb',
+    borderWidth: 1,
+    borderColor: '#e5e7eb',
+    borderRadius: 12,
+    paddingVertical: 16,
+    paddingHorizontal: 16,
+    fontSize: 16,
+    width: '100%',
+    marginBottom: 12,
+  },
+  errorText: {
+    color: '#ef4444',
+    fontSize: 14,
+    marginBottom: 12,
+    textAlign: 'center',
+  },
+  switchButton: {
+    marginTop: 12,
+  },
+  switchButtonText: {
+    color: '#6b7280',
+    fontSize: 16,
+    textAlign: 'center',
   },
   footer: {
     marginTop: 24,
