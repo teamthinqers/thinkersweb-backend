@@ -1,0 +1,469 @@
+Running 'gradlew :app:assembleRelease' in /home/expo/workingdir/build/mobile/android
+Downloading https://services.gradle.org/distributions/gradle-8.10.2-all.zip
+10%.
+20%.
+30%.
+40%.
+50%.
+60%.
+70%.
+80%
+90%.
+100%
+Welcome to Gradle 8.10.2!
+Here are the highlights of this release:
+ - Support for Java 23
+ - Faster configuration cache
+ - Better configuration cache reports
+For more details see https://docs.gradle.org/8.10.2/release-notes.html
+To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/8.10.2/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
+Daemon will be stopped at the end of the build
+> Task :gradle-plugin:shared:checkKotlinGradlePluginConfigurationErrors
+> Task :gradle-plugin:settings-plugin:checkKotlinGradlePluginConfigurationErrors
+> Task :gradle-plugin:settings-plugin:pluginDescriptors
+> Task :gradle-plugin:settings-plugin:processResources
+> Task :gradle-plugin:shared:processResources NO-SOURCE
+> Task :gradle-plugin:shared:compileKotlin
+> Task :gradle-plugin:shared:compileJava
+NO-SOURCE
+> Task :gradle-plugin:shared:classes UP-TO-DATE
+> Task :gradle-plugin:shared:jar
+> Task :gradle-plugin:settings-plugin:compileKotlin
+> Task :gradle-plugin:settings-plugin:compileJava NO-SOURCE
+> Task :gradle-plugin:settings-plugin:classes
+> Task :gradle-plugin:settings-plugin:jar
+> Task :gradle-plugin:react-native-gradle-plugin:checkKotlinGradlePluginConfigurationErrors
+> Task :expo-dev-launcher-gradle-plugin:checkKotlinGradlePluginConfigurationErrors
+> Task :expo-dev-launcher-gradle-plugin:pluginDescriptors
+> Task :expo-dev-launcher-gradle-plugin:processResources
+> Task :gradle-plugin:react-native-gradle-plugin:pluginDescriptors
+> Task :gradle-plugin:react-native-gradle-plugin:processResources
+> Task :gradle-plugin:react-native-gradle-plugin:compileKotlin
+> Task :gradle-plugin:react-native-gradle-plugin:compileJava NO-SOURCE
+> Task :gradle-plugin:react-native-gradle-plugin:classes
+> Task :gradle-plugin:react-native-gradle-plugin:jar
+> Task :expo-dev-launcher-gradle-plugin:compileKotlin
+> Task :expo-dev-launcher-gradle-plugin:compileJava
+NO-SOURCE
+> Task :expo-dev-launcher-gradle-plugin:classes
+> Task :expo-dev-launcher-gradle-plugin:jar
+> Configure project :app
+ℹ️  Applying gradle plugin 'expo-dev-launcher-gradle-plugin' (expo-dev-launcher@5.0.35)
+> Configure project :expo-modules-core
+Checking the license for package NDK (Side by side) 26.1.10909125 in /home/expo/Android/Sdk/licenses
+License for package NDK (Side by side) 26.1.10909125 accepted.
+Preparing "Install NDK (Side by side) 26.1.10909125 v.26.1.10909125".
+"Install NDK (Side by side) 26.1.10909125 v.26.1.10909125" ready.
+Installing NDK (Side by side) 26.1.10909125 in /home/expo/Android/Sdk/ndk/26.1.10909125
+"Install NDK (Side by side) 26.1.10909125 v.26.1.10909125" complete.
+"Install NDK (Side by side) 26.1.10909125 v.26.1.10909125" finished.
+> Configure project :expo
+Using expo modules
+  - expo-application (6.0.2)
+  - expo-asset (11.0.5)
+  - expo-constants (17.0.8)
+  - expo-crypto (14.0.2)
+  - expo-dev-client (5.0.20)
+  - expo-dev-launcher (5.0.35)
+  - expo-dev-menu (6.0.25)
+  - expo-file-system (18.0.12)
+  - expo-font (13.0.4)
+  - expo-json-utils (0.14.0)
+  - expo-keep-awake (14.0.3)
+  - expo-linking (7.0.5)
+  - expo-manifests (0.15.8)
+  - expo-modules-core (2.2.3)
+  - expo-web-browser (14.0.2)
+Checking the license for package Android SDK Build-Tools 34 in /home/expo/Android/Sdk/licenses
+License for package Android SDK Build-Tools 34 accepted.
+Preparing "Install Android SDK Build-Tools 34 v.34.0.0".
+"Install Android SDK Build-Tools 34 v.34.0.0" ready.
+Installing Android SDK Build-Tools 34 in /home/expo/Android/Sdk/build-tools/34.0.0
+"Install Android SDK Build-Tools 34 v.34.0.0" complete.
+"Install Android SDK Build-Tools 34 v.34.0.0" finished.
+> Task :expo-application:preBuild UP-TO-DATE
+> Task :expo-application:preReleaseBuild UP-TO-DATE
+> Task :expo-asset:preBuild UP-TO-DATE
+> Task :expo-asset:preReleaseBuild UP-TO-DATE
+> Task :app:checkKotlinGradlePluginConfigurationErrors
+> Task :app:generateAutolinkingPackageList
+> Task :app:generateCodegenSchemaFromJavaScript SKIPPED
+> Task :app:generateCodegenArtifactsFromSchema SKIPPED
+> Task :app:preBuild
+> Task :app:preReleaseBuild
+> Task :expo-asset:writeReleaseAarMetadata
+> Task :expo-application:writeReleaseAarMetadata
+> Task :expo-crypto:preBuild UP-TO-DATE
+> Task :expo-crypto:preReleaseBuild UP-TO-DATE
+> Task :app:generateReleaseBuildConfig
+> Task :expo-dev-client:preBuild UP-TO-DATE
+> Task :expo-dev-client:preReleaseBuild UP-TO-DATE
+> Task :expo-crypto:writeReleaseAarMetadata
+> Task :expo-dev-launcher:preBuild UP-TO-DATE
+> Task :expo-dev-launcher:preReleaseBuild UP-TO-DATE
+> Task :expo-dev-client:writeReleaseAarMetadata
+> Task :expo-dev-menu:preBuild UP-TO-DATE
+> Task :expo-dev-menu:preReleaseBuild UP-TO-DATE
+> Task :expo-dev-menu:writeReleaseAarMetadata
+> Task :expo-dev-menu-interface:preBuild UP-TO-DATE
+> Task :expo-dev-menu-interface:preReleaseBuild UP-TO-DATE
+> Task :expo-dev-launcher:writeReleaseAarMetadata
+> Task :expo-file-system:preBuild UP-TO-DATE
+> Task :expo-file-system:preReleaseBuild UP-TO-DATE
+> Task :expo-dev-menu-interface:writeReleaseAarMetadata
+> Task :expo-font:preBuild UP-TO-DATE
+> Task :expo-font:preReleaseBuild UP-TO-DATE
+> Task :expo-file-system:writeReleaseAarMetadata
+> Task :expo-json-utils:preBuild UP-TO-DATE
+> Task :expo-json-utils:preReleaseBuild UP-TO-DATE
+> Task :expo-json-utils:writeReleaseAarMetadata
+> Task :expo-keep-awake:preBuild UP-TO-DATE
+> Task :expo-keep-awake:preReleaseBuild UP-TO-DATE
+> Task :expo-font:writeReleaseAarMetadata
+> Task :expo-linking:preBuild UP-TO-DATE
+> Task :expo-linking:preReleaseBuild UP-TO-DATE
+> Task :expo-keep-awake:writeReleaseAarMetadata
+> Task :expo-manifests:preBuild UP-TO-DATE
+> Task :expo-linking:writeReleaseAarMetadata
+> Task :expo-modules-core:preBuild UP-TO-DATE
+> Task :expo-modules-core:preReleaseBuild UP-TO-DATE
+> Task :expo-manifests:preReleaseBuild UP-TO-DATE
+> Task :expo-modules-core:writeReleaseAarMetadata
+> Task :expo-updates-interface:preBuild UP-TO-DATE
+> Task :expo-updates-interface:preReleaseBuild UP-TO-DATE
+> Task :expo-manifests:writeReleaseAarMetadata
+> Task :expo-web-browser:preBuild UP-TO-DATE
+> Task :expo-web-browser:preReleaseBuild UP-TO-DATE
+> Task :expo-updates-interface:writeReleaseAarMetadata
+> Task :react-native-async-storage_async-storage:preBuild UP-TO-DATE
+> Task :expo-web-browser:writeReleaseAarMetadata
+> Task :react-native-safe-area-context:preBuild UP-TO-DATE
+> Task :react-native-async-storage_async-storage:preReleaseBuild UP-TO-DATE
+> Task :react-native-safe-area-context:preReleaseBuild UP-TO-DATE
+> Task :react-native-async-storage_async-storage:writeReleaseAarMetadata
+> Task :react-native-screens:preBuild UP-TO-DATE
+> Task :react-native-screens:preReleaseBuild UP-TO-DATE
+> Task :react-native-safe-area-context:writeReleaseAarMetadata
+> Task :expo-constants:createExpoConfig
+> Task :react-native-screens:writeReleaseAarMetadata
+> Task :expo-constants:preBuild
+> Task :expo-constants:preReleaseBuild
+> Task :expo-application:generateReleaseResValues
+> Task :expo-application:generateReleaseResources
+The NODE_ENV environment variable is required but was not specified. Ensure the project is bundled with Expo CLI or NODE_ENV is set.
+Proceeding without mode-specific .env
+> Task :expo-constants:writeReleaseAarMetadata
+> Task :expo-asset:generateReleaseResValues
+> Task :expo-asset:generateReleaseResources
+> Task :expo-application:packageReleaseResources
+> Task :expo-asset:packageReleaseResources
+> Task :expo-constants:generateReleaseResValues
+> Task :expo-constants:generateReleaseResources
+> Task :expo-crypto:generateReleaseResValues
+> Task :expo-constants:packageReleaseResources
+> Task :expo-crypto:generateReleaseResources
+> Task :expo-dev-client:generateReleaseResValues
+> Task :expo-dev-client:generateReleaseResources
+> Task :expo-crypto:packageReleaseResources
+> Task :expo-dev-launcher:generateReleaseResValues
+> Task :expo-dev-client:packageReleaseResources
+> Task :expo-dev-menu:generateReleaseResValues
+> Task :expo-dev-launcher:generateReleaseResources
+> Task :expo-dev-menu:generateReleaseResources
+> Task :expo-dev-menu:packageReleaseResources
+> Task :expo-dev-menu-interface:generateReleaseResValues
+> Task :expo-dev-menu-interface:generateReleaseResources
+> Task :expo-dev-menu-interface:packageReleaseResources
+> Task :expo-file-system:generateReleaseResValues
+> Task :expo-file-system:generateReleaseResources
+> Task :expo-file-system:packageReleaseResources
+> Task :expo-font:generateReleaseResValues
+> Task :expo-font:generateReleaseResources
+> Task :expo-font:packageReleaseResources
+> Task :expo-json-utils:generateReleaseResValues
+> Task :expo-json-utils:generateReleaseResources
+> Task :expo-json-utils:packageReleaseResources
+> Task :expo-keep-awake:generateReleaseResValues
+> Task :expo-keep-awake:generateReleaseResources
+> Task :expo-keep-awake:packageReleaseResources
+> Task :expo-linking:generateReleaseResValues
+> Task :expo-dev-launcher:packageReleaseResources
+> Task :expo-manifests:generateReleaseResValues
+> Task :expo-linking:generateReleaseResources
+> Task :expo-manifests:generateReleaseResources
+> Task :expo-linking:packageReleaseResources
+> Task :expo-manifests:packageReleaseResources
+> Task :expo-modules-core:generateReleaseResValues
+> Task :expo-updates-interface:generateReleaseResValues
+> Task :expo-modules-core:generateReleaseResources
+> Task :expo-updates-interface:generateReleaseResources
+> Task :expo-updates-interface:packageReleaseResources
+> Task :expo-web-browser:generateReleaseResValues
+> Task :expo-modules-core:packageReleaseResources
+> Task :react-native-async-storage_async-storage:generateReleaseResValues
+> Task :expo-web-browser:generateReleaseResources
+> Task :react-native-async-storage_async-storage:generateReleaseResources
+> Task :expo-web-browser:packageReleaseResources
+> Task :react-native-safe-area-context:generateReleaseResValues
+> Task :react-native-safe-area-context:generateReleaseResources
+> Task :react-native-async-storage_async-storage:packageReleaseResources
+> Task :react-native-screens:generateReleaseResValues
+> Task :react-native-safe-area-context:packageReleaseResources
+> Task :react-native-screens:generateReleaseResources
+> Task :expo-application:extractDeepLinksRelease
+> Task :react-native-screens:packageReleaseResources
+> Task :expo-asset:extractDeepLinksRelease
+> Task :expo-asset:processReleaseManifest
+> Task :expo-application:processReleaseManifest
+> Task :expo-constants:extractDeepLinksRelease
+> Task :expo-crypto:extractDeepLinksRelease
+> Task :expo-constants:processReleaseManifest
+> Task :expo-crypto:processReleaseManifest
+> Task :expo-dev-client:extractDeepLinksRelease
+> Task :expo-dev-launcher:extractDeepLinksRelease
+> Task :expo-dev-launcher:processReleaseManifest
+> Task :expo-dev-client:processReleaseManifest
+> Task :expo-dev-menu-interface:extractDeepLinksRelease
+> Task :expo:generateExpoModulesPackageListTask
+> Task :expo-dev-menu:extractDeepLinksRelease
+> Task :expo:preBuild
+> Task :expo:preReleaseBuild
+> Task :expo:writeReleaseAarMetadata
+> Task :expo-dev-menu:processReleaseManifest
+> Task :expo:generateReleaseResValues
+> Task :expo-dev-menu-interface:processReleaseManifest
+> Task :expo-font:extractDeepLinksRelease
+> Task :expo-file-system:extractDeepLinksRelease
+> Task :expo:generateReleaseResources
+> Task :expo:packageReleaseResources
+> Task :expo-font:processReleaseManifest
+> Task :expo-file-system:processReleaseManifest
+/home/expo/workingdir/build/mobile/node_modules/expo-file-system/android/src/main/AndroidManifest.xml:6:9-8:20 Warning:
+	provider#expo.modules.filesystem.FileSystemFileProvider@android:authorities was tagged at AndroidManifest.xml:6 to replace other declarations but no other declaration present
+> Task :expo:extractDeepLinksRelease
+> Task :expo-json-utils:extractDeepLinksRelease
+> Task :expo-keep-awake:extractDeepLinksRelease
+> Task :expo:processReleaseManifest
+> Task :expo-json-utils:processReleaseManifest
+> Task :expo-keep-awake:processReleaseManifest
+> Task :expo-modules-core:extractDeepLinksRelease
+> Task :expo-manifests:extractDeepLinksRelease
+> Task :expo-linking:extractDeepLinksRelease
+> Task :expo-manifests:processReleaseManifest
+> Task :expo-updates-interface:extractDeepLinksRelease
+> Task :expo-linking:processReleaseManifest
+> Task :expo-modules-core:processReleaseManifest
+/home/expo/workingdir/build/mobile/node_modules/expo-modules-core/android/src/main/AndroidManifest.xml:8:9-11:45 Warning:
+	meta-data#com.facebook.soloader.enabled@android:value was tagged at AndroidManifest.xml:8 to replace other declarations but no other declaration present
+> Task :expo-updates-interface:processReleaseManifest
+> Task :react-native-async-storage_async-storage:extractDeepLinksRelease
+> Task :react-native-safe-area-context:extractDeepLinksRelease
+> Task :expo-web-browser:extractDeepLinksRelease
+> Task :react-native-safe-area-context:processReleaseManifest
+package="com.th3rdwave.safeareacontext" found in source AndroidManifest.xml: /home/expo/workingdir/build/mobile/node_modules/react-native-safe-area-context/android/src/main/AndroidManifest.xml.
+Setting the namespace via the package attribute in the source AndroidManifest.xml is no longer supported, and the value is ignored.
+Recommendation: remove package="com.th3rdwave.safeareacontext" from the source AndroidManifest.xml: /home/expo/workingdir/build/mobile/node_modules/react-native-safe-area-context/android/src/main/AndroidManifest.xml.
+> Task :react-native-async-storage_async-storage:processReleaseManifest
+package="com.reactnativecommunity.asyncstorage" found in source AndroidManifest.xml: /home/expo/workingdir/build/mobile/node_modules/@react-native-async-storage/async-storage/android/src/main/AndroidManifest.xml.
+Setting the namespace via the package attribute in the source AndroidManifest.xml is no longer supported, and the value is ignored.
+Recommendation: remove package="com.reactnativecommunity.asyncstorage" from the source AndroidManifest.xml: /home/expo/workingdir/build/mobile/node_modules/@react-native-async-storage/async-storage/android/src/main/AndroidManifest.xml.
+> Task :react-native-screens:extractDeepLinksRelease
+> Task :expo-web-browser:processReleaseManifest
+> Task :react-native-screens:processReleaseManifest
+package="com.swmansion.rnscreens" found in source AndroidManifest.xml: /home/expo/workingdir/build/mobile/node_modules/react-native-screens/android/src/main/AndroidManifest.xml.
+Setting the namespace via the package attribute in the source AndroidManifest.xml is no longer supported, and the value is ignored.
+Recommendation: remove package="com.swmansion.rnscreens" from the source AndroidManifest.xml: /home/expo/workingdir/build/mobile/node_modules/react-native-screens/android/src/main/AndroidManifest.xml.
+> Task :expo:compileReleaseLibraryResources
+> Task :expo-application:compileReleaseLibraryResources
+> Task :expo-asset:compileReleaseLibraryResources
+> Task :expo-asset:parseReleaseLocalResources
+> Task :expo:parseReleaseLocalResources
+> Task :expo-application:parseReleaseLocalResources
+> Task :expo-asset:generateReleaseRFile
+> Task :expo-application:generateReleaseRFile
+> Task :expo:generateReleaseRFile
+> Task :expo-crypto:compileReleaseLibraryResources
+> Task :expo-constants:compileReleaseLibraryResources
+> Task :expo-dev-client:compileReleaseLibraryResources
+> Task :expo-crypto:parseReleaseLocalResources
+> Task :expo-constants:parseReleaseLocalResources
+> Task :expo-dev-client:parseReleaseLocalResources
+> Task :expo-crypto:generateReleaseRFile
+> Task :expo-constants:generateReleaseRFile
+> Task :expo-dev-client:generateReleaseRFile
+> Task :app:createBundleReleaseJsAndAssets
+Starting Metro Bundler
+> Task :expo-dev-launcher:parseReleaseLocalResources
+> Task :expo-dev-launcher:generateReleaseRFile
+> Task :expo-dev-launcher:compileReleaseLibraryResources
+> Task :expo-dev-menu-interface:compileReleaseLibraryResources
+> Task :expo-dev-menu-interface:parseReleaseLocalResources
+> Task :expo-dev-menu:parseReleaseLocalResources
+> Task :expo-dev-menu-interface:generateReleaseRFile
+> Task :expo-dev-menu:generateReleaseRFile
+> Task :expo-file-system:compileReleaseLibraryResources
+> Task :expo-font:compileReleaseLibraryResources
+> Task :expo-file-system:parseReleaseLocalResources
+> Task :expo-dev-menu:compileReleaseLibraryResources
+> Task :expo-font:parseReleaseLocalResources
+> Task :expo-file-system:generateReleaseRFile
+> Task :expo-json-utils:compileReleaseLibraryResources
+> Task :expo-keep-awake:compileReleaseLibraryResources
+> Task :expo-font:generateReleaseRFile
+> Task :expo-json-utils:parseReleaseLocalResources
+> Task :expo-keep-awake:parseReleaseLocalResources
+> Task :expo-linking:compileReleaseLibraryResources
+> Task :expo-json-utils:generateReleaseRFile
+> Task :expo-manifests:compileReleaseLibraryResources
+> Task :expo-linking:parseReleaseLocalResources
+> Task :expo-keep-awake:generateReleaseRFile
+> Task :expo-manifests:parseReleaseLocalResources
+> Task :expo-modules-core:compileReleaseLibraryResources
+> Task :expo-linking:generateReleaseRFile
+> Task :expo-modules-core:parseReleaseLocalResources
+> Task :expo-updates-interface:compileReleaseLibraryResources
+> Task :expo-manifests:generateReleaseRFile
+> Task :expo-modules-core:generateReleaseRFile
+> Task :react-native-async-storage_async-storage:compileReleaseLibraryResources
+> Task :expo-web-browser:compileReleaseLibraryResources
+> Task :expo-updates-interface:parseReleaseLocalResources
+> Task :react-native-async-storage_async-storage:parseReleaseLocalResources
+> Task :expo-web-browser:parseReleaseLocalResources
+> Task :react-native-async-storage_async-storage:generateReleaseRFile
+> Task :expo-updates-interface:generateReleaseRFile
+> Task :expo-web-browser:generateReleaseRFile
+> Task :react-native-safe-area-context:compileReleaseLibraryResources
+> Task :react-native-safe-area-context:parseReleaseLocalResources
+> Task :react-native-screens:parseReleaseLocalResources
+> Task :react-native-screens:compileReleaseLibraryResources
+> Task :expo:checkKotlinGradlePluginConfigurationErrors
+> Task :react-native-safe-area-context:generateReleaseRFile
+> Task :expo-application:checkKotlinGradlePluginConfigurationErrors
+> Task :react-native-screens:generateReleaseRFile
+> Task :expo-modules-core:checkKotlinGradlePluginConfigurationErrors
+> Task :expo:generateReleaseBuildConfig
+> Task :expo-asset:checkKotlinGradlePluginConfigurationErrors
+> Task :expo-modules-core:generateReleaseBuildConfig
+> Task :expo-application:generateReleaseBuildConfig
+> Task :expo-asset:generateReleaseBuildConfig
+> Task :expo-asset:javaPreCompileRelease
+> Task :expo-constants:checkKotlinGradlePluginConfigurationErrors
+> Task :expo-application:javaPreCompileRelease
+> Task :expo-crypto:checkKotlinGradlePluginConfigurationErrors
+> Task :expo-constants:generateReleaseBuildConfig
+> Task :expo-crypto:generateReleaseBuildConfig
+> Task :expo-constants:javaPreCompileRelease
+> Task :expo-crypto:javaPreCompileRelease
+> Task :expo-dev-client:checkKotlinGradlePluginConfigurationErrors
+> Task :expo-dev-launcher:checkKotlinGradlePluginConfigurationErrors
+> Task :expo-dev-client:dataBindingMergeDependencyArtifactsRelease
+> Task :expo-dev-launcher:dataBindingMergeDependencyArtifactsRelease
+> Task :expo-dev-client:dataBindingGenBaseClassesRelease
+> Task :expo-dev-client:generateReleaseBuildConfig
+> Task :expo-dev-client:javaPreCompileRelease
+> Task :expo-dev-menu:checkKotlinGradlePluginConfigurationErrors
+> Task :expo-dev-menu:generateReleaseBuildConfig
+> Task :expo-dev-menu-interface:checkKotlinGradlePluginConfigurationErrors
+> Task :expo-dev-menu-interface:generateReleaseBuildConfig
+> Task :expo-dev-menu-interface:javaPreCompileRelease
+> Task :expo-json-utils:checkKotlinGradlePluginConfigurationErrors
+> Task :expo-json-utils:generateReleaseBuildConfig
+> Task :expo-json-utils:javaPreCompileRelease
+> Task :expo-manifests:checkKotlinGradlePluginConfigurationErrors
+> Task :expo-manifests:generateReleaseBuildConfig
+> Task :expo-manifests:javaPreCompileRelease
+> Task :expo-dev-menu:javaPreCompileRelease
+> Task :expo-updates-interface:checkKotlinGradlePluginConfigurationErrors
+> Task :expo-updates-interface:generateReleaseBuildConfig
+> Task :expo-updates-interface:javaPreCompileRelease
+> Task :expo-file-system:checkKotlinGradlePluginConfigurationErrors
+> Task :expo-file-system:generateReleaseBuildConfig
+> Task :expo-file-system:javaPreCompileRelease
+> Task :expo-font:checkKotlinGradlePluginConfigurationErrors
+> Task :expo-font:generateReleaseBuildConfig
+> Task :expo-font:javaPreCompileRelease
+> Task :expo-modules-core:javaPreCompileRelease
+> Task :expo-keep-awake:checkKotlinGradlePluginConfigurationErrors
+> Task :expo-keep-awake:generateReleaseBuildConfig
+> Task :expo-keep-awake:javaPreCompileRelease
+> Task :expo-linking:checkKotlinGradlePluginConfigurationErrors
+> Task :expo-linking:generateReleaseBuildConfig
+> Task :expo-dev-launcher:dataBindingGenBaseClassesRelease
+> Task :expo-dev-launcher:generateReleaseBuildConfig
+> Task :expo-linking:javaPreCompileRelease
+> Task :expo-web-browser:checkKotlinGradlePluginConfigurationErrors
+> Task :expo-dev-launcher:javaPreCompileRelease
+> Task :expo-web-browser:generateReleaseBuildConfig
+> Task :expo:javaPreCompileRelease
+> Task :react-native-async-storage_async-storage:generateReleaseBuildConfig
+> Task :expo-web-browser:javaPreCompileRelease
+> Task :react-native-safe-area-context:checkKotlinGradlePluginConfigurationErrors
+> Task :react-native-async-storage_async-storage:javaPreCompileRelease
+> Task :react-native-safe-area-context:generateReleaseBuildConfig
+> Task :expo-modules-core:compileReleaseKotlin
+e: This version (1.5.15) of the Compose Compiler requires Kotlin version 1.9.25 but you appear to be using Kotlin version 1.9.24 which is not known to be compatible.  Please consult the Compose-Kotlin compatibility map located at https://developer.android.com/jetpack/androidx/releases/compose-kotlin to choose a compatible version pair (or `suppressKotlinVersionCompatibilityCheck` but don't say I didn't warn you!).
+> Task :expo-modules-core:compileReleaseKotlin FAILED
+> Task :app:createBundleReleaseJsAndAssets
+Error: Unable to resolve module @react-navigation/bottom-tabs from /home/expo/workingdir/build/mobile/src/navigation/MainNavigator.tsx: @react-navigation/bottom-tabs could not be found within the project or in these directories:
+  node_modules
+> 1 | import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+    |                                           ^
+  2 | import { Feather } from '@expo/vector-icons';
+  3 |
+  4 | // Screens
+Error: Unable to resolve module @react-navigation/bottom-tabs from /home/expo/workingdir/build/mobile/src/navigation/MainNavigator.tsx: @react-navigation/bottom-tabs could not be found within the project or in these directories:
+  node_modules
+> 1 | import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+    |                                           ^
+ 2 | import { Feather } from '@expo/vector-icons';
+  3 |
+  4 | // Screens
+    at ModuleResolver.resolveDependency (/home/expo/workingdir/build/mobile/node_modules/metro/src/node-haste/DependencyGraph/ModuleResolution.js:150:15)
+    at DependencyGraph.resolveDependency (/home/expo/workingdir/build/mobile/node_modules/metro/src/node-haste/DependencyGraph.js:248:43)
+    at /home/expo/workingdir/build/mobile/node_modules/metro/src/lib/transformHelpers.js:165:21
+    at resolveDependencies (/home/expo/workingdir/build/mobile/node_modules/metro/src/DeltaBundler/buildSubgraph.js:42:25)
+    at visit (/home/expo/workingdir/build/mobile/node_modules/metro/src/DeltaBundler/buildSubgraph.js:83:30)
+    at processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async Promise.all (index 8)
+    at visit (/home/expo/workingdir/build/mobile/node_modules/metro/src/DeltaBundler/buildSubgraph.js:92:5)
+    at async Promise.all (index 2)
+    at visit (/home/expo/workingdir/build/mobile/node_modules/metro/src/DeltaBundler/buildSubgraph.js:92:5)
+> Task :app:createBundleReleaseJsAndAssets FAILED
+> Task :react-native-async-storage_async-storage:compileReleaseJavaWithJavac
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/expo/workingdir/build/mobile/node_modules/@react-native-async-storage/async-storage/android/src/javaPackage/java/com/reactnativecommunity/asyncstorage/AsyncStoragePackage.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+> Task :react-native-safe-area-context:compileReleaseKotlin
+w: file:///home/expo/workingdir/build/mobile/node_modules/react-native-safe-area-context/android/src/main/java/com/th3rdwave/safeareacontext/SafeAreaContextPackage.kt:27:11 'constructor ReactModuleInfo(String, String, Boolean, Boolean, Boolean, Boolean, Boolean)' is deprecated. use ReactModuleInfo(String, String, boolean, boolean, boolean, boolean)]
+w: file:///home/expo/workingdir/build/mobile/node_modules/react-native-safe-area-context/android/src/main/java/com/th3rdwave/safeareacontext/SafeAreaContextPackage.kt:33:27 'getter for hasConstants: Boolean' is deprecated. This property is unused and it's planning to be removed in a future version of
+        React Native. Please refrain from using it.
+w: file:///home/expo/workingdir/build/mobile/node_modules/react-native-safe-area-context/android/src/main/java/com/th3rdwave/safeareacontext/SafeAreaView.kt:59:23 'getter for uiImplementation: UIImplementation!' is deprecated. Deprecated in Java
+FAILURE: Build completed with 2 failures.
+1: Task failed with an exception.
+-----------
+* What went wrong:
+Execution failed for task ':expo-modules-core:compileReleaseKotlin'.
+> A failure occurred while executing org.jetbrains.kotlin.compilerRunner.GradleCompilerRunnerWithWorkers$GradleKotlinCompilerWorkAction
+   > Compilation error. See log for more details
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights.
+> Get more help at https://help.gradle.org.
+==============================================================================
+2: Task failed with an exception.
+-----------
+* What went wrong:
+
+Execution failed for task ':app:createBundleReleaseJsAndAssets'.
+> Process 'command 'node'' finished with non-zero exit value 1
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights.
+> Get more help at https://help.gradle.org.
+==============================================================================
+BUILD FAILED in 2m 45s
+278 actionable tasks: 278 executed
+Error: Gradle build failed with unknown error. See logs for the "Run gradlew" phase for 
