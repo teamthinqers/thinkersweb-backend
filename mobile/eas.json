@@ -15,10 +15,14 @@
       "distribution": "internal",
       "android": {
         "buildType": "apk",
-        "image": "latest"
+        "image": "latest",
+        "gradleCommand": ":app:assembleRelease"
       },
       "ios": {
         "simulator": false
+      },
+      "env": {
+        "EXPO_USE_FAST_RESOLVER": "1"
       }
     },
     "production": {
