@@ -1,5 +1,5 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { createStackNavigator } from '@react-navigation/stack';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Feather } from '@expo/vector-icons';
 
 // New Screens - exact replica of web app
@@ -11,7 +11,7 @@ import CognitiveIdentityScreen from '../screens/CognitiveIdentityScreen';
 import LearningEngineScreen from '../screens/LearningEngineScreen';
 
 const Tab = createBottomTabNavigator();
-const Stack = createStackNavigator();
+const Stack = createNativeStackNavigator();
 
 // Stack navigator for MyDotSpark tab (includes Cognitive Identity and Learning Engine)
 function MyDotSparkStack() {
