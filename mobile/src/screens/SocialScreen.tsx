@@ -1,11 +1,12 @@
-import { View, Text, ScrollView, StyleSheet, TouchableOpacity, RefreshControl, ActivityIndicator, Linking } from 'react-native';
-import { useState, useEffect } from 'react';
+import { View, Text, ScrollView, StyleSheet, TouchableOpacity, RefreshControl, ActivityIndicator, Linking, Modal, TextInput, Alert } from 'react-native';
+import { useState } from 'react';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { Feather } from '@expo/vector-icons';
+import { useAuth } from '../hooks/useAuth';
 import { ThoughtCard } from '../components/ThoughtCard';
 import { colors } from '../theme/colors';
 import { typography } from '../theme/typography';
-import { queryClient } from '../lib/queryClient';
+import { queryClient, apiRequest } from '../lib/queryClient';
 
 type Thought = {
   id: number;
@@ -26,26 +27,40 @@ type Thought = {
 };
 
 export default function SocialScreen() {
+  const { user } = useAuth();
   const [refreshing, setRefreshing] = useState(false);
-  const [isAdmin, setIsAdmin] = useState(false);
+  const [showShareModal, setShowShareModal] = useState(false);
+  const [heading, setHeading] = useState('');
+  const [thought, setThought] = useState('');
+  const [submitting, setSubmitting] = useState(false);
+
+  const isAdmin = user?.email === 'aravindhraj1410@gmail.com';
 
   const { data: thoughtsData, isLoading, refetch } = useQuery<{ thoughts: Thought[] }>({
     queryKey: ['/api/thoughts'],
   });
 
-  // Check admin status
-  useEffect(() => {
-    fetch('/api/auth/me', {
-      credentials: 'include'
-    })
-      .then(res => res.json())
-      .then(data => {
-        if (data.user?.email === 'aravindhraj1410@gmail.com') {
-          setIsAdmin(true);
-        }
-      })
-      .catch(err => console.error('Admin check failed:', err));
-  }, []);
+  const sparkMutation = useMutation({
+    mutationFn: (thoughtId: number) => apiRequest('/api/thoughts/spark', 'POST', { thoughtId }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/thoughts'] });
+    },
+  });
+
+  const perspectiveMutation = useMutation({
+    mutationFn: (thoughtId: number) => apiRequest('/api/thoughts/perspective', 'POST', { thoughtId }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/thoughts'] });
+    },
+  });
+
+  const deleteThoughtMutation = useMutation({
+    mutationFn: (thoughtId: number) => apiRequest(`/api/thoughts/${thoughtId}`, 'DELETE'),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/thoughts'] });
+      Alert.alert('Success', 'Thought deleted successfully');
+    },
+  });
 
   const onRefresh = async () => {
     setRefreshing(true);
@@ -68,6 +83,50 @@ export default function SocialScreen() {
     }
   };
 
+  const handleSpark = (thoughtId: number) => {
+    sparkMutation.mutate(thoughtId);
+  };
+
+  const handlePerspective = (thoughtId: number) => {
+    perspectiveMutation.mutate(thoughtId);
+  };
+
+  const handleDelete = (thoughtId: number) => {
+    Alert.alert(
+      'Delete Thought',
+      'Are you sure you want to delete this thought?',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        { text: 'Delete', style: 'destructive', onPress: () => deleteThoughtMutation.mutate(thoughtId) },
+      ]
+    );
+  };
+
+  const handleShare = async () => {
+    if (!heading.trim() || !thought.trim()) {
+      Alert.alert('Error', 'Please fill in all fields');
+      return;
+    }
+
+    setSubmitting(true);
+    try {
+      await apiRequest('/api/thoughts', 'POST', {
+        heading: heading.trim(),
+        summary: thought.trim(),
+      });
+      
+      setHeading('');
+      setThought('');
+      setShowShareModal(false);
+      queryClient.invalidateQueries({ queryKey: ['/api/thoughts'] });
+      Alert.alert('Success', 'Your thought has been shared!');
+    } catch (error: any) {
+      Alert.alert('Error', error.message || 'Failed to share thought');
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
   if (isLoading) {
     return (
       <View style={styles.loadingContainer}>
@@ -78,54 +137,142 @@ export default function SocialScreen() {
   }
 
   return (
-    <ScrollView
-      style={styles.container}
-      contentContainerStyle={styles.contentContainer}
-      refreshControl={
-        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={colors.orange[600]} />
-      }
-    >
-      {/* Header */}
-      <View style={styles.header}>
-        <View style={styles.headerTop}>
-          <Feather name="users" size={32} color={colors.primary[600]} />
-          <Text style={styles.headerTitle}>Social Neura</Text>
+    <>
+      <ScrollView
+        style={styles.container}
+        contentContainerStyle={styles.contentContainer}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={colors.orange[600]} />
+        }
+      >
+        {/* Header */}
+        <View style={styles.header}>
+          <View style={styles.headerTop}>
+            <Feather name="users" size={32} color={colors.primary[600]} />
+            <Text style={styles.headerTitle}>Social Neura</Text>
+          </View>
+          <Text style={styles.headerSubtitle}>
+            A collective intelligence network where thoughts spark insights
+          </Text>
         </View>
-        <Text style={styles.headerSubtitle}>
-          A collective intelligence network where thoughts spark insights
-        </Text>
-      </View>
 
-      {/* Contribute Button */}
-      <TouchableOpacity style={styles.contributeButton}>
-        <Feather name="sparkles" size={20} color="#fff" />
-        <Text style={styles.contributeButtonText}>Share Your Thought</Text>
-      </TouchableOpacity>
+        {/* Contribute Button */}
+        <TouchableOpacity style={styles.contributeButton} onPress={() => setShowShareModal(true)}>
+          <Feather name="sparkles" size={20} color="#fff" />
+          <Text style={styles.contributeButtonText}>Share Your Thought</Text>
+        </TouchableOpacity>
 
-      {/* Thoughts Feed */}
-      <View style={styles.thoughtsContainer}>
-        {thoughts.length === 0 ? (
-          <View style={styles.emptyContainer}>
-            <Feather name="message-circle" size={64} color={colors.gray[300]} />
-            <Text style={styles.emptyTitle}>No thoughts yet</Text>
-            <Text style={styles.emptySubtext}>Be the first to share an insight with the community!</Text>
-            <TouchableOpacity style={styles.emptyButton}>
-              <Feather name="sparkles" size={16} color="#fff" />
-              <Text style={styles.emptyButtonText}>Share First Thought</Text>
+        {/* Thoughts Feed */}
+        <View style={styles.thoughtsContainer}>
+          {thoughts.length === 0 ? (
+            <View style={styles.emptyContainer}>
+              <Feather name="message-circle" size={64} color={colors.gray[300]} />
+              <Text style={styles.emptyTitle}>No thoughts yet</Text>
+              <Text style={styles.emptySubtext}>Be the first to share an insight with the community!</Text>
+              <TouchableOpacity style={styles.emptyButton} onPress={() => setShowShareModal(true)}>
+                <Feather name="sparkles" size={16} color="#fff" />
+                <Text style={styles.emptyButtonText}>Share First Thought</Text>
+              </TouchableOpacity>
+            </View>
+          ) : (
+            thoughts.map((thought) => (
+              <View key={thought.id} style={styles.thoughtWrapper}>
+                <ThoughtCard
+                  thought={thought}
+                  onAvatarPress={() => handleAvatarPress(thought)}
+                  showActions={true}
+                />
+                
+                {/* Action Buttons */}
+                <View style={styles.actionsRow}>
+                  <TouchableOpacity 
+                    style={styles.actionButton} 
+                    onPress={() => handleSpark(thought.id)}
+                    disabled={sparkMutation.isPending}
+                  >
+                    <Feather name="zap" size={16} color={colors.primary[500]} />
+                    <Text style={styles.actionText}>Spark</Text>
+                  </TouchableOpacity>
+
+                  <TouchableOpacity 
+                    style={styles.actionButton} 
+                    onPress={() => handlePerspective(thought.id)}
+                    disabled={perspectiveMutation.isPending}
+                  >
+                    <Feather name="eye" size={16} color={colors.cyan[500]} />
+                    <Text style={styles.actionText}>Perspective</Text>
+                  </TouchableOpacity>
+
+                  {isAdmin && (
+                    <TouchableOpacity 
+                      style={[styles.actionButton, styles.deleteButton]} 
+                      onPress={() => handleDelete(thought.id)}
+                      disabled={deleteThoughtMutation.isPending}
+                    >
+                      <Feather name="trash-2" size={16} color={colors.error} />
+                      <Text style={[styles.actionText, { color: colors.error }]}>Delete</Text>
+                    </TouchableOpacity>
+                  )}
+                </View>
+              </View>
+            ))
+          )}
+        </View>
+      </ScrollView>
+
+      {/* Share Thought Modal */}
+      <Modal
+        visible={showShareModal}
+        animationType="slide"
+        transparent={true}
+        onRequestClose={() => setShowShareModal(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalTitle}>Share Your Thought</Text>
+              <TouchableOpacity onPress={() => setShowShareModal(false)}>
+                <Feather name="x" size={24} color={colors.gray[500]} />
+              </TouchableOpacity>
+            </View>
+
+            <TextInput
+              style={styles.input}
+              placeholder="Thought Heading"
+              value={heading}
+              onChangeText={setHeading}
+              maxLength={100}
+            />
+
+            <TextInput
+              style={[styles.input, styles.textArea]}
+              placeholder="Share your insight..."
+              value={thought}
+              onChangeText={setThought}
+              multiline
+              numberOfLines={6}
+              textAlignVertical="top"
+              maxLength={500}
+            />
+
+            <TouchableOpacity 
+              style={[styles.submitButton, submitting && styles.submitButtonDisabled]} 
+              onPress={handleShare}
+              disabled={submitting}
+            >
+              {submitting ? (
+                <ActivityIndicator size="small" color="#fff" />
+              ) : (
+                <>
+                  <Feather name="send" size={18} color="#fff" />
+                  <Text style={styles.submitButtonText}>Share Thought</Text>
+                </>
+              )}
             </TouchableOpacity>
           </View>
-        ) : (
-          thoughts.map((thought) => (
-            <ThoughtCard
-              key={thought.id}
-              thought={thought}
-              onAvatarPress={() => handleAvatarPress(thought)}
-              showActions={true}
-            />
-          ))
-        )}
-      </View>
-    </ScrollView>
+        </View>
+      </Modal>
+    </>
   );
 }
 
@@ -193,6 +340,34 @@ const styles = StyleSheet.create({
   thoughtsContainer: {
     gap: 16,
   },
+  thoughtWrapper: {
+    marginBottom: 8,
+  },
+  actionsRow: {
+    flexDirection: 'row',
+    gap: 8,
+    marginTop: 8,
+    paddingHorizontal: 4,
+  },
+  actionButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    backgroundColor: '#fff',
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: colors.gray[200],
+  },
+  deleteButton: {
+    marginLeft: 'auto',
+  },
+  actionText: {
+    fontSize: typography.sizes.xs,
+    fontWeight: typography.weights.medium,
+    color: colors.gray[700],
+  },
   emptyContainer: {
     alignItems: 'center',
     paddingVertical: 80,
@@ -222,6 +397,61 @@ const styles = StyleSheet.create({
   },
   emptyButtonText: {
     fontSize: typography.sizes.sm,
+    fontWeight: typography.weights.semibold,
+    color: '#fff',
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'flex-end',
+  },
+  modalContent: {
+    backgroundColor: '#fff',
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
+    padding: 24,
+    minHeight: 400,
+  },
+  modalHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 24,
+  },
+  modalTitle: {
+    fontSize: typography.sizes['2xl'],
+    fontWeight: typography.weights.bold,
+    color: colors.gray[900],
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: colors.gray[300],
+    borderRadius: 12,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    fontSize: typography.sizes.base,
+    marginBottom: 16,
+    backgroundColor: colors.gray[50],
+  },
+  textArea: {
+    height: 120,
+    textAlignVertical: 'top',
+  },
+  submitButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    backgroundColor: colors.primary[600],
+    paddingVertical: 14,
+    borderRadius: 12,
+    marginTop: 8,
+  },
+  submitButtonDisabled: {
+    opacity: 0.6,
+  },
+  submitButtonText: {
+    fontSize: typography.sizes.base,
     fontWeight: typography.weights.semibold,
     color: '#fff',
   },

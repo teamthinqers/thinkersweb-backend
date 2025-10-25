@@ -1,4 +1,5 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createStackNavigator } from '@react-navigation/stack';
 import { Feather } from '@expo/vector-icons';
 
 // New Screens - exact replica of web app
@@ -6,8 +7,22 @@ import MyDotSparkScreen from '../screens/MyDotSparkScreen';
 import MyNeuraScreen from '../screens/MyNeuraScreen';
 import SocialScreen from '../screens/SocialScreen';
 import ThinQCirclesScreen from '../screens/ThinQCirclesScreen';
+import CognitiveIdentityScreen from '../screens/CognitiveIdentityScreen';
+import LearningEngineScreen from '../screens/LearningEngineScreen';
 
 const Tab = createBottomTabNavigator();
+const Stack = createStackNavigator();
+
+// Stack navigator for MyDotSpark tab (includes Cognitive Identity and Learning Engine)
+function MyDotSparkStack() {
+  return (
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="Dashboard" component={MyDotSparkScreen} />
+      <Stack.Screen name="CognitiveIdentity" component={CognitiveIdentityScreen} />
+      <Stack.Screen name="LearningEngine" component={LearningEngineScreen} />
+    </Stack.Navigator>
+  );
+}
 
 export default function MainNavigator() {
   return (
@@ -43,7 +58,7 @@ export default function MainNavigator() {
     >
       <Tab.Screen
         name="MyDotSpark"
-        component={MyDotSparkScreen}
+        component={MyDotSparkStack}
         options={{
           title: 'My DotSpark',
           headerShown: false,

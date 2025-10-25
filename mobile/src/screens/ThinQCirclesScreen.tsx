@@ -1,11 +1,13 @@
-import { View, Text, ScrollView, StyleSheet, TouchableOpacity, RefreshControl, ActivityIndicator } from 'react-native';
+import { View, Text, ScrollView, StyleSheet, TouchableOpacity, RefreshControl, ActivityIndicator, Modal, TextInput, Alert } from 'react-native';
 import { useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation } from '@tanstack/react-query';
 import { Feather } from '@expo/vector-icons';
 import { useAuth } from '../hooks/useAuth';
 import { Card } from '../components/Card';
+import CircleDetailScreen from './CircleDetailScreen';
 import { colors } from '../theme/colors';
 import { typography } from '../theme/typography';
+import { queryClient, apiRequest } from '../lib/queryClient';
 
 type Circle = {
   id: number;
@@ -23,10 +25,30 @@ type Circle = {
 export default function ThinQCirclesScreen() {
   const { user } = useAuth();
   const [refreshing, setRefreshing] = useState(false);
+  const [showCreateModal, setShowCreateModal] = useState(false);
+  const [selectedCircleId, setSelectedCircleId] = useState<number | null>(null);
+  const [circleName, setCircleName] = useState('');
+  const [circleDescription, setCircleDescription] = useState('');
+  const [submitting, setSubmitting] = useState(false);
 
   const { data: circlesData, isLoading, refetch } = useQuery<{ success: boolean; circles: Circle[] }>({
     queryKey: ['/api/thinq-circles/my-circles'],
     enabled: !!user,
+  });
+
+  const createCircleMutation = useMutation({
+    mutationFn: (data: { name: string; description: string }) => 
+      apiRequest('/api/thinq-circles', 'POST', data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/thinq-circles/my-circles'] });
+      setShowCreateModal(false);
+      setCircleName('');
+      setCircleDescription('');
+      Alert.alert('Success', 'Circle created successfully!');
+    },
+    onError: (error: any) => {
+      Alert.alert('Error', error.message || 'Failed to create circle');
+    },
   });
 
   const onRefresh = async () => {
@@ -36,6 +58,37 @@ export default function ThinQCirclesScreen() {
   };
 
   const circles = circlesData?.circles || [];
+
+  const handleCreateCircle = async () => {
+    if (!circleName.trim()) {
+      Alert.alert('Error', 'Please enter a circle name');
+      return;
+    }
+
+    setSubmitting(true);
+    try {
+      await createCircleMutation.mutateAsync({
+        name: circleName.trim(),
+        description: circleDescription.trim(),
+      });
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const handleEnterCircle = (circleId: number) => {
+    setSelectedCircleId(circleId);
+  };
+
+  // If a circle is selected, show the detail screen
+  if (selectedCircleId) {
+    return (
+      <CircleDetailScreen 
+        circleId={selectedCircleId} 
+        onBack={() => setSelectedCircleId(null)} 
+      />
+    );
+  }
 
   if (isLoading) {
     return (
@@ -47,114 +100,173 @@ export default function ThinQCirclesScreen() {
   }
 
   return (
-    <ScrollView
-      style={styles.container}
-      contentContainerStyle={styles.contentContainer}
-      refreshControl={
-        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={colors.primary[500]} />
-      }
-    >
-      {/* Header */}
-      <View style={styles.header}>
-        <View style={styles.headerTop}>
-          <Feather name="users" size={32} color={colors.primary[600]} />
-          <Text style={styles.headerTitle}>ThinQ Circles</Text>
-        </View>
-        <Text style={styles.headerSubtitle}>
-          Collaborative intelligence spaces for shared learning
-        </Text>
-      </View>
-
-      {/* Create Circle Button */}
-      <TouchableOpacity style={styles.createButton}>
-        <Feather name="plus-circle" size={20} color="#fff" />
-        <Text style={styles.createButtonText}>Create New Circle</Text>
-      </TouchableOpacity>
-
-      {/* Circles List */}
-      {circles.length === 0 ? (
-        <Card style={styles.emptyCard}>
-          <Feather name="users" size={64} color={colors.gray[300]} />
-          <Text style={styles.emptyTitle}>No circles yet</Text>
-          <Text style={styles.emptyText}>Create your first circle to collaborate with others</Text>
-          
-          {/* Features */}
-          <View style={styles.featuresContainer}>
-            <View style={styles.featureItem}>
-              <Feather name="share-2" size={20} color={colors.primary[500]} />
-              <Text style={styles.featureText}>Share thoughts with your team</Text>
-            </View>
-            <View style={styles.featureItem}>
-              <Feather name="zap" size={20} color={colors.primary[500]} />
-              <Text style={styles.featureText}>Generate collective sparks</Text>
-            </View>
-            <View style={styles.featureItem}>
-              <Feather name="trending-up" size={20} color={colors.primary[500]} />
-              <Text style={styles.featureText}>Track collaborative growth</Text>
-            </View>
+    <>
+      <ScrollView
+        style={styles.container}
+        contentContainerStyle={styles.contentContainer}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={colors.primary[500]} />
+        }
+      >
+        {/* Header */}
+        <View style={styles.header}>
+          <View style={styles.headerTop}>
+            <Feather name="users" size={32} color={colors.primary[600]} />
+            <Text style={styles.headerTitle}>ThinQ Circles</Text>
           </View>
-
-          <TouchableOpacity style={styles.emptyButton}>
-            <Feather name="plus-circle" size={16} color="#fff" />
-            <Text style={styles.emptyButtonText}>Create Your First Circle</Text>
-          </TouchableOpacity>
-        </Card>
-      ) : (
-        <View style={styles.circlesContainer}>
-          {circles.map((circle) => (
-            <TouchableOpacity key={circle.id} style={styles.circleCard}>
-              <Card borderColor={colors.primary[500]} borderWidth={4}>
-                <View style={styles.circleHeader}>
-                  <View style={styles.circleIcon}>
-                    <Feather name="hexagon" size={24} color="#fff" />
-                  </View>
-                  <View style={styles.circleInfo}>
-                    <Text style={styles.circleName}>{circle.name}</Text>
-                    {circle.description && (
-                      <Text style={styles.circleDescription} numberOfLines={2}>
-                        {circle.description}
-                      </Text>
-                    )}
-                  </View>
-                </View>
-
-                {/* Stats */}
-                {circle.stats && (
-                  <View style={styles.statsRow}>
-                    <View style={styles.stat}>
-                      <Feather name="circle" size={16} color={colors.primary[500]} />
-                      <Text style={styles.statText}>{circle.stats.dots} Dots</Text>
-                    </View>
-                    <View style={styles.stat}>
-                      <Feather name="zap" size={16} color={colors.primary[500]} />
-                      <Text style={styles.statText}>{circle.stats.sparks} Sparks</Text>
-                    </View>
-                    <View style={styles.stat}>
-                      <Feather name="users" size={16} color={colors.primary[500]} />
-                      <Text style={styles.statText}>{circle.stats.members} Members</Text>
-                    </View>
-                  </View>
-                )}
-
-                {/* Enter Button */}
-                <View style={styles.enterButton}>
-                  <Text style={styles.enterButtonText}>Enter Circle</Text>
-                  <Feather name="arrow-right" size={16} color="#fff" />
-                </View>
-              </Card>
-            </TouchableOpacity>
-          ))}
+          <Text style={styles.headerSubtitle}>
+            Collaborative intelligence spaces for shared learning
+          </Text>
         </View>
-      )}
 
-      {/* Pending Invites Section */}
-      <View style={styles.invitesSection}>
-        <Text style={styles.sectionTitle}>Pending Invites</Text>
-        <Card>
-          <Text style={styles.emptyInvitesText}>No pending invites</Text>
-        </Card>
-      </View>
-    </ScrollView>
+        {/* Create Circle Button */}
+        <TouchableOpacity style={styles.createButton} onPress={() => setShowCreateModal(true)}>
+          <Feather name="plus-circle" size={20} color="#fff" />
+          <Text style={styles.createButtonText}>Create New Circle</Text>
+        </TouchableOpacity>
+
+        {/* Circles List */}
+        {circles.length === 0 ? (
+          <Card style={styles.emptyCard}>
+            <Feather name="users" size={64} color={colors.gray[300]} />
+            <Text style={styles.emptyTitle}>No circles yet</Text>
+            <Text style={styles.emptyText}>Create your first circle to collaborate with others</Text>
+            
+            {/* Features */}
+            <View style={styles.featuresContainer}>
+              <View style={styles.featureItem}>
+                <Feather name="share-2" size={20} color={colors.primary[500]} />
+                <Text style={styles.featureText}>Share thoughts with your team</Text>
+              </View>
+              <View style={styles.featureItem}>
+                <Feather name="zap" size={20} color={colors.primary[500]} />
+                <Text style={styles.featureText}>Generate collective sparks</Text>
+              </View>
+              <View style={styles.featureItem}>
+                <Feather name="trending-up" size={20} color={colors.primary[500]} />
+                <Text style={styles.featureText}>Track collaborative growth</Text>
+              </View>
+            </View>
+
+            <TouchableOpacity style={styles.emptyButton} onPress={() => setShowCreateModal(true)}>
+              <Feather name="plus-circle" size={16} color="#fff" />
+              <Text style={styles.emptyButtonText}>Create Your First Circle</Text>
+            </TouchableOpacity>
+          </Card>
+        ) : (
+          <View style={styles.circlesContainer}>
+            {circles.map((circle) => (
+              <TouchableOpacity 
+                key={circle.id} 
+                style={styles.circleCard}
+                onPress={() => handleEnterCircle(circle.id)}
+              >
+                <Card borderColor={colors.primary[500]} borderWidth={4}>
+                  <View style={styles.circleHeader}>
+                    <View style={styles.circleIcon}>
+                      <Feather name="hexagon" size={24} color="#fff" />
+                    </View>
+                    <View style={styles.circleInfo}>
+                      <Text style={styles.circleName}>{circle.name}</Text>
+                      {circle.description && (
+                        <Text style={styles.circleDescription} numberOfLines={2}>
+                          {circle.description}
+                        </Text>
+                      )}
+                    </View>
+                  </View>
+
+                  {/* Stats */}
+                  {circle.stats && (
+                    <View style={styles.statsRow}>
+                      <View style={styles.stat}>
+                        <Feather name="circle" size={16} color={colors.primary[500]} />
+                        <Text style={styles.statText}>{circle.stats.dots} Dots</Text>
+                      </View>
+                      <View style={styles.stat}>
+                        <Feather name="zap" size={16} color={colors.primary[500]} />
+                        <Text style={styles.statText}>{circle.stats.sparks} Sparks</Text>
+                      </View>
+                      <View style={styles.stat}>
+                        <Feather name="users" size={16} color={colors.primary[500]} />
+                        <Text style={styles.statText}>{circle.stats.members} Members</Text>
+                      </View>
+                    </View>
+                  )}
+
+                  {/* Enter Button */}
+                  <View style={styles.enterButton}>
+                    <Text style={styles.enterButtonText}>Enter Circle</Text>
+                    <Feather name="arrow-right" size={16} color="#fff" />
+                  </View>
+                </Card>
+              </TouchableOpacity>
+            ))}
+          </View>
+        )}
+
+        {/* Pending Invites Section */}
+        <View style={styles.invitesSection}>
+          <Text style={styles.sectionTitle}>Pending Invites</Text>
+          <Card>
+            <Text style={styles.emptyInvitesText}>No pending invites</Text>
+          </Card>
+        </View>
+      </ScrollView>
+
+      {/* Create Circle Modal */}
+      <Modal
+        visible={showCreateModal}
+        animationType="slide"
+        transparent={true}
+        onRequestClose={() => setShowCreateModal(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalTitle}>Create New Circle</Text>
+              <TouchableOpacity onPress={() => setShowCreateModal(false)}>
+                <Feather name="x" size={24} color={colors.gray[500]} />
+              </TouchableOpacity>
+            </View>
+
+            <TextInput
+              style={styles.input}
+              placeholder="Circle Name"
+              value={circleName}
+              onChangeText={setCircleName}
+              maxLength={100}
+            />
+
+            <TextInput
+              style={[styles.input, styles.textArea]}
+              placeholder="Description (optional)"
+              value={circleDescription}
+              onChangeText={setCircleDescription}
+              multiline
+              numberOfLines={4}
+              textAlignVertical="top"
+              maxLength={300}
+            />
+
+            <TouchableOpacity 
+              style={[styles.submitButton, submitting && styles.submitButtonDisabled]} 
+              onPress={handleCreateCircle}
+              disabled={submitting}
+            >
+              {submitting ? (
+                <ActivityIndicator size="small" color="#fff" />
+              ) : (
+                <>
+                  <Feather name="plus-circle" size={18} color="#fff" />
+                  <Text style={styles.submitButtonText}>Create Circle</Text>
+                </>
+              )}
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+    </>
   );
 }
 
@@ -343,5 +455,60 @@ const styles = StyleSheet.create({
     color: colors.gray[600],
     textAlign: 'center',
     paddingVertical: 20,
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'flex-end',
+  },
+  modalContent: {
+    backgroundColor: '#fff',
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
+    padding: 24,
+    minHeight: 400,
+  },
+  modalHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 24,
+  },
+  modalTitle: {
+    fontSize: typography.sizes['2xl'],
+    fontWeight: typography.weights.bold,
+    color: colors.gray[900],
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: colors.gray[300],
+    borderRadius: 12,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    fontSize: typography.sizes.base,
+    marginBottom: 16,
+    backgroundColor: colors.gray[50],
+  },
+  textArea: {
+    height: 100,
+    textAlignVertical: 'top',
+  },
+  submitButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    backgroundColor: colors.primary[600],
+    paddingVertical: 14,
+    borderRadius: 12,
+    marginTop: 8,
+  },
+  submitButtonDisabled: {
+    opacity: 0.6,
+  },
+  submitButtonText: {
+    fontSize: typography.sizes.base,
+    fontWeight: typography.weights.semibold,
+    color: '#fff',
   },
 });

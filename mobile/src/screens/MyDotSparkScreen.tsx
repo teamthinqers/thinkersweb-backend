@@ -1,4 +1,4 @@
-import { View, Text, ScrollView, StyleSheet, TouchableOpacity, RefreshControl, ActivityIndicator } from 'react-native';
+import { View, Text, ScrollView, StyleSheet, TouchableOpacity, RefreshControl, ActivityIndicator, Alert } from 'react-native';
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Feather } from '@expo/vector-icons';
@@ -29,7 +29,7 @@ interface DashboardData {
   };
 }
 
-export default function MyDotSparkScreen() {
+export default function MyDotSparkScreen({ navigation }: any) {
   const { user } = useAuth();
   const [refreshing, setRefreshing] = useState(false);
 
@@ -82,7 +82,7 @@ export default function MyDotSparkScreen() {
       </View>
 
       {/* Cognitive Identity Card */}
-      <TouchableOpacity style={styles.cognitiveCard}>
+      <TouchableOpacity style={styles.cognitiveCard} onPress={() => navigation.navigate('CognitiveIdentity')}>
         <View style={styles.cognitiveHeader}>
           <View style={styles.statusBadge}>
             <Feather name="user" size={16} color="#fff" />
@@ -102,7 +102,7 @@ export default function MyDotSparkScreen() {
       {/* Dashboard Grid */}
       <View style={styles.dashboardGrid}>
         {/* My Neura */}
-        <TouchableOpacity style={styles.neuraCard}>
+        <TouchableOpacity style={styles.neuraCard} onPress={() => navigation.navigate('MyNeura')}>
           <View style={styles.cardBadge}>
             <Feather name="brain" size={16} color="#fff" />
             <View style={[styles.statusDot, { backgroundColor: (dashboard?.myNeuraStats?.thoughts || 0) > 0 ? colors.green[500] : colors.error }]} />
@@ -133,7 +133,7 @@ export default function MyDotSparkScreen() {
         </TouchableOpacity>
 
         {/* Social Neura */}
-        <TouchableOpacity style={styles.socialCard}>
+        <TouchableOpacity style={styles.socialCard} onPress={() => navigation.navigate('Social')}>
           <View style={styles.cardBadge}>
             <Feather name="users" size={16} color="#fff" />
             <View style={[styles.statusDot, { backgroundColor: colors.green[500] }]} />
@@ -154,7 +154,7 @@ export default function MyDotSparkScreen() {
         </TouchableOpacity>
 
         {/* ThinQ Circles */}
-        <TouchableOpacity style={styles.circlesCard}>
+        <TouchableOpacity style={styles.circlesCard} onPress={() => navigation.navigate('ThinQCircles')}>
           <View style={styles.cardBadge}>
             <Feather name="users" size={16} color="#fff" />
           </View>
@@ -163,7 +163,7 @@ export default function MyDotSparkScreen() {
         </TouchableOpacity>
 
         {/* Learning Engine */}
-        <TouchableOpacity style={styles.learningCard}>
+        <TouchableOpacity style={styles.learningCard} onPress={() => navigation.navigate('LearningEngine')}>
           <View style={styles.cardBadge}>
             <Feather name="book-open" size={16} color="#fff" />
           </View>
