@@ -2,27 +2,23 @@ import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, ActivityIndicator } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { QueryClientProvider } from '@tanstack/react-query';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 // Screens
 import AuthScreen from './src/screens/AuthScreen';
-import SocialFeedScreen from './src/screens/SocialFeedScreen';
-import CreateThoughtScreen from './src/screens/CreateThoughtScreen';
-import ProfileScreen from './src/screens/ProfileScreen';
 
 // Navigation
 import MainNavigator from './src/navigation/MainNavigator';
 
 // Services
 import { AuthProvider, useAuth } from './src/hooks/useAuth';
+import { queryClient, defaultQueryFn } from './src/lib/queryClient';
 
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      retry: 2,
-      staleTime: 5 * 60 * 1000, // 5 minutes
-    },
+// Configure default query function
+queryClient.setDefaultOptions({
+  queries: {
+    queryFn: defaultQueryFn,
   },
 });
 
