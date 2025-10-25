@@ -9,8 +9,8 @@ const getApiUrl = () => {
   }
   
   // Default to the current Replit URL
-  // In production, this should be your published Replit URL
-  return 'https://your-replit-url.repl.co/api';
+  // This will automatically work when you start the Expo server
+  return 'https://cb8d11f0-9b74-4f2b-8d52-0aeb05ff3cd0-00-15weriw4t5t7e.spock.replit.dev/api';
 };
 
 export const api = axios.create({
