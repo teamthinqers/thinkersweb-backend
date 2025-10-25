@@ -1,8 +1,4 @@
-node_modules/**/*
-.git
-.expo
-.expo-shared
+node_modules/
+.git/
+.expo/
 *.log
-.DS_Store
-android/
-ios/
