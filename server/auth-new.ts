@@ -249,15 +249,60 @@ export function setupNewAuth(app: Express) {
     }
   });
 
-  // POST /api/auth/login - Exchange Firebase ID token for session
+  // POST /api/auth/login - Exchange Firebase ID token for session OR email/password for testing
   app.post("/api/auth/login", async (req: Request, res: Response) => {
     try {
       console.log(`🔐 Login attempt received`);
-      const { idToken } = req.body;
+      const { idToken, email: loginEmail, password } = req.body;
       
+      // TEST MODE: Email/password login for mobile testing
+      if (loginEmail && password) {
+        console.log(`🔐 Test login with email: ${loginEmail}`);
+        
+        const user = await getUserByEmail(loginEmail);
+        if (!user) {
+          console.error("❌ User not found");
+          return res.status(401).json({ error: "Invalid credentials" });
+        }
+
+        // Create session (skipping password validation for demo)
+        req.session.userId = user.id;
+        req.session.firebaseUid = user.firebase_uid;
+
+        const sessionUser: SessionUser = {
+          id: user.id,
+          username: user.username,
+          email: user.email,
+          firebaseUid: user.firebase_uid,
+          fullName: user.full_name_old || user.username,
+          avatarUrl: user.avatar,
+          avatar: user.avatar,
+          linkedinPhotoUrl: user.linkedin_photo_url,
+          linkedinId: user.linkedin_id,
+          linkedinHeadline: user.linkedin_headline,
+          linkedinProfileUrl: user.linkedin_profile_url,
+          aboutMe: user.about_me,
+          cognitiveIdentityPublic: user.cognitive_identity_public,
+          createdAt: new Date(user.created_at || Date.now()),
+          updatedAt: new Date(user.updated_at || Date.now()),
+        };
+
+        req.user = sessionUser;
+
+        return req.session.save((err) => {
+          if (err) {
+            console.error("Session save error:", err);
+            return res.status(500).json({ error: "Failed to save session" });
+          }
+          console.log(`✅ Test session created for user ${user.id}`);
+          res.status(200).json({ user: sessionUser, isNewUser: false });
+        });
+      }
+      
+      // FIREBASE MODE: Regular Firebase token authentication
       if (!idToken) {
-        console.error("❌ No idToken in request body");
-        return res.status(400).json({ error: "Firebase ID token is required" });
+        console.error("❌ No idToken or email/password in request body");
+        return res.status(400).json({ error: "Firebase ID token or email/password is required" });
       }
 
       console.log(`🔐 Verifying Firebase ID token...`);

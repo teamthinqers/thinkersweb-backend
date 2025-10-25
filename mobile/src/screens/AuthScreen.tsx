@@ -9,8 +9,8 @@ export default function AuthScreen() {
   const handleDemoLogin = async () => {
     setIsLoading(true);
     try {
-      // Login with test account credentials
-      await signIn('test@dotspark.com', 'test123');
+      // Login with existing test account from database
+      await signIn('test1@example.com', 'demo123');
     } catch (error) {
       console.error('Demo login failed:', error);
       alert('Demo login failed. Please try again or use Google Sign-In.');
