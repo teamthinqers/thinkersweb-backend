@@ -1,15 +1,10 @@
 import axios from 'axios';
 import Constants from 'expo-constants';
 
-// Get the backend URL from environment or use the current Replit dev URL
-// When testing on your phone, the API should point to your Replit URL
+// Get the backend URL - use production URL since app is standalone
 const getApiUrl = () => {
-  if (Constants.expoConfig?.extra?.apiUrl) {
-    return Constants.expoConfig.extra.apiUrl;
-  }
-  
-  // Default to the current Replit URL
-  // This will automatically work when you start the Expo server
+  // For production builds, use the published backend URL
+  // Update this to your actual backend URL when deploying
   return 'https://cb8d11f0-9b74-4f2b-8d52-0aeb05ff3cd0-00-15weriw4t5t7e.spock.replit.dev/api';
 };
 

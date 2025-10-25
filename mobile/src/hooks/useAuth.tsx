@@ -44,8 +44,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [isLoading, setIsLoading] = useState(true);
 
   const [request, response, promptAsync] = Google.useAuthRequest({
-    androidClientId: '950717649313-your-android-client-id.apps.googleusercontent.com',
-    iosClientId: '950717649313-your-ios-client-id.apps.googleusercontent.com',
+    androidClientId: '950717649313-u2g0fqisd3gqg8ltq45f8u2oj2j70sqp.apps.googleusercontent.com',
+    iosClientId: '950717649313-u2g0fqisd3gqg8ltq45f8u2oj2j70sqp.apps.googleusercontent.com',
     webClientId: '950717649313-u2g0fqisd3gqg8ltq45f8u2oj2j70sqp.apps.googleusercontent.com',
   });
 
