@@ -1,0 +1,74 @@
+Logs for your project will appear below. Press Ctrl+C to exit.
+Web Bundling failed 1168ms node_modules/expo/AppEntry.js (3 modules)
+Unable to resolve "react-native-web/dist/exports/AppRegistry" from "node_modules/expo/src/launch/registerRootComponent.tsx"
+> 1 | import '../Expo.fx';
+  2 |
+  3 | import { type ComponentType } from 'react';
+  4 | import { AppRegistry, Platform } from 'react-native';
+
+Import stack:
+
+ node_modules/expo/src/launch/registerRootComponent.tsx
+ | import "react-native-web/dist/exports/AppRegistry"
+
+ node_modules/expo/AppEntry.js
+ | import "expo/src/launch/registerRootComponent"
+
+ 
+ | import "./node_modules/expo/AppEntry"
+
+Web Bundling failed 22ms node_modules/expo/AppEntry.js (1 module)
+Unable to resolve "react-native-web/dist/exports/AppRegistry" from "node_modules/expo/src/launch/registerRootComponent.tsx"
+> 1 | import '../Expo.fx';
+  2 |
+  3 | import { type ComponentType } from 'react';
+  4 | import { AppRegistry, Platform } from 'react-native';
+
+Import stack:
+
+ node_modules/expo/src/launch/registerRootComponent.tsx
+ | import "react-native-web/dist/exports/AppRegistry"
+
+ node_modules/expo/AppEntry.js
+ | import "expo/src/launch/registerRootComponent"
+
+ 
+ | import "./node_modules/expo/AppEntry"
+
+Web Bundling failed 6ms node_modules/expo/AppEntry.js (1 module)
+Unable to resolve "react-native-web/dist/exports/AppRegistry" from "node_modules/expo/src/launch/registerRootComponent.tsx"
+> 1 | import '../Expo.fx';
+  2 |
+  3 | import { type ComponentType } from 'react';
+  4 | import { AppRegistry, Platform } from 'react-native';
+
+Import stack:
+
+ node_modules/expo/src/launch/registerRootComponent.tsx
+ | import "react-native-web/dist/exports/AppRegistry"
+
+ node_modules/expo/AppEntry.js
+ | import "expo/src/launch/registerRootComponent"
+
+ 
+ | import "./node_modules/expo/AppEntry"
+
+Web Bundling failed 10ms node_modules/expo/AppEntry.js (1 module)
+Unable to resolve "react-native-web/dist/exports/AppRegistry" from "node_modules/expo/src/launch/registerRootComponent.tsx"
+> 1 | import '../Expo.fx';
+  2 |
+  3 | import { type ComponentType } from 'react';
+  4 | import { AppRegistry, Platform } from 'react-native';
+
+Import stack:
+
+ node_modules/expo/src/launch/registerRootComponent.tsx
+ | import "react-native-web/dist/exports/AppRegistry"
+
+ node_modules/expo/AppEntry.js
+ | import "expo/src/launch/registerRootComponent"
+
+ 
+ | import "./node_modules/expo/AppEntry"
+
+Terminated
