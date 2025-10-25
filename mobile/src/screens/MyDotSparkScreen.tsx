@@ -1,8 +1,13 @@
-import { View, Text, ScrollView, StyleSheet, TouchableOpacity, RefreshControl } from 'react-native';
+import { View, Text, ScrollView, StyleSheet, TouchableOpacity, RefreshControl, ActivityIndicator } from 'react-native';
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Feather } from '@expo/vector-icons';
 import { useAuth } from '../hooks/useAuth';
+import { Card } from '../components/Card';
+import { ProgressBar } from '../components/ProgressBar';
+import { Avatar } from '../components/Avatar';
+import { colors } from '../theme/colors';
+import { typography } from '../theme/typography';
 
 interface DashboardData {
   neuralStrength: {
@@ -12,26 +17,16 @@ interface DashboardData {
       learningEngineCompleted: boolean;
       hasActivity: boolean;
     };
-    stats: {
-      thoughtsCount: number;
-      savedSparksCount: number;
-      userSparksCount: number;
-      perspectivesCount: number;
-    };
   };
-  stats: {
-    dots: number;
-    wheels: number;
-    chakras: number;
+  myNeuraStats: {
     thoughts: number;
-    savedSparks: number;
+    sparks: number;
+  };
+  socialStats: {
+    thoughts: number;
+    sparks: number;
     perspectives: number;
   };
-  recentActivity: Array<{
-    type: 'dot' | 'wheel' | 'thought';
-    data: any;
-    timestamp: string;
-  }>;
 }
 
 export default function MyDotSparkScreen() {
@@ -52,146 +47,128 @@ export default function MyDotSparkScreen() {
   if (isLoading) {
     return (
       <View style={styles.loadingContainer}>
-        <Text style={styles.loadingText}>Loading...</Text>
+        <ActivityIndicator size="large" color={colors.primary[500]} />
+        <Text style={styles.loadingText}>Loading your DotSpark...</Text>
       </View>
     );
   }
 
-  const stats = dashboardData?.data?.stats;
-  const neuralStrength = dashboardData?.data?.neuralStrength;
+  const dashboard = dashboardData?.data;
+  const cognitiveConfigured = dashboard?.neuralStrength?.milestones?.cognitiveIdentityCompleted || false;
 
   return (
     <ScrollView
       style={styles.container}
       contentContainerStyle={styles.contentContainer}
       refreshControl={
-        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#f59e0b" />
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={colors.primary[500]} />
       }
     >
-      {/* Header */}
-      <View style={styles.header}>
-        <Text style={styles.headerTitle}>My DotSpark</Text>
-        <Text style={styles.headerSubtitle}>Your Intelligence Network</Text>
-      </View>
-
-      {/* Neural Strength Card */}
-      <View style={styles.card}>
-        <View style={styles.cardHeader}>
-          <Feather name="zap" size={24} color="#f59e0b" />
-          <Text style={styles.cardTitle}>Neural Strength</Text>
-        </View>
-        
-        {/* Progress Bar */}
-        <View style={styles.progressContainer}>
-          <View style={styles.progressBar}>
-            <View
-              style={[
-                styles.progressFill,
-                { width: `${neuralStrength?.percentage || 0}%` }
-              ]}
-            />
-          </View>
-          <Text style={styles.progressText}>{neuralStrength?.percentage || 0}%</Text>
-        </View>
-
-        {/* Milestones */}
-        <View style={styles.milestonesContainer}>
-          <View style={styles.milestone}>
-            <Feather
-              name={neuralStrength?.milestones.cognitiveIdentityCompleted ? "check-circle" : "circle"}
-              size={20}
-              color={neuralStrength?.milestones.cognitiveIdentityCompleted ? "#10b981" : "#d1d5db"}
-            />
-            <Text style={styles.milestoneText}>Cognitive Identity</Text>
-          </View>
-          <View style={styles.milestone}>
-            <Feather
-              name={neuralStrength?.milestones.learningEngineCompleted ? "check-circle" : "circle"}
-              size={20}
-              color={neuralStrength?.milestones.learningEngineCompleted ? "#10b981" : "#d1d5db"}
-            />
-            <Text style={styles.milestoneText}>Learning Engine</Text>
-          </View>
-          <View style={styles.milestone}>
-            <Feather
-              name={neuralStrength?.milestones.hasActivity ? "check-circle" : "circle"}
-              size={20}
-              color={neuralStrength?.milestones.hasActivity ? "#10b981" : "#d1d5db"}
-            />
-            <Text style={styles.milestoneText}>Activity Started</Text>
+      {/* Profile Header */}
+      <View style={styles.profileSection}>
+        <View style={styles.profileRow}>
+          <Avatar
+            name={(user as any)?.fullName || 'User'}
+            imageUrl={(user as any)?.linkedinPhotoUrl || (user as any)?.avatar}
+            size={48}
+          />
+          <View style={styles.profileInfo}>
+            <Text style={styles.profileName}>{(user as any)?.fullName || 'User'}</Text>
+            <Text style={styles.profileHeadline}>
+              {(user as any)?.linkedinHeadline || 'Professional Headline'}
+            </Text>
           </View>
         </View>
       </View>
 
-      {/* Stats Grid */}
-      <View style={styles.statsGrid}>
-        {/* Dots */}
-        <View style={[styles.statCard, styles.dotsCard]}>
-          <Feather name="circle" size={28} color="#f59e0b" />
-          <Text style={styles.statNumber}>{stats?.dots || 0}</Text>
-          <Text style={styles.statLabel}>Dots</Text>
-        </View>
-
-        {/* Wheels */}
-        <View style={[styles.statCard, styles.wheelsCard]}>
-          <Feather name="target" size={28} color="#ea580c" />
-          <Text style={styles.statNumber}>{stats?.wheels || 0}</Text>
-          <Text style={styles.statLabel}>Wheels</Text>
-        </View>
-
-        {/* Chakras */}
-        <View style={[styles.statCard, styles.chakrasCard]}>
-          <Feather name="hexagon" size={28} color="#dc2626" />
-          <Text style={styles.statNumber}>{stats?.chakras || 0}</Text>
-          <Text style={styles.statLabel}>Chakras</Text>
-        </View>
-
-        {/* Thoughts */}
-        <View style={[styles.statCard, styles.thoughtsCard]}>
-          <Feather name="message-circle" size={28} color="#7c3aed" />
-          <Text style={styles.statNumber}>{stats?.thoughts || 0}</Text>
-          <Text style={styles.statLabel}>Thoughts</Text>
-        </View>
-
-        {/* Sparks */}
-        <View style={[styles.statCard, styles.sparksCard]}>
-          <Feather name="zap" size={28} color="#f59e0b" />
-          <Text style={styles.statNumber}>{stats?.savedSparks || 0}</Text>
-          <Text style={styles.statLabel}>Sparks</Text>
-        </View>
-
-        {/* Perspectives */}
-        <View style={[styles.statCard, styles.perspectivesCard]}>
-          <Feather name="eye" size={28} color="#06b6d4" />
-          <Text style={styles.statNumber}>{stats?.perspectives || 0}</Text>
-          <Text style={styles.statLabel}>Perspectives</Text>
-        </View>
-      </View>
-
-      {/* Quick Actions */}
-      <View style={styles.actionsContainer}>
-        <Text style={styles.sectionTitle}>Quick Actions</Text>
-        
-        <TouchableOpacity style={styles.actionButton}>
-          <View style={styles.actionIcon}>
-            <Feather name="plus-circle" size={24} color="#fff" />
+      {/* Cognitive Identity Card */}
+      <TouchableOpacity style={styles.cognitiveCard}>
+        <View style={styles.cognitiveHeader}>
+          <View style={styles.statusBadge}>
+            <Feather name="user" size={16} color="#fff" />
+            <View style={[styles.statusDot, { backgroundColor: cognitiveConfigured ? colors.green[500] : colors.error }]} />
           </View>
-          <View style={styles.actionContent}>
-            <Text style={styles.actionTitle}>Create Dot</Text>
-            <Text style={styles.actionSubtitle}>Capture a new insight</Text>
+        </View>
+        <Text style={styles.cognitiveTitle}>Cognitive Identity</Text>
+        <Text style={styles.cognitiveSubtitle}>Your unique thought patterns and intellectual fingerprint</Text>
+        {!cognitiveConfigured && (
+          <Text style={styles.cognitivePrompt}>
+            ✨ Set up your Cognitive Identity
+          </Text>
+        )}
+        <Feather name="arrow-right" size={20} color="#fff" style={styles.cognitiveArrow} />
+      </TouchableOpacity>
+
+      {/* Dashboard Grid */}
+      <View style={styles.dashboardGrid}>
+        {/* My Neura */}
+        <TouchableOpacity style={styles.neuraCard}>
+          <View style={styles.cardBadge}>
+            <Feather name="brain" size={16} color="#fff" />
+            <View style={[styles.statusDot, { backgroundColor: (dashboard?.myNeuraStats?.thoughts || 0) > 0 ? colors.green[500] : colors.error }]} />
           </View>
-          <Feather name="chevron-right" size={20} color="#9ca3af" />
+          <Text style={styles.cardTitle}>My Neura</Text>
+          <Text style={styles.cardSubtitle}>Personal thoughts & saved insights</Text>
+          
+          <View style={styles.statsRow}>
+            <View style={styles.statPill}>
+              <Feather name="lightbulb" size={14} color="#fff" />
+              <Text style={styles.statText}>{dashboard?.myNeuraStats?.thoughts || 0}</Text>
+            </View>
+            <View style={styles.statPill}>
+              <Feather name="zap" size={14} color="#fff" />
+              <Text style={styles.statText}>{dashboard?.myNeuraStats?.sparks || 0}</Text>
+            </View>
+          </View>
+
+          <View style={styles.neuralStrengthSection}>
+            <View style={styles.neuralStrengthHeader}>
+              <Text style={styles.neuralStrengthLabel}>Neural Strength</Text>
+              <Text style={styles.neuralStrengthValue}>{dashboard?.neuralStrength?.percentage || 0}%</Text>
+            </View>
+            <View style={styles.neuralStrengthBar}>
+              <View style={[styles.neuralStrengthFill, { width: `${dashboard?.neuralStrength?.percentage || 0}%` }]} />
+            </View>
+          </View>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.actionButton}>
-          <View style={[styles.actionIcon, styles.actionIconSecondary]}>
-            <Feather name="settings" size={24} color="#fff" />
+        {/* Social Neura */}
+        <TouchableOpacity style={styles.socialCard}>
+          <View style={styles.cardBadge}>
+            <Feather name="users" size={16} color="#fff" />
+            <View style={[styles.statusDot, { backgroundColor: colors.green[500] }]} />
           </View>
-          <View style={styles.actionContent}>
-            <Text style={styles.actionTitle}>Neural Settings</Text>
-            <Text style={styles.actionSubtitle}>Configure your AI</Text>
+          <Text style={styles.cardTitle}>Social Neura</Text>
+          <Text style={styles.cardSubtitle}>Collective intelligence & shared thoughts</Text>
+          
+          <View style={styles.statsRow}>
+            <View style={styles.statPill}>
+              <Feather name="lightbulb" size={14} color="#fff" />
+              <Text style={styles.statText}>{dashboard?.socialStats?.thoughts || 0}</Text>
+            </View>
+            <View style={styles.statPill}>
+              <Feather name="zap" size={14} color="#fff" />
+              <Text style={styles.statText}>{dashboard?.socialStats?.sparks || 0}</Text>
+            </View>
           </View>
-          <Feather name="chevron-right" size={20} color="#9ca3af" />
+        </TouchableOpacity>
+
+        {/* ThinQ Circles */}
+        <TouchableOpacity style={styles.circlesCard}>
+          <View style={styles.cardBadge}>
+            <Feather name="users" size={16} color="#fff" />
+          </View>
+          <Text style={styles.cardTitle}>My ThinQ Circles</Text>
+          <Text style={styles.cardSubtitle}>Collaborative spaces</Text>
+        </TouchableOpacity>
+
+        {/* Learning Engine */}
+        <TouchableOpacity style={styles.learningCard}>
+          <View style={styles.cardBadge}>
+            <Feather name="book-open" size={16} color="#fff" />
+          </View>
+          <Text style={styles.cardTitle}>Learning Engine</Text>
+          <Text style={styles.cardSubtitle}>Personalized learning</Text>
         </TouchableOpacity>
       </View>
     </ScrollView>
@@ -201,7 +178,7 @@ export default function MyDotSparkScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fef3c7',
+    backgroundColor: colors.gray[50],
   },
   contentContainer: {
     padding: 16,
@@ -210,180 +187,186 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#fef3c7',
+    backgroundColor: colors.gray[50],
   },
   loadingText: {
-    fontSize: 16,
-    color: '#78716c',
     marginTop: 12,
+    fontSize: typography.sizes.base,
+    color: colors.gray[600],
   },
-  header: {
-    marginBottom: 24,
+  profileSection: {
+    marginBottom: 16,
   },
-  headerTitle: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    color: '#78350f',
+  profileRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  profileInfo: {
+    flex: 1,
+  },
+  profileName: {
+    fontSize: typography.sizes['2xl'],
+    fontWeight: typography.weights.bold,
+    color: colors.primary[900],
+  },
+  profileHeadline: {
+    fontSize: typography.sizes.sm,
+    color: colors.primary[700],
+    marginTop: 2,
+  },
+  cognitiveCard: {
+    backgroundColor: '#8b5cf6',
+    borderRadius: 24,
+    padding: 20,
+    marginBottom: 16,
+    position: 'relative',
+    overflow: 'hidden',
+  },
+  cognitiveHeader: {
+    marginBottom: 32,
+  },
+  statusBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 20,
+    alignSelf: 'flex-start',
+    position: 'relative',
+  },
+  statusDot: {
+    width: 12,
+    height: 12,
+    borderRadius: 6,
+    position: 'absolute',
+    top: -4,
+    right: -4,
+    borderWidth: 2,
+    borderColor: '#fff',
+  },
+  cognitiveTitle: {
+    fontSize: typography.sizes.lg,
+    fontWeight: typography.weights.bold,
+    color: '#fff',
     marginBottom: 4,
   },
-  headerSubtitle: {
-    fontSize: 16,
-    color: '#92400e',
-  },
-  card: {
-    backgroundColor: '#fff',
-    borderRadius: 16,
-    padding: 20,
-    marginBottom: 20,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 3,
-  },
-  cardHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 16,
-  },
-  cardTitle: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#1f2937',
-    marginLeft: 8,
-  },
-  progressContainer: {
-    marginBottom: 16,
-  },
-  progressBar: {
-    height: 8,
-    backgroundColor: '#f3f4f6',
-    borderRadius: 4,
-    overflow: 'hidden',
+  cognitiveSubtitle: {
+    fontSize: typography.sizes.xs,
+    color: 'rgba(255, 255, 255, 0.9)',
     marginBottom: 8,
   },
-  progressFill: {
-    height: '100%',
-    backgroundColor: '#f59e0b',
-    borderRadius: 4,
+  cognitivePrompt: {
+    fontSize: typography.sizes.xs,
+    color: 'rgba(255, 255, 255, 0.9)',
+    fontStyle: 'italic',
+    textAlign: 'center',
   },
-  progressText: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#f59e0b',
-    textAlign: 'right',
+  cognitiveArrow: {
+    position: 'absolute',
+    top: 16,
+    right: 16,
+    opacity: 0.8,
   },
-  milestonesContainer: {
-    gap: 12,
+  dashboardGrid: {
+    gap: 16,
   },
-  milestone: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  milestoneText: {
-    fontSize: 14,
-    color: '#6b7280',
-  },
-  statsGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 12,
-    marginBottom: 20,
-  },
-  statCard: {
-    flex: 1,
-    minWidth: '47%',
-    backgroundColor: '#fff',
-    borderRadius: 12,
-    padding: 16,
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 4,
-    elevation: 2,
-  },
-  dotsCard: {
-    borderLeftWidth: 3,
-    borderLeftColor: '#f59e0b',
-  },
-  wheelsCard: {
-    borderLeftWidth: 3,
-    borderLeftColor: '#ea580c',
-  },
-  chakrasCard: {
-    borderLeftWidth: 3,
-    borderLeftColor: '#dc2626',
-  },
-  thoughtsCard: {
-    borderLeftWidth: 3,
-    borderLeftColor: '#7c3aed',
-  },
-  sparksCard: {
-    borderLeftWidth: 3,
-    borderLeftColor: '#f59e0b',
-  },
-  perspectivesCard: {
-    borderLeftWidth: 3,
-    borderLeftColor: '#06b6d4',
-  },
-  statNumber: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: '#1f2937',
-    marginTop: 8,
-  },
-  statLabel: {
-    fontSize: 12,
-    color: '#6b7280',
-    marginTop: 4,
-  },
-  actionsContainer: {
-    marginBottom: 20,
-  },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#78350f',
-    marginBottom: 12,
-  },
-  actionButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#fff',
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 12,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 4,
-    elevation: 2,
-  },
-  actionIcon: {
-    width: 48,
-    height: 48,
+  neuraCard: {
+    backgroundColor: colors.primary[500],
     borderRadius: 24,
-    backgroundColor: '#f59e0b',
+    padding: 20,
+    position: 'relative',
+  },
+  socialCard: {
+    backgroundColor: colors.orange[600],
+    borderRadius: 24,
+    padding: 20,
+    position: 'relative',
+  },
+  circlesCard: {
+    backgroundColor: colors.primary[600],
+    borderRadius: 24,
+    padding: 20,
+    position: 'relative',
+  },
+  learningCard: {
+    backgroundColor: colors.purple[600],
+    borderRadius: 24,
+    padding: 20,
+    position: 'relative',
+  },
+  cardBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 20,
+    alignSelf: 'center',
+    marginBottom: 16,
+    position: 'relative',
+  },
+  cardTitle: {
+    fontSize: typography.sizes.xl,
+    fontWeight: typography.weights.bold,
+    color: '#fff',
+    textAlign: 'center',
+    marginBottom: 4,
+  },
+  cardSubtitle: {
+    fontSize: typography.sizes.sm,
+    color: 'rgba(255, 255, 255, 0.9)',
+    textAlign: 'center',
+    marginBottom: 16,
+  },
+  statsRow: {
+    flexDirection: 'row',
     justifyContent: 'center',
+    gap: 12,
+    marginBottom: 16,
+  },
+  statPill: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 20,
+  },
+  statText: {
+    fontSize: typography.sizes.xs,
+    fontWeight: typography.weights.semibold,
+    color: '#fff',
+  },
+  neuralStrengthSection: {
+    gap: 6,
+  },
+  neuralStrengthHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     alignItems: 'center',
   },
-  actionIconSecondary: {
-    backgroundColor: '#7c3aed',
+  neuralStrengthLabel: {
+    fontSize: typography.sizes.xs,
+    fontWeight: typography.weights.bold,
+    color: '#fff',
   },
-  actionContent: {
-    flex: 1,
-    marginLeft: 16,
+  neuralStrengthValue: {
+    fontSize: typography.sizes.sm,
+    fontWeight: typography.weights.bold,
+    color: '#fff',
   },
-  actionTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#1f2937',
+  neuralStrengthBar: {
+    height: 6,
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    borderRadius: 3,
+    overflow: 'hidden',
   },
-  actionSubtitle: {
-    fontSize: 14,
-    color: '#6b7280',
-    marginTop: 2,
+  neuralStrengthFill: {
+    height: '100%',
+    backgroundColor: '#fff',
+    borderRadius: 3,
   },
 });

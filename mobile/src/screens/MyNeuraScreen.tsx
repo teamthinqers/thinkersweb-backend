@@ -1,17 +1,87 @@
-import { View, Text, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, ScrollView, StyleSheet, TouchableOpacity, RefreshControl, ActivityIndicator } from 'react-native';
 import { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { Feather } from '@expo/vector-icons';
+import { useAuth } from '../hooks/useAuth';
+import { Card } from '../components/Card';
+import { colors } from '../theme/colors';
+import { typography } from '../theme/typography';
+
+interface MyNeuraStats {
+  thoughts: number;
+  sparks: number;
+  neuralStrength: number;
+}
 
 export default function MyNeuraScreen() {
+  const { user } = useAuth();
+  const [refreshing, setRefreshing] = useState(false);
   const [selectedTab, setSelectedTab] = useState('reflections');
 
+  const { data: statsData, isLoading, refetch } = useQuery<{ success: boolean; data: MyNeuraStats }>({
+    queryKey: ['/api/myneura/stats'],
+    enabled: !!user,
+  });
+
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await refetch();
+    setRefreshing(false);
+  };
+
+  const stats = statsData?.data;
+
+  if (isLoading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color={colors.green[500]} />
+        <Text style={styles.loadingText}>Loading MyNeura...</Text>
+      </View>
+    );
+  }
+
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
+    <ScrollView
+      style={styles.container}
+      contentContainerStyle={styles.contentContainer}
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={colors.green[500]} />
+      }
+    >
       {/* Header */}
       <View style={styles.header}>
         <Text style={styles.headerTitle}>MyNeura</Text>
         <Text style={styles.headerSubtitle}>Personal Intelligence Space</Text>
       </View>
+
+      {/* Stats Cards */}
+      <View style={styles.statsGrid}>
+        <Card style={styles.statCard} borderColor={colors.primary[500]} borderWidth={3}>
+          <Feather name="lightbulb" size={32} color={colors.primary[500]} />
+          <Text style={styles.statValue}>{stats?.thoughts || 0}</Text>
+          <Text style={styles.statLabel}>Dots</Text>
+        </Card>
+
+        <Card style={styles.statCard} borderColor={colors.primary[500]} borderWidth={3}>
+          <Feather name="zap" size={32} color={colors.primary[500]} />
+          <Text style={styles.statValue}>{stats?.sparks || 0}</Text>
+          <Text style={styles.statLabel}>Sparks</Text>
+        </Card>
+      </View>
+
+      {/* Neural Strength */}
+      <Card style={styles.neuralCard}>
+        <View style={styles.neuralHeader}>
+          <Feather name="activity" size={24} color={colors.green[500]} />
+          <Text style={styles.neuralTitle}>Neural Strength</Text>
+        </View>
+        <View style={styles.neuralProgressContainer}>
+          <View style={styles.neuralProgressBar}>
+            <View style={[styles.neuralProgressFill, { width: `${stats?.neuralStrength || 0}%` }]} />
+          </View>
+          <Text style={styles.neuralProgressText}>{stats?.neuralStrength || 0}%</Text>
+        </View>
+      </Card>
 
       {/* Tab Navigation */}
       <View style={styles.tabContainer}>
@@ -36,72 +106,39 @@ export default function MyNeuraScreen() {
       {/* Content */}
       {selectedTab === 'reflections' ? (
         <View style={styles.content}>
-          <View style={styles.card}>
-            <View style={styles.cardHeader}>
-              <Feather name="message-circle" size={24} color="#7c3aed" />
-              <Text style={styles.cardTitle}>My Thoughts</Text>
-            </View>
-            <Text style={styles.emptyText}>Your personal thoughts will appear here</Text>
-          </View>
-
-          <View style={styles.card}>
-            <View style={styles.cardHeader}>
-              <Feather name="zap" size={24} color="#f59e0b" />
-              <Text style={styles.cardTitle}>My Sparks</Text>
-            </View>
-            <Text style={styles.emptyText}>Your saved sparks will appear here</Text>
-          </View>
-
-          <View style={styles.card}>
-            <View style={styles.cardHeader}>
-              <Feather name="eye" size={24} color="#06b6d4" />
-              <Text style={styles.cardTitle}>My Perspectives</Text>
-            </View>
-            <Text style={styles.emptyText}>Your perspectives will appear here</Text>
-          </View>
+          <Card style={styles.emptyCard}>
+            <Feather name="message-circle" size={48} color={colors.gray[300]} />
+            <Text style={styles.emptyTitle}>No dots yet</Text>
+            <Text style={styles.emptyText}>Start capturing your thoughts and insights</Text>
+            <TouchableOpacity style={styles.saveButton}>
+              <Feather name="plus-circle" size={20} color="#fff" />
+              <Text style={styles.saveButtonText}>Save Thought / Dot</Text>
+            </TouchableOpacity>
+          </Card>
         </View>
       ) : (
         <View style={styles.content}>
-          <View style={styles.card}>
-            <View style={styles.cardHeader}>
-              <Feather name="brain" size={24} color="#f59e0b" />
-              <Text style={styles.cardTitle}>Cognitive Identity</Text>
+          <Card>
+            <View style={styles.settingRow}>
+              <Feather name="brain" size={24} color={colors.primary[500]} />
+              <Text style={styles.settingTitle}>Cognitive Identity</Text>
             </View>
             <TouchableOpacity style={styles.configButton}>
               <Text style={styles.configButtonText}>Configure Identity</Text>
               <Feather name="chevron-right" size={20} color="#fff" />
             </TouchableOpacity>
-          </View>
+          </Card>
 
-          <View style={styles.card}>
-            <View style={styles.cardHeader}>
-              <Feather name="book-open" size={24} color="#7c3aed" />
-              <Text style={styles.cardTitle}>Learning Engine</Text>
+          <Card>
+            <View style={styles.settingRow}>
+              <Feather name="book-open" size={24} color={colors.purple[600]} />
+              <Text style={styles.settingTitle}>Learning Engine</Text>
             </View>
             <TouchableOpacity style={[styles.configButton, styles.configButtonSecondary]}>
               <Text style={styles.configButtonText}>Configure Learning</Text>
               <Feather name="chevron-right" size={20} color="#fff" />
             </TouchableOpacity>
-          </View>
-
-          <View style={styles.card}>
-            <View style={styles.cardHeader}>
-              <Feather name="sliders" size={24} color="#06b6d4" />
-              <Text style={styles.cardTitle}>AI Settings</Text>
-            </View>
-            
-            <View style={styles.settingRow}>
-              <Text style={styles.settingLabel}>Capture Mode</Text>
-              <Text style={styles.settingValue}>Hybrid</Text>
-            </View>
-
-            <View style={styles.settingRow}>
-              <Text style={styles.settingLabel}>Neural Strength</Text>
-              <View style={styles.progressBarSmall}>
-                <View style={[styles.progressFillSmall, { width: '35%' }]} />
-              </View>
-            </View>
-          </View>
+          </Card>
         </View>
       )}
     </ScrollView>
@@ -111,23 +148,89 @@ export default function MyNeuraScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f0fdf4',
+    backgroundColor: colors.background.secondary,
   },
   contentContainer: {
     padding: 16,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: colors.background.secondary,
+  },
+  loadingText: {
+    marginTop: 12,
+    fontSize: typography.sizes.base,
+    color: colors.green[700],
   },
   header: {
     marginBottom: 20,
   },
   headerTitle: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    color: '#14532d',
+    fontSize: typography.sizes['4xl'],
+    fontWeight: typography.weights.bold,
+    color: colors.green[900],
     marginBottom: 4,
   },
   headerSubtitle: {
-    fontSize: 16,
-    color: '#15803d',
+    fontSize: typography.sizes.base,
+    color: colors.green[700],
+  },
+  statsGrid: {
+    flexDirection: 'row',
+    gap: 12,
+    marginBottom: 20,
+  },
+  statCard: {
+    flex: 1,
+    alignItems: 'center',
+    padding: 20,
+  },
+  statValue: {
+    fontSize: typography.sizes['3xl'],
+    fontWeight: typography.weights.bold,
+    color: colors.gray[900],
+    marginTop: 12,
+  },
+  statLabel: {
+    fontSize: typography.sizes.sm,
+    color: colors.gray[600],
+    marginTop: 4,
+  },
+  neuralCard: {
+    marginBottom: 20,
+  },
+  neuralHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    marginBottom: 16,
+  },
+  neuralTitle: {
+    fontSize: typography.sizes.lg,
+    fontWeight: typography.weights.semibold,
+    color: colors.gray[900],
+  },
+  neuralProgressContainer: {
+    gap: 8,
+  },
+  neuralProgressBar: {
+    height: 12,
+    backgroundColor: colors.gray[100],
+    borderRadius: 6,
+    overflow: 'hidden',
+  },
+  neuralProgressFill: {
+    height: '100%',
+    backgroundColor: colors.green[500],
+    borderRadius: 6,
+  },
+  neuralProgressText: {
+    fontSize: typography.sizes.base,
+    fontWeight: typography.weights.bold,
+    color: colors.green[500],
+    textAlign: 'right',
   },
   tabContainer: {
     flexDirection: 'row',
@@ -143,12 +246,12 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   tabActive: {
-    backgroundColor: '#7c3aed',
+    backgroundColor: colors.purple[600],
   },
   tabText: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#6b7280',
+    fontSize: typography.sizes.sm,
+    fontWeight: typography.weights.semibold,
+    color: colors.gray[600],
   },
   tabTextActive: {
     color: '#fff',
@@ -156,78 +259,62 @@ const styles = StyleSheet.create({
   content: {
     gap: 16,
   },
-  card: {
-    backgroundColor: '#fff',
-    borderRadius: 16,
-    padding: 20,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 3,
-  },
-  cardHeader: {
-    flexDirection: 'row',
+  emptyCard: {
     alignItems: 'center',
-    marginBottom: 16,
+    paddingVertical: 40,
   },
-  cardTitle: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#1f2937',
-    marginLeft: 8,
+  emptyTitle: {
+    fontSize: typography.sizes.xl,
+    fontWeight: typography.weights.semibold,
+    color: colors.gray[700],
+    marginTop: 16,
+    marginBottom: 8,
   },
   emptyText: {
-    fontSize: 14,
-    color: '#9ca3af',
-    textAlign: 'center',
-    paddingVertical: 20,
+    fontSize: typography.sizes.sm,
+    color: colors.gray[600],
+    marginBottom: 24,
+  },
+  saveButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    backgroundColor: colors.primary[600],
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 10,
+  },
+  saveButtonText: {
+    fontSize: typography.sizes.base,
+    fontWeight: typography.weights.semibold,
+    color: '#fff',
+  },
+  settingRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    marginBottom: 16,
+  },
+  settingTitle: {
+    fontSize: typography.sizes.lg,
+    fontWeight: typography.weights.semibold,
+    color: colors.gray[900],
   },
   configButton: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    backgroundColor: '#f59e0b',
+    backgroundColor: colors.primary[600],
     paddingVertical: 12,
     paddingHorizontal: 16,
     borderRadius: 8,
   },
   configButtonSecondary: {
-    backgroundColor: '#7c3aed',
+    backgroundColor: colors.purple[600],
   },
   configButtonText: {
-    fontSize: 16,
-    fontWeight: '600',
+    fontSize: typography.sizes.base,
+    fontWeight: typography.weights.semibold,
     color: '#fff',
-  },
-  settingRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: '#f3f4f6',
-  },
-  settingLabel: {
-    fontSize: 14,
-    color: '#6b7280',
-    flex: 1,
-  },
-  settingValue: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#1f2937',
-  },
-  progressBarSmall: {
-    width: 100,
-    height: 6,
-    backgroundColor: '#f3f4f6',
-    borderRadius: 3,
-    overflow: 'hidden',
-  },
-  progressFillSmall: {
-    height: '100%',
-    backgroundColor: '#10b981',
-    borderRadius: 3,
   },
 });

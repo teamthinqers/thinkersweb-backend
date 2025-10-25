@@ -1,7 +1,11 @@
-import { View, Text, ScrollView, StyleSheet, TouchableOpacity, RefreshControl } from 'react-native';
-import { useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { View, Text, ScrollView, StyleSheet, TouchableOpacity, RefreshControl, ActivityIndicator, Linking } from 'react-native';
+import { useState, useEffect } from 'react';
+import { useQuery, useMutation } from '@tanstack/react-query';
 import { Feather } from '@expo/vector-icons';
+import { ThoughtCard } from '../components/ThoughtCard';
+import { colors } from '../theme/colors';
+import { typography } from '../theme/typography';
+import { queryClient } from '../lib/queryClient';
 
 type Thought = {
   id: number;
@@ -14,16 +18,34 @@ type Thought = {
   user?: {
     id: number;
     fullName: string;
+    avatar?: string;
+    linkedinPhotoUrl?: string;
+    linkedinProfileUrl?: string;
     email: string;
   };
 };
 
 export default function SocialScreen() {
   const [refreshing, setRefreshing] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   const { data: thoughtsData, isLoading, refetch } = useQuery<{ thoughts: Thought[] }>({
     queryKey: ['/api/thoughts'],
   });
+
+  // Check admin status
+  useEffect(() => {
+    fetch('/api/auth/me', {
+      credentials: 'include'
+    })
+      .then(res => res.json())
+      .then(data => {
+        if (data.user?.email === 'aravindhraj1410@gmail.com') {
+          setIsAdmin(true);
+        }
+      })
+      .catch(err => console.error('Admin check failed:', err));
+  }, []);
 
   const onRefresh = async () => {
     setRefreshing(true);
@@ -33,25 +55,23 @@ export default function SocialScreen() {
 
   const thoughts = thoughtsData?.thoughts || [];
 
-  const getContributorName = (thought: Thought) => {
-    if (thought.contributorType === 'guest') {
-      return thought.guestName || 'Guest Contributor';
+  const handleAvatarPress = (thought: Thought) => {
+    let url = '';
+    if (thought.contributorType === 'guest' && thought.guestLinkedInUrl) {
+      url = thought.guestLinkedInUrl;
+    } else if (thought.user?.linkedinProfileUrl) {
+      url = thought.user.linkedinProfileUrl;
     }
-    return thought.user?.fullName || 'Anonymous';
-  };
-
-  const getInitials = (name: string) => {
-    return name
-      .split(' ')
-      .map(n => n[0])
-      .join('')
-      .toUpperCase()
-      .slice(0, 2);
+    
+    if (url) {
+      Linking.openURL(url);
+    }
   };
 
   if (isLoading) {
     return (
       <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color={colors.orange[600]} />
         <Text style={styles.loadingText}>Loading thoughts...</Text>
       </View>
     );
@@ -62,13 +82,13 @@ export default function SocialScreen() {
       style={styles.container}
       contentContainerStyle={styles.contentContainer}
       refreshControl={
-        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#ea580c" />
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={colors.orange[600]} />
       }
     >
       {/* Header */}
       <View style={styles.header}>
         <View style={styles.headerTop}>
-          <Feather name="users" size={32} color="#ea580c" />
+          <Feather name="users" size={32} color={colors.primary[600]} />
           <Text style={styles.headerTitle}>Social Neura</Text>
         </View>
         <Text style={styles.headerSubtitle}>
@@ -78,60 +98,31 @@ export default function SocialScreen() {
 
       {/* Contribute Button */}
       <TouchableOpacity style={styles.contributeButton}>
-        <Feather name="plus-circle" size={20} color="#fff" />
-        <Text style={styles.contributeButtonText}>Contribute Your Thought</Text>
+        <Feather name="sparkles" size={20} color="#fff" />
+        <Text style={styles.contributeButtonText}>Share Your Thought</Text>
       </TouchableOpacity>
 
-      {/* Thought Cards */}
+      {/* Thoughts Feed */}
       <View style={styles.thoughtsContainer}>
-        {thoughts.map((thought) => (
-          <View key={thought.id} style={styles.thoughtCard}>
-            {/* Author Info */}
-            <View style={styles.authorRow}>
-              <View style={styles.avatar}>
-                <Text style={styles.avatarText}>
-                  {getInitials(getContributorName(thought))}
-                </Text>
-              </View>
-              <View style={styles.authorInfo}>
-                <Text style={styles.authorName}>{getContributorName(thought)}</Text>
-                {thought.contributorType === 'guest' && (
-                  <Text style={styles.guestBadge}>Guest</Text>
-                )}
-              </View>
-              {thought.guestLinkedInUrl && (
-                <TouchableOpacity style={styles.linkedInIcon}>
-                  <Feather name="linkedin" size={18} color="#0077b5" />
-                </TouchableOpacity>
-              )}
-            </View>
-
-            {/* Thought Content */}
-            <Text style={styles.thoughtHeading}>{thought.heading}</Text>
-            <Text style={styles.thoughtSummary} numberOfLines={3}>
-              {thought.summary}
-            </Text>
-
-            {/* Actions */}
-            <View style={styles.actionsRow}>
-              <TouchableOpacity style={styles.actionButton}>
-                <Feather name="zap" size={16} color="#f59e0b" />
-                <Text style={styles.actionText}>Spark</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.actionButton}>
-                <Feather name="eye" size={16} color="#06b6d4" />
-                <Text style={styles.actionText}>Perspective</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        ))}
-
-        {thoughts.length === 0 && (
+        {thoughts.length === 0 ? (
           <View style={styles.emptyContainer}>
-            <Feather name="message-circle" size={48} color="#d1d5db" />
-            <Text style={styles.emptyText}>No thoughts yet</Text>
-            <Text style={styles.emptySubtext}>Be the first to contribute!</Text>
+            <Feather name="message-circle" size={64} color={colors.gray[300]} />
+            <Text style={styles.emptyTitle}>No thoughts yet</Text>
+            <Text style={styles.emptySubtext}>Be the first to share an insight with the community!</Text>
+            <TouchableOpacity style={styles.emptyButton}>
+              <Feather name="sparkles" size={16} color="#fff" />
+              <Text style={styles.emptyButtonText}>Share First Thought</Text>
+            </TouchableOpacity>
           </View>
+        ) : (
+          thoughts.map((thought) => (
+            <ThoughtCard
+              key={thought.id}
+              thought={thought}
+              onAvatarPress={() => handleAvatarPress(thought)}
+              showActions={true}
+            />
+          ))
         )}
       </View>
     </ScrollView>
@@ -141,7 +132,7 @@ export default function SocialScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff7ed',
+    backgroundColor: colors.background.social,
   },
   contentContainer: {
     padding: 16,
@@ -150,12 +141,12 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#fff7ed',
+    backgroundColor: colors.background.social,
   },
   loadingText: {
-    fontSize: 16,
-    color: '#9a3412',
     marginTop: 12,
+    fontSize: typography.sizes.base,
+    color: colors.orange[900],
   },
   header: {
     marginBottom: 20,
@@ -163,24 +154,26 @@ const styles = StyleSheet.create({
   headerTop: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'center',
     gap: 12,
-    marginBottom: 8,
+    marginBottom: 12,
   },
   headerTitle: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: '#9a3412',
+    fontSize: typography.sizes['3xl'],
+    fontWeight: typography.weights.bold,
+    color: colors.primary[600],
   },
   headerSubtitle: {
-    fontSize: 14,
-    color: '#c2410c',
+    fontSize: typography.sizes.sm,
+    color: colors.gray[600],
+    textAlign: 'center',
     lineHeight: 20,
   },
   contributeButton: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#ea580c',
+    backgroundColor: colors.primary[600],
     paddingVertical: 14,
     paddingHorizontal: 20,
     borderRadius: 12,
@@ -192,104 +185,44 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   contributeButtonText: {
-    fontSize: 16,
-    fontWeight: '600',
+    fontSize: typography.sizes.base,
+    fontWeight: typography.weights.semibold,
     color: '#fff',
     marginLeft: 8,
   },
   thoughtsContainer: {
     gap: 16,
   },
-  thoughtCard: {
-    backgroundColor: '#fff',
-    borderRadius: 16,
-    padding: 16,
-    borderLeftWidth: 4,
-    borderLeftColor: '#ea580c',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.05,
-    shadowRadius: 8,
-    elevation: 2,
-  },
-  authorRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 12,
-  },
-  avatar: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: '#fed7aa',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  avatarText: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#9a3412',
-  },
-  authorInfo: {
-    flex: 1,
-    marginLeft: 12,
-  },
-  authorName: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#1f2937',
-  },
-  guestBadge: {
-    fontSize: 12,
-    color: '#ea580c',
-    marginTop: 2,
-  },
-  linkedInIcon: {
-    padding: 4,
-  },
-  thoughtHeading: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#1f2937',
-    marginBottom: 8,
-  },
-  thoughtSummary: {
-    fontSize: 14,
-    color: '#6b7280',
-    lineHeight: 20,
-    marginBottom: 12,
-  },
-  actionsRow: {
-    flexDirection: 'row',
-    gap: 12,
-  },
-  actionButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
-    paddingVertical: 6,
-    paddingHorizontal: 12,
-    backgroundColor: '#fef3c7',
-    borderRadius: 8,
-  },
-  actionText: {
-    fontSize: 12,
-    fontWeight: '500',
-    color: '#78716c',
-  },
   emptyContainer: {
     alignItems: 'center',
-    paddingVertical: 60,
+    paddingVertical: 80,
+    paddingHorizontal: 20,
   },
-  emptyText: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#9ca3af',
+  emptyTitle: {
+    fontSize: typography.sizes.xl,
+    fontWeight: typography.weights.semibold,
+    color: colors.gray[700],
     marginTop: 16,
+    marginBottom: 8,
   },
   emptySubtext: {
-    fontSize: 14,
-    color: '#d1d5db',
-    marginTop: 4,
+    fontSize: typography.sizes.sm,
+    color: colors.gray[600],
+    textAlign: 'center',
+    marginBottom: 24,
+  },
+  emptyButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    backgroundColor: colors.primary[600],
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 10,
+  },
+  emptyButtonText: {
+    fontSize: typography.sizes.sm,
+    fontWeight: typography.weights.semibold,
+    color: '#fff',
   },
 });
