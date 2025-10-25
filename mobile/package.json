@@ -7,7 +7,9 @@
     "start": "expo start",
     "android": "expo start --android",
     "ios": "expo start --ios",
-    "web": "expo start --web"
+    "web": "expo start --web",
+    "eas-install": "npm install",
+    "prebuild": "npm run eas-install"
   },
   "dependencies": {
     "@expo/vector-icons": "^14.0.0",
