@@ -1,0 +1,122 @@
+import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import { useAuth } from '../hooks/useAuth';
+
+export default function AuthScreen() {
+  const { signInWithGoogle } = useAuth();
+
+  return (
+    <View style={styles.container}>
+      <View style={styles.content}>
+        {/* Logo */}
+        <View style={styles.logoContainer}>
+          <View style={styles.logoCircle}>
+            <Text style={styles.logoText}>⚡</Text>
+          </View>
+          <Text style={styles.title}>DotSpark</Text>
+          <Text style={styles.subtitle}>A Human Intelligence Network</Text>
+        </View>
+
+        {/* Welcome Text */}
+        <View style={styles.welcomeContainer}>
+          <Text style={styles.welcomeTitle}>Welcome!</Text>
+          <Text style={styles.welcomeText}>
+            Connect, share insights, and grow your collective intelligence
+          </Text>
+        </View>
+
+        {/* Sign In Button */}
+        <TouchableOpacity
+          style={styles.googleButton}
+          onPress={signInWithGoogle}
+          activeOpacity={0.8}
+        >
+          <Text style={styles.googleButtonText}>Sign in with Google</Text>
+        </TouchableOpacity>
+
+        {/* Footer */}
+        <Text style={styles.footer}>
+          By signing in, you agree to our Terms & Privacy Policy
+        </Text>
+      </View>
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+  },
+  content: {
+    flex: 1,
+    padding: 24,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  logoContainer: {
+    alignItems: 'center',
+    marginBottom: 60,
+  },
+  logoCircle: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    backgroundColor: '#f59e0b',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  logoText: {
+    fontSize: 48,
+  },
+  title: {
+    fontSize: 32,
+    fontWeight: 'bold',
+    color: '#1f2937',
+    marginBottom: 8,
+  },
+  subtitle: {
+    fontSize: 16,
+    color: '#6b7280',
+  },
+  welcomeContainer: {
+    alignItems: 'center',
+    marginBottom: 40,
+  },
+  welcomeTitle: {
+    fontSize: 24,
+    fontWeight: '600',
+    color: '#1f2937',
+    marginBottom: 12,
+  },
+  welcomeText: {
+    fontSize: 16,
+    color: '#6b7280',
+    textAlign: 'center',
+    paddingHorizontal: 20,
+  },
+  googleButton: {
+    backgroundColor: '#f59e0b',
+    paddingVertical: 16,
+    paddingHorizontal: 32,
+    borderRadius: 12,
+    width: '100%',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  googleButtonText: {
+    color: '#fff',
+    fontSize: 18,
+    fontWeight: '600',
+  },
+  footer: {
+    marginTop: 24,
+    fontSize: 12,
+    color: '#9ca3af',
+    textAlign: 'center',
+  },
+});
