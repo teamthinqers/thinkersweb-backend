@@ -1,8 +1,20 @@
-import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import { useState } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useAuth } from '../hooks/useAuth';
 
 export default function AuthScreen() {
-  const { signInWithGoogle } = useAuth();
+  const { signInWithGoogle, signIn } = useAuth();
+  const [demoMode, setDemoMode] = useState(false);
+
+  const handleDemoLogin = async () => {
+    try {
+      // Demo login with test credentials
+      await signIn('demo@dotspark.com', 'demo123');
+    } catch (error) {
+      console.error('Demo login failed:', error);
+      setDemoMode(true);
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -24,13 +36,21 @@ export default function AuthScreen() {
           </Text>
         </View>
 
-        {/* Sign In Button */}
+        {/* Sign In Buttons */}
         <TouchableOpacity
           style={styles.googleButton}
           onPress={signInWithGoogle}
           activeOpacity={0.8}
         >
           <Text style={styles.googleButtonText}>Sign in with Google</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.demoButton}
+          onPress={handleDemoLogin}
+          activeOpacity={0.8}
+        >
+          <Text style={styles.demoButtonText}>Try Demo Mode</Text>
         </TouchableOpacity>
 
         {/* Footer */}
@@ -110,6 +130,22 @@ const styles = StyleSheet.create({
   },
   googleButtonText: {
     color: '#fff',
+    fontSize: 18,
+    fontWeight: '600',
+  },
+  demoButton: {
+    backgroundColor: '#fff',
+    paddingVertical: 16,
+    paddingHorizontal: 32,
+    borderRadius: 12,
+    width: '100%',
+    alignItems: 'center',
+    marginTop: 12,
+    borderWidth: 2,
+    borderColor: '#f59e0b',
+  },
+  demoButtonText: {
+    color: '#f59e0b',
     fontSize: 18,
     fontWeight: '600',
   },
