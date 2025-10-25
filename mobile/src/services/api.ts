@@ -1,10 +1,14 @@
 import axios from 'axios';
 import Constants from 'expo-constants';
 
-// Get the backend URL - use production URL since app is standalone
+// Get the backend URL from app.json configuration
 const getApiUrl = () => {
-  // For production builds, use the published backend URL
-  // Update this to your actual backend URL when deploying
+  // Use the configured API URL from app.json extra field
+  if (Constants.expoConfig?.extra?.apiUrl) {
+    return Constants.expoConfig.extra.apiUrl;
+  }
+  
+  // Fallback to current Replit URL if not configured
   return 'https://cb8d11f0-9b74-4f2b-8d52-0aeb05ff3cd0-00-15weriw4t5t7e.spock.replit.dev/api';
 };
 
