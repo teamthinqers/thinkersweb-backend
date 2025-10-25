@@ -44,8 +44,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [isLoading, setIsLoading] = useState(true);
 
   const [request, response, promptAsync] = Google.useAuthRequest({
-    androidClientId: '950717649313-u2g0fqisd3gqg8ltq45f8u2oj2j70sqp.apps.googleusercontent.com',
-    iosClientId: '950717649313-u2g0fqisd3gqg8ltq45f8u2oj2j70sqp.apps.googleusercontent.com',
+    clientId: '950717649313-u2g0fqisd3gqg8ltq45f8u2oj2j70sqp.apps.googleusercontent.com',
     webClientId: '950717649313-u2g0fqisd3gqg8ltq45f8u2oj2j70sqp.apps.googleusercontent.com',
   });
 
@@ -79,10 +78,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       
       const credential = GoogleAuthProvider.credential(idToken, accessToken);
       const userCredential = await signInWithCredential(auth, credential);
-      const firebaseToken = await userCredential.user.getIdToken();
+      const firebaseUser = userCredential.user;
+      const firebaseToken = await firebaseUser.getIdToken();
 
+      // Send all required fields that backend expects
       const response = await api.post('/auth/firebase', { 
-        idToken: firebaseToken 
+        idToken: firebaseToken,
+        uid: firebaseUser.uid,
+        email: firebaseUser.email,
+        displayName: firebaseUser.displayName,
+        photoURL: firebaseUser.photoURL
       });
       
       if (response.data.user) {

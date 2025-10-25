@@ -35,7 +35,8 @@
     "extra": {
       "eas": {
         "projectId": "2d358ebd-67fe-41c8-ad7d-7315624f8fc2"
-      }
+      },
+      "apiUrl": "https://cb8d11f0-9b74-4f2b-8d52-0aeb05ff3cd0-00-15weriw4t5t7e.spock.replit.dev/api"
     }
   }
 }
