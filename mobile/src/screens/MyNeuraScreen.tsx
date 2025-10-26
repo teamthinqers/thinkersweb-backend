@@ -181,7 +181,7 @@ export default function MyNeuraScreen() {
         {/* Stats Cards */}
         <View style={styles.statsGrid}>
           <Card style={styles.statCard} borderColor={colors.primary[500]} borderWidth={3}>
-            <Feather name="zap" size={32} color={colors.primary[500]} />
+            <Feather name="lightbulb" size={32} color={colors.primary[500]} />
             <Text style={styles.statValue}>{stats?.thoughts || 0}</Text>
             <Text style={styles.statLabel}>Dots</Text>
           </Card>
