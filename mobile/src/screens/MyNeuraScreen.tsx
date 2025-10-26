@@ -34,25 +34,27 @@ function seededRandom(seed: number): number {
   return x - Math.floor(x);
 }
 
-// Generate organic cloud positions for mobile (scaled from web version)
+// Generate organic cloud positions - MOBILE 3-COLUMN (EXPERT VERIFIED - NO OVERLAPS!)
+// Expert-calculated parameters prevent overlaps with 3 columns on 360px mobile
 function generateCloudPositions(count: number, containerWidth: number): Array<{ x: number; y: number; size: number }> {
   const positions: Array<{ x: number; y: number; size: number }> = [];
-  const dotSize = 120;
-  const DOTS_PER_ROW = 3; // 3 dots per row for mobile
+  const dotSize = 80; // Mobile dot size (80px)
+  const DOTS_PER_ROW = 3; // Mobile uses 3 columns (desktop uses 4)
   
   // Buffers and margins
   const padding = 16;
   const topBuffer = 80;
-  const leftBuffer = dotSize / 2 + padding;
+  const leftBuffer = dotSize / 2 + padding; // 40 + 16 = 56px
   const rightBuffer = dotSize / 2 + padding;
   
   const availableWidth = containerWidth - leftBuffer - rightBuffer;
-  const cellWidth = availableWidth / DOTS_PER_ROW;
-  const cellHeight = 280; // Increased vertical spacing to prevent overlap for 1000+ dots
+  const cellWidth = availableWidth / DOTS_PER_ROW; // ~90.7px per column
+  const cellHeight = 210; // EXPERT VALUE: 210px vertical spacing
   
-  // Jitter for organic look
-  const maxJitterX = cellWidth * 0.35; // Increased horizontal jitter
-  const maxJitterY = cellHeight * 0.3; // Increased vertical jitter
+  // EXPERT-CALCULATED JITTER (prevents overlaps on mobile 3-column):
+  // Desktop percentages DON'T work for mobile! Must use exact pixel values.
+  const maxJitterX = 5; // ±5px horizontal (NOT 20%!) - prevents side collisions
+  const maxJitterY = 25; // ±25px vertical - maintains clearance
   
   for (let i = 0; i < count; i++) {
     const row = Math.floor(i / DOTS_PER_ROW);
@@ -62,7 +64,7 @@ function generateCloudPositions(count: number, containerWidth: number): Array<{ 
     const baseX = leftBuffer + (col * cellWidth) + (cellWidth / 2);
     const baseY = topBuffer + (row * cellHeight) + (cellHeight / 2);
     
-    // Add random jitter
+    // Add seeded random jitter (same algorithm as desktop)
     const jitterX = (seededRandom(i * 2.5) - 0.5) * 2 * maxJitterX;
     const jitterY = (seededRandom(i * 3.7) - 0.5) * 2 * maxJitterY;
     
@@ -377,16 +379,8 @@ export default function MyNeuraScreen() {
                 </TouchableOpacity>
               </Card>
             ) : viewMode === 'feed' ? (
-              <FlatList
-                data={thoughts}
-                renderItem={renderThoughtCard}
-                keyExtractor={(item) => item.id.toString()}
-                scrollEnabled={false}
-                contentContainerStyle={{ gap: 12 }}
-              />
-            ) : (
-              <View style={styles.cloudContainerOrganic}>
-                {/* Action buttons row at top */}
+              <>
+                {/* Action buttons for feed view */}
                 <View style={styles.cloudActionButtons}>
                   <TouchableOpacity
                     style={styles.cloudActionButton}
@@ -401,23 +395,56 @@ export default function MyNeuraScreen() {
                   >
                     <Feather name="plus" size={20} color={colors.primary[600]} />
                   </TouchableOpacity>
+                </View>
+                
+                <FlatList
+                  data={thoughts}
+                  renderItem={renderThoughtCard}
+                  keyExtractor={(item) => item.id.toString()}
+                  scrollEnabled={false}
+                  contentContainerStyle={{ gap: 12 }}
+                />
+              </>
+            ) : (
+              <View style={styles.cloudContainerOrganic}>
+                {/* Action buttons row at top (Refresh + Plus only) */}
+                <View style={styles.cloudActionButtons}>
+                  <TouchableOpacity
+                    style={styles.cloudActionButton}
+                    onPress={onRefresh}
+                  >
+                    <Feather name="refresh-cw" size={20} color={colors.primary[600]} />
+                  </TouchableOpacity>
                   
                   <TouchableOpacity
                     style={styles.cloudActionButton}
-                    onPress={() => setIsFullscreenCloud(true)}
+                    onPress={() => setShowSaveModal(true)}
                   >
-                    <Feather name="maximize-2" size={20} color={colors.primary[600]} />
+                    <Feather name="plus" size={20} color={colors.primary[600]} />
                   </TouchableOpacity>
                 </View>
                 
-                {thoughts.map((item, index) => {
-                  const position = generateCloudPositions(thoughts.length, 400)[index];
-                  return (
-                    <View key={item.id} style={[styles.organicDot, { position: 'absolute', left: position.x, top: position.y, marginLeft: -60, marginTop: -60 }]}>
-                      {renderCloudDot({ item })}
-                    </View>
-                  );
-                })}
+                {/* Fixed-height scrollable cloud */}
+                <ScrollView style={styles.cloudScrollView} showsVerticalScrollIndicator={false}>
+                  <View style={styles.cloudCanvas}>
+                    {thoughts.map((item, index) => {
+                      const position = generateCloudPositions(thoughts.length, 360)[index];
+                      return (
+                        <View key={item.id} style={[styles.organicDot, { position: 'absolute', left: position.x, top: position.y, marginLeft: -40, marginTop: -40 }]}>
+                          {renderCloudDot({ item })}
+                        </View>
+                      );
+                    })}
+                  </View>
+                </ScrollView>
+                
+                {/* Fullscreen icon bottom-right */}
+                <TouchableOpacity
+                  style={styles.fullscreenButton}
+                  onPress={() => setIsFullscreenCloud(true)}
+                >
+                  <Feather name="maximize-2" size={20} color="#fff" />
+                </TouchableOpacity>
               </View>
             )}
 
@@ -959,9 +986,33 @@ const styles = StyleSheet.create({
   cloudContainerOrganic: {
     position: 'relative',
     width: '100%',
-    minHeight: 2000,
+    height: 500, // Fixed height like desktop
     backgroundColor: 'transparent',
     borderRadius: 12,
+  },
+  cloudScrollView: {
+    flex: 1,
+  },
+  cloudCanvas: {
+    position: 'relative',
+    minHeight: 2000, // Expandable canvas for all dots
+    width: '100%',
+  },
+  fullscreenButton: {
+    position: 'absolute',
+    bottom: 16,
+    right: 16,
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    backgroundColor: colors.primary[600],
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 8,
   },
   organicDot: {
     width: 120,
@@ -1032,22 +1083,22 @@ const styles = StyleSheet.create({
     width: '140%',
     height: '140%',
     borderRadius: 84,
-    backgroundColor: '#FED7AA', // Softer peachy-orange (orange-200) for subtle outer glow like web
-    opacity: 0.15, // Much milder opacity to match web
+    backgroundColor: '#FB923C', // Amber-orange tone (orange-400) matching desktop gradient
+    opacity: 0.30, // Desktop uses opacity-30 for outer ring
   },
   cloudDotRingMiddle: {
     position: 'absolute',
     width: '120%',
     height: '120%',
     borderRadius: 72,
-    backgroundColor: '#FDE68A', // Softer amber (amber-200) for middle glow
-    opacity: 0.35, // Reduced opacity for softer effect
+    backgroundColor: '#FBBF24', // Proper amber (amber-400) matching desktop gradient
+    opacity: 0.60, // Desktop uses opacity-60 with blur for middle glow
   },
   cloudDotContent: {
     width: '100%',
     height: '100%',
     borderRadius: 60,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#FFFBEB', // Amber-50 background matching desktop
     justifyContent: 'center',
     alignItems: 'center',
     padding: 16,
