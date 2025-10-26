@@ -63,7 +63,25 @@ export default function MyNeuraScreen() {
   };
 
   const stats = statsData?.data;
-  const thoughts = thoughtsData?.data || [];
+  let thoughts = thoughtsData?.data || [];
+  
+  // Add test dots for demo (remove when user has real dots)
+  if (thoughts.length === 0) {
+    thoughts = [
+      { id: 1, heading: 'Morning Clarity', summary: 'Best ideas come during quiet mornings', createdAt: new Date().toISOString(), keywords: 'productivity' },
+      { id: 2, heading: 'Deep Work', summary: 'Focus blocks unlock creative potential', createdAt: new Date().toISOString(), keywords: 'focus' },
+      { id: 3, heading: 'Learning Pace', summary: 'Slow learning leads to deep understanding', createdAt: new Date().toISOString(), keywords: 'learning' },
+      { id: 4, heading: 'Creative Flow', summary: 'Constraints boost creative solutions', createdAt: new Date().toISOString(), keywords: 'creativity' },
+      { id: 5, heading: 'Mind Reset', summary: 'Breaks fuel productivity and clarity', createdAt: new Date().toISOString(), keywords: 'wellness' },
+      { id: 6, heading: 'Pattern Recognition', summary: 'Connecting dots reveals hidden insights', createdAt: new Date().toISOString(), keywords: 'insight' },
+      { id: 7, heading: 'Question Everything', summary: 'Best answers start with better questions', createdAt: new Date().toISOString(), keywords: 'curiosity' },
+      { id: 8, heading: 'System Thinking', summary: 'See the whole, not just the parts', createdAt: new Date().toISOString(), keywords: 'systems' },
+      { id: 9, heading: 'Feedback Loops', summary: 'Quick feedback accelerates learning', createdAt: new Date().toISOString(), keywords: 'growth' },
+      { id: 10, heading: 'Mental Models', summary: 'Better models equal better decisions', createdAt: new Date().toISOString(), keywords: 'thinking' },
+      { id: 11, heading: 'Compound Effect', summary: 'Small daily actions create massive results', createdAt: new Date().toISOString(), keywords: 'habits' },
+      { id: 12, heading: 'First Principles', summary: 'Break down to fundamentals, rebuild anew', createdAt: new Date().toISOString(), keywords: 'reasoning' },
+    ];
+  }
 
   const handleSaveThought = async () => {
     if (!summary.trim()) {
