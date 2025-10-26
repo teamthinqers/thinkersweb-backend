@@ -519,7 +519,7 @@ export default function MyNeuraScreen() {
             </View>
 
             {saveMode === 'choose' ? (
-              <>
+              <ScrollView showsVerticalScrollIndicator={false} style={styles.modalScrollView}>
                 {/* Share to tabs */}
                 <View style={styles.shareToSection}>
                   <Text style={styles.shareToLabel}>Share to</Text>
@@ -553,39 +553,54 @@ export default function MyNeuraScreen() {
                   </View>
                 </View>
 
-                {/* 5 creation modes */}
+                {/* 5 creation modes - STUNNING CARDS */}
                 <View style={styles.fiveWaysContainer}>
-                  {/* Write - Orange */}
+                  {/* Write - Orange with pen icon */}
                   <TouchableOpacity style={[styles.wayCard, styles.wayCardWrite]} onPress={() => setSaveMode('write')}>
-                    <Feather name="edit-3" size={40} color="#fff" />
-                    <Text style={styles.wayTitleWhite}>Write</Text>
+                    <View style={styles.wayIconCircle}>
+                      <Feather name="edit-3" size={32} color="#fff" />
+                    </View>
+                    <Text style={styles.wayTitle}>Write</Text>
+                    <Text style={styles.waySubtitle}>Create from scratch</Text>
                   </TouchableOpacity>
 
                   {/* Import (LinkedIn) - Blue */}
                   <TouchableOpacity style={[styles.wayCard, styles.wayCardLinkedIn]} onPress={() => Alert.alert('Coming Soon', 'LinkedIn import coming soon!')}>
-                    <MaterialCommunityIcons name="linkedin" size={40} color="#fff" />
-                    <Text style={styles.wayTitleWhite}>Import</Text>
+                    <View style={styles.wayIconCircle}>
+                      <MaterialCommunityIcons name="linkedin" size={32} color="#fff" />
+                    </View>
+                    <Text style={styles.wayTitle}>Import</Text>
+                    <Text style={styles.waySubtitle}>From LinkedIn</Text>
                   </TouchableOpacity>
 
-                  {/* Import (ChatGPT) - Gray/White */}
+                  {/* Import (ChatGPT) - Light with dark icon */}
                   <TouchableOpacity style={[styles.wayCard, styles.wayCardChatGPT]} onPress={() => Alert.alert('Coming Soon', 'ChatGPT import coming soon!')}>
-                    <MaterialCommunityIcons name="robot" size={40} color="#666" />
-                    <Text style={styles.wayTitleGrey}>Import</Text>
+                    <View style={[styles.wayIconCircle, styles.wayIconCircleLight]}>
+                      <MaterialCommunityIcons name="robot-outline" size={32} color="#374151" />
+                    </View>
+                    <Text style={styles.wayTitleDark}>Import</Text>
+                    <Text style={styles.waySubtitleDark}>From ChatGPT</Text>
                   </TouchableOpacity>
 
                   {/* WhatsApp - Green */}
                   <TouchableOpacity style={[styles.wayCard, styles.wayCardWhatsApp]} onPress={() => Alert.alert('Coming Soon', 'WhatsApp integration coming soon!')}>
-                    <MaterialCommunityIcons name="whatsapp" size={40} color="#fff" />
-                    <Text style={styles.wayTitleWhite}>WhatsApp</Text>
+                    <View style={styles.wayIconCircle}>
+                      <MaterialCommunityIcons name="whatsapp" size={32} color="#fff" />
+                    </View>
+                    <Text style={styles.wayTitle}>WhatsApp</Text>
+                    <Text style={styles.waySubtitle}>Quick capture</Text>
                   </TouchableOpacity>
 
-                  {/* AI Help - Purple */}
+                  {/* AI Help - Purple/Fuchsia */}
                   <TouchableOpacity style={[styles.wayCard, styles.wayCardAI]} onPress={() => Alert.alert('Coming Soon', 'AI Help coming soon!')}>
-                    <Feather name="zap" size={40} color="#fff" />
-                    <Text style={styles.wayTitleWhite}>AI Help</Text>
+                    <View style={styles.wayIconCircle}>
+                      <Feather name="zap" size={32} color="#fff" />
+                    </View>
+                    <Text style={styles.wayTitle}>AI Help</Text>
+                    <Text style={styles.waySubtitle}>Smart assistant</Text>
                   </TouchableOpacity>
                 </View>
-              </>
+              </ScrollView>
             ) : (
               <ScrollView style={styles.writeForm}>
                 <View style={styles.formGroup}>
@@ -1239,6 +1254,9 @@ const styles = StyleSheet.create({
     padding: 24,
     maxHeight: '90%',
   },
+  modalScrollView: {
+    maxHeight: 600,
+  },
   modalHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -1252,20 +1270,33 @@ const styles = StyleSheet.create({
   },
   fiveWaysContainer: {
     gap: 16,
-    paddingVertical: 8,
+    paddingVertical: 12,
+    paddingBottom: 24,
   },
   wayCard: {
-    borderRadius: 20,
-    padding: 28,
+    borderRadius: 24,
+    padding: 24,
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 12,
+    gap: 8,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.1,
-    shadowRadius: 12,
-    elevation: 4,
-    minHeight: 140,
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.15,
+    shadowRadius: 16,
+    elevation: 6,
+    minHeight: 160,
+  },
+  wayIconCircle: {
+    width: 64,
+    height: 64,
+    borderRadius: 32,
+    backgroundColor: 'rgba(255, 255, 255, 0.25)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  wayIconCircleLight: {
+    backgroundColor: 'rgba(55, 65, 81, 0.1)',
   },
   wayCardWrite: {
     backgroundColor: '#FB923C', // Web's orange-400 (from-amber-400 via-orange-400 to-red-400 gradient)
@@ -1282,15 +1313,27 @@ const styles = StyleSheet.create({
   wayCardAI: {
     backgroundColor: '#E879F9', // Web's fuchsia-400 (from-violet-400 via-fuchsia-400 to-pink-400 gradient)
   },
-  wayTitleWhite: {
-    fontSize: typography.sizes.xl,
+  wayTitle: {
+    fontSize: typography.sizes['2xl'],
     fontWeight: typography.weights.bold,
     color: '#fff',
+    marginBottom: 4,
   },
-  wayTitleGrey: {
-    fontSize: typography.sizes.xl,
+  waySubtitle: {
+    fontSize: typography.sizes.sm,
+    fontWeight: typography.weights.medium,
+    color: 'rgba(255, 255, 255, 0.9)',
+  },
+  wayTitleDark: {
+    fontSize: typography.sizes['2xl'],
     fontWeight: typography.weights.bold,
-    color: colors.gray[700],
+    color: colors.gray[900],
+    marginBottom: 4,
+  },
+  waySubtitleDark: {
+    fontSize: typography.sizes.sm,
+    fontWeight: typography.weights.medium,
+    color: colors.gray[600],
   },
   desktopHeader: {
     flexDirection: 'row',
