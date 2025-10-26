@@ -28,6 +28,54 @@ interface Thought {
 type ViewMode = 'cloud' | 'feed';
 type SaveMode = 'choose' | 'write' | 'linkedin' | 'import' | 'whatsapp' | 'ai';
 
+// Organic cloud positioning - seeded random for consistency
+function seededRandom(seed: number): number {
+  const x = Math.sin(seed) * 10000;
+  return x - Math.floor(x);
+}
+
+// Generate organic cloud positions for mobile (scaled from web version)
+function generateCloudPositions(count: number, containerWidth: number): Array<{ x: number; y: number; size: number }> {
+  const positions: Array<{ x: number; y: number; size: number }> = [];
+  const dotSize = 120;
+  const DOTS_PER_ROW = 3; // 3 dots per row for mobile
+  
+  // Buffers and margins
+  const padding = 16;
+  const topBuffer = 80;
+  const leftBuffer = dotSize / 2 + padding;
+  const rightBuffer = dotSize / 2 + padding;
+  
+  const availableWidth = containerWidth - leftBuffer - rightBuffer;
+  const cellWidth = availableWidth / DOTS_PER_ROW;
+  const cellHeight = 200; // Vertical spacing
+  
+  // Jitter for organic look
+  const maxJitterX = cellWidth * 0.25;
+  const maxJitterY = cellHeight * 0.2;
+  
+  for (let i = 0; i < count; i++) {
+    const row = Math.floor(i / DOTS_PER_ROW);
+    const col = i % DOTS_PER_ROW;
+    
+    // Base grid position
+    const baseX = leftBuffer + (col * cellWidth) + (cellWidth / 2);
+    const baseY = topBuffer + (row * cellHeight) + (cellHeight / 2);
+    
+    // Add random jitter
+    const jitterX = (seededRandom(i * 2.5) - 0.5) * 2 * maxJitterX;
+    const jitterY = (seededRandom(i * 3.7) - 0.5) * 2 * maxJitterY;
+    
+    positions.push({
+      x: Math.max(leftBuffer, Math.min(containerWidth - rightBuffer, baseX + jitterX)),
+      y: Math.max(topBuffer, baseY + jitterY),
+      size: dotSize
+    });
+  }
+  
+  return positions;
+}
+
 export default function MyNeuraScreen() {
   const { user } = useAuth();
   const [refreshing, setRefreshing] = useState(false);
@@ -344,16 +392,23 @@ export default function MyNeuraScreen() {
                 contentContainerStyle={{ gap: 12 }}
               />
             ) : (
-              <View style={styles.cloudContainer}>
-                <FlatList
-                  data={thoughts}
-                  renderItem={renderCloudDot}
-                  keyExtractor={(item) => item.id.toString()}
-                  numColumns={3}
-                  scrollEnabled={false}
-                  columnWrapperStyle={styles.cloudRow}
-                  contentContainerStyle={{ gap: 8 }}
-                />
+              <View style={styles.cloudContainerOrganic}>
+                {thoughts.map((item, index) => {
+                  const position = generateCloudPositions(thoughts.length, 400)[index];
+                  return (
+                    <View key={item.id} style={[styles.organicDot, { position: 'absolute', left: position.x, top: position.y, marginLeft: -60, marginTop: -60 }]}>
+                      {renderCloudDot({ item })}
+                    </View>
+                  );
+                })}
+                
+                {/* Fullscreen icon overlay */}
+                <TouchableOpacity
+                  style={styles.fullscreenIconOverlay}
+                  onPress={() => setIsFullscreenCloud(true)}
+                >
+                  <Feather name="maximize-2" size={24} color={colors.primary[600]} />
+                </TouchableOpacity>
               </View>
             )}
 
@@ -654,15 +709,16 @@ export default function MyNeuraScreen() {
             </TouchableOpacity>
           </View>
           <ScrollView style={styles.fullscreenCloudScroll} contentContainerStyle={styles.fullscreenCloudContent}>
-            <FlatList
-              data={thoughts}
-              renderItem={renderCloudDot}
-              keyExtractor={(item) => item.id.toString()}
-              numColumns={3}
-              scrollEnabled={false}
-              columnWrapperStyle={styles.cloudRow}
-              contentContainerStyle={{ gap: 8 }}
-            />
+            <View style={{ position: 'relative', width: '100%', minHeight: 2000 }}>
+              {thoughts.map((item, index) => {
+                const position = generateCloudPositions(thoughts.length, 400)[index];
+                return (
+                  <View key={item.id} style={[styles.organicDot, { position: 'absolute', left: position.x, top: position.y, marginLeft: -60, marginTop: -60 }]}>
+                    {renderCloudDot({ item })}
+                  </View>
+                );
+              })}
+            </View>
           </ScrollView>
         </View>
       </Modal>
@@ -844,6 +900,35 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     padding: 12,
   },
+  cloudContainerOrganic: {
+    position: 'relative',
+    width: '100%',
+    minHeight: 2000,
+    backgroundColor: 'transparent',
+    borderRadius: 12,
+  },
+  organicDot: {
+    width: 120,
+    height: 120,
+  },
+  fullscreenIconOverlay: {
+    position: 'absolute',
+    bottom: 20,
+    right: 20,
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    backgroundColor: '#fff',
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: colors.primary[600],
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 8,
+    borderWidth: 2,
+    borderColor: colors.primary[300],
+  },
   cloudRow: {
     justifyContent: 'space-around',
     gap: 4,
@@ -886,7 +971,7 @@ const styles = StyleSheet.create({
     width: '120%',
     height: '120%',
     borderRadius: 72,
-    backgroundColor: colors.primary[300],
+    backgroundColor: '#FB923C', // Web's orange-400 for outer pulsing ring
     opacity: 0.3,
   },
   cloudDotRingMiddle: {
@@ -894,8 +979,8 @@ const styles = StyleSheet.create({
     width: '110%',
     height: '110%',
     borderRadius: 66,
-    backgroundColor: colors.primary[400],
-    opacity: 0.5,
+    backgroundColor: '#FBBF24', // Web's amber-400 for middle glow
+    opacity: 0.6,
   },
   cloudDotContent: {
     width: '100%',
@@ -905,13 +990,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 16,
-    shadowColor: colors.primary[500],
+    shadowColor: '#F59E0B', // Web's amber-500
     shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.2,
+    shadowOpacity: 0.25,
     shadowRadius: 12,
     elevation: 8,
-    borderWidth: 3,
-    borderColor: colors.primary[300],
+    borderWidth: 4,
+    borderColor: '#FCD34D', // Web's amber-300 for border
   },
   cloudDotHeading: {
     fontSize: typography.sizes.sm,
@@ -1071,19 +1156,19 @@ const styles = StyleSheet.create({
     minHeight: 140,
   },
   wayCardWrite: {
-    backgroundColor: colors.primary[600],
+    backgroundColor: '#FB923C', // Web's orange-400 (from-amber-400 via-orange-400 to-red-400 gradient)
   },
   wayCardLinkedIn: {
-    backgroundColor: '#0A66C2',
+    backgroundColor: '#3B82F6', // Web's blue-500 (from-blue-400 via-blue-500 to-blue-600 gradient)
   },
   wayCardChatGPT: {
-    backgroundColor: '#10A37F',
+    backgroundColor: '#A855F7', // Web's purple-500 (from-purple-400 via-purple-500 to-purple-600 gradient)
   },
   wayCardWhatsApp: {
-    backgroundColor: '#25D366',
+    backgroundColor: '#22C55E', // Web's green-500 (from-green-400 via-green-500 to-green-600 gradient)
   },
   wayCardAI: {
-    backgroundColor: '#9333EA',
+    backgroundColor: '#E879F9', // Web's fuchsia-400 (from-violet-400 via-fuchsia-400 to-pink-400 gradient)
   },
   wayTitleWhite: {
     fontSize: typography.sizes.xl,
