@@ -22,10 +22,11 @@ interface Thought {
   pulse?: string;
   createdAt: string;
   keywords?: string;
+  channel?: string;
 }
 
 type ViewMode = 'cloud' | 'feed';
-type SaveMode = 'choose' | 'write' | 'speak' | 'think' | 'reflect' | 'discover';
+type SaveMode = 'choose' | 'write' | 'linkedin' | 'import' | 'whatsapp' | 'ai';
 
 export default function MyNeuraScreen() {
   const { user } = useAuth();
@@ -68,18 +69,18 @@ export default function MyNeuraScreen() {
   // Add test dots for demo (remove when user has real dots)
   if (thoughts.length === 0) {
     thoughts = [
-      { id: 1, heading: 'Morning Clarity', summary: 'Best ideas come during quiet mornings', createdAt: new Date().toISOString(), keywords: 'productivity' },
-      { id: 2, heading: 'Deep Work', summary: 'Focus blocks unlock creative potential', createdAt: new Date().toISOString(), keywords: 'focus' },
-      { id: 3, heading: 'Learning Pace', summary: 'Slow learning leads to deep understanding', createdAt: new Date().toISOString(), keywords: 'learning' },
-      { id: 4, heading: 'Creative Flow', summary: 'Constraints boost creative solutions', createdAt: new Date().toISOString(), keywords: 'creativity' },
-      { id: 5, heading: 'Mind Reset', summary: 'Breaks fuel productivity and clarity', createdAt: new Date().toISOString(), keywords: 'wellness' },
-      { id: 6, heading: 'Pattern Recognition', summary: 'Connecting dots reveals hidden insights', createdAt: new Date().toISOString(), keywords: 'insight' },
-      { id: 7, heading: 'Question Everything', summary: 'Best answers start with better questions', createdAt: new Date().toISOString(), keywords: 'curiosity' },
-      { id: 8, heading: 'System Thinking', summary: 'See the whole, not just the parts', createdAt: new Date().toISOString(), keywords: 'systems' },
-      { id: 9, heading: 'Feedback Loops', summary: 'Quick feedback accelerates learning', createdAt: new Date().toISOString(), keywords: 'growth' },
-      { id: 10, heading: 'Mental Models', summary: 'Better models equal better decisions', createdAt: new Date().toISOString(), keywords: 'thinking' },
-      { id: 11, heading: 'Compound Effect', summary: 'Small daily actions create massive results', createdAt: new Date().toISOString(), keywords: 'habits' },
-      { id: 12, heading: 'First Principles', summary: 'Break down to fundamentals, rebuild anew', createdAt: new Date().toISOString(), keywords: 'reasoning' },
+      { id: 1, heading: 'Morning Clarity', summary: 'Best ideas come during quiet mornings', createdAt: new Date().toISOString(), keywords: 'productivity', channel: 'write' },
+      { id: 2, heading: 'Deep Work', summary: 'Focus blocks unlock creative potential', createdAt: new Date().toISOString(), keywords: 'focus', channel: 'chat' },
+      { id: 3, heading: 'Learning Pace', summary: 'Slow learning leads to deep understanding', createdAt: new Date().toISOString(), keywords: 'learning', channel: 'voice' },
+      { id: 4, heading: 'Creative Flow', summary: 'Constraints boost creative solutions', createdAt: new Date().toISOString(), keywords: 'creativity', channel: 'write' },
+      { id: 5, heading: 'Mind Reset', summary: 'Breaks fuel productivity and clarity', createdAt: new Date().toISOString(), keywords: 'wellness', channel: 'whatsapp' },
+      { id: 6, heading: 'Pattern Recognition', summary: 'Connecting dots reveals hidden insights', createdAt: new Date().toISOString(), keywords: 'insight', channel: 'write' },
+      { id: 7, heading: 'Question Everything', summary: 'Best answers start with better questions', createdAt: new Date().toISOString(), keywords: 'curiosity', channel: 'chat' },
+      { id: 8, heading: 'System Thinking', summary: 'See the whole, not just the parts', createdAt: new Date().toISOString(), keywords: 'systems', channel: 'write' },
+      { id: 9, heading: 'Feedback Loops', summary: 'Quick feedback accelerates learning', createdAt: new Date().toISOString(), keywords: 'growth', channel: 'voice' },
+      { id: 10, heading: 'Mental Models', summary: 'Better models equal better decisions', createdAt: new Date().toISOString(), keywords: 'thinking', channel: 'write' },
+      { id: 11, heading: 'Compound Effect', summary: 'Small daily actions create massive results', createdAt: new Date().toISOString(), keywords: 'habits', channel: 'chat' },
+      { id: 12, heading: 'First Principles', summary: 'Break down to fundamentals, rebuild anew', createdAt: new Date().toISOString(), keywords: 'reasoning', channel: 'write' },
     ];
   }
 
@@ -91,7 +92,7 @@ export default function MyNeuraScreen() {
 
     setSubmitting(true);
     try {
-      await apiRequest('/api/myneura/thoughts', 'POST', {
+      await apiRequest('POST', '/api/myneura/thoughts', {
         heading: heading.trim() || 'Untitled',
         summary: summary.trim(),
         anchor: anchor.trim(),
@@ -156,22 +157,61 @@ export default function MyNeuraScreen() {
     </TouchableOpacity>
   );
 
-  const renderCloudDot = ({ item }: { item: Thought }) => (
-    <TouchableOpacity 
-      style={styles.cloudDot}
-      onPress={() => {
-        setSelectedThought(item);
-        setShowThoughtDetail(true);
-      }}
-    >
-      <View style={styles.cloudDotInner}>
-        <Feather name="zap" size={16} color={colors.primary[700]} />
-        <Text style={styles.cloudDotText} numberOfLines={2}>
-          {item.heading || item.summary}
-        </Text>
+  const renderCloudDot = ({ item }: { item: Thought }) => {
+    const dotSize = 120;
+    
+    // Determine channel icon
+    const getChannelIcon = () => {
+      switch (item.channel) {
+        case 'write':
+          return <Feather name="edit-3" size={12} color="#fff" />;
+        case 'chat':
+          return <MaterialCommunityIcons name="chat" size={12} color="#fff" />;
+        case 'voice':
+          return <Feather name="mic" size={12} color="#fff" />;
+        case 'whatsapp':
+          return <MaterialCommunityIcons name="whatsapp" size={12} color="#fff" />;
+        default:
+          return <MaterialCommunityIcons name="lightbulb" size={12} color="#fff" />;
+      }
+    };
+    
+    return (
+      <View style={[styles.cloudDotContainer, { width: dotSize, height: dotSize, margin: 12 }]}>
+        {/* Avatar on top */}
+        <View style={styles.cloudDotAvatar}>
+          <View style={styles.avatarCircle}>
+            <Feather name="user" size={16} color="#fff" />
+          </View>
+        </View>
+
+        {/* Main circular dot */}
+        <TouchableOpacity
+          style={[styles.cloudDotCircle, { width: dotSize, height: dotSize }]}
+          onPress={() => {
+            setSelectedThought(item);
+            setShowThoughtDetail(true);
+          }}
+          activeOpacity={0.7}
+        >
+          {/* Outer pulsing ring */}
+          <View style={styles.cloudDotRing} />
+          
+          {/* Inner content circle */}
+          <View style={styles.cloudDotContent}>
+            <Text style={styles.cloudDotHeading} numberOfLines={4}>
+              {item.heading || item.summary}
+            </Text>
+          </View>
+        </TouchableOpacity>
+
+        {/* Channel badge at bottom */}
+        <View style={styles.cloudDotBadge}>
+          {getChannelIcon()}
+        </View>
       </View>
-    </TouchableOpacity>
-  );
+    );
+  };
 
   if (statsLoading || thoughtsLoading) {
     return (
@@ -315,7 +355,7 @@ export default function MyNeuraScreen() {
           <View style={styles.content}>
             <Card>
               <View style={styles.settingRow}>
-                <Feather name="brain" size={24} color={colors.primary[500]} />
+                <Feather name="activity" size={24} color={colors.primary[500]} />
                 <Text style={styles.settingTitle}>Cognitive Identity</Text>
               </View>
               <TouchableOpacity style={styles.configButton} onPress={handleConfigureCognitiveIdentity}>
@@ -366,34 +406,34 @@ export default function MyNeuraScreen() {
 
             {saveMode === 'choose' ? (
               <View style={styles.fiveWaysContainer}>
-                <TouchableOpacity style={styles.wayCard} onPress={() => setSaveMode('write')}>
-                  <Feather name="edit-3" size={32} color={colors.primary[600]} />
-                  <Text style={styles.wayTitle}>Write</Text>
-                  <Text style={styles.wayDescription}>Express in your own words</Text>
+                {/* Write - Amber/Orange */}
+                <TouchableOpacity style={[styles.wayCard, styles.wayCardWrite]} onPress={() => setSaveMode('write')}>
+                  <Feather name="edit-3" size={48} color="#fff" />
+                  <Text style={styles.wayTitleWhite}>Write</Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity style={styles.wayCard} onPress={() => Alert.alert('Coming Soon', 'Voice input will be available in the next update!')}>
-                  <Feather name="mic" size={32} color={colors.primary[600]} />
-                  <Text style={styles.wayTitle}>Speak</Text>
-                  <Text style={styles.wayDescription}>Voice your thoughts</Text>
+                {/* LinkedIn Import - Blue */}
+                <TouchableOpacity style={[styles.wayCard, styles.wayCardLinkedIn]} onPress={() => Alert.alert('Coming Soon', 'LinkedIn import coming soon!')}>
+                  <MaterialCommunityIcons name="linkedin" size={48} color="#fff" />
+                  <Text style={styles.wayTitleWhite}>Import</Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity style={styles.wayCard} onPress={() => Alert.alert('Coming Soon', 'AI-assisted thinking will be available soon!')}>
-                  <Feather name="cpu" size={32} color={colors.primary[600]} />
-                  <Text style={styles.wayTitle}>Think</Text>
-                  <Text style={styles.wayDescription}>AI helps you think</Text>
+                {/* Import - Grey/White */}
+                <TouchableOpacity style={[styles.wayCard, styles.wayCardImport]} onPress={() => Alert.alert('Coming Soon', 'Import feature coming soon!')}>
+                  <Feather name="upload-cloud" size={48} color={colors.gray[600]} />
+                  <Text style={styles.wayTitleGrey}>Import</Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity style={styles.wayCard} onPress={() => Alert.alert('Coming Soon', 'Guided reflection will be available soon!')}>
-                  <Feather name="eye" size={32} color={colors.primary[600]} />
-                  <Text style={styles.wayTitle}>Reflect</Text>
-                  <Text style={styles.wayDescription}>Guided deep reflection</Text>
+                {/* WhatsApp - Green */}
+                <TouchableOpacity style={[styles.wayCard, styles.wayCardWhatsApp]} onPress={() => Alert.alert('Coming Soon', 'WhatsApp integration coming soon!')}>
+                  <MaterialCommunityIcons name="whatsapp" size={48} color="#fff" />
+                  <Text style={styles.wayTitleWhite}>WhatsApp</Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity style={styles.wayCard} onPress={() => Alert.alert('Coming Soon', 'Content discovery will be available soon!')}>
-                  <Feather name="search" size={32} color={colors.primary[600]} />
-                  <Text style={styles.wayTitle}>Discover</Text>
-                  <Text style={styles.wayDescription}>Explore and save insights</Text>
+                {/* AI Help - Purple */}
+                <TouchableOpacity style={[styles.wayCard, styles.wayCardAI]} onPress={() => Alert.alert('Coming Soon', 'AI Help coming soon!')}>
+                  <Feather name="zap" size={48} color="#fff" />
+                  <Text style={styles.wayTitleWhite}>AI Help</Text>
                 </TouchableOpacity>
               </View>
             ) : (
@@ -788,38 +828,92 @@ const styles = StyleSheet.create({
     color: colors.gray[500],
   },
   cloudContainer: {
-    backgroundColor: '#fff',
+    backgroundColor: 'transparent',
     borderRadius: 12,
     padding: 12,
   },
   cloudRow: {
-    gap: 12,
+    justifyContent: 'flex-start',
+    gap: 8,
   },
-  cloudDot: {
-    flex: 1,
-    margin: 4,
+  cloudDotContainer: {
+    alignItems: 'center',
+    position: 'relative',
   },
-  cloudDotInner: {
-    padding: 16,
-    backgroundColor: '#FFFFFF',
-    borderRadius: 16,
+  cloudDotAvatar: {
+    position: 'absolute',
+    top: -10,
+    right: -5,
+    zIndex: 10,
+  },
+  avatarCircle: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: colors.primary[600],
     borderWidth: 2,
     borderColor: colors.primary[300],
-    minHeight: 100,
-    alignItems: 'center',
     justifyContent: 'center',
-    gap: 8,
+    alignItems: 'center',
     shadowColor: colors.primary[600],
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.12,
-    shadowRadius: 10,
-    elevation: 6,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    elevation: 4,
   },
-  cloudDotText: {
+  cloudDotCircle: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'relative',
+  },
+  cloudDotRing: {
+    position: 'absolute',
+    width: '100%',
+    height: '100%',
+    borderRadius: 60,
+    borderWidth: 4,
+    borderColor: colors.primary[400],
+    opacity: 0.6,
+  },
+  cloudDotContent: {
+    width: '100%',
+    height: '100%',
+    borderRadius: 60,
+    backgroundColor: '#FFFFFF',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 16,
+    shadowColor: colors.primary[500],
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.2,
+    shadowRadius: 12,
+    elevation: 8,
+    borderWidth: 3,
+    borderColor: colors.primary[300],
+  },
+  cloudDotHeading: {
     fontSize: typography.sizes.sm,
-    fontWeight: typography.weights.semibold,
-    color: colors.primary[900],
+    fontWeight: typography.weights.bold,
+    color: colors.gray[900],
     textAlign: 'center',
+    lineHeight: 18,
+  },
+  cloudDotBadge: {
+    position: 'absolute',
+    bottom: -8,
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    backgroundColor: colors.primary[600],
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 2,
+    borderColor: '#fff',
+    shadowColor: colors.primary[600],
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.4,
+    shadowRadius: 4,
+    elevation: 4,
   },
   emptyCard: {
     alignItems: 'center',
@@ -918,27 +1012,48 @@ const styles = StyleSheet.create({
     color: colors.gray[900],
   },
   fiveWaysContainer: {
-    gap: 12,
+    gap: 16,
+    paddingVertical: 8,
   },
   wayCard: {
-    backgroundColor: colors.primary[50],
-    borderRadius: 12,
-    padding: 20,
-    borderWidth: 2,
-    borderColor: colors.primary[200],
+    borderRadius: 20,
+    padding: 28,
     alignItems: 'center',
+    justifyContent: 'center',
+    gap: 12,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 12,
+    elevation: 4,
+    minHeight: 140,
   },
-  wayTitle: {
-    fontSize: typography.sizes.lg,
+  wayCardWrite: {
+    backgroundColor: colors.primary[600],
+  },
+  wayCardLinkedIn: {
+    backgroundColor: '#0A66C2',
+  },
+  wayCardImport: {
+    backgroundColor: '#F3F4F6',
+    borderWidth: 2,
+    borderColor: colors.gray[300],
+  },
+  wayCardWhatsApp: {
+    backgroundColor: '#25D366',
+  },
+  wayCardAI: {
+    backgroundColor: '#9333EA',
+  },
+  wayTitleWhite: {
+    fontSize: typography.sizes.xl,
     fontWeight: typography.weights.bold,
-    color: colors.primary[800],
-    marginTop: 12,
-    marginBottom: 4,
+    color: '#fff',
   },
-  wayDescription: {
-    fontSize: typography.sizes.sm,
-    color: colors.primary[600],
-    textAlign: 'center',
+  wayTitleGrey: {
+    fontSize: typography.sizes.xl,
+    fontWeight: typography.weights.bold,
+    color: colors.gray[700],
   },
   writeForm: {
     maxHeight: 500,
@@ -1118,7 +1233,7 @@ const styles = StyleSheet.create({
   // Fullscreen Cloud Styles
   fullscreenContainer: {
     flex: 1,
-    backgroundColor: 'linear-gradient(135deg, #FEF3C7 0%, #FCD34D 100%)',
+    backgroundColor: '#FEF3C7',
   },
   fullscreenHeader: {
     flexDirection: 'row',
