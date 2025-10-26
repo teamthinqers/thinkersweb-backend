@@ -433,10 +433,11 @@ export default function MyNeuraScreen() {
                 {/* Fixed-height scrollable cloud */}
                 <ScrollView style={styles.cloudScrollView} showsVerticalScrollIndicator={false}>
                   <View style={styles.cloudCanvas}>
-                    {thoughts.map((item, index) => {
-                      const position = generateCloudPositions(thoughts.length, 360)[index];
+                    {generateCloudPositions(thoughts.length, 360).map((position, index) => {
+                      const item = thoughts[index];
+                      if (!item) return null;
                       return (
-                        <View key={item.id} style={[styles.organicDot, { position: 'absolute', left: position.x, top: position.y, marginLeft: -40, marginTop: -40 }]}>
+                        <View key={item.id} style={{ position: 'absolute', left: position.x - 40, top: position.y - 40 }}>
                           {renderCloudDot({ item })}
                         </View>
                       );
@@ -449,7 +450,7 @@ export default function MyNeuraScreen() {
                   style={styles.fullscreenButton}
                   onPress={() => setIsFullscreenCloud(true)}
                 >
-                  <Feather name="maximize-2" size={20} color="#fff" />
+                  <Feather name="maximize-2" size={24} color="#fff" />
                 </TouchableOpacity>
               </View>
             )}
@@ -1016,20 +1017,20 @@ const styles = StyleSheet.create({
   },
   fullscreenButton: {
     position: 'absolute',
-    bottom: 20,
-    right: 20,
-    width: 56,
-    height: 56,
-    borderRadius: 28,
-    backgroundColor: colors.primary[600],
+    bottom: 24,
+    right: 24,  // RIGHT side (not left!)
+    width: 64,
+    height: 64,
+    borderRadius: 32,
+    backgroundColor: '#F97316', // Bright orange for visibility
     justifyContent: 'center',
     alignItems: 'center',
-    shadowColor: colors.primary[600],
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.4,
-    shadowRadius: 12,
-    elevation: 10,
-    borderWidth: 3,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.5,
+    shadowRadius: 16,
+    elevation: 12,
+    borderWidth: 4,
     borderColor: '#fff',
   },
   organicDot: {
