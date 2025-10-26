@@ -658,10 +658,10 @@ export default function MyNeuraScreen() {
               data={thoughts}
               renderItem={renderCloudDot}
               keyExtractor={(item) => item.id.toString()}
-              numColumns={2}
+              numColumns={3}
               scrollEnabled={false}
               columnWrapperStyle={styles.cloudRow}
-              contentContainerStyle={{ gap: 12 }}
+              contentContainerStyle={{ gap: 8 }}
             />
           </ScrollView>
         </View>
