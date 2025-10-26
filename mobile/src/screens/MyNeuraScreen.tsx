@@ -363,14 +363,6 @@ export default function MyNeuraScreen() {
                   </Text>
                 </TouchableOpacity>
               </View>
-              {viewMode === 'cloud' && thoughts.length > 0 && (
-                <TouchableOpacity 
-                  style={styles.fullscreenButton}
-                  onPress={() => setIsFullscreenCloud(true)}
-                >
-                  <Feather name="maximize-2" size={20} color={colors.primary[600]} />
-                </TouchableOpacity>
-              )}
             </View>
 
             {thoughts.length === 0 ? (
