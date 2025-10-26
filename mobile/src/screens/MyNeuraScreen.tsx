@@ -37,6 +37,7 @@ export default function MyNeuraScreen() {
   const [selectedThought, setSelectedThought] = useState<Thought | null>(null);
   const [showThoughtDetail, setShowThoughtDetail] = useState(false);
   const [detailTab, setDetailTab] = useState('details');
+  const [isFullscreenCloud, setIsFullscreenCloud] = useState(false);
   
   // Form data
   const [heading, setHeading] = useState('');
@@ -172,40 +173,34 @@ export default function MyNeuraScreen() {
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={colors.primary[500]} />
         }
       >
-        {/* Header */}
-        <View style={styles.header}>
-          <Text style={styles.headerTitle}>MyNeura</Text>
-          <Text style={styles.headerSubtitle}>Personal Intelligence Space</Text>
+        {/* Compact Header with Inline Stats */}
+        <View style={styles.compactHeader}>
+          <View>
+            <Text style={styles.headerTitle}>MyNeura</Text>
+            <Text style={styles.headerSubtitle}>Your Thought Cloud</Text>
+          </View>
         </View>
 
-        {/* Stats Cards */}
-        <View style={styles.statsGrid}>
-          <Card style={styles.statCard} borderColor={colors.primary[500]} borderWidth={3}>
-            <MaterialCommunityIcons name="lightbulb-on" size={32} color={colors.primary[500]} />
-            <Text style={styles.statValue}>{stats?.thoughts || 0}</Text>
-            <Text style={styles.statLabel}>Dots</Text>
-          </Card>
-
-          <Card style={styles.statCard} borderColor={colors.primary[500]} borderWidth={3}>
-            <Feather name="zap" size={32} color={colors.primary[500]} />
-            <Text style={styles.statValue}>{stats?.sparks || 0}</Text>
-            <Text style={styles.statLabel}>Sparks</Text>
-          </Card>
+        {/* Compact Stats Row */}
+        <View style={styles.compactStatsRow}>
+          <View style={styles.compactStat}>
+            <MaterialCommunityIcons name="lightbulb-on" size={20} color={colors.primary[500]} />
+            <Text style={styles.compactStatValue}>{stats?.thoughts || 0}</Text>
+            <Text style={styles.compactStatLabel}>Dots</Text>
+          </View>
+          <View style={styles.compactStatDivider} />
+          <View style={styles.compactStat}>
+            <Feather name="zap" size={20} color={colors.primary[500]} />
+            <Text style={styles.compactStatValue}>{stats?.sparks || 0}</Text>
+            <Text style={styles.compactStatLabel}>Sparks</Text>
+          </View>
+          <View style={styles.compactStatDivider} />
+          <View style={styles.compactStat}>
+            <Feather name="activity" size={20} color={colors.primary[600]} />
+            <Text style={styles.compactStatValue}>{stats?.neuralStrength || 10}%</Text>
+            <Text style={styles.compactStatLabel}>Neural</Text>
+          </View>
         </View>
-
-        {/* Neural Strength */}
-        <Card style={styles.neuralCard}>
-          <View style={styles.neuralHeader}>
-            <Feather name="activity" size={24} color={colors.primary[600]} />
-            <Text style={styles.neuralTitle}>Neural Strength</Text>
-          </View>
-          <View style={styles.neuralProgressContainer}>
-            <View style={styles.neuralProgressBar}>
-              <View style={[styles.neuralProgressFill, { width: `${stats?.neuralStrength || 10}%` }]} />
-            </View>
-            <Text style={styles.neuralProgressText}>{stats?.neuralStrength || 10}%</Text>
-          </View>
-        </Card>
 
         {/* Tab Navigation */}
         <View style={styles.tabContainer}>
@@ -230,24 +225,34 @@ export default function MyNeuraScreen() {
         {/* Content */}
         {selectedTab === 'myneura' ? (
           <View style={styles.content}>
-            {/* View Mode Toggle */}
-            <View style={styles.viewToggle}>
-              <TouchableOpacity
-                style={[styles.toggleButton, viewMode === 'cloud' && styles.toggleButtonActive]}
-                onPress={() => setViewMode('cloud')}
-              >
-                <Text style={[styles.toggleButtonText, viewMode === 'cloud' && styles.toggleButtonTextActive]}>
-                  Cloud View
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[styles.toggleButton, viewMode === 'feed' && styles.toggleButtonActive]}
-                onPress={() => setViewMode('feed')}
-              >
-                <Text style={[styles.toggleButtonText, viewMode === 'feed' && styles.toggleButtonTextActive]}>
-                  Feed View
-                </Text>
-              </TouchableOpacity>
+            {/* View Mode Toggle with Fullscreen */}
+            <View style={styles.viewToggleRow}>
+              <View style={styles.viewToggle}>
+                <TouchableOpacity
+                  style={[styles.toggleButton, viewMode === 'cloud' && styles.toggleButtonActive]}
+                  onPress={() => setViewMode('cloud')}
+                >
+                  <Text style={[styles.toggleButtonText, viewMode === 'cloud' && styles.toggleButtonTextActive]}>
+                    Cloud
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={[styles.toggleButton, viewMode === 'feed' && styles.toggleButtonActive]}
+                  onPress={() => setViewMode('feed')}
+                >
+                  <Text style={[styles.toggleButtonText, viewMode === 'feed' && styles.toggleButtonTextActive]}>
+                    Feed
+                  </Text>
+                </TouchableOpacity>
+              </View>
+              {viewMode === 'cloud' && thoughts.length > 0 && (
+                <TouchableOpacity 
+                  style={styles.fullscreenButton}
+                  onPress={() => setIsFullscreenCloud(true)}
+                >
+                  <Feather name="maximize-2" size={20} color={colors.primary[600]} />
+                </TouchableOpacity>
+              )}
             </View>
 
             {thoughts.length === 0 ? (
@@ -563,6 +568,34 @@ export default function MyNeuraScreen() {
           </View>
         </View>
       </Modal>
+
+      {/* Fullscreen Cloud Modal */}
+      <Modal
+        visible={isFullscreenCloud}
+        animationType="fade"
+        transparent={false}
+        onRequestClose={() => setIsFullscreenCloud(false)}
+      >
+        <View style={styles.fullscreenContainer}>
+          <View style={styles.fullscreenHeader}>
+            <Text style={styles.fullscreenTitle}>Thought Cloud</Text>
+            <TouchableOpacity onPress={() => setIsFullscreenCloud(false)}>
+              <Feather name="minimize-2" size={24} color={colors.primary[600]} />
+            </TouchableOpacity>
+          </View>
+          <ScrollView style={styles.fullscreenCloudScroll} contentContainerStyle={styles.fullscreenCloudContent}>
+            <FlatList
+              data={thoughts}
+              renderItem={renderCloudDot}
+              keyExtractor={(item) => item.id.toString()}
+              numColumns={2}
+              scrollEnabled={false}
+              columnWrapperStyle={styles.cloudRow}
+              contentContainerStyle={{ gap: 12 }}
+            />
+          </ScrollView>
+        </View>
+      </Modal>
     </>
   );
 }
@@ -570,7 +603,7 @@ export default function MyNeuraScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.background.secondary,
+    backgroundColor: '#FEF9E7',
   },
   contentContainer: {
     padding: 16,
@@ -580,7 +613,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: colors.background.secondary,
+    backgroundColor: '#FEF9E7',
   },
   loadingText: {
     marginTop: 12,
@@ -750,19 +783,24 @@ const styles = StyleSheet.create({
   },
   cloudDotInner: {
     padding: 16,
-    backgroundColor: colors.primary[50],
-    borderRadius: 12,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 16,
     borderWidth: 2,
-    borderColor: colors.primary[200],
+    borderColor: colors.primary[300],
     minHeight: 100,
     alignItems: 'center',
     justifyContent: 'center',
     gap: 8,
+    shadowColor: colors.primary[600],
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.12,
+    shadowRadius: 10,
+    elevation: 6,
   },
   cloudDotText: {
     fontSize: typography.sizes.sm,
-    fontWeight: typography.weights.medium,
-    color: colors.primary[800],
+    fontWeight: typography.weights.semibold,
+    color: colors.primary[900],
     textAlign: 'center',
   },
   emptyCard: {
@@ -1001,5 +1039,88 @@ const styles = StyleSheet.create({
     color: colors.gray[600],
     textAlign: 'center',
     lineHeight: 24,
+  },
+  // Compact Stats Styles
+  compactHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  compactStatsRow: {
+    flexDirection: 'row',
+    backgroundColor: '#fff',
+    borderRadius: 16,
+    padding: 16,
+    marginBottom: 16,
+    shadowColor: colors.primary[600],
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 12,
+    elevation: 4,
+  },
+  compactStat: {
+    flex: 1,
+    alignItems: 'center',
+    gap: 6,
+  },
+  compactStatDivider: {
+    width: 1,
+    backgroundColor: colors.gray[200],
+    marginHorizontal: 8,
+  },
+  compactStatValue: {
+    fontSize: typography.sizes.xl,
+    fontWeight: typography.weights.bold,
+    color: colors.primary[700],
+  },
+  compactStatLabel: {
+    fontSize: typography.sizes.xs,
+    fontWeight: typography.weights.medium,
+    color: colors.gray[600],
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+  },
+  viewToggleRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  fullscreenButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 12,
+    backgroundColor: colors.primary[50],
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: colors.primary[200],
+  },
+  // Fullscreen Cloud Styles
+  fullscreenContainer: {
+    flex: 1,
+    backgroundColor: 'linear-gradient(135deg, #FEF3C7 0%, #FCD34D 100%)',
+  },
+  fullscreenHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 20,
+    paddingTop: 50,
+    backgroundColor: 'rgba(255, 255, 255, 0.95)',
+    borderBottomWidth: 1,
+    borderBottomColor: colors.primary[200],
+  },
+  fullscreenTitle: {
+    fontSize: typography.sizes['3xl'],
+    fontWeight: typography.weights.bold,
+    color: colors.primary[900],
+  },
+  fullscreenCloudScroll: {
+    flex: 1,
+  },
+  fullscreenCloudContent: {
+    padding: 20,
   },
 });
