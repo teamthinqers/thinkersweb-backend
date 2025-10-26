@@ -48,11 +48,11 @@ function generateCloudPositions(count: number, containerWidth: number): Array<{ 
   
   const availableWidth = containerWidth - leftBuffer - rightBuffer;
   const cellWidth = availableWidth / DOTS_PER_ROW;
-  const cellHeight = 200; // Vertical spacing
+  const cellHeight = 280; // Increased vertical spacing to prevent overlap for 1000+ dots
   
   // Jitter for organic look
-  const maxJitterX = cellWidth * 0.25;
-  const maxJitterY = cellHeight * 0.2;
+  const maxJitterX = cellWidth * 0.35; // Increased horizontal jitter
+  const maxJitterY = cellHeight * 0.3; // Increased vertical jitter
   
   for (let i = 0; i < count; i++) {
     const row = Math.floor(i / DOTS_PER_ROW);
@@ -385,6 +385,30 @@ export default function MyNeuraScreen() {
               />
             ) : (
               <View style={styles.cloudContainerOrganic}>
+                {/* Action buttons row at top */}
+                <View style={styles.cloudActionButtons}>
+                  <TouchableOpacity
+                    style={styles.cloudActionButton}
+                    onPress={onRefresh}
+                  >
+                    <Feather name="refresh-cw" size={20} color={colors.primary[600]} />
+                  </TouchableOpacity>
+                  
+                  <TouchableOpacity
+                    style={styles.cloudActionButton}
+                    onPress={() => setShowSaveModal(true)}
+                  >
+                    <Feather name="plus" size={20} color={colors.primary[600]} />
+                  </TouchableOpacity>
+                  
+                  <TouchableOpacity
+                    style={styles.cloudActionButton}
+                    onPress={() => setIsFullscreenCloud(true)}
+                  >
+                    <Feather name="maximize-2" size={20} color={colors.primary[600]} />
+                  </TouchableOpacity>
+                </View>
+                
                 {thoughts.map((item, index) => {
                   const position = generateCloudPositions(thoughts.length, 400)[index];
                   return (
@@ -393,14 +417,6 @@ export default function MyNeuraScreen() {
                     </View>
                   );
                 })}
-                
-                {/* Fullscreen icon overlay */}
-                <TouchableOpacity
-                  style={styles.fullscreenIconOverlay}
-                  onPress={() => setIsFullscreenCloud(true)}
-                >
-                  <Feather name="maximize-2" size={24} color={colors.primary[600]} />
-                </TouchableOpacity>
               </View>
             )}
 
@@ -903,23 +919,28 @@ const styles = StyleSheet.create({
     width: 120,
     height: 120,
   },
-  fullscreenIconOverlay: {
+  cloudActionButtons: {
     position: 'absolute',
-    bottom: 20,
-    right: 20,
-    width: 48,
-    height: 48,
-    borderRadius: 24,
+    top: 0,
+    right: 16,
+    flexDirection: 'row',
+    gap: 12,
+    zIndex: 1000,
+  },
+  cloudActionButton: {
     backgroundColor: '#fff',
+    borderRadius: 24,
+    width: 44,
+    height: 44,
     justifyContent: 'center',
     alignItems: 'center',
     shadowColor: colors.primary[600],
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.15,
     shadowRadius: 8,
-    elevation: 8,
+    elevation: 4,
     borderWidth: 2,
-    borderColor: colors.primary[300],
+    borderColor: colors.primary[200],
   },
   cloudRow: {
     justifyContent: 'space-around',
@@ -960,19 +981,19 @@ const styles = StyleSheet.create({
   },
   cloudDotRingOuter: {
     position: 'absolute',
-    width: '120%',
-    height: '120%',
-    borderRadius: 72,
-    backgroundColor: '#FB923C', // Web's orange-400 for outer pulsing ring
-    opacity: 0.3,
+    width: '140%',
+    height: '140%',
+    borderRadius: 84,
+    backgroundColor: '#FED7AA', // Softer peachy-orange (orange-200) for subtle outer glow like web
+    opacity: 0.15, // Much milder opacity to match web
   },
   cloudDotRingMiddle: {
     position: 'absolute',
-    width: '110%',
-    height: '110%',
-    borderRadius: 66,
-    backgroundColor: '#FBBF24', // Web's amber-400 for middle glow
-    opacity: 0.6,
+    width: '120%',
+    height: '120%',
+    borderRadius: 72,
+    backgroundColor: '#FDE68A', // Softer amber (amber-200) for middle glow
+    opacity: 0.35, // Reduced opacity for softer effect
   },
   cloudDotContent: {
     width: '100%',
