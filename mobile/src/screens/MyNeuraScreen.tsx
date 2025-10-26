@@ -83,6 +83,7 @@ export default function MyNeuraScreen() {
   const [viewMode, setViewMode] = useState<ViewMode>('cloud');
   const [showSaveModal, setShowSaveModal] = useState(false);
   const [saveMode, setSaveMode] = useState<SaveMode>('choose');
+  const [shareToTab, setShareToTab] = useState<'social' | 'myneura' | 'mycircle'>('myneura');
   const [selectedThought, setSelectedThought] = useState<Thought | null>(null);
   const [showThoughtDetail, setShowThoughtDetail] = useState(false);
   const [detailTab, setDetailTab] = useState('details');
@@ -466,13 +467,24 @@ export default function MyNeuraScreen() {
       >
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
-            <View style={styles.modalHeader}>
-              <Text style={styles.modalTitle}>
-                {saveMode === 'choose' ? 'Save a Dot - 5 Ways' : `Save Dot - ${saveMode.charAt(0).toUpperCase() + saveMode.slice(1)} Mode`}
-              </Text>
+            {/* Desktop-matching header with user info */}
+            <View style={styles.desktopHeader}>
+              <View style={styles.desktopHeaderLeft}>
+                <Feather name="menu" size={20} color={colors.gray[400]} />
+                <View style={styles.userInfo}>
+                  <View style={styles.userAvatar}>
+                    <Feather name="user" size={20} color={colors.primary[600]} />
+                  </View>
+                  <View>
+                    <Text style={styles.userName}>{user?.email?.split('@')[0] || 'User'}</Text>
+                  </View>
+                </View>
+              </View>
+              
               <TouchableOpacity onPress={() => {
                 setShowSaveModal(false);
                 setSaveMode('choose');
+                setShareToTab('myneura');
                 resetForm();
               }}>
                 <Feather name="x" size={24} color={colors.gray[500]} />
@@ -480,37 +492,73 @@ export default function MyNeuraScreen() {
             </View>
 
             {saveMode === 'choose' ? (
-              <View style={styles.fiveWaysContainer}>
-                {/* Write - Amber/Orange */}
-                <TouchableOpacity style={[styles.wayCard, styles.wayCardWrite]} onPress={() => setSaveMode('write')}>
-                  <Feather name="edit-3" size={48} color="#fff" />
-                  <Text style={styles.wayTitleWhite}>Write</Text>
-                </TouchableOpacity>
+              <>
+                {/* Share to tabs */}
+                <View style={styles.shareToSection}>
+                  <Text style={styles.shareToLabel}>Share to</Text>
+                  <View style={styles.shareToTabs}>
+                    <TouchableOpacity
+                      style={[styles.shareToTab, shareToTab === 'social' && styles.shareToTabActive]}
+                      onPress={() => setShareToTab('social')}
+                    >
+                      <Text style={[styles.shareToTabText, shareToTab === 'social' && styles.shareToTabTextActive]}>
+                        Social
+                      </Text>
+                    </TouchableOpacity>
+                    
+                    <TouchableOpacity
+                      style={[styles.shareToTab, shareToTab === 'myneura' && styles.shareToTabActive]}
+                      onPress={() => setShareToTab('myneura')}
+                    >
+                      <Text style={[styles.shareToTabText, shareToTab === 'myneura' && styles.shareToTabTextActive]}>
+                        My Neura
+                      </Text>
+                    </TouchableOpacity>
+                    
+                    <TouchableOpacity
+                      style={[styles.shareToTab, shareToTab === 'mycircle' && styles.shareToTabActive]}
+                      onPress={() => setShareToTab('mycircle')}
+                    >
+                      <Text style={[styles.shareToTabText, shareToTab === 'mycircle' && styles.shareToTabTextActive]}>
+                        My Circle
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
+                </View>
 
-                {/* LinkedIn - Blue */}
-                <TouchableOpacity style={[styles.wayCard, styles.wayCardLinkedIn]} onPress={() => Alert.alert('Coming Soon', 'LinkedIn import coming soon!')}>
-                  <MaterialCommunityIcons name="linkedin" size={48} color="#fff" />
-                  <Text style={styles.wayTitleWhite}>LinkedIn</Text>
-                </TouchableOpacity>
+                {/* 5 creation modes */}
+                <View style={styles.fiveWaysContainer}>
+                  {/* Write - Orange */}
+                  <TouchableOpacity style={[styles.wayCard, styles.wayCardWrite]} onPress={() => setSaveMode('write')}>
+                    <Feather name="edit-3" size={40} color="#fff" />
+                    <Text style={styles.wayTitleWhite}>Write</Text>
+                  </TouchableOpacity>
 
-                {/* ChatGPT - Teal/Emerald */}
-                <TouchableOpacity style={[styles.wayCard, styles.wayCardChatGPT]} onPress={() => Alert.alert('Coming Soon', 'ChatGPT integration coming soon!')}>
-                  <MaterialCommunityIcons name="robot" size={48} color="#fff" />
-                  <Text style={styles.wayTitleWhite}>ChatGPT</Text>
-                </TouchableOpacity>
+                  {/* Import (LinkedIn) - Blue */}
+                  <TouchableOpacity style={[styles.wayCard, styles.wayCardLinkedIn]} onPress={() => Alert.alert('Coming Soon', 'LinkedIn import coming soon!')}>
+                    <MaterialCommunityIcons name="linkedin" size={40} color="#fff" />
+                    <Text style={styles.wayTitleWhite}>Import</Text>
+                  </TouchableOpacity>
 
-                {/* WhatsApp - Green */}
-                <TouchableOpacity style={[styles.wayCard, styles.wayCardWhatsApp]} onPress={() => Alert.alert('Coming Soon', 'WhatsApp integration coming soon!')}>
-                  <MaterialCommunityIcons name="whatsapp" size={48} color="#fff" />
-                  <Text style={styles.wayTitleWhite}>WhatsApp</Text>
-                </TouchableOpacity>
+                  {/* Import (ChatGPT) - Gray/White */}
+                  <TouchableOpacity style={[styles.wayCard, styles.wayCardChatGPT]} onPress={() => Alert.alert('Coming Soon', 'ChatGPT import coming soon!')}>
+                    <MaterialCommunityIcons name="robot" size={40} color="#666" />
+                    <Text style={styles.wayTitleGrey}>Import</Text>
+                  </TouchableOpacity>
 
-                {/* AI Help - Purple */}
-                <TouchableOpacity style={[styles.wayCard, styles.wayCardAI]} onPress={() => Alert.alert('Coming Soon', 'AI Help coming soon!')}>
-                  <Feather name="zap" size={48} color="#fff" />
-                  <Text style={styles.wayTitleWhite}>AI Help</Text>
-                </TouchableOpacity>
-              </View>
+                  {/* WhatsApp - Green */}
+                  <TouchableOpacity style={[styles.wayCard, styles.wayCardWhatsApp]} onPress={() => Alert.alert('Coming Soon', 'WhatsApp integration coming soon!')}>
+                    <MaterialCommunityIcons name="whatsapp" size={40} color="#fff" />
+                    <Text style={styles.wayTitleWhite}>WhatsApp</Text>
+                  </TouchableOpacity>
+
+                  {/* AI Help - Purple */}
+                  <TouchableOpacity style={[styles.wayCard, styles.wayCardAI]} onPress={() => Alert.alert('Coming Soon', 'AI Help coming soon!')}>
+                    <Feather name="zap" size={40} color="#fff" />
+                    <Text style={styles.wayTitleWhite}>AI Help</Text>
+                  </TouchableOpacity>
+                </View>
+              </>
             ) : (
               <ScrollView style={styles.writeForm}>
                 <View style={styles.formGroup}>
@@ -1175,7 +1223,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#3B82F6', // Web's blue-500 (from-blue-400 via-blue-500 to-blue-600 gradient)
   },
   wayCardChatGPT: {
-    backgroundColor: '#A855F7', // Web's purple-500 (from-purple-400 via-purple-500 to-purple-600 gradient)
+    backgroundColor: '#F3F4F6', // Light gray/white background for ChatGPT
   },
   wayCardWhatsApp: {
     backgroundColor: '#22C55E', // Web's green-500 (from-green-400 via-green-500 to-green-600 gradient)
@@ -1192,6 +1240,70 @@ const styles = StyleSheet.create({
     fontSize: typography.sizes.xl,
     fontWeight: typography.weights.bold,
     color: colors.gray[700],
+  },
+  desktopHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 20,
+    paddingBottom: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.gray[200],
+  },
+  desktopHeaderLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  userInfo: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  userAvatar: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    backgroundColor: colors.gray[100],
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  userName: {
+    fontSize: typography.sizes.base,
+    fontWeight: typography.weights.semibold,
+    color: colors.gray[900],
+  },
+  shareToSection: {
+    marginBottom: 20,
+  },
+  shareToLabel: {
+    fontSize: typography.sizes.sm,
+    fontWeight: typography.weights.medium,
+    color: colors.gray[600],
+    marginBottom: 12,
+  },
+  shareToTabs: {
+    flexDirection: 'row',
+    gap: 8,
+  },
+  shareToTab: {
+    flex: 1,
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+    borderRadius: 20,
+    backgroundColor: colors.gray[100],
+    alignItems: 'center',
+  },
+  shareToTabActive: {
+    backgroundColor: colors.primary[600],
+  },
+  shareToTabText: {
+    fontSize: typography.sizes.sm,
+    fontWeight: typography.weights.semibold,
+    color: colors.gray[700],
+  },
+  shareToTabTextActive: {
+    color: '#fff',
   },
   writeForm: {
     maxHeight: 500,
