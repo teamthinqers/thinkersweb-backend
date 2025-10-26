@@ -34,45 +34,51 @@ function seededRandom(seed: number): number {
   return x - Math.floor(x);
 }
 
-// Generate organic cloud positions - MOBILE 3-COLUMN (EXPERT VERIFIED - NO OVERLAPS!)
-// Expert-calculated parameters prevent overlaps with 3 columns on 360px mobile
+// Generate organic cloud positions - ALTERNATING 2-3-2-3 PATTERN (EXPERT VERIFIED!)
+// Architect-designed: prevents all overlaps with organic non-parallel placement
 function generateCloudPositions(count: number, containerWidth: number): Array<{ x: number; y: number; size: number }> {
   const positions: Array<{ x: number; y: number; size: number }> = [];
-  const dotSize = 80; // Mobile dot size (80px)
-  const DOTS_PER_ROW = 3; // Mobile uses 3 columns (desktop uses 4)
   
-  // Buffers and margins
-  const padding = 16;
-  const topBuffer = 80;
-  const leftBuffer = dotSize / 2 + padding; // 40 + 16 = 56px
-  const rightBuffer = dotSize / 2 + padding;
+  // EXPERT PARAMETERS - Alternating row layout
+  const ROW_LAYOUTS = [
+    { columns: 2, fractions: [0.24, 0.76], jitterX: 12 },      // 2-dot rows
+    { columns: 3, fractions: [0.18, 0.50, 0.82], jitterX: 10 }, // 3-dot rows
+  ];
   
-  const availableWidth = containerWidth - leftBuffer - rightBuffer;
-  const cellWidth = availableWidth / DOTS_PER_ROW; // ~90.7px per column
-  const cellHeight = 210; // EXPERT VALUE: 210px vertical spacing
+  const dotSize = 80;
+  const sidePadding = 24;
+  const topPadding = 96;
+  const rowHeight = 148; // 80px dot + 68px gutter
+  const jitterY = 18;
+  const usableWidth = containerWidth - sidePadding * 2; // 312px
   
-  // EXPERT-CALCULATED JITTER (prevents overlaps on mobile 3-column):
-  // Desktop percentages DON'T work for mobile! Must use exact pixel values.
-  const maxJitterX = 5; // ±5px horizontal (NOT 20%!) - prevents side collisions
-  const maxJitterY = 25; // ±25px vertical - maintains clearance
+  let currentDotIndex = 0;
+  let currentRowIndex = 0;
   
-  for (let i = 0; i < count; i++) {
-    const row = Math.floor(i / DOTS_PER_ROW);
-    const col = i % DOTS_PER_ROW;
+  while (currentDotIndex < count) {
+    const layout = ROW_LAYOUTS[currentRowIndex % ROW_LAYOUTS.length];
+    const dotsInThisRow = Math.min(layout.columns, count - currentDotIndex);
     
-    // Base grid position
-    const baseX = leftBuffer + (col * cellWidth) + (cellWidth / 2);
-    const baseY = topBuffer + (row * cellHeight) + (cellHeight / 2);
+    for (let col = 0; col < dotsInThisRow; col++) {
+      const baseX = sidePadding + layout.fractions[col] * usableWidth;
+      const baseY = topPadding + currentRowIndex * rowHeight;
+      
+      // Seeded random jitter for organic placement
+      const jitterX = (seededRandom(currentDotIndex * 2.7) - 0.5) * 2 * layout.jitterX;
+      const jitterYVal = (seededRandom(currentDotIndex * 3.1) - 0.5) * 2 * jitterY;
+      
+      // Clamp to bounds
+      const x = Math.max(
+        sidePadding + dotSize / 2,
+        Math.min(containerWidth - sidePadding - dotSize / 2, baseX + jitterX)
+      );
+      const y = baseY + jitterYVal;
+      
+      positions.push({ x, y, size: dotSize });
+      currentDotIndex++;
+    }
     
-    // Add seeded random jitter (same algorithm as desktop)
-    const jitterX = (seededRandom(i * 2.5) - 0.5) * 2 * maxJitterX;
-    const jitterY = (seededRandom(i * 3.7) - 0.5) * 2 * maxJitterY;
-    
-    positions.push({
-      x: Math.max(leftBuffer, Math.min(containerWidth - rightBuffer, baseX + jitterX)),
-      y: Math.max(topBuffer, baseY + jitterY),
-      size: dotSize
-    });
+    currentRowIndex++;
   }
   
   return positions;
@@ -448,11 +454,6 @@ export default function MyNeuraScreen() {
               </View>
             )}
 
-            {thoughts.length > 0 && (
-              <TouchableOpacity style={[styles.saveButton, styles.fabButton]} onPress={() => setShowSaveModal(true)}>
-                <Feather name="plus" size={24} color="#fff" />
-              </TouchableOpacity>
-            )}
           </View>
         ) : (
           <View style={styles.content}>
@@ -1015,31 +1016,31 @@ const styles = StyleSheet.create({
   },
   fullscreenButton: {
     position: 'absolute',
-    bottom: 16,
-    right: 16,
-    width: 48,
-    height: 48,
-    borderRadius: 24,
+    bottom: 20,
+    right: 20,
+    width: 56,
+    height: 56,
+    borderRadius: 28,
     backgroundColor: colors.primary[600],
     justifyContent: 'center',
     alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
-    elevation: 8,
+    shadowColor: colors.primary[600],
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.4,
+    shadowRadius: 12,
+    elevation: 10,
+    borderWidth: 3,
+    borderColor: '#fff',
   },
   organicDot: {
     width: 120,
     height: 120,
   },
   cloudActionButtons: {
-    position: 'absolute',
-    top: 0,
-    right: 16,
     flexDirection: 'row',
     gap: 12,
-    zIndex: 1000,
+    marginBottom: 12,
+    justifyContent: 'flex-end',
   },
   cloudActionButton: {
     backgroundColor: '#fff',
