@@ -70,17 +70,20 @@ export default function MyNeuraScreen() {
   if (thoughts.length === 0) {
     thoughts = [
       { id: 1, heading: 'Morning Clarity', summary: 'Best ideas come during quiet mornings', createdAt: new Date().toISOString(), keywords: 'productivity', channel: 'write' },
-      { id: 2, heading: 'Deep Work', summary: 'Focus blocks unlock creative potential', createdAt: new Date().toISOString(), keywords: 'focus', channel: 'chat' },
-      { id: 3, heading: 'Learning Pace', summary: 'Slow learning leads to deep understanding', createdAt: new Date().toISOString(), keywords: 'learning', channel: 'voice' },
+      { id: 2, heading: 'Deep Work', summary: 'Focus blocks unlock creative potential', createdAt: new Date().toISOString(), keywords: 'focus', channel: 'chatgpt' },
+      { id: 3, heading: 'Learning Pace', summary: 'Slow learning leads to deep understanding', createdAt: new Date().toISOString(), keywords: 'learning', channel: 'linkedin' },
       { id: 4, heading: 'Creative Flow', summary: 'Constraints boost creative solutions', createdAt: new Date().toISOString(), keywords: 'creativity', channel: 'write' },
       { id: 5, heading: 'Mind Reset', summary: 'Breaks fuel productivity and clarity', createdAt: new Date().toISOString(), keywords: 'wellness', channel: 'whatsapp' },
       { id: 6, heading: 'Pattern Recognition', summary: 'Connecting dots reveals hidden insights', createdAt: new Date().toISOString(), keywords: 'insight', channel: 'write' },
-      { id: 7, heading: 'Question Everything', summary: 'Best answers start with better questions', createdAt: new Date().toISOString(), keywords: 'curiosity', channel: 'chat' },
+      { id: 7, heading: 'Question Everything', summary: 'Best answers start with better questions', createdAt: new Date().toISOString(), keywords: 'curiosity', channel: 'chatgpt' },
       { id: 8, heading: 'System Thinking', summary: 'See the whole, not just the parts', createdAt: new Date().toISOString(), keywords: 'systems', channel: 'write' },
-      { id: 9, heading: 'Feedback Loops', summary: 'Quick feedback accelerates learning', createdAt: new Date().toISOString(), keywords: 'growth', channel: 'voice' },
+      { id: 9, heading: 'Feedback Loops', summary: 'Quick feedback accelerates learning', createdAt: new Date().toISOString(), keywords: 'growth', channel: 'ai' },
       { id: 10, heading: 'Mental Models', summary: 'Better models equal better decisions', createdAt: new Date().toISOString(), keywords: 'thinking', channel: 'write' },
-      { id: 11, heading: 'Compound Effect', summary: 'Small daily actions create massive results', createdAt: new Date().toISOString(), keywords: 'habits', channel: 'chat' },
+      { id: 11, heading: 'Compound Effect', summary: 'Small daily actions create massive results', createdAt: new Date().toISOString(), keywords: 'habits', channel: 'chatgpt' },
       { id: 12, heading: 'First Principles', summary: 'Break down to fundamentals, rebuild anew', createdAt: new Date().toISOString(), keywords: 'reasoning', channel: 'write' },
+      { id: 13, heading: 'Growth Mindset', summary: 'Abilities can be developed through dedication', createdAt: new Date().toISOString(), keywords: 'mindset', channel: 'linkedin' },
+      { id: 14, heading: 'Focus Time', summary: 'Deep work requires distraction-free blocks', createdAt: new Date().toISOString(), keywords: 'productivity', channel: 'write' },
+      { id: 15, heading: 'Creative Spark', summary: 'Innovation comes from connecting unrelated ideas', createdAt: new Date().toISOString(), keywords: 'creativity', channel: 'ai' },
     ];
   }
 
@@ -160,17 +163,19 @@ export default function MyNeuraScreen() {
   const renderCloudDot = ({ item }: { item: Thought }) => {
     const dotSize = 120;
     
-    // Determine channel icon
+    // Determine channel icon (5 modes: Write, LinkedIn, ChatGPT, WhatsApp, AI Help)
     const getChannelIcon = () => {
       switch (item.channel) {
         case 'write':
           return <Feather name="edit-3" size={12} color="#fff" />;
-        case 'chat':
-          return <MaterialCommunityIcons name="chat" size={12} color="#fff" />;
-        case 'voice':
-          return <Feather name="mic" size={12} color="#fff" />;
+        case 'linkedin':
+          return <MaterialCommunityIcons name="linkedin" size={12} color="#fff" />;
+        case 'chatgpt':
+          return <MaterialCommunityIcons name="robot" size={12} color="#fff" />;
         case 'whatsapp':
           return <MaterialCommunityIcons name="whatsapp" size={12} color="#fff" />;
+        case 'ai':
+          return <Feather name="zap" size={12} color="#fff" />;
         default:
           return <MaterialCommunityIcons name="lightbulb" size={12} color="#fff" />;
       }
@@ -195,14 +200,21 @@ export default function MyNeuraScreen() {
           activeOpacity={0.7}
         >
           {/* Outer pulsing ring */}
-          <View style={styles.cloudDotRing} />
+          <View style={styles.cloudDotRingOuter} />
+          
+          {/* Middle glow layer */}
+          <View style={styles.cloudDotRingMiddle} />
           
           {/* Inner content circle */}
           <View style={styles.cloudDotContent}>
-            <Text style={styles.cloudDotHeading} numberOfLines={4}>
+            <Text style={styles.cloudDotHeading} numberOfLines={3}>
               {item.heading || item.summary}
             </Text>
           </View>
+          
+          {/* Sparkle particles */}
+          <View style={styles.sparkleTop} />
+          <View style={styles.sparkleBottom} />
         </TouchableOpacity>
 
         {/* Channel badge at bottom */}
@@ -337,10 +349,10 @@ export default function MyNeuraScreen() {
                   data={thoughts}
                   renderItem={renderCloudDot}
                   keyExtractor={(item) => item.id.toString()}
-                  numColumns={2}
+                  numColumns={3}
                   scrollEnabled={false}
                   columnWrapperStyle={styles.cloudRow}
-                  contentContainerStyle={{ gap: 12 }}
+                  contentContainerStyle={{ gap: 8 }}
                 />
               </View>
             )}
@@ -412,16 +424,16 @@ export default function MyNeuraScreen() {
                   <Text style={styles.wayTitleWhite}>Write</Text>
                 </TouchableOpacity>
 
-                {/* LinkedIn Import - Blue */}
+                {/* LinkedIn - Blue */}
                 <TouchableOpacity style={[styles.wayCard, styles.wayCardLinkedIn]} onPress={() => Alert.alert('Coming Soon', 'LinkedIn import coming soon!')}>
                   <MaterialCommunityIcons name="linkedin" size={48} color="#fff" />
-                  <Text style={styles.wayTitleWhite}>Import</Text>
+                  <Text style={styles.wayTitleWhite}>LinkedIn</Text>
                 </TouchableOpacity>
 
-                {/* Import - Grey/White */}
-                <TouchableOpacity style={[styles.wayCard, styles.wayCardImport]} onPress={() => Alert.alert('Coming Soon', 'Import feature coming soon!')}>
-                  <Feather name="upload-cloud" size={48} color={colors.gray[600]} />
-                  <Text style={styles.wayTitleGrey}>Import</Text>
+                {/* ChatGPT - Teal/Emerald */}
+                <TouchableOpacity style={[styles.wayCard, styles.wayCardChatGPT]} onPress={() => Alert.alert('Coming Soon', 'ChatGPT integration coming soon!')}>
+                  <MaterialCommunityIcons name="robot" size={48} color="#fff" />
+                  <Text style={styles.wayTitleWhite}>ChatGPT</Text>
                 </TouchableOpacity>
 
                 {/* WhatsApp - Green */}
@@ -833,12 +845,15 @@ const styles = StyleSheet.create({
     padding: 12,
   },
   cloudRow: {
-    justifyContent: 'flex-start',
-    gap: 8,
+    justifyContent: 'space-around',
+    gap: 4,
+    marginBottom: 8,
   },
   cloudDotContainer: {
     alignItems: 'center',
     position: 'relative',
+    width: '30%',
+    marginBottom: 20,
   },
   cloudDotAvatar: {
     position: 'absolute',
@@ -866,14 +881,21 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     position: 'relative',
   },
-  cloudDotRing: {
+  cloudDotRingOuter: {
     position: 'absolute',
-    width: '100%',
-    height: '100%',
-    borderRadius: 60,
-    borderWidth: 4,
-    borderColor: colors.primary[400],
-    opacity: 0.6,
+    width: '120%',
+    height: '120%',
+    borderRadius: 72,
+    backgroundColor: colors.primary[300],
+    opacity: 0.3,
+  },
+  cloudDotRingMiddle: {
+    position: 'absolute',
+    width: '110%',
+    height: '110%',
+    borderRadius: 66,
+    backgroundColor: colors.primary[400],
+    opacity: 0.5,
   },
   cloudDotContent: {
     width: '100%',
@@ -914,6 +936,26 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.4,
     shadowRadius: 4,
     elevation: 4,
+  },
+  sparkleTop: {
+    position: 'absolute',
+    top: 4,
+    right: 8,
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: '#FCD34D',
+    opacity: 0.75,
+  },
+  sparkleBottom: {
+    position: 'absolute',
+    bottom: 8,
+    left: 4,
+    width: 6,
+    height: 6,
+    borderRadius: 3,
+    backgroundColor: '#FB923C',
+    opacity: 0.6,
   },
   emptyCard: {
     alignItems: 'center',
@@ -1034,10 +1076,8 @@ const styles = StyleSheet.create({
   wayCardLinkedIn: {
     backgroundColor: '#0A66C2',
   },
-  wayCardImport: {
-    backgroundColor: '#F3F4F6',
-    borderWidth: 2,
-    borderColor: colors.gray[300],
+  wayCardChatGPT: {
+    backgroundColor: '#10A37F',
   },
   wayCardWhatsApp: {
     backgroundColor: '#25D366',
