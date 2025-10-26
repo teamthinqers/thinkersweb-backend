@@ -1,7 +1,7 @@
 import { View, Text, ScrollView, StyleSheet, TouchableOpacity, RefreshControl, ActivityIndicator, Modal, TextInput, Alert, FlatList } from 'react-native';
 import { useState } from 'react';
 import { useQuery, useMutation } from '@tanstack/react-query';
-import { Feather } from '@expo/vector-icons';
+import { Feather, MaterialCommunityIcons } from '@expo/vector-icons';
 import { useAuth } from '../hooks/useAuth';
 import { Card } from '../components/Card';
 import { colors } from '../theme/colors';
@@ -181,7 +181,7 @@ export default function MyNeuraScreen() {
         {/* Stats Cards */}
         <View style={styles.statsGrid}>
           <Card style={styles.statCard} borderColor={colors.primary[500]} borderWidth={3}>
-            <Feather name="lightbulb" size={32} color={colors.primary[500]} />
+            <MaterialCommunityIcons name="lightbulb-on" size={32} color={colors.primary[500]} />
             <Text style={styles.statValue}>{stats?.thoughts || 0}</Text>
             <Text style={styles.statLabel}>Dots</Text>
           </Card>
