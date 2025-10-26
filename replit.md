@@ -10,7 +10,8 @@ DotSpark is a full-stack web application and native Android mobile app serving a
 - **Backend Integration**: Connects to same Express backend API as web app
 - **Build System**: EAS Build for APK generation (preview builds for testing, ~15 min build time)
 - **Development Approach**: Iterative feature implementation - build APKs for testing major changes
-- **Current State**: Basic navigation scaffolding complete, ready for feature-by-feature implementation matching web experience
+- **Current State**: MyNeura screen fully implemented with all 8 requirements (lightbulb icons, amber/orange theme, tabs, feed/cloud views, 5 ways to save, write mode, dot detail view)
+- **Development Focus**: **MOBILE APP ONLY** - Web app is functional and frozen, no web changes until explicitly requested. Next few days focused entirely on mobile app development.
 
 ## User Preferences
 Preferred communication style: Simple, everyday language.
