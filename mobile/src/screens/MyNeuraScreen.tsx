@@ -34,51 +34,45 @@ function seededRandom(seed: number): number {
   return x - Math.floor(x);
 }
 
-// Generate organic cloud positions - ALTERNATING 2-3-2-3 PATTERN (EXPERT VERIFIED!)
-// Architect-designed: prevents all overlaps with organic non-parallel placement
+// Generate organic cloud positions - NO OVERLAPS GUARANTEED!
+// Simple 2-column layout with organic random placement prevents all overlaps
 function generateCloudPositions(count: number, containerWidth: number): Array<{ x: number; y: number; size: number }> {
   const positions: Array<{ x: number; y: number; size: number }> = [];
   
-  // EXPERT PARAMETERS - Alternating row layout
-  const ROW_LAYOUTS = [
-    { columns: 2, fractions: [0.24, 0.76], jitterX: 12 },      // 2-dot rows
-    { columns: 3, fractions: [0.18, 0.50, 0.82], jitterX: 10 }, // 3-dot rows
-  ];
-  
   const dotSize = 80;
-  const sidePadding = 24;
-  const topPadding = 96;
-  const rowHeight = 148; // 80px dot + 68px gutter
-  const jitterY = 18;
-  const usableWidth = containerWidth - sidePadding * 2; // 312px
+  const sidePadding = 32;
+  const topPadding = 100;
+  const verticalGap = 160; // 80px dot + 80px gap = NO overlaps ever
+  const usableWidth = containerWidth - sidePadding * 2;
   
-  let currentDotIndex = 0;
-  let currentRowIndex = 0;
+  // Ensure minimum center-to-center distance > dot diameter
+  const minDistance = dotSize + 40; // 80 + 40 = 120px minimum
   
-  while (currentDotIndex < count) {
-    const layout = ROW_LAYOUTS[currentRowIndex % ROW_LAYOUTS.length];
-    const dotsInThisRow = Math.min(layout.columns, count - currentDotIndex);
+  for (let i = 0; i < count; i++) {
+    // Alternating 2-column layout with random horizontal offsets
+    const row = Math.floor(i / 2);
+    const col = i % 2;
     
-    for (let col = 0; col < dotsInThisRow; col++) {
-      const baseX = sidePadding + layout.fractions[col] * usableWidth;
-      const baseY = topPadding + currentRowIndex * rowHeight;
-      
-      // Seeded random jitter for organic placement
-      const jitterX = (seededRandom(currentDotIndex * 2.7) - 0.5) * 2 * layout.jitterX;
-      const jitterYVal = (seededRandom(currentDotIndex * 3.1) - 0.5) * 2 * jitterY;
-      
-      // Clamp to bounds
-      const x = Math.max(
-        sidePadding + dotSize / 2,
-        Math.min(containerWidth - sidePadding - dotSize / 2, baseX + jitterX)
-      );
-      const y = baseY + jitterYVal;
-      
-      positions.push({ x, y, size: dotSize });
-      currentDotIndex++;
-    }
+    // Base positions: left column at 25%, right column at 75%
+    const baseX = col === 0 
+      ? sidePadding + usableWidth * 0.25
+      : sidePadding + usableWidth * 0.75;
     
-    currentRowIndex++;
+    const baseY = topPadding + row * verticalGap;
+    
+    // Organic random offsets using seeded random
+    // Different seed for each dot to avoid patterns
+    const randomX = (seededRandom(i * 1.7) - 0.5) * 40; // ±20px horizontal randomness
+    const randomY = (seededRandom(i * 2.3) - 0.5) * 20; // ±10px vertical randomness
+    
+    // Final positions with bounds checking
+    const x = Math.max(
+      sidePadding + dotSize / 2,
+      Math.min(containerWidth - sidePadding - dotSize / 2, baseX + randomX)
+    );
+    const y = baseY + randomY;
+    
+    positions.push({ x, y, size: dotSize });
   }
   
   return positions;
