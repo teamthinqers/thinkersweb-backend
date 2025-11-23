@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "734003346827",
+    "project_id": "dotspark-4846b",
+    "storage_bucket": "dotspark-4846b.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:734003346827:android:41de8c15b441c7aff9838e",
+        "android_client_info": {
+          "package_name": "com.dotspark.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "734003346827-bjkt62p2f8amg1qpi8s4s5palmtjrcq5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAinAKGPZ6oyJfGO2317-OscVo1vo6nHo8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "734003346827-bjkt62p2f8amg1qpi8s4s5palmtjrcq5.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
