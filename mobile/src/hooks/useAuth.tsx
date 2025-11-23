@@ -34,6 +34,7 @@ interface AuthContextType {
   isLoading: boolean;
   signIn: (email: string, password: string) => Promise<void>;
   signInWithGoogle: () => Promise<void>;
+  testLogin: () => Promise<void>;
   signOut: () => Promise<void>;
 }
 
@@ -120,6 +121,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  const testLogin = async () => {
+    try {
+      const response = await api.post('/auth/test-login', {});
+      if (response.data.user) {
+        setUser(response.data.user);
+        await AsyncStorage.setItem('session', JSON.stringify(response.data));
+      }
+    } catch (error) {
+      console.error('Test login error:', error);
+      throw error;
+    }
+  };
+
   const signOut = async () => {
     try {
       await api.post('/auth/logout');
@@ -131,7 +145,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, isLoading, signIn, signInWithGoogle, signOut }}>
+    <AuthContext.Provider value={{ user, isLoading, signIn, signInWithGoogle, testLogin, signOut }}>
       {children}
     </AuthContext.Provider>
   );

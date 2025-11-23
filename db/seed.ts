@@ -176,6 +176,29 @@ async function seed() {
       }
     }
 
+    // Test user for mobile testing
+    console.log("Creating test user...");
+    const testUserExists = await db.query.users.findFirst({
+      where: eq(schema.users.email, "test@dotspark.app"),
+    });
+
+    if (!testUserExists) {
+      const [testUser] = await db.insert(schema.users).values({
+        email: "test@dotspark.app",
+        fullName: "Test DotSpark",
+        username: "test-dotspark",
+        dotSparkActivated: true,
+        dotSparkActivatedAt: new Date(),
+      }).returning();
+
+      // Create cognitive identity for test user
+      if (testUser) {
+        await db.insert(schema.cognitiveIdentity).values({
+          userId: testUser.id,
+        });
+      }
+    }
+
     // Thoughts seeding - for grid demonstration
     console.log("Creating thoughts...");
     const thoughtsData = [

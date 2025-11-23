@@ -96,6 +96,54 @@ export async function registerRoutes(app: Express): Promise<Server> {
     res.status(200).json({ status: 'ok', time: new Date().toISOString() });
   });
 
+  // Test login endpoint for mobile development
+  app.post('/api/auth/test-login', async (req: AuthenticatedRequest, res: Response) => {
+    try {
+      // Find test user
+      const testUser = await db.query.users.findFirst({
+        where: eq(users.email, "test@dotspark.app"),
+      });
+
+      if (!testUser) {
+        return res.status(404).json({ error: 'Test user not found. Run npm run db:seed first.' });
+      }
+
+      // Create session
+      req.session.userId = testUser.id;
+      req.session.user = {
+        id: testUser.id,
+        email: testUser.email,
+        fullName: testUser.fullName || '',
+        username: testUser.username || '',
+        avatar: testUser.avatar || '',
+        linkedinHeadline: testUser.linkedinHeadline || '',
+        linkedinProfileUrl: testUser.linkedinProfileUrl || '',
+        linkedinPhotoUrl: testUser.linkedinPhotoUrl || '',
+        bio: testUser.bio || '',
+      };
+
+      await new Promise<void>((resolve, reject) => {
+        req.session.save((err) => {
+          if (err) reject(err);
+          else resolve();
+        });
+      });
+
+      res.json({
+        success: true,
+        user: {
+          id: testUser.id,
+          email: testUser.email,
+          fullName: testUser.fullName,
+          avatar: testUser.avatar,
+        },
+      });
+    } catch (error) {
+      console.error('Test login error:', error);
+      res.status(500).json({ error: 'Test login failed' });
+    }
+  });
+
   // Setup authentication middleware
   setupNewAuth(app);
   
