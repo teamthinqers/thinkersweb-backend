@@ -9,10 +9,10 @@ async function seed() {
     // Categories seeding
     console.log("Creating categories...");
     const categories = [
-      { name: "Professional", color: "#6366f1", description: "Professional development and career" },
-      { name: "Personal", color: "#8b5cf6", description: "Personal growth and relationships" },
-      { name: "Health", color: "#10b981", description: "Health and wellness" },
-      { name: "Finance", color: "#f59e0b", description: "Financial planning and management" },
+      { name: "Professional", color: "#6366f1" },
+      { name: "Personal", color: "#8b5cf6" },
+      { name: "Health", color: "#10b981" },
+      { name: "Finance", color: "#f59e0b" },
     ];
 
     for (const category of categories) {
