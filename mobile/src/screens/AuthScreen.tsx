@@ -114,22 +114,6 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: '600',
   },
-  demoButton: {
-    backgroundColor: '#fff',
-    paddingVertical: 16,
-    paddingHorizontal: 32,
-    borderRadius: 12,
-    width: '100%',
-    alignItems: 'center',
-    marginTop: 12,
-    borderWidth: 2,
-    borderColor: '#f59e0b',
-  },
-  demoButtonText: {
-    color: '#f59e0b',
-    fontSize: 18,
-    fontWeight: '600',
-  },
   input: {
     backgroundColor: '#f9fafb',
     borderWidth: 1,
