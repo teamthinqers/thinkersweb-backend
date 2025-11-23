@@ -249,6 +249,112 @@ export function setupNewAuth(app: Express) {
     }
   });
 
+  // POST /api/auth/firebase - Mobile Firebase authentication (alias for /auth/login)
+  app.post("/api/auth/firebase", async (req: Request, res: Response) => {
+    // Forward to /auth/login which handles Firebase tokens
+    try {
+      console.log("🔐 Firebase endpoint called from mobile");
+      const { idToken, uid, email, displayName, photoURL } = req.body;
+      
+      if (!idToken) {
+        return res.status(400).json({ error: "idToken is required" });
+      }
+
+      // Call the same login logic with just idToken
+      req.body = { idToken };
+      
+      // Verify the Firebase ID token using Firebase Admin
+      let decodedToken;
+      try {
+        decodedToken = await admin.auth().verifyIdToken(idToken);
+      } catch (error) {
+        console.error("❌ Token verification failed:", error);
+        return res.status(401).json({ error: "Invalid or expired Firebase token" });
+      }
+
+      const { uid: firebaseUid, email: firebaseEmail, name: displayNameDecoded, picture: photoURLDecoded } = decodedToken;
+      
+      if (!firebaseUid || !firebaseEmail) {
+        return res.status(400).json({ error: "Invalid token data" });
+      }
+
+      console.log(`✅ Token verified for Firebase UID: ${firebaseUid.substring(0, 8)}...`);
+
+      // Find or create user
+      let user = await getUserByFirebaseUid(firebaseUid);
+      let isNewUser = false;
+
+      if (!user) {
+        user = await getUserByEmail(firebaseEmail);
+        
+        if (user) {
+          // Link Firebase UID to existing user
+          await db.execute(sql`
+            UPDATE users 
+            SET firebase_uid = ${firebaseUid}, 
+                full_name_old = ${displayNameDecoded || user.full_name_old},
+                avatar = ${photoURLDecoded || user.avatar},
+                updated_at = NOW()
+            WHERE id = ${user.id}
+            RETURNING *
+          `);
+          console.log(`✅ Linked Firebase UID to existing user: ${user.username}`);
+        } else {
+          // Create new user
+          isNewUser = true;
+          const username = await generateUniqueUsername(displayNameDecoded, firebaseEmail);
+          const randomPassword = randomBytes(16).toString('hex') + '.' + randomBytes(16).toString('hex');
+          
+          const result = await db.execute(sql`
+            INSERT INTO users (username, email, hashed_password, firebase_uid, full_name_old, avatar, dotspark_activated)
+            VALUES (${username}, ${firebaseEmail}, ${randomPassword}, ${firebaseUid}, ${displayNameDecoded || username}, ${photoURLDecoded}, true)
+            RETURNING *
+          `);
+          
+          user = result.rows[0];
+          console.log(`✅ Created new user: ${username}`);
+        }
+      }
+
+      // Create session
+      req.session.userId = user.id;
+      req.session.firebaseUid = firebaseUid;
+
+      const sessionUser: SessionUser = {
+        id: user.id,
+        username: user.username,
+        email: user.email,
+        firebaseUid: user.firebase_uid,
+        fullName: user.full_name_old || displayNameDecoded || user.username,
+        avatarUrl: user.avatar || photoURLDecoded,
+        avatar: user.avatar,
+        linkedinPhotoUrl: user.linkedin_photo_url,
+        linkedinId: user.linkedin_id,
+        linkedinHeadline: user.linkedin_headline,
+        linkedinProfileUrl: user.linkedin_profile_url,
+        createdAt: new Date(user.created_at || Date.now()),
+        updatedAt: new Date(user.updated_at || Date.now()),
+      };
+
+      req.user = sessionUser;
+
+      // Save session
+      req.session.save((err) => {
+        if (err) {
+          console.error("Session save error:", err);
+          return res.status(500).json({ error: "Failed to save session" });
+        }
+        
+        console.log(`✅ Session created for user ${user.id}`);
+        res.status(isNewUser ? 201 : 200).json({ user: sessionUser, isNewUser });
+      });
+
+    } catch (error: any) {
+      console.error("❌ FIREBASE AUTH ERROR:", error);
+      res.status(500).json({ error: "Authentication failed", message: error.message });
+    }
+  });
+
   // POST /api/auth/login - Exchange Firebase ID token for session OR email/password for testing
   app.post("/api/auth/login", async (req: Request, res: Response) => {
     try {
