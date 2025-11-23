@@ -1,23 +1,9 @@
-import { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useAuth } from '../hooks/useAuth';
 
 export default function AuthScreen() {
-  const { signInWithGoogle, signIn } = useAuth();
-  const [isLoading, setIsLoading] = useState(false);
+  const { signInWithGoogle } = useAuth();
 
-  const handleDemoLogin = async () => {
-    setIsLoading(true);
-    try {
-      // Login with existing test account from database
-      await signIn('test1@example.com', 'demo123');
-    } catch (error) {
-      console.error('Demo login failed:', error);
-      alert('Demo login failed. Please try again or use Google Sign-In.');
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
   return (
     <View style={styles.container}>
@@ -46,20 +32,6 @@ export default function AuthScreen() {
           activeOpacity={0.8}
         >
           <Text style={styles.googleButtonText}>Sign in with Google</Text>
-        </TouchableOpacity>
-
-        {/* Demo Test Account Button */}
-        <TouchableOpacity
-          style={styles.demoButton}
-          onPress={handleDemoLogin}
-          activeOpacity={0.8}
-          disabled={isLoading}
-        >
-          {isLoading ? (
-            <ActivityIndicator color="#f59e0b" />
-          ) : (
-            <Text style={styles.demoButtonText}>Login with Test Account</Text>
-          )}
         </TouchableOpacity>
 
         {/* Footer */}
