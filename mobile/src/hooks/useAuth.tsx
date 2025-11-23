@@ -46,6 +46,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [request, response, promptAsync] = Google.useAuthRequest({
     clientId: '950717649313-u2g0fqisd3gqg8ltq45f8u2oj2j70sqp.apps.googleusercontent.com',
     webClientId: '950717649313-u2g0fqisd3gqg8ltq45f8u2oj2j70sqp.apps.googleusercontent.com',
+    isOffline: true,
+    scopes: ['profile', 'email'],
   });
 
   useEffect(() => {
