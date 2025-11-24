@@ -343,18 +343,16 @@ export default function MyNeuraScreen() {
                 <View style={styles.viewModeHeader}>
                   <View style={styles.viewModeTabs}>
                     <TouchableOpacity
-                      style={styles.viewModeTab}
+                      style={[styles.viewModeTab, viewMode === 'cloud' && styles.viewModeTabIndicator]}
                       onPress={() => setViewMode('cloud')}
                     >
                       <Text style={[styles.viewModeTabText, viewMode !== 'cloud' && styles.viewModeTabTextInactive]}>Cloud</Text>
-                      {viewMode === 'cloud' && <View style={styles.viewModeTabIndicator} />}
                     </TouchableOpacity>
                     <TouchableOpacity
-                      style={styles.viewModeTab}
+                      style={[styles.viewModeTab, viewMode === 'feed' && styles.viewModeTabIndicator]}
                       onPress={() => setViewMode('feed')}
                     >
                       <Text style={[styles.viewModeTabText, viewMode !== 'feed' && styles.viewModeTabTextInactive]}>Feed</Text>
-                      {viewMode === 'feed' && <View style={styles.viewModeTabIndicator} />}
                     </TouchableOpacity>
                   </View>
                   
@@ -389,18 +387,16 @@ export default function MyNeuraScreen() {
                 <View style={styles.viewModeHeader}>
                   <View style={styles.viewModeTabs}>
                     <TouchableOpacity
-                      style={styles.viewModeTab}
+                      style={[styles.viewModeTab, viewMode === 'cloud' && styles.viewModeTabIndicator]}
                       onPress={() => setViewMode('cloud')}
                     >
                       <Text style={[styles.viewModeTabText, viewMode !== 'cloud' && styles.viewModeTabTextInactive]}>Cloud</Text>
-                      {viewMode === 'cloud' && <View style={styles.viewModeTabIndicator} />}
                     </TouchableOpacity>
                     <TouchableOpacity
-                      style={styles.viewModeTab}
+                      style={[styles.viewModeTab, viewMode === 'feed' && styles.viewModeTabIndicator]}
                       onPress={() => setViewMode('feed')}
                     >
                       <Text style={[styles.viewModeTabText, viewMode !== 'feed' && styles.viewModeTabTextInactive]}>Feed</Text>
-                      {viewMode === 'feed' && <View style={styles.viewModeTabIndicator} />}
                     </TouchableOpacity>
                   </View>
                   
@@ -1045,6 +1041,8 @@ const styles = StyleSheet.create({
   viewModeTab: {
     paddingVertical: 12,
     paddingHorizontal: 4,
+    borderBottomWidth: 3,
+    borderBottomColor: 'transparent',
   },
   viewModeTabText: {
     fontSize: 14,
@@ -1056,12 +1054,7 @@ const styles = StyleSheet.create({
     color: colors.gray[600],
   },
   viewModeTabIndicator: {
-    position: 'absolute',
-    bottom: -1,
-    left: 0,
-    right: 0,
-    height: 3,
-    backgroundColor: colors.primary[600],
+    borderBottomColor: colors.primary[600],
   },
   cloudActionButtons: {
     flexDirection: 'row',
