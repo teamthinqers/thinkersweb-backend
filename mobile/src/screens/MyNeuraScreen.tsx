@@ -29,7 +29,7 @@ type ViewMode = 'cloud' | 'feed';
 type SaveMode = 'choose' | 'write' | 'linkedin' | 'import' | 'whatsapp' | 'ai';
 
 // Grid-based cloud positioning - NO OVERLAPS GUARANTEED!
-// Fixed 2-column layout with mathematical spacing to prevent any dot touching
+// Fixed 2-column layout with proper mathematical spacing
 function generateCloudPositions(count: number, containerWidth: number): Array<{ x: number; y: number; size: number }> {
   const positions: Array<{ x: number; y: number; size: number }> = [];
   
@@ -37,9 +37,8 @@ function generateCloudPositions(count: number, containerWidth: number): Array<{ 
   const sidePadding = 20;
   const topPadding = 60;
   
-  // Guarantee no touching: use 115px center-to-center (65px diameter + 50px gap)
-  const horizontalSpacing = 140; // Gap between left and right column centers
-  const verticalSpacing = 140;   // Gap between rows (guarantees no vertical touching)
+  // SAFE MATH: 65px dot + 45px gap = 110px minimum, use 170px for clear separation
+  const verticalSpacing = 170;   // Guaranteed no vertical touching
   
   // Calculate column positions
   const usableWidth = containerWidth - sidePadding * 2;
@@ -50,7 +49,7 @@ function generateCloudPositions(count: number, containerWidth: number): Array<{ 
     const row = Math.floor(i / 2);
     const col = i % 2;
     
-    // Fixed grid positions - NO random offsets
+    // Fixed grid - no randomness, no touching
     const x = col === 0 ? leftColumnX : rightColumnX;
     const y = topPadding + row * verticalSpacing;
     
