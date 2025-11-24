@@ -70,7 +70,9 @@ export default function MyDotSparkScreen({ navigation }: any) {
           <View style={styles.brainIconContainer}>
             <Feather name="home" size={28} color="#fff" />
           </View>
-          <Text style={styles.appHeaderTitle}>My DotSpark</Text>
+          <View style={styles.headingBg}>
+            <Text style={styles.appHeaderTitle}>My DotSpark</Text>
+          </View>
         </View>
         <View style={styles.headerRight}>
           <TouchableOpacity style={styles.standaloneIcon} onPress={() => alert('Notifications')}>
@@ -218,10 +220,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 12,
     marginBottom: 28,
-    paddingVertical: 12,
-    paddingHorizontal: 12,
-    backgroundColor: colors.primary[600],
-    borderRadius: 12,
   },
   headerLeft: {
     flexDirection: 'row',
@@ -237,9 +235,15 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 8,
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    backgroundColor: 'transparent',
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  headingBg: {
+    backgroundColor: colors.primary[600],
+    borderRadius: 12,
+    paddingVertical: 10,
+    paddingHorizontal: 16,
   },
   appHeaderTitle: {
     fontSize: typography.sizes['2xl'],
@@ -251,7 +255,7 @@ const styles = StyleSheet.create({
     width: 44,
     height: 44,
     borderRadius: 10,
-    backgroundColor: 'rgba(255, 255, 255, 0.15)',
+    backgroundColor: 'transparent',
     justifyContent: 'center',
     alignItems: 'center',
   },
