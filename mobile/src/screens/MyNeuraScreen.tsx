@@ -37,8 +37,8 @@ function generateCloudPositions(count: number, containerWidth: number): Array<{ 
   const sidePadding = 20;
   const topPadding = 60;
   
-  // 2X spacing for maximum separation
-  const verticalSpacing = 340;   // 2x the previous spacing - guaranteed no touching
+  // Spacing: dot size (65px) + half dot size gap (32.5px) = 97.5px center-to-center
+  const verticalSpacing = 97.5;   // 65px dot + 32.5px gap (half dot size)
   
   // Calculate column positions
   const usableWidth = containerWidth - sidePadding * 2;
