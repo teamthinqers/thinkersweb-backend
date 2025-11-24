@@ -39,14 +39,14 @@ function seededRandom(seed: number): number {
 function generateCloudPositions(count: number, containerWidth: number): Array<{ x: number; y: number; size: number }> {
   const positions: Array<{ x: number; y: number; size: number }> = [];
   
-  const dotSize = 80;
+  const dotSize = 65;
   const sidePadding = 32;
   const topPadding = 100;
-  const verticalGap = 160; // 80px dot + 80px gap = NO overlaps ever
+  const verticalGap = 190; // 65px dot + 125px gap = better spacing with reduced overlaps
   const usableWidth = containerWidth - sidePadding * 2;
   
   // Ensure minimum center-to-center distance > dot diameter
-  const minDistance = dotSize + 40; // 80 + 40 = 120px minimum
+  const minDistance = dotSize + 50; // 65 + 50 = 115px minimum
   
   for (let i = 0; i < count; i++) {
     // Alternating 2-column layout with random horizontal offsets
@@ -62,8 +62,8 @@ function generateCloudPositions(count: number, containerWidth: number): Array<{ 
     
     // Organic random offsets using seeded random
     // Different seed for each dot to avoid patterns
-    const randomX = (seededRandom(i * 1.7) - 0.5) * 40; // ±20px horizontal randomness
-    const randomY = (seededRandom(i * 2.3) - 0.5) * 20; // ±10px vertical randomness
+    const randomX = (seededRandom(i * 1.7) - 0.5) * 30; // ±15px horizontal randomness
+    const randomY = (seededRandom(i * 2.3) - 0.5) * 15; // ±7.5px vertical randomness
     
     // Final positions with bounds checking
     const x = Math.max(
@@ -233,7 +233,7 @@ export default function MyNeuraScreen() {
     };
     
     return (
-      <View style={[styles.cloudDotContainer, { width: dotSize, height: dotSize, margin: 12 }]}>
+      <View style={[styles.cloudDotContainer, { width: dotSize, height: dotSize, margin: 16 }]}>
         {/* Avatar on top */}
         <View style={styles.cloudDotAvatar}>
           <View style={styles.avatarCircle}>
