@@ -327,28 +327,6 @@ export default function MyNeuraScreen() {
         {/* Content */}
         {selectedTab === 'myneura' ? (
           <View style={styles.content}>
-            {/* View Mode Toggle with Fullscreen */}
-            <View style={styles.viewToggleRow}>
-              <View style={styles.viewToggle}>
-                <TouchableOpacity
-                  style={[styles.toggleButton, viewMode === 'cloud' && styles.toggleButtonActive]}
-                  onPress={() => setViewMode('cloud')}
-                >
-                  <Text style={[styles.toggleButtonText, viewMode === 'cloud' && styles.toggleButtonTextActive]}>
-                    Cloud
-                  </Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={[styles.toggleButton, viewMode === 'feed' && styles.toggleButtonActive]}
-                  onPress={() => setViewMode('feed')}
-                >
-                  <Text style={[styles.toggleButtonText, viewMode === 'feed' && styles.toggleButtonTextActive]}>
-                    Feed
-                  </Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-
             {thoughts.length === 0 ? (
               <Card style={styles.emptyCard}>
                 <Feather name="message-circle" size={48} color={colors.gray[300]} />
@@ -361,8 +339,23 @@ export default function MyNeuraScreen() {
               </Card>
             ) : viewMode === 'feed' ? (
               <>
-                {/* Action buttons for feed view */}
+                {/* Action buttons + toggle for feed view */}
                 <View style={styles.cloudActionButtons}>
+                  <View style={styles.compactToggle}>
+                    <TouchableOpacity
+                      style={[styles.compactToggleButton, viewMode === 'cloud' && styles.compactToggleButtonActive]}
+                      onPress={() => setViewMode('cloud')}
+                    >
+                      <Text style={[styles.compactToggleButtonText, viewMode === 'cloud' && styles.compactToggleButtonTextActive]}>Cloud</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      style={[styles.compactToggleButton, viewMode === 'feed' && styles.compactToggleButtonActive]}
+                      onPress={() => setViewMode('feed')}
+                    >
+                      <Text style={[styles.compactToggleButtonText, viewMode === 'feed' && styles.compactToggleButtonTextActive]}>Feed</Text>
+                    </TouchableOpacity>
+                  </View>
+                  
                   <TouchableOpacity
                     style={styles.cloudActionButton}
                     onPress={onRefresh}
@@ -388,8 +381,23 @@ export default function MyNeuraScreen() {
               </>
             ) : (
               <View style={styles.cloudContainerOrganic}>
-                {/* Action buttons row at top (Refresh + Plus only) */}
+                {/* Action buttons + toggle for cloud view */}
                 <View style={styles.cloudActionButtons}>
+                  <View style={styles.compactToggle}>
+                    <TouchableOpacity
+                      style={[styles.compactToggleButton, viewMode === 'cloud' && styles.compactToggleButtonActive]}
+                      onPress={() => setViewMode('cloud')}
+                    >
+                      <Text style={[styles.compactToggleButtonText, viewMode === 'cloud' && styles.compactToggleButtonTextActive]}>Cloud</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      style={[styles.compactToggleButton, viewMode === 'feed' && styles.compactToggleButtonActive]}
+                      onPress={() => setViewMode('feed')}
+                    >
+                      <Text style={[styles.compactToggleButtonText, viewMode === 'feed' && styles.compactToggleButtonTextActive]}>Feed</Text>
+                    </TouchableOpacity>
+                  </View>
+                  
                   <TouchableOpacity
                     style={styles.cloudActionButton}
                     onPress={onRefresh}
