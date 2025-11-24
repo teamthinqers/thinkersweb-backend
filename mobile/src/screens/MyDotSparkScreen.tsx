@@ -74,10 +74,10 @@ export default function MyDotSparkScreen({ navigation }: any) {
         </View>
         <View style={styles.headerRight}>
           <TouchableOpacity style={styles.bellIcon} onPress={() => alert('Notifications')}>
-            <MaterialCommunityIcons name="bell" size={20} color="#fbbf24" />
+            <MaterialCommunityIcons name="bell" size={22} color="#F59E0B" />
           </TouchableOpacity>
           <TouchableOpacity style={styles.hamburgerIcon} onPress={() => alert('Menu')}>
-            <Feather name="menu" size={22} color="#fff" />
+            <Feather name="menu" size={24} color="#F3F4F6" />
           </TouchableOpacity>
         </View>
       </View>
@@ -258,31 +258,31 @@ const styles = StyleSheet.create({
     width: 46,
     height: 46,
     borderRadius: 12,
-    backgroundColor: 'rgba(251, 191, 36, 0.12)',
+    backgroundColor: '#FCD34D',
     justifyContent: 'center',
     alignItems: 'center',
-    borderWidth: 1.5,
-    borderColor: 'rgba(251, 191, 36, 0.3)',
-    shadowColor: '#fbbf24',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
-    elevation: 3,
+    borderWidth: 2,
+    borderColor: '#F59E0B',
+    shadowColor: '#F59E0B',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.4,
+    shadowRadius: 6,
+    elevation: 5,
   },
   hamburgerIcon: {
     width: 46,
     height: 46,
     borderRadius: 12,
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    backgroundColor: '#1F2937',
     justifyContent: 'center',
     alignItems: 'center',
-    borderWidth: 1.5,
-    borderColor: 'rgba(255, 255, 255, 0.2)',
+    borderWidth: 2,
+    borderColor: '#374151',
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.15,
-    shadowRadius: 4,
-    elevation: 3,
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.3,
+    shadowRadius: 6,
+    elevation: 4,
   },
   profileSection: {
     marginBottom: 16,
