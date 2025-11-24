@@ -2,7 +2,7 @@ import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useAuth } from '../hooks/useAuth';
 
 export default function AuthScreen() {
-  const { signInWithGoogle } = useAuth();
+  const { signInWithGoogle, testLogin } = useAuth();
 
 
   return (
@@ -32,6 +32,15 @@ export default function AuthScreen() {
           activeOpacity={0.8}
         >
           <Text style={styles.googleButtonText}>Sign in with Google</Text>
+        </TouchableOpacity>
+
+        {/* Test Login Button */}
+        <TouchableOpacity
+          style={styles.testButton}
+          onPress={testLogin}
+          activeOpacity={0.8}
+        >
+          <Text style={styles.testButtonText}>Test Login (Development)</Text>
         </TouchableOpacity>
 
         {/* Footer */}
@@ -113,6 +122,20 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 18,
     fontWeight: '600',
+  },
+  testButton: {
+    backgroundColor: '#e5e7eb',
+    paddingVertical: 12,
+    paddingHorizontal: 32,
+    borderRadius: 12,
+    width: '100%',
+    alignItems: 'center',
+    marginTop: 12,
+  },
+  testButtonText: {
+    color: '#6b7280',
+    fontSize: 14,
+    fontWeight: '500',
   },
   input: {
     backgroundColor: '#f9fafb',
