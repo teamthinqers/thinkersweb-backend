@@ -57,9 +57,9 @@ function generateFullCloudPositions(count: number, containerWidth: number): Arra
   const dotSize = 65;
   const positions: Array<{ x: number; y: number; size: number }> = [];
   
-  // 2 columns only (left and right)
-  const col1X = containerWidth / 4; // Left column
-  const col2X = (3 * containerWidth) / 4; // Right column
+  // 2 columns only (left and right) - maximum horizontal spacing
+  const col1X = containerWidth * 0.15; // Far left
+  const col2X = containerWidth * 0.85; // Far right
   const verticalSpacing = 160; // Increased vertical spacing between dots
   const rowHeight = dotSize + verticalSpacing; // Total vertical space per row
   
