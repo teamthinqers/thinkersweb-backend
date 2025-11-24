@@ -89,4 +89,49 @@ export const gradients = {
   cognitive: ['#fbbf24', '#f59e0b'], // Light to medium amber
   neural: ['#7c3aed', '#a855f7'], // Purple gradient
   social: ['#ea580c', '#dc2626'], // Orange to red
+  card: ['rgba(255, 255, 255, 0.95)', 'rgba(245, 158, 11, 0.05)'], // Subtle gradient
+};
+
+// Premium spacing system
+export const spacing = {
+  xs: 4,
+  sm: 8,
+  md: 12,
+  lg: 16,
+  xl: 20,
+  '2xl': 24,
+  '3xl': 32,
+  '4xl': 40,
+};
+
+// Premium shadow system
+export const shadows = {
+  sm: {
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 2,
+    elevation: 1,
+  },
+  md: {
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 3,
+  },
+  lg: {
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.12,
+    shadowRadius: 16,
+    elevation: 5,
+  },
+  xl: {
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 12 },
+    shadowOpacity: 0.15,
+    shadowRadius: 24,
+    elevation: 8,
+  },
 };
