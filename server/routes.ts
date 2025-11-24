@@ -109,25 +109,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       // Create session
-      req.session.userId = testUser.id;
-      req.session.user = {
-        id: testUser.id,
-        email: testUser.email,
-        fullName: testUser.fullName || '',
-        username: testUser.username || '',
-        avatar: testUser.avatar || '',
-        linkedinHeadline: testUser.linkedinHeadline || '',
-        linkedinProfileUrl: testUser.linkedinProfileUrl || '',
-        linkedinPhotoUrl: testUser.linkedinPhotoUrl || '',
-        bio: testUser.bio || '',
-      };
+      if (req.session) {
+        req.session.userId = testUser.id;
+        req.session.user = {
+          id: testUser.id,
+          email: testUser.email,
+          fullName: testUser.fullName || '',
+          username: testUser.username || '',
+          avatar: testUser.avatar || '',
+          linkedinHeadline: testUser.linkedinHeadline || '',
+          linkedinProfileUrl: testUser.linkedinProfileUrl || '',
+          linkedinPhotoUrl: testUser.linkedinPhotoUrl || '',
+          bio: testUser.bio || '',
+        };
 
-      await new Promise<void>((resolve, reject) => {
-        req.session.save((err) => {
-          if (err) reject(err);
-          else resolve();
+        await new Promise<void>((resolve, reject) => {
+          req.session!.save((err) => {
+            if (err) reject(err);
+            else resolve();
+          });
         });
-      });
+      }
 
       res.json({
         success: true,
