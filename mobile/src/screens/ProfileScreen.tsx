@@ -25,10 +25,10 @@ export default function ProfileScreen() {
           <Text style={styles.appHeaderTitle}>Account</Text>
         </View>
         <View style={styles.headerRight}>
-          <TouchableOpacity onPress={() => alert('Notifications')}>
+          <TouchableOpacity style={styles.standaloneIcon} onPress={() => alert('Notifications')}>
             <MaterialCommunityIcons name="bell" size={24} color="#fff" />
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => alert('Menu')}>
+          <TouchableOpacity style={styles.standaloneIcon} onPress={() => alert('Menu')}>
             <Feather name="menu" size={24} color="#fff" />
           </TouchableOpacity>
         </View>

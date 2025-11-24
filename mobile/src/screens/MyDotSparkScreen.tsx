@@ -73,10 +73,10 @@ export default function MyDotSparkScreen({ navigation }: any) {
           <Text style={styles.appHeaderTitle}>My DotSpark</Text>
         </View>
         <View style={styles.headerRight}>
-          <TouchableOpacity onPress={() => alert('Notifications')}>
+          <TouchableOpacity style={styles.standaloneIcon} onPress={() => alert('Notifications')}>
             <MaterialCommunityIcons name="bell" size={24} color="#fff" />
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => alert('Menu')}>
+          <TouchableOpacity style={styles.standaloneIcon} onPress={() => alert('Menu')}>
             <Feather name="menu" size={24} color="#fff" />
           </TouchableOpacity>
         </View>
@@ -246,6 +246,14 @@ const styles = StyleSheet.create({
     fontWeight: typography.weights.bold,
     color: '#fff',
     letterSpacing: 0.5,
+  },
+  standaloneIcon: {
+    width: 44,
+    height: 44,
+    borderRadius: 10,
+    backgroundColor: 'rgba(255, 255, 255, 0.15)',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   profileSection: {
     marginBottom: 16,
