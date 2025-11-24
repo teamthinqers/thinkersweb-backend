@@ -34,22 +34,24 @@ function generateCloudPositions(count: number, containerWidth: number): Array<{ 
   const positions: Array<{ x: number; y: number; size: number }> = [];
   
   const dotSize = 65;
-  const sidePadding = 20;
+  const dotRadius = dotSize / 2;  // 32.5px
+  const halfDotGap = dotSize / 2; // 32.5px
   const topPadding = 60;
   
   // Spacing: dot size (65px) + half dot size gap (32.5px) = 97.5px center-to-center
   const verticalSpacing = 97.5;   // 65px dot + 32.5px gap (half dot size)
   
-  // Calculate column positions
-  const usableWidth = containerWidth - sidePadding * 2;
-  const leftColumnX = sidePadding + usableWidth * 0.25;
-  const rightColumnX = sidePadding + usableWidth * 0.75;
+  // Center the 2-column grid
+  const centerX = containerWidth / 2;
+  const horizontalGapFromCenter = dotRadius + (halfDotGap / 2); // 32.5 + 16.25 = 48.75px
+  const leftColumnX = centerX - horizontalGapFromCenter;
+  const rightColumnX = centerX + horizontalGapFromCenter;
   
   for (let i = 0; i < count; i++) {
     const row = Math.floor(i / 2);
     const col = i % 2;
     
-    // Fixed grid - no randomness, no touching
+    // Fixed grid - centered columns with proper spacing
     const x = col === 0 ? leftColumnX : rightColumnX;
     const y = topPadding + row * verticalSpacing;
     
