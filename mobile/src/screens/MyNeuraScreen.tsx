@@ -28,36 +28,38 @@ interface Thought {
 type ViewMode = 'cloud' | 'feed';
 type SaveMode = 'choose' | 'write' | 'linkedin' | 'import' | 'whatsapp' | 'ai';
 
-// Simple 2-column grid - guaranteed no overlaps
-// Fixed positioning with mathematical precision
-function generateCloudPositions(count: number, containerWidth: number, containerHeight: number = 2000): Array<{ x: number; y: number; size: number }> {
+// 360-degree circular cloud layout
+// Dots arranged in concentric circles with organic scatter
+function generateCloudPositions(count: number, containerWidth: number, containerHeight: number = 360): Array<{ x: number; y: number; size: number }> {
   const positions: Array<{ x: number; y: number; size: number }> = [];
   
   const dotSize = 65;
-  const gap = 32.5; // Gap between dots
-  const verticalSpacing = dotSize + gap; // 97.5px vertical center-to-center
-  const horizontalSpacing = dotSize + gap; // 97.5px horizontal center-to-center
+  const minRadius = 20; // Distance from center to start placing dots
+  const maxRadius = Math.min(containerWidth, containerHeight) / 2 - dotSize;
   
-  // Calculate exact column positions centered in container
-  const totalWidth = dotSize + gap + dotSize; // 162.5px for 2 dots + gap
-  const leftMargin = (containerWidth - totalWidth) / 2;
-  const col1X = leftMargin + dotSize / 2;
-  const col2X = col1X + horizontalSpacing;
+  // Center of the cloud
+  const centerX = containerWidth / 2;
+  const centerY = containerHeight / 2;
   
-  const topMargin = 30;
-  
-  // Simple row-by-row placement
+  // Place dots in circular pattern with varying radius for organic cloud appearance
   for (let i = 0; i < count; i++) {
-    const row = Math.floor(i / 2);
-    const col = i % 2;
+    // Spread dots evenly around 360 degrees
+    const angle = (i / Math.max(count, 1)) * Math.PI * 2;
     
-    const x = col === 0 ? col1X : col2X;
-    const y = topMargin + row * verticalSpacing;
+    // Vary radius to create organic cloud (some dots closer, some farther)
+    // Use seed-based variation for consistent results
+    const radiusVariation = Math.sin(angle * 2.5) * 0.3 + 0.7;
+    const radius = minRadius + (maxRadius - minRadius) * radiusVariation;
+    
+    // Convert polar to Cartesian coordinates
+    const x = centerX + radius * Math.cos(angle);
+    const y = centerY + radius * Math.sin(angle);
     
     // Clamp to container bounds
-    if (y < containerHeight) {
-      positions.push({ x, y, size: dotSize });
-    }
+    const clampedX = Math.max(dotSize / 2, Math.min(containerWidth - dotSize / 2, x));
+    const clampedY = Math.max(dotSize / 2, Math.min(containerHeight - dotSize / 2, y));
+    
+    positions.push({ x: clampedX, y: clampedY, size: dotSize });
   }
   
   return positions;
@@ -422,20 +424,18 @@ export default function MyNeuraScreen() {
                 </View>
                 
                 {/* Fixed-height scrollable cloud */}
-                <ScrollView style={styles.cloudScrollView} showsVerticalScrollIndicator={false}>
-                  <View style={styles.cloudCanvas}>
-                    {generateCloudPositions(5, 360, 600).map((position, index) => {
-                      const item = thoughts[index];
-                      if (!item) return null;
-                      const dotSize = 65;
-                      return (
-                        <View key={item.id} style={{ position: 'absolute', left: position.x - dotSize / 2, top: position.y - dotSize / 2 }}>
-                          {renderCloudDot({ item })}
-                        </View>
-                      );
-                    })}
-                  </View>
-                </ScrollView>
+                <View style={styles.cloudCanvas}>
+                  {generateCloudPositions(5, 360, 360).map((position, index) => {
+                    const item = thoughts[index];
+                    if (!item) return null;
+                    const dotSize = 65;
+                    return (
+                      <View key={item.id} style={{ position: 'absolute', left: position.x - dotSize / 2, top: position.y - dotSize / 2 }}>
+                        {renderCloudDot({ item })}
+                      </View>
+                    );
+                  })}
+                </View>
                 
                 {/* Fullscreen icon bottom-right */}
                 <TouchableOpacity
@@ -800,9 +800,9 @@ export default function MyNeuraScreen() {
               <Feather name="minimize-2" size={24} color={colors.primary[600]} />
             </TouchableOpacity>
           </View>
-          <ScrollView style={styles.fullscreenCloudScroll} showsVerticalScrollIndicator={false}>
-            <View style={{ position: 'relative', width: '100%', minHeight: 3000 }}>
-              {generateCloudPositions(thoughts.length, 360, 3000).map((position, index) => {
+          <ScrollView style={styles.fullscreenCloudScroll} showsVerticalScrollIndicator={false} contentContainerStyle={{ alignItems: 'center', paddingVertical: 40 }}>
+            <View style={{ position: 'relative', width: 800, height: 800 }}>
+              {generateCloudPositions(thoughts.length, 800, 800).map((position, index) => {
                 const item = thoughts[index];
                 if (!item) return null;
                 const dotSize = 65;
@@ -1006,8 +1006,10 @@ const styles = StyleSheet.create({
   },
   cloudCanvas: {
     position: 'relative',
-    minHeight: 2000, // Expandable canvas for all dots
-    width: '100%',
+    width: 360,
+    height: 360,
+    alignSelf: 'center',
+    marginVertical: 20,
   },
   fullscreenButton: {
     position: 'absolute',
