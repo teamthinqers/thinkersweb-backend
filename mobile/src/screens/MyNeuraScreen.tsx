@@ -28,38 +28,60 @@ interface Thought {
 type ViewMode = 'cloud' | 'feed';
 type SaveMode = 'choose' | 'write' | 'linkedin' | 'import' | 'whatsapp' | 'ai';
 
-// Grid-cell cloud layout - guarantees no overlaps
-// Divides container into cells, places one dot per cell with slight randomization
-function generateCloudPositions(count: number, containerWidth: number, containerHeight: number = 600): Array<{ x: number; y: number; size: number }> {
+// Home cloud: 4 dots in 2x2 grid, well distributed
+function generateHomeCloudPositions(containerWidth: number): Array<{ x: number; y: number; size: number }> {
+  const dotSize = 65;
+  const spacing = 60; // Spacing between dots
   const positions: Array<{ x: number; y: number; size: number }> = [];
   
-  const dotSize = 65;
-  const cellSize = 100; // Size of each grid cell
+  // 2x2 grid - 4 dots
+  // Calculate positions for even distribution
+  const totalWidth = 2 * dotSize + spacing;
+  const leftMargin = (containerWidth - totalWidth) / 2;
   
-  // Calculate grid dimensions
-  const cols = Math.floor(containerWidth / cellSize);
-  const rows = Math.ceil(containerHeight / cellSize);
+  const col1X = leftMargin + dotSize / 2;
+  const col2X = col1X + dotSize + spacing;
+  const row1Y = 50;
+  const row2Y = row1Y + dotSize + spacing;
+  
+  positions.push({ x: col1X, y: row1Y, size: dotSize });
+  positions.push({ x: col2X, y: row1Y, size: dotSize });
+  positions.push({ x: col1X, y: row2Y, size: dotSize });
+  positions.push({ x: col2X, y: row2Y, size: dotSize });
+  
+  return positions;
+}
+
+// Full cloud: 2 columns only (left/right), with dot-height vertical spacing
+function generateFullCloudPositions(count: number, containerWidth: number): Array<{ x: number; y: number; size: number }> {
+  const dotSize = 65;
+  const positions: Array<{ x: number; y: number; size: number }> = [];
+  
+  // 2 columns only (left and right)
+  const col1X = containerWidth / 4; // Left column
+  const col2X = (3 * containerWidth) / 4; // Right column
+  const verticalSpacing = dotSize; // One dot-height spacing between rows
+  const rowHeight = dotSize + verticalSpacing; // Total vertical space per row
   
   let dotIndex = 0;
+  let row = 0;
   
-  // Fill grid cells row by row
-  for (let row = 0; row < rows && dotIndex < count; row++) {
-    for (let col = 0; col < cols && dotIndex < count; col++) {
-      // Cell boundaries
-      const cellX = col * cellSize;
-      const cellY = row * cellSize;
-      const cellCenterX = cellX + cellSize / 2;
-      const cellCenterY = cellY + cellSize / 2;
-      
-      // Place dot at cell center (no random offset - clean grid)
-      positions.push({
-        x: cellCenterX,
-        y: cellCenterY,
-        size: dotSize
-      });
-      
+  while (dotIndex < count) {
+    const y = 40 + row * rowHeight; // Starting Y position
+    
+    // Left column
+    if (dotIndex < count) {
+      positions.push({ x: col1X, y, size: dotSize });
       dotIndex++;
     }
+    
+    // Right column
+    if (dotIndex < count) {
+      positions.push({ x: col2X, y, size: dotSize });
+      dotIndex++;
+    }
+    
+    row++;
   }
   
   return positions;
@@ -423,9 +445,9 @@ export default function MyNeuraScreen() {
                   </View>
                 </View>
                 
-                {/* Clean grid-based cloud */}
+                {/* Home cloud: 4 recent dots */}
                 <View style={styles.cloudCanvas}>
-                  {generateCloudPositions(5, 320, 400).map((position, index) => {
+                  {generateHomeCloudPositions(320).map((position, index) => {
                     const item = thoughts[index];
                     if (!item) return null;
                     const dotSize = 65;
@@ -801,8 +823,8 @@ export default function MyNeuraScreen() {
             </TouchableOpacity>
           </View>
           <ScrollView style={styles.fullscreenCloudScroll} showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingVertical: 20 }}>
-            <View style={{ position: 'relative', width: '100%', height: Math.ceil(thoughts.length / 3) * 150 }}>
-              {generateCloudPositions(thoughts.length, 320, Math.ceil(thoughts.length / 3) * 150).map((position, index) => {
+            <View style={{ position: 'relative', width: '100%', height: Math.ceil(thoughts.length / 2) * 130 + 40 }}>
+              {generateFullCloudPositions(thoughts.length, 320).map((position, index) => {
                 const item = thoughts[index];
                 if (!item) return null;
                 const dotSize = 65;
