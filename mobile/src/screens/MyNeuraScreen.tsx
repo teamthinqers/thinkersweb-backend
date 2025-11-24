@@ -1023,9 +1023,33 @@ const styles = StyleSheet.create({
   },
   cloudActionButtons: {
     flexDirection: 'row',
-    gap: 12,
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    gap: 8,
     marginBottom: 12,
-    justifyContent: 'flex-end',
+  },
+  compactToggle: {
+    flexDirection: 'row',
+    backgroundColor: colors.gray[100],
+    borderRadius: 8,
+    padding: 2,
+    gap: 2,
+  },
+  compactToggleButton: {
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    borderRadius: 6,
+  },
+  compactToggleButtonActive: {
+    backgroundColor: colors.primary[600],
+  },
+  compactToggleButtonText: {
+    fontSize: 12,
+    fontWeight: '500',
+    color: colors.gray[600],
+  },
+  compactToggleButtonTextActive: {
+    color: '#fff',
   },
   cloudActionButton: {
     backgroundColor: '#fff',
