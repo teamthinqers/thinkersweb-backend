@@ -28,39 +28,35 @@ interface Thought {
 type ViewMode = 'cloud' | 'feed';
 type SaveMode = 'choose' | 'write' | 'linkedin' | 'import' | 'whatsapp' | 'ai';
 
-// Cloud grid positioning - optimized for natural scattered layout
-// Places dots in a grid pattern then randomizes within cells for natural cloud appearance
+// Simple 2-column grid - guaranteed no overlaps
+// Fixed positioning with mathematical precision
 function generateCloudPositions(count: number, containerWidth: number, containerHeight: number = 2000): Array<{ x: number; y: number; size: number }> {
   const positions: Array<{ x: number; y: number; size: number }> = [];
   
   const dotSize = 65;
-  const gap = 32.5; // Gap between dots (half dot size)
-  const spacing = dotSize + gap; // 97.5px - total space per dot
-  const padding = 16;
+  const gap = 32.5; // Gap between dots
+  const verticalSpacing = dotSize + gap; // 97.5px vertical center-to-center
+  const horizontalSpacing = dotSize + gap; // 97.5px horizontal center-to-center
   
-  // Calculate grid
-  const availableWidth = containerWidth - padding * 2;
-  const cols = Math.floor(availableWidth / spacing);
-  const cellWidth = availableWidth / cols;
-  const cellHeight = spacing;
+  // Calculate exact column positions centered in container
+  const totalWidth = dotSize + gap + dotSize; // 162.5px for 2 dots + gap
+  const leftMargin = (containerWidth - totalWidth) / 2;
+  const col1X = leftMargin + dotSize / 2;
+  const col2X = col1X + horizontalSpacing;
   
-  // Generate positions in grid pattern
-  let dotIndex = 0;
-  for (let row = 0; row < Math.ceil(containerHeight / cellHeight) && dotIndex < count; row++) {
-    for (let col = 0; col < cols && dotIndex < count; col++) {
-      // Grid center position
-      const gridX = padding + col * cellWidth + cellWidth / 2;
-      const gridY = row * cellHeight + dotSize / 2;
-      
-      // Add slight randomness to make it look like natural cloud (±15px)
-      const randomOffsetX = (Math.random() - 0.5) * 30;
-      const randomOffsetY = (Math.random() - 0.5) * 30;
-      
-      const x = Math.max(dotSize / 2, Math.min(containerWidth - dotSize / 2, gridX + randomOffsetX));
-      const y = Math.max(dotSize / 2, Math.min(containerHeight - dotSize / 2, gridY + randomOffsetY));
-      
+  const topMargin = 30;
+  
+  // Simple row-by-row placement
+  for (let i = 0; i < count; i++) {
+    const row = Math.floor(i / 2);
+    const col = i % 2;
+    
+    const x = col === 0 ? col1X : col2X;
+    const y = topMargin + row * verticalSpacing;
+    
+    // Clamp to container bounds
+    if (y < containerHeight) {
       positions.push({ x, y, size: dotSize });
-      dotIndex++;
     }
   }
   
