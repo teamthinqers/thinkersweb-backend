@@ -303,12 +303,10 @@ export default function MyNeuraScreen() {
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={colors.primary[500]} />
         }
       >
-        {/* Compact Header with Inline Stats */}
-        <View style={styles.compactHeader}>
-          <View>
-            <Text style={styles.headerTitle}>MyNeura</Text>
-            <Text style={styles.headerSubtitle}>Your Thought Cloud</Text>
-          </View>
+        {/* Stylish MyNeura Header */}
+        <View style={styles.appHeader}>
+          <MaterialCommunityIcons name="lightbulb-on" size={32} color={colors.primary[600]} />
+          <Text style={styles.appHeaderTitle}>MyNeura</Text>
         </View>
 
         {/* Compact Stats Row */}
@@ -335,10 +333,11 @@ export default function MyNeuraScreen() {
         {/* Tab Navigation */}
         <View style={styles.tabContainer}>
           <TouchableOpacity
-            style={[styles.tab, selectedTab === 'myneura' && styles.tabActive]}
+            style={[styles.myNeuraButton]}
             onPress={() => setSelectedTab('myneura')}
           >
-            <Text style={[styles.tabText, selectedTab === 'myneura' && styles.tabTextActive]}>
+            <MaterialCommunityIcons name="lightbulb-on" size={20} color="#fff" />
+            <Text style={styles.myNeuraButtonText}>
               My Neura
             </Text>
           </TouchableOpacity>
@@ -865,6 +864,19 @@ const styles = StyleSheet.create({
   header: {
     marginBottom: 20,
   },
+  appHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    marginBottom: 28,
+    paddingVertical: 8,
+  },
+  appHeaderTitle: {
+    fontSize: typography.sizes['3xl'],
+    fontWeight: typography.weights.bold,
+    color: colors.primary[900],
+    letterSpacing: 0.5,
+  },
   headerTitle: {
     fontSize: typography.sizes['4xl'],
     fontWeight: typography.weights.bold,
@@ -952,6 +964,22 @@ const styles = StyleSheet.create({
     color: colors.gray[600],
   },
   tabTextActive: {
+    color: '#fff',
+  },
+  myNeuraButton: {
+    flex: 1,
+    flexDirection: 'row',
+    paddingVertical: 14,
+    paddingHorizontal: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 10,
+    backgroundColor: colors.primary[600],
+    gap: 10,
+  },
+  myNeuraButtonText: {
+    fontSize: typography.sizes.sm,
+    fontWeight: typography.weights.semibold,
     color: '#fff',
   },
   content: {
