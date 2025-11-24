@@ -124,7 +124,9 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   testButton: {
-    backgroundColor: '#e5e7eb',
+    backgroundColor: '#f3f4f6',
+    borderWidth: 2,
+    borderColor: '#9ca3af',
     paddingVertical: 12,
     paddingHorizontal: 32,
     borderRadius: 12,
@@ -133,9 +135,9 @@ const styles = StyleSheet.create({
     marginTop: 12,
   },
   testButtonText: {
-    color: '#6b7280',
+    color: '#374151',
     fontSize: 14,
-    fontWeight: '500',
+    fontWeight: '600',
   },
   input: {
     backgroundColor: '#f9fafb',
