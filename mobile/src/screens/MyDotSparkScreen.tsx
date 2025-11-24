@@ -220,6 +220,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 12,
     marginBottom: 28,
+    marginTop: 16,
+    paddingTop: 8,
   },
   headerLeft: {
     flexDirection: 'row',
