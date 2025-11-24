@@ -110,20 +110,18 @@ export default function ThinQCirclesScreen() {
       >
         {/* Section Header */}
         <View style={styles.appHeader}>
-          <View style={styles.headerLeft}>
+          <View style={styles.headingBg}>
             <View style={styles.brainIconContainer}>
               <Feather name="users" size={28} color="#fff" />
             </View>
-            <View style={styles.headingBg}>
-              <Text style={styles.appHeaderTitle}>Circles</Text>
-            </View>
+            <Text style={styles.appHeaderTitle}>Circles</Text>
           </View>
           <View style={styles.headerRight}>
-            <TouchableOpacity style={styles.standaloneIcon} onPress={() => alert('Notifications')}>
-              <MaterialCommunityIcons name="bell" size={24} color="#fff" />
+            <TouchableOpacity style={styles.bellIcon} onPress={() => alert('Notifications')}>
+              <MaterialCommunityIcons name="bell" size={20} color="#fbbf24" />
             </TouchableOpacity>
-            <TouchableOpacity style={styles.standaloneIcon} onPress={() => alert('Menu')}>
-              <Feather name="menu" size={24} color="#fff" />
+            <TouchableOpacity style={styles.hamburgerIcon} onPress={() => alert('Menu')}>
+              <Feather name="menu" size={22} color="#fff" />
             </TouchableOpacity>
           </View>
         </View>
@@ -337,45 +335,70 @@ const styles = StyleSheet.create({
     gap: 12,
     marginBottom: 28,
     marginTop: 16,
-    paddingTop: 8,
-  },
-  headerLeft: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 12,
+    paddingHorizontal: 4,
   },
   headerRight: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 16,
+    gap: 14,
   },
   brainIconContainer: {
-    width: 40,
-    height: 40,
+    width: 36,
+    height: 36,
     borderRadius: 8,
-    backgroundColor: 'transparent',
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
     justifyContent: 'center',
     alignItems: 'center',
   },
   headingBg: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
     backgroundColor: colors.primary[600],
-    borderRadius: 12,
-    paddingVertical: 10,
-    paddingHorizontal: 16,
+    borderRadius: 14,
+    paddingVertical: 12,
+    paddingHorizontal: 18,
+    shadowColor: colors.primary[600],
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 5,
   },
   appHeaderTitle: {
-    fontSize: typography.sizes['2xl'],
-    fontWeight: typography.weights.bold,
+    fontSize: typography.sizes.xl,
+    fontWeight: typography.weights.extrabold,
     color: '#fff',
-    letterSpacing: 0.5,
+    letterSpacing: 0.3,
   },
-  standaloneIcon: {
-    width: 44,
-    height: 44,
-    borderRadius: 10,
-    backgroundColor: 'transparent',
+  bellIcon: {
+    width: 46,
+    height: 46,
+    borderRadius: 12,
+    backgroundColor: 'rgba(251, 191, 36, 0.12)',
     justifyContent: 'center',
     alignItems: 'center',
+    borderWidth: 1.5,
+    borderColor: 'rgba(251, 191, 36, 0.3)',
+    shadowColor: '#fbbf24',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  hamburgerIcon: {
+    width: 46,
+    height: 46,
+    borderRadius: 12,
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 1.5,
+    borderColor: 'rgba(255, 255, 255, 0.2)',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.15,
+    shadowRadius: 4,
+    elevation: 3,
   },
   createButton: {
     flexDirection: 'row',
