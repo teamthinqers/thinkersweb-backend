@@ -339,36 +339,40 @@ export default function MyNeuraScreen() {
               </Card>
             ) : viewMode === 'feed' ? (
               <>
-                {/* Action buttons + toggle for feed view */}
-                <View style={styles.cloudActionButtons}>
-                  <View style={styles.compactToggle}>
+                {/* Tab navigation with underline indicator */}
+                <View style={styles.viewModeHeader}>
+                  <View style={styles.viewModeTabs}>
                     <TouchableOpacity
-                      style={[styles.compactToggleButton, viewMode === 'cloud' && styles.compactToggleButtonActive]}
+                      style={styles.viewModeTab}
                       onPress={() => setViewMode('cloud')}
                     >
-                      <Text style={[styles.compactToggleButtonText, viewMode === 'cloud' && styles.compactToggleButtonTextActive]}>Cloud</Text>
+                      <Text style={[styles.viewModeTabText, viewMode !== 'cloud' && styles.viewModeTabTextInactive]}>Cloud</Text>
+                      {viewMode === 'cloud' && <View style={styles.viewModeTabIndicator} />}
                     </TouchableOpacity>
                     <TouchableOpacity
-                      style={[styles.compactToggleButton, viewMode === 'feed' && styles.compactToggleButtonActive]}
+                      style={styles.viewModeTab}
                       onPress={() => setViewMode('feed')}
                     >
-                      <Text style={[styles.compactToggleButtonText, viewMode === 'feed' && styles.compactToggleButtonTextActive]}>Feed</Text>
+                      <Text style={[styles.viewModeTabText, viewMode !== 'feed' && styles.viewModeTabTextInactive]}>Feed</Text>
+                      {viewMode === 'feed' && <View style={styles.viewModeTabIndicator} />}
                     </TouchableOpacity>
                   </View>
                   
-                  <TouchableOpacity
-                    style={styles.cloudActionButton}
-                    onPress={onRefresh}
-                  >
-                    <Feather name="refresh-cw" size={20} color={colors.primary[600]} />
-                  </TouchableOpacity>
-                  
-                  <TouchableOpacity
-                    style={styles.cloudActionButton}
-                    onPress={() => setShowSaveModal(true)}
-                  >
-                    <Feather name="plus" size={20} color={colors.primary[600]} />
-                  </TouchableOpacity>
+                  <View style={styles.cloudActionButtons}>
+                    <TouchableOpacity
+                      style={styles.cloudActionButton}
+                      onPress={onRefresh}
+                    >
+                      <Feather name="refresh-cw" size={20} color={colors.primary[600]} />
+                    </TouchableOpacity>
+                    
+                    <TouchableOpacity
+                      style={styles.cloudActionButton}
+                      onPress={() => setShowSaveModal(true)}
+                    >
+                      <Feather name="plus" size={20} color={colors.primary[600]} />
+                    </TouchableOpacity>
+                  </View>
                 </View>
                 
                 <FlatList
@@ -381,36 +385,40 @@ export default function MyNeuraScreen() {
               </>
             ) : (
               <View style={styles.cloudContainerOrganic}>
-                {/* Action buttons + toggle for cloud view */}
-                <View style={styles.cloudActionButtons}>
-                  <View style={styles.compactToggle}>
+                {/* Tab navigation with underline indicator */}
+                <View style={styles.viewModeHeader}>
+                  <View style={styles.viewModeTabs}>
                     <TouchableOpacity
-                      style={[styles.compactToggleButton, viewMode === 'cloud' && styles.compactToggleButtonActive]}
+                      style={styles.viewModeTab}
                       onPress={() => setViewMode('cloud')}
                     >
-                      <Text style={[styles.compactToggleButtonText, viewMode === 'cloud' && styles.compactToggleButtonTextActive]}>Cloud</Text>
+                      <Text style={[styles.viewModeTabText, viewMode !== 'cloud' && styles.viewModeTabTextInactive]}>Cloud</Text>
+                      {viewMode === 'cloud' && <View style={styles.viewModeTabIndicator} />}
                     </TouchableOpacity>
                     <TouchableOpacity
-                      style={[styles.compactToggleButton, viewMode === 'feed' && styles.compactToggleButtonActive]}
+                      style={styles.viewModeTab}
                       onPress={() => setViewMode('feed')}
                     >
-                      <Text style={[styles.compactToggleButtonText, viewMode === 'feed' && styles.compactToggleButtonTextActive]}>Feed</Text>
+                      <Text style={[styles.viewModeTabText, viewMode !== 'feed' && styles.viewModeTabTextInactive]}>Feed</Text>
+                      {viewMode === 'feed' && <View style={styles.viewModeTabIndicator} />}
                     </TouchableOpacity>
                   </View>
                   
-                  <TouchableOpacity
-                    style={styles.cloudActionButton}
-                    onPress={onRefresh}
-                  >
-                    <Feather name="refresh-cw" size={20} color={colors.primary[600]} />
-                  </TouchableOpacity>
-                  
-                  <TouchableOpacity
-                    style={styles.cloudActionButton}
-                    onPress={() => setShowSaveModal(true)}
-                  >
-                    <Feather name="plus" size={20} color={colors.primary[600]} />
-                  </TouchableOpacity>
+                  <View style={styles.cloudActionButtons}>
+                    <TouchableOpacity
+                      style={styles.cloudActionButton}
+                      onPress={onRefresh}
+                    >
+                      <Feather name="refresh-cw" size={20} color={colors.primary[600]} />
+                    </TouchableOpacity>
+                    
+                    <TouchableOpacity
+                      style={styles.cloudActionButton}
+                      onPress={() => setShowSaveModal(true)}
+                    >
+                      <Feather name="plus" size={20} color={colors.primary[600]} />
+                    </TouchableOpacity>
+                  </View>
                 </View>
                 
                 {/* Fixed-height scrollable cloud */}
@@ -1021,37 +1029,44 @@ const styles = StyleSheet.create({
     width: 120,
     height: 120,
   },
-  cloudActionButtons: {
+  viewModeHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
-    gap: 8,
+    alignItems: 'flex-end',
     marginBottom: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.gray[200],
+    paddingBottom: 0,
   },
-  compactToggle: {
+  viewModeTabs: {
     flexDirection: 'row',
-    backgroundColor: colors.gray[200],
-    borderRadius: 6,
-    padding: 1,
-    gap: 1,
+    gap: 24,
   },
-  compactToggleButton: {
-    paddingVertical: 4,
-    paddingHorizontal: 10,
-    borderRadius: 5,
-    backgroundColor: 'transparent',
+  viewModeTab: {
+    paddingVertical: 12,
+    paddingHorizontal: 4,
   },
-  compactToggleButtonActive: {
+  viewModeTabText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: colors.primary[600],
+  },
+  viewModeTabTextInactive: {
+    fontWeight: '400',
+    color: colors.gray[600],
+  },
+  viewModeTabIndicator: {
+    position: 'absolute',
+    bottom: -1,
+    left: 0,
+    right: 0,
+    height: 3,
     backgroundColor: colors.primary[600],
   },
-  compactToggleButtonText: {
-    fontSize: 11,
-    fontWeight: '600',
-    color: colors.gray[700],
-  },
-  compactToggleButtonTextActive: {
-    color: '#fff',
-    fontWeight: '700',
+  cloudActionButtons: {
+    flexDirection: 'row',
+    gap: 8,
+    paddingBottom: 12,
   },
   cloudActionButton: {
     backgroundColor: '#fff',
