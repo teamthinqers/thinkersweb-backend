@@ -1,0 +1,58 @@
+[expo-cli] Starting Metro Bundler
+[expo-cli] 
+[expo-cli] iOS Bundled 40606ms node_modules/expo/AppEntry.js (957 modules)
+[expo-cli] 
+[expo-cli] Android Bundled 44770ms node_modules/expo/AppEntry.js (956 modules)
+[expo-cli] Creating asset map
+[expo-cli] Preparing additional debugging files
+[expo-cli] 
+[expo-cli] Exporting 30 assets:
+[expo-cli] node_modules/@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/AntDesign.ttf (70.3 kB)
+[expo-cli] node_modules/@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/Entypo.ttf (66.2 kB)
+[expo-cli] node_modules/@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/EvilIcons.ttf (13.5 kB)
+[expo-cli] node_modules/@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/Feather.ttf (56.2 kB)
+[expo-cli] node_modules/@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/FontAwesome.ttf (166 kB)
+[expo-cli] node_modules/@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/FontAwesome5_Brands.ttf (134 kB)
+[expo-cli] node_modules/@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/FontAwesome5_Regular.ttf (33.7 kB)
+[expo-cli] node_modules/@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/FontAwesome5_Solid.ttf (203 kB)
+[expo-cli] node_modules/@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/FontAwesome6_Brands.ttf (209 kB)
+[expo-cli] node_modules/@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/FontAwesome6_Regular.ttf (68 kB)
+[expo-cli] node_modules/@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/FontAwesome6_Solid.ttf (424 kB)
+[expo-cli] node_modules/@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/Fontisto.ttf (314 kB)
+[expo-cli] node_modules/@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/Foundation.ttf (57 kB)
+[expo-cli] node_modules/@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/Ionicons.ttf (443 kB)
+[expo-cli] node_modules/@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/MaterialCommunityIcons.ttf (1.15 MB)
+[expo-cli] node_modules/@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/MaterialIcons.ttf (357 kB)
+[expo-cli] node_modules/@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/Octicons.ttf (49.4 kB)
+[expo-cli] node_modules/@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/SimpleLineIcons.ttf (54.1 kB)
+[expo-cli] node_modules/@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/Zocial.ttf (25.8 kB)
+[expo-cli] node_modules/@react-navigation/elements/src/assets/back-icon-mask.png (913 B)
+[expo-cli] node_modules/@react-navigation/elements/src/assets/back-icon.png (10 variations | 338 B)
+[expo-cli] Exporting 2 bundles for ios:
+[expo-cli] _expo/static/js/ios/AppEntry-c0e88e0cc8eb09fb6166014245ee30d4.hbc (1.92 MB)
+[expo-cli] _expo/static/js/ios/AppEntry-c0e88e0cc8eb09fb6166014245ee30d4.hbc.map (6.34 MB)
+[expo-cli] 
+[expo-cli] Exporting 2 bundles for android:
+[expo-cli] _expo/static/js/android/AppEntry-a41dbd2f6881134ff145160f4f23621a.hbc (1.93 MB)
+[expo-cli] _expo/static/js/android/AppEntry-a41dbd2f6881134ff145160f4f23621a.hbc.map (6.37 MB)
+[expo-cli] Exporting 3 files:
+[expo-cli] assetmap.json (13.7 kB)
+[expo-cli] debug.html (396 B)
+[expo-cli] metadata.json (3.4 kB)
+[expo-cli] 
+[expo-cli] App exported to: dist
+✔ Exported bundle(s)
+✔ Uploaded assetmap.json 
+✔ Uploaded 2 app bundles
+✔ Uploading assets skipped - no new assets found
+ℹ 26 iOS assets, 26 Android assets (maximum: 2000 total per update). Learn more about asset limits: https://expo.fyi/eas-update-asset-limits
+✔ Published!
+Branch             preview
+Runtime version    1.0.0
+Platform           android, ios
+Update group ID    6ce43bc7-f474-4718-b5f3-0b97e8811085
+Android update ID  3b13d267-e548-4eb8-9a72-615b22aab273
+iOS update ID      625446ad-73eb-4c3d-8076-2efb45d94e94
+Message            Tab-based Cloud/Feed view
+Commit             67ef72eaea9bb1e62ee6b728e73ec2a28407b402
+EAS Dashboard      https://expo.dev/accounts/aravindhraj/projects/dotspark/updates/6ce43bc7-f474-4718-b5f3-0b97e8811085
