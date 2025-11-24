@@ -28,49 +28,31 @@ interface Thought {
 type ViewMode = 'cloud' | 'feed';
 type SaveMode = 'choose' | 'write' | 'linkedin' | 'import' | 'whatsapp' | 'ai';
 
-// Organic cloud positioning - seeded random for consistency
-function seededRandom(seed: number): number {
-  const x = Math.sin(seed) * 10000;
-  return x - Math.floor(x);
-}
-
-// Generate organic cloud positions - NO OVERLAPS GUARANTEED!
-// Simple 2-column layout with organic random placement prevents all overlaps
+// Grid-based cloud positioning - NO OVERLAPS GUARANTEED!
+// Fixed 2-column layout with mathematical spacing to prevent any dot touching
 function generateCloudPositions(count: number, containerWidth: number): Array<{ x: number; y: number; size: number }> {
   const positions: Array<{ x: number; y: number; size: number }> = [];
   
   const dotSize = 65;
-  const sidePadding = 32;
-  const topPadding = 100;
-  const verticalGap = 190; // 65px dot + 125px gap = better spacing with reduced overlaps
-  const usableWidth = containerWidth - sidePadding * 2;
+  const sidePadding = 20;
+  const topPadding = 60;
   
-  // Ensure minimum center-to-center distance > dot diameter
-  const minDistance = dotSize + 50; // 65 + 50 = 115px minimum
+  // Guarantee no touching: use 115px center-to-center (65px diameter + 50px gap)
+  const horizontalSpacing = 140; // Gap between left and right column centers
+  const verticalSpacing = 140;   // Gap between rows (guarantees no vertical touching)
+  
+  // Calculate column positions
+  const usableWidth = containerWidth - sidePadding * 2;
+  const leftColumnX = sidePadding + usableWidth * 0.25;
+  const rightColumnX = sidePadding + usableWidth * 0.75;
   
   for (let i = 0; i < count; i++) {
-    // Alternating 2-column layout with random horizontal offsets
     const row = Math.floor(i / 2);
     const col = i % 2;
     
-    // Base positions: left column at 25%, right column at 75%
-    const baseX = col === 0 
-      ? sidePadding + usableWidth * 0.25
-      : sidePadding + usableWidth * 0.75;
-    
-    const baseY = topPadding + row * verticalGap;
-    
-    // Organic random offsets using seeded random
-    // Different seed for each dot to avoid patterns
-    const randomX = (seededRandom(i * 1.7) - 0.5) * 30; // ±15px horizontal randomness
-    const randomY = (seededRandom(i * 2.3) - 0.5) * 15; // ±7.5px vertical randomness
-    
-    // Final positions with bounds checking
-    const x = Math.max(
-      sidePadding + dotSize / 2,
-      Math.min(containerWidth - sidePadding - dotSize / 2, baseX + randomX)
-    );
-    const y = baseY + randomY;
+    // Fixed grid positions - NO random offsets
+    const x = col === 0 ? leftColumnX : rightColumnX;
+    const y = topPadding + row * verticalSpacing;
     
     positions.push({ x, y, size: dotSize });
   }
@@ -430,8 +412,9 @@ export default function MyNeuraScreen() {
                     {generateCloudPositions(thoughts.length, 360).map((position, index) => {
                       const item = thoughts[index];
                       if (!item) return null;
+                      const dotSize = 65;
                       return (
-                        <View key={item.id} style={{ position: 'absolute', left: position.x - 40, top: position.y - 40 }}>
+                        <View key={item.id} style={{ position: 'absolute', left: position.x - dotSize / 2, top: position.y - dotSize / 2 }}>
                           {renderCloudDot({ item })}
                         </View>
                       );
