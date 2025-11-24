@@ -1,7 +1,7 @@
 import { View, Text, ScrollView, StyleSheet, TouchableOpacity, RefreshControl, ActivityIndicator, Linking, Modal, TextInput, Alert } from 'react-native';
 import { useState } from 'react';
 import { useQuery, useMutation } from '@tanstack/react-query';
-import { Feather } from '@expo/vector-icons';
+import { Feather, MaterialCommunityIcons } from '@expo/vector-icons';
 import { useAuth } from '../hooks/useAuth';
 import { ThoughtCard } from '../components/ThoughtCard';
 import { colors } from '../theme/colors';
@@ -145,6 +145,24 @@ export default function SocialScreen() {
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={colors.orange[600]} />
         }
       >
+        {/* Section Header */}
+        <View style={styles.appHeader}>
+          <View style={styles.headerLeft}>
+            <View style={styles.brainIconContainer}>
+              <Feather name="globe" size={28} color="#fff" />
+            </View>
+            <Text style={styles.appHeaderTitle}>Social</Text>
+          </View>
+          <View style={styles.headerRight}>
+            <TouchableOpacity onPress={() => alert('Notifications')}>
+              <MaterialCommunityIcons name="bell" size={24} color="#fff" />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => alert('Menu')}>
+              <Feather name="menu" size={24} color="#fff" />
+            </TouchableOpacity>
+          </View>
+        </View>
+
         {/* Header */}
         <View style={styles.header}>
           <View style={styles.headerTop}>

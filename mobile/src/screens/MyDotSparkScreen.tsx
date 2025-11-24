@@ -1,7 +1,7 @@
 import { View, Text, ScrollView, StyleSheet, TouchableOpacity, RefreshControl, ActivityIndicator, Alert } from 'react-native';
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { Feather } from '@expo/vector-icons';
+import { Feather, MaterialCommunityIcons } from '@expo/vector-icons';
 import { useAuth } from '../hooks/useAuth';
 import { Card } from '../components/Card';
 import { ProgressBar } from '../components/ProgressBar';
@@ -64,6 +64,24 @@ export default function MyDotSparkScreen({ navigation }: any) {
         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={colors.primary[500]} />
       }
     >
+      {/* Section Header */}
+      <View style={styles.appHeader}>
+        <View style={styles.headerLeft}>
+          <View style={styles.brainIconContainer}>
+            <Feather name="home" size={28} color="#fff" />
+          </View>
+          <Text style={styles.appHeaderTitle}>My DotSpark</Text>
+        </View>
+        <View style={styles.headerRight}>
+          <TouchableOpacity onPress={() => alert('Notifications')}>
+            <MaterialCommunityIcons name="bell" size={24} color="#fff" />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => alert('Menu')}>
+            <Feather name="menu" size={24} color="#fff" />
+          </TouchableOpacity>
+        </View>
+      </View>
+
       {/* Profile Header */}
       <View style={styles.profileSection}>
         <View style={styles.profileRow}>
@@ -193,6 +211,41 @@ const styles = StyleSheet.create({
     marginTop: 12,
     fontSize: typography.sizes.base,
     color: colors.gray[600],
+  },
+  appHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    gap: 12,
+    marginBottom: 28,
+    paddingVertical: 12,
+    paddingHorizontal: 12,
+    backgroundColor: colors.primary[600],
+    borderRadius: 12,
+  },
+  headerLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  headerRight: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 16,
+  },
+  brainIconContainer: {
+    width: 40,
+    height: 40,
+    borderRadius: 8,
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  appHeaderTitle: {
+    fontSize: typography.sizes['2xl'],
+    fontWeight: typography.weights.bold,
+    color: '#fff',
+    letterSpacing: 0.5,
   },
   profileSection: {
     marginBottom: 16,

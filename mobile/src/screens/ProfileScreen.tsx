@@ -1,6 +1,8 @@
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { useAuth } from '../hooks/useAuth';
-import { Feather } from '@expo/vector-icons';
+import { Feather, MaterialCommunityIcons } from '@expo/vector-icons';
+import { colors } from '../theme/colors';
+import { typography } from '../theme/typography';
 
 export default function ProfileScreen() {
   const { user, signOut } = useAuth();
@@ -14,6 +16,24 @@ export default function ProfileScreen() {
 
   return (
     <ScrollView style={styles.container}>
+      {/* Section Header */}
+      <View style={styles.appHeader}>
+        <View style={styles.headerLeft}>
+          <View style={styles.brainIconContainer}>
+            <Feather name="user" size={28} color="#fff" />
+          </View>
+          <Text style={styles.appHeaderTitle}>Account</Text>
+        </View>
+        <View style={styles.headerRight}>
+          <TouchableOpacity onPress={() => alert('Notifications')}>
+            <MaterialCommunityIcons name="bell" size={24} color="#fff" />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => alert('Menu')}>
+            <Feather name="menu" size={24} color="#fff" />
+          </TouchableOpacity>
+        </View>
+      </View>
+
       {/* Profile Header */}
       <View style={styles.header}>
         <View style={styles.avatar}>
