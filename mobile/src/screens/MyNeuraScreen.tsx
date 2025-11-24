@@ -31,7 +31,7 @@ type SaveMode = 'choose' | 'write' | 'linkedin' | 'import' | 'whatsapp' | 'ai';
 // Home cloud: 4 dots in 2x2 grid, well distributed
 function generateHomeCloudPositions(containerWidth: number): Array<{ x: number; y: number; size: number }> {
   const dotSize = 65;
-  const spacing = 60; // Spacing between dots
+  const spacing = 120; // Increased horizontal spacing between dots
   const positions: Array<{ x: number; y: number; size: number }> = [];
   
   // 2x2 grid - 4 dots
@@ -41,8 +41,8 @@ function generateHomeCloudPositions(containerWidth: number): Array<{ x: number; 
   
   const col1X = leftMargin + dotSize / 2;
   const col2X = col1X + dotSize + spacing;
-  const row1Y = 50;
-  const row2Y = row1Y + dotSize + spacing;
+  const row1Y = 30;
+  const row2Y = row1Y + dotSize + 120; // Increased vertical spacing
   
   positions.push({ x: col1X, y: row1Y, size: dotSize });
   positions.push({ x: col2X, y: row1Y, size: dotSize });
@@ -60,7 +60,7 @@ function generateFullCloudPositions(count: number, containerWidth: number): Arra
   // 2 columns only (left and right)
   const col1X = containerWidth / 4; // Left column
   const col2X = (3 * containerWidth) / 4; // Right column
-  const verticalSpacing = dotSize; // One dot-height spacing between rows
+  const verticalSpacing = 120; // Increased vertical spacing between dots
   const rowHeight = dotSize + verticalSpacing; // Total vertical space per row
   
   let dotIndex = 0;
