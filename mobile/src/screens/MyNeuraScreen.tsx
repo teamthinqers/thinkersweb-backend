@@ -237,7 +237,7 @@ export default function MyNeuraScreen() {
         case 'ai':
           return <Feather name="zap" size={12} color="#fff" />;
         default:
-          return <MaterialCommunityIcons name="lightbulb" size={12} color="#fff" />;
+          return <MaterialCommunityIcons name="brain" size={12} color="#fff" />;
       }
     };
     
@@ -305,14 +305,14 @@ export default function MyNeuraScreen() {
       >
         {/* Stylish MyNeura Header */}
         <View style={styles.appHeader}>
-          <MaterialCommunityIcons name="lightbulb-on" size={32} color={colors.primary[600]} />
+          <MaterialCommunityIcons name="brain" size={32} color={colors.primary[600]} />
           <Text style={styles.appHeaderTitle}>MyNeura</Text>
         </View>
 
         {/* Compact Stats Row */}
         <View style={styles.compactStatsRow}>
           <View style={styles.compactStat}>
-            <MaterialCommunityIcons name="lightbulb-on" size={20} color={colors.primary[500]} />
+            <MaterialCommunityIcons name="brain" size={20} color={colors.primary[500]} />
             <Text style={styles.compactStatValue}>{stats?.thoughts || 0}</Text>
             <Text style={styles.compactStatLabel}>Dots</Text>
           </View>
@@ -336,7 +336,7 @@ export default function MyNeuraScreen() {
             style={[styles.myNeuraButton]}
             onPress={() => setSelectedTab('myneura')}
           >
-            <MaterialCommunityIcons name="lightbulb-on" size={20} color="#fff" />
+            <MaterialCommunityIcons name="brain" size={20} color="#fff" />
             <Text style={styles.myNeuraButtonText}>
               My Neura
             </Text>
