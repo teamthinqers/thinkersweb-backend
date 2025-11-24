@@ -102,7 +102,7 @@ export default function MainNavigator() {
           title: 'MyNeura',
           headerShown: false,
           tabBarIcon: ({ color, size }) => (
-            <Feather name="brain" size={size} color={color} />
+            <MaterialCommunityIcons name="brain" size={size} color={color} />
           ),
         }}
       />
