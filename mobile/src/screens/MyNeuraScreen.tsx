@@ -4,7 +4,6 @@ import { useQuery, useMutation } from '@tanstack/react-query';
 import { Feather, MaterialCommunityIcons } from '@expo/vector-icons';
 import { useAuth } from '../hooks/useAuth';
 import { Card } from '../components/Card';
-import TopBar from '../components/TopBar';
 import { colors } from '../theme/colors';
 import { typography } from '../theme/typography';
 import { queryClient, apiRequest } from '../lib/queryClient';
@@ -297,7 +296,6 @@ export default function MyNeuraScreen() {
 
   return (
     <>
-      <TopBar onMenuPress={() => alert('Menu')} onNotificationPress={() => alert('Notifications')} />
       <ScrollView
         style={styles.container}
         contentContainerStyle={styles.contentContainer}
@@ -305,12 +303,22 @@ export default function MyNeuraScreen() {
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={colors.primary[500]} />
         }
       >
-        {/* Stylish MyNeura Header */}
+        {/* Stylish MyNeura Header with Icons */}
         <View style={styles.appHeader}>
-          <View style={styles.brainIconContainer}>
-            <MaterialCommunityIcons name="brain" size={28} color="#fff" />
+          <View style={styles.headerLeft}>
+            <View style={styles.brainIconContainer}>
+              <MaterialCommunityIcons name="brain" size={28} color="#fff" />
+            </View>
+            <Text style={styles.appHeaderTitle}>MyNeura</Text>
           </View>
-          <Text style={styles.appHeaderTitle}>MyNeura</Text>
+          <View style={styles.headerRight}>
+            <TouchableOpacity onPress={() => alert('Notifications')}>
+              <MaterialCommunityIcons name="bell" size={24} color="#fff" />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => alert('Menu')}>
+              <Feather name="menu" size={24} color="#fff" />
+            </TouchableOpacity>
+          </View>
         </View>
 
         {/* Compact Stats Row */}
@@ -870,6 +878,7 @@ const styles = StyleSheet.create({
   },
   appHeader: {
     flexDirection: 'row',
+    justifyContent: 'space-between',
     alignItems: 'center',
     gap: 12,
     marginBottom: 28,
@@ -877,6 +886,16 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     backgroundColor: colors.primary[600],
     borderRadius: 12,
+  },
+  headerLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  headerRight: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 16,
   },
   brainIconContainer: {
     width: 40,
