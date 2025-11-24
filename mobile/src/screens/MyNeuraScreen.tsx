@@ -307,7 +307,7 @@ export default function MyNeuraScreen() {
         <View style={styles.appHeader}>
           <View style={styles.headingBg}>
             <View style={styles.brainIconContainer}>
-              <MaterialCommunityIcons name="brain" size={28} color="#fff" />
+              <MaterialCommunityIcons name="brain" size={28} color="#F97316" />
             </View>
             <Text style={styles.appHeaderTitle}>MyNeura</Text>
           </View>
@@ -894,28 +894,33 @@ const styles = StyleSheet.create({
     width: 36,
     height: 36,
     borderRadius: 8,
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    backgroundColor: 'rgba(255, 255, 255, 0.3)',
     justifyContent: 'center',
     alignItems: 'center',
+    borderWidth: 1.5,
+    borderColor: 'rgba(255, 255, 255, 0.4)',
   },
   headingBg: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 10,
-    backgroundColor: colors.primary[600],
+    backgroundColor: '#FBBF24',
     borderRadius: 14,
     paddingVertical: 12,
     paddingHorizontal: 18,
-    shadowColor: colors.primary[600],
+    shadowColor: '#F97316',
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
-    elevation: 5,
+    shadowOpacity: 0.35,
+    shadowRadius: 10,
+    elevation: 6,
+    borderLeftWidth: 3,
+    borderLeftColor: '#FBBF24',
+    borderBottomRightRadius: 2,
   },
   appHeaderTitle: {
     fontSize: typography.sizes.xl,
     fontWeight: typography.weights.extrabold,
-    color: '#fff',
+    color: '#7C2D12',
     letterSpacing: 0.3,
   },
   bellIcon: {
