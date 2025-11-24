@@ -4,6 +4,7 @@ import { useQuery, useMutation } from '@tanstack/react-query';
 import { Feather, MaterialCommunityIcons } from '@expo/vector-icons';
 import { useAuth } from '../hooks/useAuth';
 import { Card } from '../components/Card';
+import TopBar from '../components/TopBar';
 import { colors } from '../theme/colors';
 import { typography } from '../theme/typography';
 import { queryClient, apiRequest } from '../lib/queryClient';
@@ -296,6 +297,7 @@ export default function MyNeuraScreen() {
 
   return (
     <>
+      <TopBar onMenuPress={() => alert('Menu')} onNotificationPress={() => alert('Notifications')} />
       <ScrollView
         style={styles.container}
         contentContainerStyle={styles.contentContainer}
@@ -305,7 +307,9 @@ export default function MyNeuraScreen() {
       >
         {/* Stylish MyNeura Header */}
         <View style={styles.appHeader}>
-          <MaterialCommunityIcons name="brain" size={32} color={colors.primary[600]} />
+          <View style={styles.brainIconContainer}>
+            <MaterialCommunityIcons name="brain" size={28} color="#fff" />
+          </View>
           <Text style={styles.appHeaderTitle}>MyNeura</Text>
         </View>
 
@@ -869,12 +873,23 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 12,
     marginBottom: 28,
-    paddingVertical: 8,
+    paddingVertical: 12,
+    paddingHorizontal: 12,
+    backgroundColor: colors.primary[600],
+    borderRadius: 12,
+  },
+  brainIconContainer: {
+    width: 40,
+    height: 40,
+    borderRadius: 8,
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   appHeaderTitle: {
-    fontSize: typography.sizes['3xl'],
+    fontSize: typography.sizes['2xl'],
     fontWeight: typography.weights.bold,
-    color: colors.primary[900],
+    color: '#fff',
     letterSpacing: 0.5,
   },
   headerTitle: {
