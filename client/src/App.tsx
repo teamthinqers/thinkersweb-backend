@@ -53,6 +53,9 @@ import PwaInstallGuide from "@/pages/PwaInstallGuide";
 import Testing from "@/pages/Testing";
 import TestCreation from "@/pages/TestCreation";
 import { QuickAuthTest } from "@/pages/QuickAuthTest";
+import MyNeuraWebV2 from "@/pages/MyNeuraWebV2";
+import SocialWebV2 from "@/pages/SocialWebV2";
+import ThinQCirclesWebV2 from "@/pages/ThinQCirclesWebV2";
 
 import WorkingDot from "@/pages/working-dot";
 import TestComplete from "@/pages/TestComplete";
@@ -299,6 +302,9 @@ function Router() {
       <Route path="/intelligence" component={IntelligenceSelector} />
       <Route path="/indexing-demo" component={IndexingDemo} />
       <Route path="/activation" component={ActivationPage} />
+      <Route path="/myneura-web-v2" component={MyNeuraWebV2} />
+      <Route path="/social-web-v2" component={SocialWebV2} />
+      <Route path="/circles-web-v2" component={ThinQCirclesWebV2} />
       <Route component={NotFound} />
     </Switch>
   );
