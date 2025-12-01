@@ -5,9 +5,9 @@ import { View, TouchableOpacity, Text } from 'react-native';
 
 // New Screens - exact replica of web app
 import MyDotSparkScreen from '../screens/MyDotSparkScreen';
-import MyNeuraScreen from '../screens/MyNeuraScreen';
-import SocialScreen from '../screens/SocialScreen';
-import ThinQCirclesScreen from '../screens/ThinQCirclesScreen';
+import MyNeuraScreenV2 from '../screens/MyNeuraScreenV2';
+import SocialScreenV2 from '../screens/SocialScreenV2';
+import ThinQCirclesScreenV2 from '../screens/ThinQCirclesScreenV2';
 import CognitiveIdentityScreen from '../screens/CognitiveIdentityScreen';
 import LearningEngineScreen from '../screens/LearningEngineScreen';
 import ProfileScreen from '../screens/ProfileScreen';
@@ -97,7 +97,7 @@ export default function MainNavigator() {
       />
       <Tab.Screen
         name="MyNeura"
-        component={MyNeuraScreen}
+        component={MyNeuraScreenV2}
         options={{
           title: 'MyNeura',
           headerShown: false,
@@ -108,7 +108,7 @@ export default function MainNavigator() {
       />
       <Tab.Screen
         name="Social"
-        component={SocialScreen}
+        component={SocialScreenV2}
         options={{
           title: 'Social',
           headerShown: false,
@@ -119,7 +119,7 @@ export default function MainNavigator() {
       />
       <Tab.Screen
         name="ThinQCircles"
-        component={ThinQCirclesScreen}
+        component={ThinQCirclesScreenV2}
         options={{
           title: 'Circles',
           headerShown: false,
