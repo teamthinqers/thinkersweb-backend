@@ -82,6 +82,18 @@ export const colors = {
   error: '#ef4444',
   warning: '#f59e0b',
   info: '#06b6d4',
+  
+  // Convenience shortcuts for direct access
+  amber: '#f59e0b',
+  orange: '#f97316',
+  blue: '#06b6d4',
+  pink: '#a855f7',
+  purple: '#a855f7',
+  red: '#ef4444',
+  gray: '#6b7280',
+  lightGray: '#d1d5db',
+  lightOrange: '#fff7ed',
+  lightBlue: '#e3f2fd',
 };
 
 export const gradients = {
