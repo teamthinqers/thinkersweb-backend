@@ -3,6 +3,15 @@ const express = require('express');
 const app = express();
 const port = process.env.PORT || 8080;
 
+// Check required environment variables
+const requiredEnvVars = ['DATABASE_URL', 'OPENAI_API_KEY', 'SESSION_SECRET'];
+const missingVars = requiredEnvVars.filter(v => !process.env[v]);
+
+if (missingVars.length > 0) {
+  console.log('Missing environment variables:', missingVars.join(', '));
+  console.log('Starting minimal server without full routes');
+}
+
 // CORS middleware
 app.use((req, res, next) => {
   const allowedOrigins = [
@@ -38,11 +47,30 @@ app.get('/', (req, res) => {
   res.json({ 
     message: 'DotSpark API Server',
     status: 'running',
-    version: '1.0.0'
+    envCheck: missingVars.length === 0 ? 'all set' : `missing: ${missingVars.join(', ')}`
   });
 });
 
-// Start server
+// Start server immediately for health checks
 app.listen(port, '0.0.0.0', () => {
   console.log(`Server started on port ${port}`);
+  
+  // Only load routes if all env vars are present
+  if (missingVars.length === 0) {
+    setTimeout(() => {
+      try {
+        console.log('Loading full routes...');
+        const routes = require('./dist/routes.js');
+        if (routes.registerRoutes) {
+          routes.registerRoutes(app).then(() => {
+            console.log('Routes loaded successfully');
+          }).catch(err => {
+            console.error('Error registering routes:', err.message);
+          });
+        }
+      } catch (err) {
+        console.error('Failed to load routes:', err.message);
+      }
+    }, 100);
+  }
 });
