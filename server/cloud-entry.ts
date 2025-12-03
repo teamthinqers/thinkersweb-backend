@@ -209,6 +209,8 @@ httpServer.listen(port, '0.0.0.0', () => {
               linkedinHeadline: user.linkedinHeadline,
               linkedinProfileUrl: user.linkedinProfileUrl,
               linkedinPhotoUrl: user.linkedinPhotoUrl,
+              aboutMe: user.aboutMe,
+              cognitiveIdentityPublic: user.cognitiveIdentityPublic,
               cognitiveIdentityCompleted: user.cognitiveIdentityCompleted,
               learningEngineCompleted: user.learningEngineCompleted,
               createdAt: user.createdAt,
