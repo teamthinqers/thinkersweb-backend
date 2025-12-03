@@ -1,0 +1,36 @@
+
+2025-12-03 14:02:28.702 IST
+Cloud Run CreateService thinkersweb-backend teamthinqers@gmail.com {@type: type.googleapis.com/google.cloud.audit.AuditLog, authenticationInfo: {…}, authorizationInfo: […], methodName: google.cloud.run.v1.Services.CreateService, request: {…}, requestMetadata: {…}, resourceLocation: {…}, resourceName: namespaces/graphite-setup-480107-n8/services/thinkersweb-backend,…
+
+2025-12-03 14:02:36.537 IST
+Starting new instance. Reason: DEPLOYMENT_ROLLOUT - Instance started due to traffic shifting between revisions due to deployment, traffic split adjustment, or deployment health check.
+
+2025-12-03 14:02:36.904 IST
+2025/12/03 08:32:36 Hello from Cloud Run! The container started successfully and is listening for HTTP requests on port 8080
+
+2025-12-03 14:02:36.910 IST
+Default STARTUP TCP probe succeeded after 1 attempt for container "placeholder-1" on port 8080.
+
+2025-12-03 14:02:36.974 IST
+Cloud Run CreateService thinkersweb-backend-00001-bmh  {@type: type.googleapis.com/google.cloud.audit.AuditLog, methodName: /Services.CreateService, resourceName: namespaces/graphite-setup-480107-n8/revisions/thinkersweb-backend-00001-bmh, response: {…}, serviceName: run.googleapis.com, status: {…}}
+
+2025-12-03 14:02:38.275 IST
+Cloud Run CreateService thinkersweb-backend  {@type: type.googleapis.com/google.cloud.audit.AuditLog, methodName: /Services.CreateService, resourceName: namespaces/graphite-setup-480107-n8/services/thinkersweb-backend, response: {…}, serviceName: run.googleapis.com, status: {…}}
+
+2025-12-03 14:02:43.661 IST
+Cloud Run ReplaceService thinkersweb-backend teamthinqers@gmail.com {@type: type.googleapis.com/google.cloud.audit.AuditLog, authenticationInfo: {…}, authorizationInfo: […], methodName: google.cloud.run.v1.Services.ReplaceService, request: {…}, requestMetadata: {…}, resourceLocation: {…}, resourceName: namespaces/graphite-setup-480107-n8/services/thinkersweb-backend…
+
+2025-12-03 14:02:44.124 IST
+Cloud Run ReplaceService thinkersweb-backend  {@type: type.googleapis.com/google.cloud.audit.AuditLog, methodName: /Services.ReplaceService, resourceName: namespaces/graphite-setup-480107-n8/services/thinkersweb-backend, response: {…}, serviceName: run.googleapis.com, status: {…}}
+
+2025-12-03 14:04:59.610 IST
+Cloud Run ReplaceService thinkersweb-backend 908196010054-compute@developer.gserviceaccount.com {@type: type.googleapis.com/google.cloud.audit.AuditLog, authenticationInfo: {…}, authorizationInfo: […], methodName: google.cloud.run.v1.Services.ReplaceService, request: {…}, requestMetadata: {…}, resourceLocation: {…}, resourceName: namespaces/graphite-setup-480107-n8/services/thinkersweb-backend…
+
+2025-12-03 14:05:42.594 IST
+Starting new instance. Reason: DEPLOYMENT_ROLLOUT - Instance started due to traffic shifting between revisions due to deployment, traffic split adjustment, or deployment health check.
+
+2025-12-03 14:05:45.319 IST
+file:///app/node_modules/openai/index.mjs:48
+
+2025-12-03 14:05:45.319 IST
+throw new Errors.OpenAIError("The OPENAI_API_KEY environment variable is missing or empty; either provide it, or instantiate the OpenAI client with an apiKey option, like new OpenAI({ apiKey: 'My API Key' }).");
