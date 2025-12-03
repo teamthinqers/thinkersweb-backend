@@ -5,7 +5,7 @@ import { getAuth } from "firebase/auth";
 export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '';
 
 // Get Firebase ID token for authenticated requests
-async function getAuthToken(): Promise<string | null> {
+export async function getAuthToken(): Promise<string | null> {
   try {
     const auth = getAuth();
     const user = auth.currentUser;

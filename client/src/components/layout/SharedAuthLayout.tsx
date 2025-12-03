@@ -16,7 +16,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { useQuery, useMutation } from '@tanstack/react-query';
-import { queryClient, apiRequest } from '@/lib/queryClient';
+import { queryClient, apiRequest, getAuthToken } from '@/lib/queryClient';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { formatDistanceToNow } from 'date-fns';
 
@@ -74,9 +74,7 @@ export default function SharedAuthLayout({ children }: SharedAuthLayoutProps) {
     const timer = setTimeout(async () => {
       try {
         // Get Firebase token for authenticated request
-        const { getAuth } = await import('firebase/auth');
-        const auth = getAuth();
-        const token = auth.currentUser ? await auth.currentUser.getIdToken() : null;
+        const token = await getAuthToken();
         
         const headers: Record<string, string> = {};
         if (token) {
