@@ -530,11 +530,34 @@ httpServer.listen(port, '0.0.0.0', () => {
               eq(schema.thoughts.sharedToSocial, true)
             ));
           
-          const [platformSparksCount] = await db.select({ count: count() }).from(schema.sparks);
+          // Count sparks where users saved sparks on OTHER people's social thoughts (social engagement metric)
+          const platformSparksResult = await db
+            .select({ count: count() })
+            .from(schema.sparks)
+            .innerJoin(schema.thoughts, eq(schema.sparks.thoughtId, schema.thoughts.id))
+            .where(and(
+              or(
+                eq(schema.thoughts.visibility, 'social'),
+                eq(schema.thoughts.sharedToSocial, true)
+              ),
+              sql`${schema.sparks.userId} != ${schema.thoughts.userId}`
+            ));
+          const platformSparksCount = platformSparksResult[0] || { count: 0 };
           
-          const [platformPerspectivesCount] = await db.select({ count: count() })
+          // Count perspectives on social thoughts (excluding soft-deleted)
+          const platformPerspectivesResult = await db
+            .select({ count: count() })
             .from(schema.perspectivesMessages)
-            .where(eq(schema.perspectivesMessages.isDeleted, false));
+            .innerJoin(schema.perspectivesThreads, eq(schema.perspectivesMessages.threadId, schema.perspectivesThreads.id))
+            .innerJoin(schema.thoughts, eq(schema.perspectivesThreads.thoughtId, schema.thoughts.id))
+            .where(and(
+              or(
+                eq(schema.thoughts.visibility, 'social'),
+                eq(schema.thoughts.sharedToSocial, true)
+              ),
+              eq(schema.perspectivesMessages.isDeleted, false)
+            ));
+          const platformPerspectivesCount = platformPerspectivesResult[0] || { count: 0 };
           
           const totalPlatformItems = Number(platformThoughtsCount?.count || 0) + 
                                       Number(platformSparksCount?.count || 0) + 
