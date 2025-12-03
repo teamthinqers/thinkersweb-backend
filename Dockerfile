@@ -7,21 +7,25 @@ WORKDIR /app
 # Copy package files
 COPY package*.json ./
 
-# Install ALL dependencies (need devDeps for build)
-RUN npm ci
+# Install dependencies
+RUN npm ci --only=production
 
-# Copy source code
-COPY . .
+# Copy server source
+COPY server ./server
+COPY shared ./shared
 
-# Build the backend - bundle everything including node_modules
-RUN npx esbuild server/index-cloud.ts --platform=node --bundle --format=cjs --outfile=dist/server.js --external:@neondatabase/serverless --external:ws --external:bufferutil --external:utf-8-validate
+# Install esbuild for build
+RUN npm install esbuild
 
-# Expose port (Cloud Run uses PORT env variable)
+# Build minimal server
+RUN npx esbuild server/index-cloud.ts --platform=node --bundle --format=cjs --outfile=dist/server.js
+
+# Expose port
 EXPOSE 8080
 
-# Set environment to production
+# Set environment
 ENV NODE_ENV=production
 ENV PORT=8080
 
-# Start the server
+# Start server
 CMD ["node", "dist/server.js"]
