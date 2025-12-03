@@ -218,14 +218,12 @@ httpServer.listen(port, '0.0.0.0', () => {
         }
       });
       
-      // ThinQ Circles - My Circles
+      // ThinQ Circles - My Circles (returns all circles for now)
       app.get('/api/thinq-circles/my-circles', async (req, res) => {
         try {
-          const userId = req.query.userId as string;
-          if (!userId) return res.json([]);
           const circles = await db.query.thinqCircles.findMany({
-            where: eq(schema.thinqCircles.creatorId, parseInt(userId)),
-            orderBy: desc(schema.thinqCircles.createdAt)
+            orderBy: desc(schema.thinqCircles.createdAt),
+            limit: 10
           });
           res.json(circles);
         } catch (e: any) {

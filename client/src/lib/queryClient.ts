@@ -1,7 +1,23 @@
 import { QueryClient, QueryFunction } from "@tanstack/react-query";
+import { getAuth } from "firebase/auth";
 
 // API Base URL - uses environment variable in production, empty string (relative) in development
 export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '';
+
+// Get Firebase ID token for authenticated requests
+async function getAuthToken(): Promise<string | null> {
+  try {
+    const auth = getAuth();
+    const user = auth.currentUser;
+    if (user) {
+      return await user.getIdToken();
+    }
+    return null;
+  } catch (error) {
+    console.error("Error getting auth token:", error);
+    return null;
+  }
+}
 
 // Helper to build full API URL
 export function getApiUrl(path: string): string {
@@ -59,10 +75,22 @@ export async function apiRequest(
     // Build full URL with API base
     const fullUrl = getApiUrl(url);
     
+    // Get auth token for authenticated requests
+    const token = await getAuthToken();
+    
+    // Build headers
+    const headers: Record<string, string> = {};
+    if (data) {
+      headers["Content-Type"] = "application/json";
+    }
+    if (token) {
+      headers["Authorization"] = `Bearer ${token}`;
+    }
+    
     // Simple fetch with minimum options
     const res = await fetch(fullUrl, {
       method,
-      headers: data ? { "Content-Type": "application/json" } : {},
+      headers,
       body: data ? JSON.stringify(data) : undefined,
       credentials: "include",
     });
@@ -116,7 +144,17 @@ export const getQueryFn: <T>(options: {
       const fullUrl = getApiUrl(url);
       console.log('Making API request to:', fullUrl);
       
+      // Get auth token for authenticated requests
+      const token = await getAuthToken();
+      
+      // Build headers
+      const headers: Record<string, string> = {};
+      if (token) {
+        headers["Authorization"] = `Bearer ${token}`;
+      }
+      
       const res = await fetch(fullUrl, {
+        headers,
         credentials: "include",
       });
 

@@ -97,3 +97,8 @@ localPort = 45907
 externalPort = 6800
 
 [agent]
+
+[userenv]
+
+[userenv.shared]
+VITE_API_BASE_URL = "https://thinkersweb-backend-908196010054.europe-west1.run.app"
