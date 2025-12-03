@@ -684,13 +684,16 @@ httpServer.listen(port, '0.0.0.0', () => {
       
       app.get('/api/cognitive-identity/config', async (req: any, res) => {
         try {
-          if (!req.user) return res.json({ sections: [], progress: 0, isComplete: false });
+          if (!req.user) return res.json({ success: false, configured: false, data: null });
           
           const identity = await db.query.cognitiveIdentity.findFirst({
             where: eq(schema.cognitiveIdentity.userId, req.user.id)
           });
           
           res.json({ 
+            success: true,
+            configured: req.user.cognitiveIdentityCompleted || !!identity,
+            data: identity || null,
             sections: [],
             progress: identity ? 100 : 0,
             isComplete: req.user.cognitiveIdentityCompleted || false,
@@ -799,6 +802,85 @@ httpServer.listen(port, '0.0.0.0', () => {
           
           res.json({ success: true, circle });
         } catch (e: any) {
+          res.status(500).json({ error: e.message });
+        }
+      });
+      
+      // Get user's circles (my-circles)
+      app.get('/api/thinq-circles/my-circles', async (req: any, res) => {
+        try {
+          if (!req.user) return res.json({ success: true, circles: [] });
+          
+          const circles = await db.query.thinqCircleMembers.findMany({
+            where: eq(schema.thinqCircleMembers.userId, req.user.id),
+            with: {
+              circle: {
+                with: {
+                  creator: {
+                    columns: {
+                      id: true,
+                      fullName: true,
+                      avatar: true,
+                      linkedinPhotoUrl: true,
+                    },
+                  },
+                  members: true,
+                },
+              },
+            },
+          });
+          
+          res.json({
+            success: true,
+            circles: circles.map(m => ({
+              ...m.circle,
+              ownerId: m.circle.createdBy,
+              role: m.role,
+              memberCount: m.circle.members?.length || 0,
+            })),
+          });
+        } catch (e: any) {
+          console.error('Get circles error:', e);
+          res.status(500).json({ error: e.message });
+        }
+      });
+      
+      // Get user's pending circle invites
+      app.get('/api/thinq-circles/pending-invites', async (req: any, res) => {
+        try {
+          if (!req.user) return res.json({ success: true, invites: [] });
+          
+          const pendingInvites = await db.query.thinqCircleInvites.findMany({
+            where: and(
+              eq(schema.thinqCircleInvites.inviteeUserId, req.user.id),
+              eq(schema.thinqCircleInvites.status, 'pending')
+            ),
+            with: {
+              circle: {
+                columns: {
+                  id: true,
+                  name: true,
+                  description: true,
+                },
+              },
+              inviter: {
+                columns: {
+                  id: true,
+                  fullName: true,
+                  avatar: true,
+                  linkedinPhotoUrl: true,
+                },
+              },
+            },
+            orderBy: desc(schema.thinqCircleInvites.createdAt),
+          });
+          
+          res.json({
+            success: true,
+            invites: pendingInvites,
+          });
+        } catch (e: any) {
+          console.error('Get pending invites error:', e);
           res.status(500).json({ error: e.message });
         }
       });
