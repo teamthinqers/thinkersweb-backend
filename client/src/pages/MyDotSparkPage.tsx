@@ -372,6 +372,14 @@ export default function MyDotSparkPage() {
             4. Learning Engine - TODO: To be built
             ======================================== */}
         
+        {/* DEBUG: Show cognitive identity data status */}
+        <div className="mb-2 p-2 bg-yellow-100 text-xs text-black rounded">
+          DEBUG: userId={userId}, configured={String(cognitiveIdentityConfigured)}, 
+          hasData={String(!!cognitiveConfig?.data)}, 
+          tagsCount={cognitiveIdentityTags.length},
+          rawData={JSON.stringify(cognitiveConfig?.data || {}).slice(0, 100)}
+        </div>
+        
         {/* Cognitive Identity Box - Full Width - Links conditionally based on config status */}
         <Link href={cognitiveIdentityConfigured ? "/cognitive-identity-config" : "/cognitive-identity"}>
           <Card className="group cursor-pointer border-0 transition-all duration-300 hover:scale-[1.01] bg-gradient-to-br from-[#a78bfa] via-[#9575cd] to-[#8b5cf6] relative overflow-hidden rounded-[32px] shadow-[0_8px_30px_rgba(139,92,246,0.2)] hover:shadow-[0_20px_60px_rgba(139,92,246,0.3)] mb-3">

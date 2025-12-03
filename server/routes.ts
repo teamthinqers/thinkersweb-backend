@@ -3277,12 +3277,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const targetUserId = parseInt(req.params.userId);
       const requestingUserId = (req as AuthenticatedRequest).user?.id || (req as AuthenticatedRequest).session?.userId;
 
+      console.log('Cognitive Identity Request - targetUserId:', targetUserId, 'requestingUserId:', requestingUserId);
+
       if (!targetUserId || isNaN(targetUserId)) {
         return res.status(400).json({ error: 'Invalid user ID' });
       }
 
       // Check if viewing own profile
       const isOwnProfile = requestingUserId === targetUserId;
+      console.log('isOwnProfile:', isOwnProfile);
 
       // Get user's privacy setting
       const user = await db.query.users.findFirst({
