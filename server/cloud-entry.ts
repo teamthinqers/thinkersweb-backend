@@ -1637,35 +1637,36 @@ httpServer.listen(port, '0.0.0.0', () => {
       app.get('/api/network/insights', (req, res) => res.json({ insights: [], connections: 0 }));
       
       // Users search - returns { success: true, users: [...] } format
-      app.get('/api/users/search', async (req, res) => {
+      app.get('/api/users/search', async (req: any, res) => {
         try {
+          if (!req.user) {
+            return res.status(401).json({ error: 'Authentication required', success: false, users: [] });
+          }
+          
           const query = req.query.q as string;
-          if (!query || query.length < 2) return res.json({ success: true, users: [] });
+          if (!query || query.trim().length < 2) {
+            return res.json({ success: true, users: [] });
+          }
           
-          const searchPattern = `%${query}%`;
+          const searchTerm = `%${query.trim()}%`;
           
-          // Use proper Drizzle ORM syntax with ilike
-          const { ilike } = await import('drizzle-orm');
-          
-          const users = await db.query.users.findMany({
+          // Use SQL template for ILIKE (case-insensitive search)
+          const foundUsers = await db.query.users.findMany({
             where: or(
-              ilike(schema.users.fullName, searchPattern),
-              ilike(schema.users.username, searchPattern),
-              ilike(schema.users.email, searchPattern)
+              sql`${schema.users.fullName} ILIKE ${searchTerm}`,
+              sql`${schema.users.email} ILIKE ${searchTerm}`
             ),
-            limit: 10,
             columns: {
               id: true,
-              username: true,
               fullName: true,
               email: true,
               avatar: true,
-              linkedinHeadline: true,
-              linkedinPhotoUrl: true
-            }
+              linkedinPhotoUrl: true,
+            },
+            limit: 10,
           });
           
-          res.json({ success: true, users });
+          res.json({ success: true, users: foundUsers });
         } catch (e: any) {
           console.error('User search error:', e);
           res.status(500).json({ success: false, error: e.message, users: [] });
