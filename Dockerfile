@@ -7,18 +7,18 @@ WORKDIR /app
 # Copy package files
 COPY package*.json ./
 
-# Install dependencies
-RUN npm ci --only=production
+# Install ALL dependencies (need esbuild for build)
+RUN npm ci
 
-# Copy server source
+# Copy source code
 COPY server ./server
 COPY shared ./shared
 
-# Install esbuild for build
-RUN npm install esbuild
-
-# Build minimal server
+# Build the server
 RUN npx esbuild server/index-cloud.ts --platform=node --bundle --format=cjs --outfile=dist/server.js
+
+# Remove node_modules to reduce size (bundle is self-contained)
+RUN rm -rf node_modules && npm ci --only=production
 
 # Expose port
 EXPOSE 8080
