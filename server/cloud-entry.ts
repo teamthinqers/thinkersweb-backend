@@ -463,14 +463,99 @@ httpServer.listen(port, '0.0.0.0', () => {
         res.json([]);
       });
       
-      // Notifications - Simple
-      app.get('/api/notifications-simple', (req, res) => {
-        res.json({ notifications: [], unreadCount: 0 });
+      // User badges
+      app.get('/api/users/:userId/badges', async (req, res) => {
+        try {
+          const userId = parseInt(req.params.userId);
+          // Return sample badges for now
+          res.json({
+            badges: [
+              { id: 1, name: 'First Dot', description: 'Created your first dot', earned: true, earnedAt: new Date() },
+              { id: 2, name: 'Deep Thinker', description: 'Created 10 dots', earned: false },
+              { id: 3, name: 'Connector', description: 'Linked 5 dots to wheels', earned: false }
+            ]
+          });
+        } catch (e: any) {
+          res.status(500).json({ error: e.message });
+        }
       });
       
-      // Notifications
-      app.get('/api/notifications', (req, res) => {
-        res.json({ success: true, notifications: [], unreadCount: 0 });
+      // Notifications - Simple
+      app.get('/api/notifications-simple', async (req, res) => {
+        try {
+          const user = await getUserFromToken(req);
+          if (!user) {
+            return res.json({ notifications: [], unreadCount: 0 });
+          }
+          // Return recent activity as notifications
+          const recentDots = await db.query.dots.findMany({
+            where: eq(schema.dots.userId, user.id),
+            orderBy: desc(schema.dots.createdAt),
+            limit: 5
+          });
+          const notifications = recentDots.map(dot => ({
+            id: dot.id,
+            type: 'dot_created',
+            message: `You created a new dot: ${dot.oneWordSummary || 'Untitled'}`,
+            createdAt: dot.createdAt,
+            read: true
+          }));
+          res.json({ notifications, unreadCount: 0 });
+        } catch (e: any) {
+          res.status(500).json({ error: e.message });
+        }
+      });
+      
+      // Notifications - Full list
+      app.get('/api/notifications', async (req, res) => {
+        try {
+          const user = await getUserFromToken(req);
+          if (!user) {
+            return res.json({ success: true, notifications: [], unreadCount: 0 });
+          }
+          // Return recent activity as notifications
+          const recentDots = await db.query.dots.findMany({
+            where: eq(schema.dots.userId, user.id),
+            orderBy: desc(schema.dots.createdAt),
+            limit: 10
+          });
+          const notifications = recentDots.map(dot => ({
+            id: dot.id,
+            type: 'dot_created',
+            title: 'New Dot Created',
+            message: `You created: ${dot.oneWordSummary || 'Untitled'}`,
+            createdAt: dot.createdAt,
+            read: true
+          }));
+          res.json({ success: true, notifications, unreadCount: 0 });
+        } catch (e: any) {
+          res.status(500).json({ error: e.message });
+        }
+      });
+      
+      // Recent activities
+      app.get('/api/activities/recent', async (req, res) => {
+        try {
+          const user = await getUserFromToken(req);
+          if (!user) return res.json({ activities: [] });
+          
+          const recentDots = await db.query.dots.findMany({
+            where: eq(schema.dots.userId, user.id),
+            orderBy: desc(schema.dots.createdAt),
+            limit: 10
+          });
+          
+          const activities = recentDots.map(dot => ({
+            id: dot.id,
+            type: 'dot_created',
+            description: `Created dot: ${dot.oneWordSummary || 'Untitled'}`,
+            timestamp: dot.createdAt
+          }));
+          
+          res.json({ activities });
+        } catch (e: any) {
+          res.status(500).json({ error: e.message });
+        }
       });
       
       // Dashboard
