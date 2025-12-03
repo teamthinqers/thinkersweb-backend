@@ -75,20 +75,15 @@ export default function MyDotSparkPage() {
 
   // Fetch cognitive identity using the same endpoint as Profile page (works)
   const userId = (user as any)?.id;
-  const { data: cognitiveConfig, isLoading: cognitiveLoading } = useQuery<{ success: boolean; data: any; configured: boolean; isPublic: boolean }>({
+  const { data: cognitiveConfig } = useQuery<{ success: boolean; data: any; configured: boolean; isPublic: boolean }>({
     queryKey: [`/api/users/${userId}/cognitive-identity`],
     enabled: !!userId,
   });
 
   const cognitiveIdentityConfigured = cognitiveConfig?.configured || false;
 
-  // Get cognitive identity tags - use same approach as CognitiveIdentityCard
-  const cognitiveIdentityTags = useMemo(() => {
-    const tags = generateCognitiveIdentityTags(cognitiveConfig?.data || {});
-    console.log('MyDotSpark - cognitiveConfig:', cognitiveConfig);
-    console.log('MyDotSpark - generated tags:', tags);
-    return tags;
-  }, [cognitiveConfig]);
+  // Get cognitive identity tags - exact same approach as CognitiveIdentityCard (no useMemo)
+  const cognitiveIdentityTags = generateCognitiveIdentityTags(cognitiveConfig?.data || {});
 
   // Fetch ALL badges with earned/locked status for gamification
   const { data: badgesData } = useQuery<{ success: boolean; badges: any[] }>({
