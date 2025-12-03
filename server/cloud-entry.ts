@@ -75,7 +75,7 @@ httpServer.listen(port, '0.0.0.0', () => {
       const schema = await import('@shared/schema');
       console.log('Step 5: Schema imported');
       
-      const { eq, desc, count } = await import('drizzle-orm');
+      const { eq, desc, count, or } = await import('drizzle-orm');
       console.log('Step 6: Drizzle operators imported');
       
       // Helper to get user from Bearer token
@@ -101,10 +101,14 @@ httpServer.listen(port, '0.0.0.0', () => {
         res.json({ message: 'DotSpark API', status: 'running' });
       });
       
-      // Get thoughts
+      // Get thoughts - SOCIAL only (visibility = 'social' or sharedToSocial = true)
       app.get('/api/thoughts', async (req, res) => {
         try {
           const thoughts = await db.query.thoughts.findMany({
+            where: or(
+              eq(schema.thoughts.visibility, 'social'),
+              eq(schema.thoughts.sharedToSocial, true)
+            ),
             orderBy: desc(schema.thoughts.createdAt),
             with: { user: true }
           });
@@ -235,15 +239,20 @@ httpServer.listen(port, '0.0.0.0', () => {
         }
       });
       
-      // Get social dots (public dots for social feed)
+      // Get social dots - returns thoughts shared to social (not personal dots)
       app.get('/api/social/dots', async (req, res) => {
         try {
-          const dots = await db.query.dots.findMany({
-            orderBy: desc(schema.dots.createdAt),
+          // Return social thoughts, not dots (dots are always personal)
+          const socialThoughts = await db.query.thoughts.findMany({
+            where: or(
+              eq(schema.thoughts.visibility, 'social'),
+              eq(schema.thoughts.sharedToSocial, true)
+            ),
+            orderBy: desc(schema.thoughts.createdAt),
             limit: 50,
             with: { user: true }
           });
-          res.json(dots);
+          res.json(socialThoughts);
         } catch (e: any) {
           res.status(500).json({ error: e.message });
         }
@@ -393,23 +402,42 @@ httpServer.listen(port, '0.0.0.0', () => {
         }
       });
       
-      // Thoughts neural strength
+      // Thoughts neural strength - includes perspectives count
       app.get('/api/thoughts/neural-strength', async (req, res) => {
         try {
           const user = await getUserFromToken(req);
-          if (!user) return res.json({ strength: 0 });
+          if (!user) return res.json({ strength: 0, perspectives: 0, sparks: 0, dots: 0 });
+          
           const dotsCount = await db.select({ count: count() }).from(schema.dots).where(eq(schema.dots.userId, user.id));
-          const strength = Math.min(100, (dotsCount[0]?.count || 0) * 5);
-          res.json({ strength });
+          const sparksCount = await db.select({ count: count() }).from(schema.sparks).where(eq(schema.sparks.userId, user.id));
+          const perspectivesCount = await db.select({ count: count() }).from(schema.perspectivesMessages).where(eq(schema.perspectivesMessages.userId, user.id));
+          
+          const dots = dotsCount[0]?.count || 0;
+          const sparks = sparksCount[0]?.count || 0;
+          const perspectives = perspectivesCount[0]?.count || 0;
+          
+          // Calculate strength based on all contributions
+          const strength = Math.min(100, (dots * 3) + (sparks * 2) + (perspectives * 1));
+          
+          res.json({ 
+            strength, 
+            perspectives, 
+            sparks, 
+            dots 
+          });
         } catch (e: any) {
           res.status(500).json({ error: e.message });
         }
       });
       
-      // Social feed
+      // Social feed - only social/shared thoughts
       app.get('/api/social/feed', async (req, res) => {
         try {
           const thoughts = await db.query.thoughts.findMany({
+            where: or(
+              eq(schema.thoughts.visibility, 'social'),
+              eq(schema.thoughts.sharedToSocial, true)
+            ),
             orderBy: desc(schema.thoughts.createdAt),
             limit: 20,
             with: { user: true }
@@ -537,22 +565,90 @@ httpServer.listen(port, '0.0.0.0', () => {
         }
       });
       
-      // Cognitive identity
+      // Cognitive identity - GET
       app.get('/api/users/cognitive-identity', async (req, res) => {
         try {
           const user = await getUserFromToken(req);
-          res.json({ configured: !!user, identity: null });
+          if (!user) return res.json({ configured: false, identity: null });
+          
+          const identity = await db.query.cognitiveIdentity.findFirst({
+            where: eq(schema.cognitiveIdentity.userId, user.id)
+          });
+          
+          res.json({ 
+            configured: !!identity, 
+            identity: identity || null,
+            user: {
+              cognitiveIdentityCompleted: user.cognitiveIdentityCompleted,
+              learningEngineCompleted: user.learningEngineCompleted
+            }
+          });
         } catch (e: any) {
           res.status(500).json({ error: e.message });
         }
       });
       
-      app.post('/api/cognitive-identity/configure', (req, res) => {
-        res.json({ success: true });
+      // Cognitive identity config GET
+      app.get('/api/cognitive-identity/config', async (req, res) => {
+        try {
+          const user = await getUserFromToken(req);
+          if (!user) return res.json({ sections: [], progress: 0, isComplete: false });
+          
+          const identity = await db.query.cognitiveIdentity.findFirst({
+            where: eq(schema.cognitiveIdentity.userId, user.id)
+          });
+          
+          res.json({ 
+            sections: [],
+            progress: identity ? 100 : 0,
+            isComplete: user.cognitiveIdentityCompleted || false,
+            identity: identity || null
+          });
+        } catch (e: any) {
+          res.status(500).json({ error: e.message });
+        }
       });
       
-      app.post('/api/cognishield/configure', (req, res) => {
-        res.json({ success: true });
+      app.post('/api/cognitive-identity/configure', async (req, res) => {
+        try {
+          const user = await getUserFromToken(req);
+          if (!user) return res.status(401).json({ error: 'Unauthorized' });
+          
+          const data = req.body;
+          
+          // Upsert cognitive identity
+          let identity = await db.query.cognitiveIdentity.findFirst({
+            where: eq(schema.cognitiveIdentity.userId, user.id)
+          });
+          
+          if (identity) {
+            await db.update(schema.cognitiveIdentity)
+              .set({ ...data, updatedAt: new Date() })
+              .where(eq(schema.cognitiveIdentity.userId, user.id));
+          } else {
+            await db.insert(schema.cognitiveIdentity)
+              .values({ userId: user.id, ...data });
+          }
+          
+          // Mark user as having completed cognitive identity
+          await db.update(schema.users)
+            .set({ cognitiveIdentityCompleted: true, cognitiveIdentityCompletedAt: new Date() })
+            .where(eq(schema.users.id, user.id));
+          
+          res.json({ success: true });
+        } catch (e: any) {
+          res.status(500).json({ error: e.message });
+        }
+      });
+      
+      app.post('/api/cognishield/configure', async (req, res) => {
+        try {
+          const user = await getUserFromToken(req);
+          if (!user) return res.status(401).json({ error: 'Unauthorized' });
+          res.json({ success: true });
+        } catch (e: any) {
+          res.status(500).json({ error: e.message });
+        }
       });
       
       // Mapping endpoints
@@ -850,27 +946,84 @@ httpServer.listen(port, '0.0.0.0', () => {
         }
       });
       
-      // Notifications - Simple
+      // Notifications - Simple (comprehensive user activity)
       app.get('/api/notifications-simple', async (req, res) => {
         try {
           const user = await getUserFromToken(req);
           if (!user) {
             return res.json({ notifications: [], unreadCount: 0 });
           }
-          // Return recent activity as notifications
-          const recentDots = await db.query.dots.findMany({
-            where: eq(schema.dots.userId, user.id),
-            orderBy: desc(schema.dots.createdAt),
-            limit: 5
+          
+          // Gather recent activity from multiple sources
+          const [recentDots, recentWheels, recentSparks, recentThoughts] = await Promise.all([
+            db.query.dots.findMany({
+              where: eq(schema.dots.userId, user.id),
+              orderBy: desc(schema.dots.createdAt),
+              limit: 5
+            }),
+            db.query.wheels.findMany({
+              where: eq(schema.wheels.userId, user.id),
+              orderBy: desc(schema.wheels.createdAt),
+              limit: 3
+            }),
+            db.query.sparks.findMany({
+              where: eq(schema.sparks.userId, user.id),
+              orderBy: desc(schema.sparks.createdAt),
+              limit: 3
+            }),
+            db.query.thoughts.findMany({
+              where: eq(schema.thoughts.userId, user.id),
+              orderBy: desc(schema.thoughts.createdAt),
+              limit: 3
+            })
+          ]);
+          
+          const notifications: any[] = [];
+          
+          recentDots.forEach(dot => {
+            notifications.push({
+              id: `dot-${dot.id}`,
+              type: 'dot_created',
+              message: `You created a new dot: ${dot.oneWordSummary || 'Untitled'}`,
+              createdAt: dot.createdAt,
+              read: true
+            });
           });
-          const notifications = recentDots.map(dot => ({
-            id: dot.id,
-            type: 'dot_created',
-            message: `You created a new dot: ${dot.oneWordSummary || 'Untitled'}`,
-            createdAt: dot.createdAt,
-            read: true
-          }));
-          res.json({ notifications, unreadCount: 0 });
+          
+          recentWheels.forEach(wheel => {
+            notifications.push({
+              id: `wheel-${wheel.id}`,
+              type: 'wheel_created',
+              message: `You created a new wheel: ${wheel.heading || 'Untitled'}`,
+              createdAt: wheel.createdAt,
+              read: true
+            });
+          });
+          
+          recentSparks.forEach(spark => {
+            notifications.push({
+              id: `spark-${spark.id}`,
+              type: 'spark_created',
+              message: `You added a spark`,
+              createdAt: spark.createdAt,
+              read: true
+            });
+          });
+          
+          recentThoughts.forEach(thought => {
+            notifications.push({
+              id: `thought-${thought.id}`,
+              type: 'thought_created',
+              message: `You created a thought: ${thought.heading || 'Untitled'}`,
+              createdAt: thought.createdAt,
+              read: true
+            });
+          });
+          
+          // Sort by date descending and limit
+          notifications.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+          
+          res.json({ notifications: notifications.slice(0, 10), unreadCount: 0 });
         } catch (e: any) {
           res.status(500).json({ error: e.message });
         }
@@ -903,26 +1056,78 @@ httpServer.listen(port, '0.0.0.0', () => {
         }
       });
       
-      // Recent activities
+      // Recent activities (comprehensive)
       app.get('/api/activities/recent', async (req, res) => {
         try {
           const user = await getUserFromToken(req);
           if (!user) return res.json({ activities: [] });
           
-          const recentDots = await db.query.dots.findMany({
-            where: eq(schema.dots.userId, user.id),
-            orderBy: desc(schema.dots.createdAt),
-            limit: 10
+          // Gather recent activity from multiple sources
+          const [recentDots, recentWheels, recentChakras, recentThoughts] = await Promise.all([
+            db.query.dots.findMany({
+              where: eq(schema.dots.userId, user.id),
+              orderBy: desc(schema.dots.createdAt),
+              limit: 5
+            }),
+            db.query.wheels.findMany({
+              where: eq(schema.wheels.userId, user.id),
+              orderBy: desc(schema.wheels.createdAt),
+              limit: 3
+            }),
+            db.query.chakras.findMany({
+              where: eq(schema.chakras.userId, user.id),
+              orderBy: desc(schema.chakras.createdAt),
+              limit: 2
+            }),
+            db.query.thoughts.findMany({
+              where: eq(schema.thoughts.userId, user.id),
+              orderBy: desc(schema.thoughts.createdAt),
+              limit: 3
+            })
+          ]);
+          
+          const activities: any[] = [];
+          
+          recentDots.forEach(dot => {
+            activities.push({
+              id: `dot-${dot.id}`,
+              type: 'dot_created',
+              description: `Created dot: ${dot.oneWordSummary || 'Untitled'}`,
+              timestamp: dot.createdAt
+            });
           });
           
-          const activities = recentDots.map(dot => ({
-            id: dot.id,
-            type: 'dot_created',
-            description: `Created dot: ${dot.oneWordSummary || 'Untitled'}`,
-            timestamp: dot.createdAt
-          }));
+          recentWheels.forEach(wheel => {
+            activities.push({
+              id: `wheel-${wheel.id}`,
+              type: 'wheel_created',
+              description: `Created wheel: ${wheel.heading || 'Untitled'}`,
+              timestamp: wheel.createdAt
+            });
+          });
           
-          res.json({ activities });
+          recentChakras.forEach(chakra => {
+            activities.push({
+              id: `chakra-${chakra.id}`,
+              type: 'chakra_created',
+              description: `Created chakra: ${chakra.heading || 'Untitled'}`,
+              timestamp: chakra.createdAt
+            });
+          });
+          
+          recentThoughts.forEach(thought => {
+            activities.push({
+              id: `thought-${thought.id}`,
+              type: 'thought_created',
+              description: `Created thought: ${thought.heading || 'Untitled'}`,
+              timestamp: thought.createdAt
+            });
+          });
+          
+          // Sort by date descending
+          activities.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
+          
+          res.json({ activities: activities.slice(0, 15) });
         } catch (e: any) {
           res.status(500).json({ error: e.message });
         }
@@ -952,15 +1157,6 @@ httpServer.listen(port, '0.0.0.0', () => {
         } catch (e: any) {
           res.status(500).json({ error: e.message });
         }
-      });
-      
-      // Cognitive Identity Config
-      app.get('/api/cognitive-identity/config', (req, res) => {
-        res.json({ 
-          sections: [],
-          progress: 0,
-          isComplete: false
-        });
       });
       
       // Thoughts Stats
