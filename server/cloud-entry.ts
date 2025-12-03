@@ -1,17 +1,17 @@
 import express from 'express';
 import { createServer } from 'http';
 
-// Catch any uncaught errors
+// Catch any uncaught errors FIRST
 process.on('uncaughtException', (err) => {
-  console.error('Uncaught Exception:', err.message);
-  console.error(err.stack);
+  console.error('UNCAUGHT:', err.message);
 });
 
 process.on('unhandledRejection', (reason) => {
-  console.error('Unhandled Rejection:', reason);
+  console.error('UNHANDLED:', reason);
 });
 
-console.log('Starting server...');
+console.log('=== Server Starting ===');
+console.log('PORT:', process.env.PORT);
 console.log('DATABASE_URL exists:', !!process.env.DATABASE_URL);
 
 const app = express();
@@ -39,39 +39,188 @@ app.use((req, res, next) => {
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: false, limit: '10mb' }));
 
-// Health endpoints (respond before routes load)
-app.get('/health', (req, res) => {
-  res.json({ status: 'healthy' });
-});
+// Health endpoints
+app.get('/health', (req, res) => res.json({ status: 'healthy' }));
+app.get('/api/health', (req, res) => res.json({ status: 'ok' }));
 
-app.get('/api/health', (req, res) => {
-  res.json({ status: 'ok' });
-});
-
-// Start listening first
+// Start listening first, then load routes
 const httpServer = createServer(app);
 
-httpServer.listen(port, '0.0.0.0', async () => {
-  console.log(`Server listening on port ${port}`);
+httpServer.listen(port, '0.0.0.0', () => {
+  console.log(`=== Listening on port ${port} ===`);
   
-  // Now load routes
-  try {
-    console.log('Loading cloud routes...');
-    const { registerCloudRoutes } = await import('./cloud-routes');
-    await registerCloudRoutes(app);
-    console.log('Routes loaded successfully');
-  } catch (error: any) {
-    console.error('Failed to load routes:', error.message);
-    console.error(error.stack);
+  // Load routes with timeout protection
+  const loadRoutes = async () => {
+    console.log('Step 1: Starting route load...');
     
-    // Fallback route
-    app.get('/', (req, res) => {
-      res.json({ 
-        message: 'DotSpark API',
-        status: 'running',
-        routesLoaded: false,
-        error: error.message
+    try {
+      console.log('Step 2: Importing db...');
+      const { db } = await import('@db');
+      console.log('Step 3: DB imported');
+      
+      console.log('Step 4: Importing schema...');
+      const schema = await import('@shared/schema');
+      console.log('Step 5: Schema imported');
+      
+      const { eq, desc, count } = await import('drizzle-orm');
+      console.log('Step 6: Drizzle operators imported');
+      
+      // Register routes inline
+      app.get('/', (req, res) => {
+        res.json({ message: 'DotSpark API', status: 'running' });
       });
-    });
-  }
+      
+      // Get thoughts
+      app.get('/api/thoughts', async (req, res) => {
+        try {
+          const thoughts = await db.query.thoughts.findMany({
+            orderBy: desc(schema.thoughts.createdAt),
+            with: { user: true }
+          });
+          res.json(thoughts);
+        } catch (e: any) {
+          res.status(500).json({ error: e.message });
+        }
+      });
+      
+      // Get dots
+      app.get('/api/dots', async (req, res) => {
+        try {
+          const userId = req.query.userId as string;
+          if (!userId) return res.status(400).json({ error: 'userId required' });
+          const dots = await db.query.dots.findMany({
+            where: eq(schema.dots.userId, parseInt(userId)),
+            orderBy: desc(schema.dots.createdAt)
+          });
+          res.json(dots);
+        } catch (e: any) {
+          res.status(500).json({ error: e.message });
+        }
+      });
+      
+      // Get wheels
+      app.get('/api/wheels', async (req, res) => {
+        try {
+          const userId = req.query.userId as string;
+          if (!userId) return res.status(400).json({ error: 'userId required' });
+          const wheels = await db.query.wheels.findMany({
+            where: eq(schema.wheels.userId, parseInt(userId)),
+            orderBy: desc(schema.wheels.createdAt)
+          });
+          res.json(wheels);
+        } catch (e: any) {
+          res.status(500).json({ error: e.message });
+        }
+      });
+      
+      // Get chakras
+      app.get('/api/chakras', async (req, res) => {
+        try {
+          const userId = req.query.userId as string;
+          if (!userId) return res.status(400).json({ error: 'userId required' });
+          const chakras = await db.query.chakras.findMany({
+            where: eq(schema.chakras.userId, parseInt(userId)),
+            orderBy: desc(schema.chakras.createdAt)
+          });
+          res.json(chakras);
+        } catch (e: any) {
+          res.status(500).json({ error: e.message });
+        }
+      });
+      
+      // Get sparks
+      app.get('/api/sparks', async (req, res) => {
+        try {
+          const userId = req.query.userId as string;
+          if (!userId) return res.status(400).json({ error: 'userId required' });
+          const sparks = await db.query.sparks.findMany({
+            where: eq(schema.sparks.userId, parseInt(userId)),
+            orderBy: desc(schema.sparks.createdAt)
+          });
+          res.json(sparks);
+        } catch (e: any) {
+          res.status(500).json({ error: e.message });
+        }
+      });
+      
+      // Get user by Firebase UID
+      app.get('/api/users/firebase/:firebaseUid', async (req, res) => {
+        try {
+          const user = await db.query.users.findFirst({
+            where: eq(schema.users.firebaseUid, req.params.firebaseUid)
+          });
+          if (!user) return res.status(404).json({ error: 'User not found' });
+          res.json(user);
+        } catch (e: any) {
+          res.status(500).json({ error: e.message });
+        }
+      });
+      
+      // Create/update user
+      app.post('/api/users/firebase', async (req, res) => {
+        try {
+          const { firebaseUid, email, displayName, photoURL } = req.body;
+          let user = await db.query.users.findFirst({
+            where: eq(schema.users.firebaseUid, firebaseUid)
+          });
+          
+          if (user) {
+            const [updated] = await db.update(schema.users)
+              .set({ 
+                email: email || user.email,
+                fullName: displayName || user.fullName,
+                avatar: photoURL || user.avatar,
+                updatedAt: new Date()
+              })
+              .where(eq(schema.users.id, user.id))
+              .returning();
+            return res.json(updated);
+          }
+          
+          const [newUser] = await db.insert(schema.users)
+            .values({
+              firebaseUid,
+              email,
+              fullName: displayName,
+              avatar: photoURL,
+              username: email?.split('@')[0] || `user_${Date.now()}`
+            })
+            .returning();
+          
+          res.status(201).json(newUser);
+        } catch (e: any) {
+          res.status(500).json({ error: e.message });
+        }
+      });
+      
+      // ThinQ Circles
+      app.get('/api/thinq-circles', async (req, res) => {
+        try {
+          const circles = await db.query.thinqCircles.findMany({
+            orderBy: desc(schema.thinqCircles.createdAt)
+          });
+          res.json(circles);
+        } catch (e: any) {
+          res.status(500).json({ error: e.message });
+        }
+      });
+      
+      console.log('=== All routes registered ===');
+      
+    } catch (error: any) {
+      console.error('ROUTE LOAD ERROR:', error.message);
+      console.error('Stack:', error.stack);
+      
+      app.get('/', (req, res) => {
+        res.json({ 
+          message: 'DotSpark API',
+          status: 'error',
+          error: error.message
+        });
+      });
+    }
+  };
+  
+  // Start loading routes
+  loadRoutes();
 });

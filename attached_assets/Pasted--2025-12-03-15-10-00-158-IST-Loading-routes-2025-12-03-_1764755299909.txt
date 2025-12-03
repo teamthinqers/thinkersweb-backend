@@ -1,0 +1,36 @@
+
+2025-12-03 15:10:00.158 IST
+Loading routes...
+
+2025-12-03 15:10:00.222 IST
+Cloud Run ReplaceService thinkersweb-backend-00011-nb2  {@type: type.googleapis.com/google.cloud.audit.AuditLog, methodName: /Services.ReplaceService, resourceName: namespaces/graphite-setup-480107-n8/revisions/thinkersweb-backend-00011-nb2, response: {…}, serviceName: run.googleapis.com, status: {…}}
+
+2025-12-03 15:10:01.537 IST
+Cloud Run ReplaceService thinkersweb-backend  {@type: type.googleapis.com/google.cloud.audit.AuditLog, methodName: /Services.ReplaceService, resourceName: namespaces/graphite-setup-480107-n8/services/thinkersweb-backend, response: {…}, serviceName: run.googleapis.com, status: {…}}
+
+2025-12-03 15:11:17.887 IST
+GET404 554 B 20 ms curl/8.7.1  https://thinkersweb-backend-908196010054.europe-west1.run.app/
+
+2025-12-03 15:11:19.538 IST
+GET200 403 B 10 ms curl/8.7.1  https://thinkersweb-backend-908196010054.europe-west1.run.app/api/health
+
+2025-12-03 15:11:27.487 IST
+GET404 566 B 3 ms curl/8.7.1  https://thinkersweb-backend-908196010054.europe-west1.run.app/api/thoughts
+
+2025-12-03 15:11:28.909 IST
+GET404 565 B 6 ms curl/8.7.1  https://thinkersweb-backend-908196010054.europe-west1.run.app/api/entries
+
+2025-12-03 15:16:53.773 IST
+Cloud Run ReplaceService thinkersweb-backend 908196010054-compute@developer.gserviceaccount.com {@type: type.googleapis.com/google.cloud.audit.AuditLog, authenticationInfo: {…}, authorizationInfo: […], methodName: google.cloud.run.v1.Services.ReplaceService, request: {…}, requestMetadata: {…}, resourceLocation: {…}, resourceName: namespaces/graphite-setup-480107-n8/services/thinkersweb-backend…
+
+2025-12-03 15:17:53.291 IST
+Starting new instance. Reason: DEPLOYMENT_ROLLOUT - Instance started due to traffic shifting between revisions due to deployment, traffic split adjustment, or deployment health check.
+
+2025-12-03 15:17:56.210 IST
+Starting server...
+
+2025-12-03 15:17:56.219 IST
+Default STARTUP TCP probe succeeded after 1 attempt for container "placeholder-1" on port 8080.
+
+2025-12-03 15:17:57.598 IST
+Cloud Run ReplaceService thinkersweb-backend  {@type: type.googleapis.com/google.cloud.audit.AuditLog, methodName: /Services.ReplaceService, resourceName: namespaces/graphite-setup-480107-n8/services/thinkersweb-backend, response: {…}, serviceName: run.googleapis.com, status: {…}}
