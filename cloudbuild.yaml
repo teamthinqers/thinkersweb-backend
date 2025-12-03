@@ -20,6 +20,8 @@ steps:
       - '--allow-unauthenticated'
       - '--memory'
       - '512Mi'
+      - '--min-instances'
+      - '1'
       - '--set-env-vars'
       - 'NODE_ENV=production,FRONTEND_URL=https://www.thinqers.in'
 
