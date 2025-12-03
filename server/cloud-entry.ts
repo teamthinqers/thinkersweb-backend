@@ -875,18 +875,60 @@ httpServer.listen(port, '0.0.0.0', () => {
         }
       });
       
-      // Get specific circle by ID (must come AFTER literal routes like /my-circles)
+      // Get specific circle by ID with members and stats (must come AFTER literal routes like /my-circles)
       app.get('/api/thinq-circles/:circleId', async (req: any, res) => {
         try {
           const circleId = parseInt(req.params.circleId);
           if (isNaN(circleId)) {
             return res.status(400).json({ error: 'Invalid circle ID' });
           }
+          
+          // Fetch circle with members
           const circle = await db.query.thinqCircles.findFirst({
-            where: eq(schema.thinqCircles.id, circleId)
+            where: eq(schema.thinqCircles.id, circleId),
+            with: {
+              members: {
+                with: {
+                  user: {
+                    columns: {
+                      id: true,
+                      fullName: true,
+                      email: true,
+                      avatar: true,
+                      linkedinPhotoUrl: true,
+                    }
+                  }
+                }
+              }
+            }
           });
-          res.json({ success: !!circle, circle: circle || null });
+          
+          if (!circle) {
+            return res.json({ success: false, circle: null });
+          }
+          
+          // Get circle stats
+          const [dotsCount] = await db.select({ count: count() })
+            .from(schema.circleDots)
+            .where(eq(schema.circleDots.circleId, circleId));
+          
+          const [sparksCount] = await db.select({ count: count() })
+            .from(schema.circleSparks)
+            .where(eq(schema.circleSparks.circleId, circleId));
+          
+          res.json({ 
+            success: true, 
+            circle: {
+              ...circle,
+              stats: {
+                dots: dotsCount?.count || 0,
+                sparks: sparksCount?.count || 0,
+                members: circle.members?.length || 0,
+              }
+            }
+          });
         } catch (e: any) {
+          console.error('Get circle error:', e);
           res.status(500).json({ error: e.message });
         }
       });
