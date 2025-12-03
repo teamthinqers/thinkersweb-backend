@@ -44,8 +44,9 @@ const PublicProfile = () => {
 
   // Fetch dashboard data for stats
   const { data: dashboardData } = useQuery<{ success: boolean; data: any }>({
-    queryKey: [`/api/users/${userId}/dashboard`],
+    queryKey: ['/api/users', userId, 'dashboard'],
     enabled: !!userId,
+    staleTime: 30000, // Refetch after 30 seconds
   });
 
   const user = data?.user;
