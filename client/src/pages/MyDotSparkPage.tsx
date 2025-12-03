@@ -63,25 +63,26 @@ interface DashboardData {
 }
 
 export default function MyDotSparkPage() {
-  const { user } = useAuth();
+  const { user, authReady } = useAuth();
   const { toast } = useToast();
   const [badgeToShow, setBadgeToShow] = useState<Badge | null>(null);
   const [showBadgeModal, setShowBadgeModal] = useState(false);
 
   const { data: dashboardData, isLoading } = useQuery<{ success: boolean; data: DashboardData }>({
     queryKey: ['/api/dashboard'],
-    enabled: !!user,
+    enabled: !!user && authReady,
+    staleTime: 0,
+    refetchOnMount: 'always',
   });
 
   // Fetch cognitive identity configuration using the authenticated user's endpoint (original working version)
   const { data: cognitiveConfig, isError: cognitiveConfigError } = useQuery<{ success: boolean; data: any; configured: boolean }>({
     queryKey: ['/api/cognitive-identity/config'],
-    enabled: !!user,
-    staleTime: 5 * 60 * 1000, // Keep fresh for 5 minutes
-    gcTime: 30 * 60 * 1000, // Keep in cache for 30 minutes
-    refetchOnWindowFocus: true, // Refetch when user returns to tab
-    retry: 2, // Retry failed requests twice
-    placeholderData: (previousData) => previousData, // Keep previous data while refetching
+    enabled: !!user && authReady,
+    staleTime: 0,
+    refetchOnMount: 'always',
+    retry: 2,
+    placeholderData: (previousData) => previousData,
   });
 
   // Use previous known state - don't default to false on errors/loading
@@ -102,7 +103,9 @@ export default function MyDotSparkPage() {
   // Fetch user's ThinQ Circles to determine indicator status
   const { data: circlesData } = useQuery<{ success: boolean; circles: any[] }>({
     queryKey: ['/api/thinq-circles/my-circles'],
-    enabled: !!user,
+    enabled: !!user && authReady,
+    staleTime: 0,
+    refetchOnMount: 'always',
   });
 
   const hasCircles = (circlesData?.circles?.length ?? 0) > 0;
@@ -110,7 +113,9 @@ export default function MyDotSparkPage() {
   // Fetch pending circle invites
   const { data: pendingInvitesData } = useQuery<{ success: boolean; invites: any[] }>({
     queryKey: ['/api/thinq-circles/pending-invites'],
-    enabled: !!user,
+    enabled: !!user && authReady,
+    staleTime: 0,
+    refetchOnMount: 'always',
   });
   
   const [showInvitePopup, setShowInvitePopup] = useState(false);

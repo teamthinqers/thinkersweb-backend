@@ -558,7 +558,7 @@ function SocialPerspectivesModal({
 }
 
 export default function MyNeuraPage() {
-  const { user, logout } = useAuth();
+  const { user, logout, authReady } = useAuth();
   const [location, setLocation] = useLocation();
   const [selectedThought, setSelectedThought] = useState<ThoughtDot | null>(null);
   const [thoughts, setThoughts] = useState<ThoughtDot[]>([]);
@@ -574,19 +574,25 @@ export default function MyNeuraPage() {
   // Fetch user's personal thoughts from MyNeura
   const { data: myNeuraThoughts, isLoading } = useQuery({
     queryKey: ['/api/thoughts/myneura'],
-    enabled: !!user,
+    enabled: !!user && authReady,
+    staleTime: 0,
+    refetchOnMount: 'always',
   });
 
   // Fetch neural strength
   const { data: neuralStrength } = useQuery<NeuralStrengthData>({
     queryKey: ['/api/thoughts/neural-strength'],
-    enabled: !!user,
+    enabled: !!user && authReady,
+    staleTime: 0,
+    refetchOnMount: 'always',
   });
 
   // Fetch sparks count
   const { data: sparksCountData } = useQuery<{ success: boolean; count: number }>({
     queryKey: ['/api/thoughts/user/sparks-count'],
-    enabled: !!user,
+    enabled: !!user && authReady,
+    staleTime: 0,
+    refetchOnMount: 'always',
   });
 
   // Fetch user's circles
@@ -598,7 +604,9 @@ export default function MyNeuraPage() {
     }>;
   }>({
     queryKey: ['/api/thinq-circles/my-circles'],
-    enabled: !!user,
+    enabled: !!user && authReady,
+    staleTime: 0,
+    refetchOnMount: 'always',
   });
 
   const userCircles = circlesResponse?.circles || [];

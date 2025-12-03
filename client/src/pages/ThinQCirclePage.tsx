@@ -25,7 +25,7 @@ import { Input } from "@/components/ui/input";
 import { apiRequest } from "@/lib/queryClient";
 
 export default function ThinQCirclePage() {
-  const { user } = useAuth();
+  const { user, authReady } = useAuth();
   const [, setLocation] = useLocation();
   const [, params] = useRoute("/thinq-circle/:circleId");
   const { toast } = useToast();
@@ -64,7 +64,9 @@ export default function ThinQCirclePage() {
     };
   }>({
     queryKey: [`/api/thinq-circles/${circleId}`],
-    enabled: !!circleId && !!user,
+    enabled: !!circleId && !!user && authReady,
+    staleTime: 0,
+    refetchOnMount: 'always',
   });
 
   // Fetch circle thoughts
@@ -72,7 +74,9 @@ export default function ThinQCirclePage() {
     thoughts: any[];
   }>({
     queryKey: [`/api/thinq-circles/${circleId}/thoughts`],
-    enabled: !!circleId && !!user,
+    enabled: !!circleId && !!user && authReady,
+    staleTime: 0,
+    refetchOnMount: 'always',
   });
 
   const queryClient = useQueryClient();

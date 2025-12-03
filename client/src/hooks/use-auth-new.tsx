@@ -27,6 +27,7 @@ interface AuthContextType {
   user: User | null;
   firebaseUser: FirebaseUser | null;
   isLoading: boolean;
+  authReady: boolean; // True when Firebase auth state has been checked AND token is available
   error: string | null;
   checkAuth: () => Promise<void>;
   loginWithGoogle: () => Promise<void>;
@@ -67,6 +68,7 @@ const storeUser = (user: User | null) => {
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [firebaseUser, setFirebaseUser] = useState<FirebaseUser | null>(null);
+  const [authReady, setAuthReady] = useState(false); // True when Firebase auth has been checked AND token is ready
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -121,7 +123,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           setUser(storedUser);
           setIsLoading(false);
           
-          // Invalidate ALL user-dependent queries so they refetch with auth token
+          // Wait for Firebase token to be ready before marking authReady
+          try {
+            await fbUser.getIdToken();
+            setAuthReady(true);
+            console.log("✅ Auth ready - Firebase token available");
+          } catch (e) {
+            console.error("Failed to get Firebase token:", e);
+          }
+          
+          // Invalidate ALL user-dependent queries and FORCE refetch
           console.log("🔄 Invalidating ALL queries after auth restore...");
           queryClient.invalidateQueries({
             predicate: (query) => {
@@ -132,7 +143,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                      key.startsWith('/api/dashboard') ||
                      key.startsWith('/api/me') ||
                      key.startsWith('/api/users');
-            }
+            },
+            refetchType: 'all', // Force refetch even if not mounted
           });
           
           // Sync with backend in background (don't block UI)
@@ -147,7 +159,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           const syncedUser = await syncUserWithBackend(fbUser);
           if (syncedUser) {
             setUser(syncedUser);
-            // Invalidate ALL user-dependent queries so they refetch with auth token
+            // Wait for Firebase token to be ready before marking authReady
+            try {
+              await fbUser.getIdToken();
+              setAuthReady(true);
+              console.log("✅ Auth ready - Firebase token available");
+            } catch (e) {
+              console.error("Failed to get Firebase token:", e);
+            }
+            
+            // Invalidate ALL user-dependent queries and FORCE refetch
             console.log("🔄 Invalidating ALL queries after backend sync...");
             queryClient.invalidateQueries({
               predicate: (query) => {
@@ -158,7 +179,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                        key.startsWith('/api/dashboard') ||
                        key.startsWith('/api/me') ||
                        key.startsWith('/api/users');
-              }
+              },
+              refetchType: 'all', // Force refetch even if not mounted
             });
           } else {
             // Fallback: create user object from Firebase data
@@ -233,6 +255,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       // Clear local storage first
       storeUser(null);
       setUser(null);
+      setAuthReady(false); // Reset auth ready state
       
       // Sign out from Firebase
       await firebaseSignOut();
@@ -253,7 +276,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, firebaseUser, isLoading, error, checkAuth, loginWithGoogle, logout }}>
+    <AuthContext.Provider value={{ user, firebaseUser, isLoading, authReady, error, checkAuth, loginWithGoogle, logout }}>
       {children}
     </AuthContext.Provider>
   );

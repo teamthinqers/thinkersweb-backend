@@ -30,7 +30,7 @@ interface Circle {
 
 export default function ThoughtCirclePage() {
   const [, setLocation] = useLocation();
-  const { user } = useAuth();
+  const { user, authReady } = useAuth();
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [circleToDelete, setCircleToDelete] = useState<Circle | null>(null);
   const { toast } = useToast();
@@ -38,7 +38,9 @@ export default function ThoughtCirclePage() {
 
   const { data: circlesData, isLoading } = useQuery<{ circles: Circle[] }>({
     queryKey: ['/api/thinq-circles/my-circles'],
-    enabled: !!user,
+    enabled: !!user && authReady,
+    staleTime: 0,
+    refetchOnMount: 'always',
   });
 
   const circles = circlesData?.circles || [];
