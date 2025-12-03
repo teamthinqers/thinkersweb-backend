@@ -4,3 +4,21 @@ dist
 server/public
 vite.config.ts.*
 *.tar.gz
+
+# Large files
+*.apk
+attached_assets/*.apk
+
+# Secrets and credentials
+*.pem
+*-adminsdk-*.json
+*firebase-adminsdk*.json
+*service-account*.json
+*credentials*.json
+gcp-key.json
+attached_assets/*.json
+
+# Environment files
+.env
+.env.*
+!.env.example
