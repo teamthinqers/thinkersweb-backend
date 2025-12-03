@@ -1,6 +1,11 @@
 import express from 'express';
 import { createServer } from 'http';
 import admin from 'firebase-admin';
+import { db } from '../db';
+import * as schema from '../shared/schema';
+import { eq, desc, count, or, and, sql } from 'drizzle-orm';
+
+console.log('=== Top-level imports completed ===');
 
 // Initialize Firebase Admin
 if (!admin.apps.length) {
@@ -65,30 +70,7 @@ httpServer.listen(port, '0.0.0.0', () => {
   
   const loadRoutes = async () => {
     try {
-      console.log('Loading database and schema...');
-      
-      // Add timeout wrapper for imports (60s for cold starts with cross-region DB)
-      const importWithTimeout = async <T>(importFn: () => Promise<T>, name: string, timeoutMs = 60000): Promise<T> => {
-        return Promise.race([
-          importFn(),
-          new Promise<never>((_, reject) => 
-            setTimeout(() => reject(new Error(`Import of ${name} timed out after ${timeoutMs}ms`)), timeoutMs)
-          )
-        ]);
-      };
-      
-      console.log('Importing db module...');
-      const dbModule = await importWithTimeout(() => import('../db'), '../db');
-      const db = dbModule.db;
-      console.log('db module imported');
-      
-      console.log('Importing schema...');
-      const schema = await importWithTimeout(() => import('../shared/schema'), '../shared/schema');
-      console.log('schema imported');
-      
-      console.log('Importing drizzle-orm...');
-      const { eq, desc, count, or, and, sql } = await import('drizzle-orm');
-      console.log('drizzle-orm imported');
+      console.log('Loading routes with pre-imported database...');
       
       // Test database connection with a simple query
       console.log('Testing database connection...');
@@ -97,6 +79,7 @@ httpServer.listen(port, '0.0.0.0', () => {
         console.log('Database connection verified - found user:', testResult?.email || 'no users yet');
       } catch (dbError: any) {
         console.error('Database connection test failed:', dbError.message);
+        throw dbError; // Fail fast instead of continuing with broken DB
       }
       
       console.log('Database connected successfully');
