@@ -1,76 +1,50 @@
+// Catch any uncaught errors
+process.on('uncaughtException', (err) => {
+  console.error('Uncaught Exception:', err.message);
+  console.error(err.stack);
+});
+
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('Unhandled Rejection:', reason);
+});
+
+console.log('Starting server initialization...');
+console.log('PORT:', process.env.PORT);
+console.log('NODE_ENV:', process.env.NODE_ENV);
+
 const express = require('express');
+console.log('Express loaded');
 
 const app = express();
 const port = process.env.PORT || 8080;
 
-// Check required environment variables
-const requiredEnvVars = ['DATABASE_URL', 'OPENAI_API_KEY', 'SESSION_SECRET'];
-const missingVars = requiredEnvVars.filter(v => !process.env[v]);
-
-if (missingVars.length > 0) {
-  console.log('Missing environment variables:', missingVars.join(', '));
-  console.log('Starting minimal server without full routes');
-}
-
-// CORS middleware
+// CORS
 app.use((req, res, next) => {
-  const allowedOrigins = [
-    'https://www.thinqers.in',
-    'https://thinqers.in',
-    'http://localhost:5000',
-    'http://localhost:3000'
-  ];
-  const origin = req.headers.origin;
-  if (origin && allowedOrigins.includes(origin)) {
-    res.header('Access-Control-Allow-Origin', origin);
-  }
-  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
-  res.header('Access-Control-Allow-Credentials', 'true');
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
   if (req.method === 'OPTIONS') return res.sendStatus(200);
   next();
 });
 
-app.use(express.json({ limit: '10mb' }));
-app.use(express.urlencoded({ extended: false, limit: '10mb' }));
+app.use(express.json());
 
-// Health endpoints
 app.get('/health', (req, res) => {
-  res.json({ status: 'healthy', timestamp: new Date().toISOString() });
+  res.json({ status: 'healthy' });
 });
 
 app.get('/api/health', (req, res) => {
-  res.json({ status: 'ok', time: new Date().toISOString() });
+  res.json({ status: 'ok' });
 });
 
 app.get('/', (req, res) => {
-  res.json({ 
-    message: 'DotSpark API Server',
-    status: 'running',
-    envCheck: missingVars.length === 0 ? 'all set' : `missing: ${missingVars.join(', ')}`
-  });
+  res.json({ message: 'DotSpark API', status: 'running' });
 });
 
-// Start server immediately for health checks
+console.log('Starting to listen on port', port);
+
 app.listen(port, '0.0.0.0', () => {
-  console.log(`Server started on port ${port}`);
-  
-  // Only load routes if all env vars are present
-  if (missingVars.length === 0) {
-    setTimeout(() => {
-      try {
-        console.log('Loading full routes...');
-        const routes = require('./dist/routes.js');
-        if (routes.registerRoutes) {
-          routes.registerRoutes(app).then(() => {
-            console.log('Routes loaded successfully');
-          }).catch(err => {
-            console.error('Error registering routes:', err.message);
-          });
-        }
-      } catch (err) {
-        console.error('Failed to load routes:', err.message);
-      }
-    }, 100);
-  }
+  console.log('Server is now listening on port', port);
 });
+
+console.log('Listen call made');
