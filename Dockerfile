@@ -3,11 +3,14 @@ FROM node:20-slim
 
 WORKDIR /app
 
-# Only need express
-RUN npm init -y && npm install express
+# Copy package files
+COPY package*.json ./
 
-# Copy the server file
-COPY server/server-cloud.js ./server.js
+# Install all dependencies (including tsx for running TypeScript)
+RUN npm ci
+
+# Copy all source code
+COPY . .
 
 # Expose port
 EXPOSE 8080
@@ -15,5 +18,5 @@ EXPOSE 8080
 ENV NODE_ENV=production
 ENV PORT=8080
 
-# Start server
-CMD ["node", "server.js"]
+# Use tsx to run TypeScript directly
+CMD ["npx", "tsx", "server/cloud-entry.ts"]
