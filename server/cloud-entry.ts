@@ -79,7 +79,7 @@ httpServer.listen(port, '0.0.0.0', () => {
       console.log('Step 6: Drizzle operators imported');
       
       // Helper to get user from Bearer token
-      async function getUserFromToken(req: any): Promise<any | null> {
+      const getUserFromToken = async (req: any): Promise<any | null> => {
         try {
           const authHeader = req.headers.authorization;
           if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -94,7 +94,7 @@ httpServer.listen(port, '0.0.0.0', () => {
         } catch (e) {
           return null;
         }
-      }
+      };
       
       // Register routes inline
       app.get('/', (req, res) => {
@@ -108,7 +108,7 @@ httpServer.listen(port, '0.0.0.0', () => {
             orderBy: desc(schema.thoughts.createdAt),
             with: { user: true }
           });
-          res.json(thoughts);
+          res.json({ thoughts });
         } catch (e: any) {
           res.status(500).json({ error: e.message });
         }
@@ -405,7 +405,7 @@ httpServer.listen(port, '0.0.0.0', () => {
         try {
           const authHeader = req.headers.authorization;
           if (!authHeader || !authHeader.startsWith('Bearer ')) {
-            return res.json(null);
+            return res.json({ user: null });
           }
           
           const idToken = authHeader.substring(7);
@@ -417,23 +417,25 @@ httpServer.listen(port, '0.0.0.0', () => {
           });
           
           if (!user) {
-            return res.json(null);
+            return res.json({ user: null });
           }
           
           res.json({
-            id: user.id,
-            email: user.email,
-            username: user.username,
-            fullName: user.fullName,
-            avatar: user.avatar,
-            avatarUrl: user.avatar,
-            firebaseUid: user.firebaseUid,
-            createdAt: user.createdAt,
-            updatedAt: user.updatedAt
+            user: {
+              id: user.id,
+              email: user.email,
+              username: user.username,
+              fullName: user.fullName,
+              avatar: user.avatar,
+              avatarUrl: user.avatar,
+              firebaseUid: user.firebaseUid,
+              createdAt: user.createdAt,
+              updatedAt: user.updatedAt
+            }
           });
         } catch (e: any) {
           console.error('Auth me error:', e);
-          res.json(null);
+          res.json({ user: null });
         }
       });
       

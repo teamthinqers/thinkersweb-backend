@@ -49,18 +49,33 @@ export default function Social() {
 
   // Check admin status directly without relying on broken AuthProvider
   useEffect(() => {
-    fetch('/api/auth/me', {
-      credentials: 'include'
-    })
-      .then(res => res.json())
-      .then(data => {
-        console.log('Admin check:', data);
-        if (data.user?.email === 'aravindhraj1410@gmail.com') {
-          setIsAdmin(true);
-          console.log('✅ Admin logged in');
+    const checkAdmin = async () => {
+      try {
+        const { getAuth } = await import('firebase/auth');
+        const auth = getAuth();
+        const user = auth.currentUser;
+        
+        if (user) {
+          const token = await user.getIdToken();
+          const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || '';
+          const response = await fetch(`${apiBaseUrl}/api/auth/me`, {
+            headers: {
+              'Authorization': `Bearer ${token}`
+            },
+            credentials: 'include'
+          });
+          const data = await response.json();
+          console.log('Admin check:', data);
+          if (data.user?.email === 'aravindhraj1410@gmail.com') {
+            setIsAdmin(true);
+            console.log('✅ Admin logged in');
+          }
         }
-      })
-      .catch(err => console.error('Admin check failed:', err));
+      } catch (err) {
+        console.error('Admin check failed:', err);
+      }
+    };
+    checkAdmin();
   }, []);
 
   // Debug logging
