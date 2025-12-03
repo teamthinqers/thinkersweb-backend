@@ -1589,6 +1589,44 @@ httpServer.listen(port, '0.0.0.0', () => {
         }
       });
       
+      // Users search - MUST be before /api/users/:userId to avoid :userId catching "search"
+      app.get('/api/users/search', async (req: any, res) => {
+        try {
+          if (!req.user) {
+            return res.status(401).json({ error: 'Authentication required', success: false, users: [] });
+          }
+          
+          const query = req.query.q as string;
+          if (!query || query.trim().length < 2) {
+            return res.json({ success: true, users: [] });
+          }
+          
+          const searchTerm = `%${query.trim()}%`;
+          
+          // Use SQL template for ILIKE (case-insensitive search)
+          const foundUsers = await db.query.users.findMany({
+            where: or(
+              sql`${schema.users.fullName} ILIKE ${searchTerm}`,
+              sql`${schema.users.email} ILIKE ${searchTerm}`
+            ),
+            columns: {
+              id: true,
+              fullName: true,
+              email: true,
+              avatar: true,
+              linkedinPhotoUrl: true,
+              linkedinHeadline: true,
+            },
+            limit: 10,
+          });
+          
+          res.json({ success: true, users: foundUsers });
+        } catch (e: any) {
+          console.error('User search error:', e);
+          res.status(500).json({ success: false, error: e.message, users: [] });
+        }
+      });
+      
       // User profile - returns { success, user } format for PublicProfile.tsx
       app.get('/api/users/:userId', async (req: any, res) => {
         try {
@@ -1816,43 +1854,6 @@ httpServer.listen(port, '0.0.0.0', () => {
       
       // Network insights (stub)
       app.get('/api/network/insights', (req, res) => res.json({ insights: [], connections: 0 }));
-      
-      // Users search - returns { success: true, users: [...] } format
-      app.get('/api/users/search', async (req: any, res) => {
-        try {
-          if (!req.user) {
-            return res.status(401).json({ error: 'Authentication required', success: false, users: [] });
-          }
-          
-          const query = req.query.q as string;
-          if (!query || query.trim().length < 2) {
-            return res.json({ success: true, users: [] });
-          }
-          
-          const searchTerm = `%${query.trim()}%`;
-          
-          // Use SQL template for ILIKE (case-insensitive search)
-          const foundUsers = await db.query.users.findMany({
-            where: or(
-              sql`${schema.users.fullName} ILIKE ${searchTerm}`,
-              sql`${schema.users.email} ILIKE ${searchTerm}`
-            ),
-            columns: {
-              id: true,
-              fullName: true,
-              email: true,
-              avatar: true,
-              linkedinPhotoUrl: true,
-            },
-            limit: 10,
-          });
-          
-          res.json({ success: true, users: foundUsers });
-        } catch (e: any) {
-          console.error('User search error:', e);
-          res.status(500).json({ success: false, error: e.message, users: [] });
-        }
-      });
       
       console.log('=== All routes registered successfully ===');
       
