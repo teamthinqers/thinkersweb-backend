@@ -7,14 +7,17 @@ WORKDIR /app
 # Copy package files
 COPY package*.json ./
 
-# Install dependencies
-RUN npm ci --only=production
+# Install ALL dependencies (need devDeps for build)
+RUN npm ci
 
 # Copy source code
 COPY . .
 
-# Build the application
-RUN npm run build
+# Build the backend for cloud deployment
+RUN npx esbuild server/index-cloud.ts --platform=node --packages=external --bundle --format=esm --outdir=dist
+
+# Remove devDependencies after build
+RUN npm prune --production
 
 # Expose port (Cloud Run uses PORT env variable)
 EXPOSE 8080
@@ -24,4 +27,4 @@ ENV NODE_ENV=production
 ENV PORT=8080
 
 # Start the server
-CMD ["node", "dist/index.js"]
+CMD ["node", "dist/index-cloud.js"]
