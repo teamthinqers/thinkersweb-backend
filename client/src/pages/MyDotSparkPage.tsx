@@ -77,6 +77,8 @@ export default function MyDotSparkPage() {
   const { data: cognitiveConfig } = useQuery<{ success: boolean; data: any; configured: boolean }>({
     queryKey: ['/api/cognitive-identity/config'],
     enabled: !!user,
+    staleTime: 30000, // Refetch after 30 seconds
+    refetchOnWindowFocus: true, // Refetch when user returns to tab
   });
 
   const cognitiveIdentityConfigured = cognitiveConfig?.configured || false;
