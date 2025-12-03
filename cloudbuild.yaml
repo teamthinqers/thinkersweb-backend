@@ -1,20 +1,20 @@
 steps:
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['build', '-t', 'gcr.io/$PROJECT_ID/dotspark-api:$COMMIT_SHA', '.']
+    args: ['build', '-t', 'gcr.io/$PROJECT_ID/thinkersweb-backend:$COMMIT_SHA', '.']
 
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['push', 'gcr.io/$PROJECT_ID/dotspark-api:$COMMIT_SHA']
+    args: ['push', 'gcr.io/$PROJECT_ID/thinkersweb-backend:$COMMIT_SHA']
 
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     entrypoint: gcloud
     args:
       - 'run'
       - 'deploy'
-      - 'dotspark-api'
+      - 'thinkersweb-backend'
       - '--image'
-      - 'gcr.io/$PROJECT_ID/dotspark-api:$COMMIT_SHA'
+      - 'gcr.io/$PROJECT_ID/thinkersweb-backend:$COMMIT_SHA'
       - '--region'
-      - 'us-central1'
+      - 'europe-west1'
       - '--platform'
       - 'managed'
       - '--allow-unauthenticated'
@@ -24,7 +24,7 @@ steps:
       - 'NODE_ENV=production,FRONTEND_URL=https://www.thinqers.in'
 
 images:
-  - 'gcr.io/$PROJECT_ID/dotspark-api:$COMMIT_SHA'
+  - 'gcr.io/$PROJECT_ID/thinkersweb-backend:$COMMIT_SHA'
 
 options:
   logging: CLOUD_LOGGING_ONLY
