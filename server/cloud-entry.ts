@@ -1051,12 +1051,14 @@ httpServer.listen(port, '0.0.0.0', () => {
         try {
           const userId = parseInt(req.params.userId);
           
-          // Get user's public stats
-          const [dotsCount, wheelsCount, chakrasCount, thoughtsCount] = await Promise.all([
+          // Get user's public stats including savedSparks and perspectives
+          const [dotsCount, wheelsCount, chakrasCount, thoughtsCount, sparksCount, perspectivesCount] = await Promise.all([
             db.select({ count: count() }).from(schema.dots).where(eq(schema.dots.userId, userId)),
             db.select({ count: count() }).from(schema.wheels).where(eq(schema.wheels.userId, userId)),
             db.select({ count: count() }).from(schema.chakras).where(eq(schema.chakras.userId, userId)),
             db.select({ count: count() }).from(schema.thoughts).where(eq(schema.thoughts.userId, userId)),
+            db.select({ count: count() }).from(schema.sparks).where(eq(schema.sparks.userId, userId)),
+            db.select({ count: count() }).from(schema.perspectivesMessages).where(eq(schema.perspectivesMessages.userId, userId)),
           ]);
           
           res.json({
@@ -1067,6 +1069,8 @@ httpServer.listen(port, '0.0.0.0', () => {
                 wheels: wheelsCount[0]?.count || 0,
                 chakras: chakrasCount[0]?.count || 0,
                 thoughts: thoughtsCount[0]?.count || 0,
+                savedSparks: sparksCount[0]?.count || 0,
+                perspectives: perspectivesCount[0]?.count || 0,
               }
             }
           });
