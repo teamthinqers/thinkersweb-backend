@@ -73,36 +73,18 @@ export default function MyDotSparkPage() {
     enabled: !!user,
   });
 
-  // Fetch cognitive identity configuration from database
-  const { data: cognitiveConfig } = useQuery<{ success: boolean; data: any; configured: boolean }>({
-    queryKey: ['/api/cognitive-identity/config'],
-    enabled: !!user,
+  // Fetch cognitive identity using the same endpoint as Profile page (works)
+  const userId = (user as any)?.id;
+  const { data: cognitiveConfig } = useQuery<{ success: boolean; data: any; configured: boolean; isPublic: boolean }>({
+    queryKey: [`/api/users/${userId}/cognitive-identity`],
+    enabled: !!userId,
   });
 
   const cognitiveIdentityConfigured = cognitiveConfig?.configured || false;
 
-  // Get cognitive identity tags from saved configuration
+  // Get cognitive identity tags - use same approach as CognitiveIdentityCard
   const cognitiveIdentityTags = useMemo(() => {
-    if (!cognitiveConfig?.data) {
-      return [];
-    }
-    
-    const tuning = {
-      cognitivePace: parseFloat(cognitiveConfig.data.cognitivePace || '0.5'),
-      signalFocus: parseFloat(cognitiveConfig.data.signalFocus || '0.5'),
-      impulseControl: parseFloat(cognitiveConfig.data.impulseControl || '0.5'),
-      mentalEnergyFlow: parseFloat(cognitiveConfig.data.mentalEnergyFlow || '0.5'),
-      analytical: parseFloat(cognitiveConfig.data.analytical || '0.8'),
-      intuitive: parseFloat(cognitiveConfig.data.intuitive || '0.6'),
-      contextualThinking: parseFloat(cognitiveConfig.data.contextualThinking || '0.5'),
-      memoryBandwidth: parseFloat(cognitiveConfig.data.memoryBandwidth || '0.5'),
-      thoughtComplexity: parseFloat(cognitiveConfig.data.thoughtComplexity || '0.5'),
-      mentalModelDensity: parseFloat(cognitiveConfig.data.mentalModelDensity || '0.5'),
-      patternDetectionSensitivity: parseFloat(cognitiveConfig.data.patternDetectionSensitivity || '0.5'),
-      decisionMakingIndex: parseFloat(cognitiveConfig.data.decisionMakingIndex || '0.5'),
-    };
-    
-    return generateCognitiveIdentityTags(tuning);
+    return generateCognitiveIdentityTags(cognitiveConfig?.data || {});
   }, [cognitiveConfig]);
 
   // Fetch ALL badges with earned/locked status for gamification
