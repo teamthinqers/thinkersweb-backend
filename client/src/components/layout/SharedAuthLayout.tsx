@@ -16,7 +16,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { useQuery, useMutation } from '@tanstack/react-query';
-import { queryClient, apiRequest, getApiUrl } from '@/lib/queryClient';
+import { queryClient, apiRequest } from '@/lib/queryClient';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { formatDistanceToNow } from 'date-fns';
 
@@ -73,8 +73,7 @@ export default function SharedAuthLayout({ children }: SharedAuthLayoutProps) {
 
     const timer = setTimeout(async () => {
       try {
-        // Use getApiUrl to properly route to Cloud Run backend in production
-        const response = await fetch(getApiUrl(`/api/users/search?q=${encodeURIComponent(searchQuery)}`), {
+        const response = await fetch(`/api/users/search?q=${encodeURIComponent(searchQuery)}`, {
           credentials: 'include',
         });
         const data = await response.json();

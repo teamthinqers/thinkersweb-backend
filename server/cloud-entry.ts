@@ -719,30 +719,14 @@ httpServer.listen(port, '0.0.0.0', () => {
             where: eq(schema.cognitiveIdentity.userId, req.user.id)
           });
           
-          // Convert decimal strings to numbers for frontend tag generation
-          const numericIdentity = identity ? {
-            cognitivePace: parseFloat(identity.cognitivePace || '0.5'),
-            signalFocus: parseFloat(identity.signalFocus || '0.5'),
-            impulseControl: parseFloat(identity.impulseControl || '0.5'),
-            mentalEnergyFlow: parseFloat(identity.mentalEnergyFlow || '0.5'),
-            analytical: parseFloat(identity.analytical || '0.5'),
-            intuitive: parseFloat(identity.intuitive || '0.5'),
-            contextualThinking: parseFloat(identity.contextualThinking || '0.5'),
-            memoryBandwidth: parseFloat(identity.memoryBandwidth || '0.5'),
-            thoughtComplexity: parseFloat(identity.thoughtComplexity || '0.5'),
-            mentalModelDensity: parseFloat(identity.mentalModelDensity || '0.5'),
-            patternDetectionSensitivity: parseFloat(identity.patternDetectionSensitivity || '0.5'),
-            decisionMakingIndex: parseFloat(identity.decisionMakingIndex || '0.5'),
-          } : null;
-          
           res.json({ 
             success: true,
             configured: req.user.cognitiveIdentityCompleted || !!identity,
-            data: numericIdentity,
+            data: identity || null,
             sections: [],
             progress: identity ? 100 : 0,
             isComplete: req.user.cognitiveIdentityCompleted || false,
-            identity: numericIdentity
+            identity: identity || null
           });
         } catch (e: any) {
           res.status(500).json({ error: e.message });
@@ -1055,27 +1039,11 @@ httpServer.listen(port, '0.0.0.0', () => {
             });
           }
           
-          // Convert decimal strings to numbers for frontend tag generation
-          const numericData = cognitiveIdentity ? {
-            cognitivePace: parseFloat(cognitiveIdentity.cognitivePace || '0.5'),
-            signalFocus: parseFloat(cognitiveIdentity.signalFocus || '0.5'),
-            impulseControl: parseFloat(cognitiveIdentity.impulseControl || '0.5'),
-            mentalEnergyFlow: parseFloat(cognitiveIdentity.mentalEnergyFlow || '0.5'),
-            analytical: parseFloat(cognitiveIdentity.analytical || '0.5'),
-            intuitive: parseFloat(cognitiveIdentity.intuitive || '0.5'),
-            contextualThinking: parseFloat(cognitiveIdentity.contextualThinking || '0.5'),
-            memoryBandwidth: parseFloat(cognitiveIdentity.memoryBandwidth || '0.5'),
-            thoughtComplexity: parseFloat(cognitiveIdentity.thoughtComplexity || '0.5'),
-            mentalModelDensity: parseFloat(cognitiveIdentity.mentalModelDensity || '0.5'),
-            patternDetectionSensitivity: parseFloat(cognitiveIdentity.patternDetectionSensitivity || '0.5'),
-            decisionMakingIndex: parseFloat(cognitiveIdentity.decisionMakingIndex || '0.5'),
-          } : null;
-          
           res.json({
             success: true,
             configured: !!cognitiveIdentity,
             isPublic: isPublic,
-            data: numericData
+            data: cognitiveIdentity || null
           });
         } catch (e: any) {
           console.error('Error fetching user cognitive identity:', e);
@@ -1088,14 +1056,12 @@ httpServer.listen(port, '0.0.0.0', () => {
         try {
           const userId = parseInt(req.params.userId);
           
-          // Get user's public stats including sparks and perspectives
-          const [dotsCount, wheelsCount, chakrasCount, thoughtsCount, sparksCount, perspectivesCount] = await Promise.all([
+          // Get user's public stats
+          const [dotsCount, wheelsCount, chakrasCount, thoughtsCount] = await Promise.all([
             db.select({ count: count() }).from(schema.dots).where(eq(schema.dots.userId, userId)),
             db.select({ count: count() }).from(schema.wheels).where(eq(schema.wheels.userId, userId)),
             db.select({ count: count() }).from(schema.chakras).where(eq(schema.chakras.userId, userId)),
             db.select({ count: count() }).from(schema.thoughts).where(eq(schema.thoughts.userId, userId)),
-            db.select({ count: count() }).from(schema.sparks).where(eq(schema.sparks.userId, userId)),
-            db.select({ count: count() }).from(schema.perspectivesThreads).where(eq(schema.perspectivesThreads.userId, userId)),
           ]);
           
           res.json({
@@ -1106,8 +1072,6 @@ httpServer.listen(port, '0.0.0.0', () => {
                 wheels: wheelsCount[0]?.count || 0,
                 chakras: chakrasCount[0]?.count || 0,
                 thoughts: thoughtsCount[0]?.count || 0,
-                savedSparks: sparksCount[0]?.count || 0,
-                perspectives: perspectivesCount[0]?.count || 0,
               }
             }
           });
@@ -1208,11 +1172,11 @@ httpServer.listen(port, '0.0.0.0', () => {
       // Network insights (stub)
       app.get('/api/network/insights', (req, res) => res.json({ insights: [], connections: 0 }));
       
-      // Users search - returns { success, users } format for SharedAuthLayout
+      // Users search
       app.get('/api/users/search', async (req, res) => {
         try {
           const query = req.query.q as string;
-          if (!query || query.length < 2) return res.json({ success: true, users: [] });
+          if (!query || query.length < 2) return res.json([]);
           
           const searchPattern = `%${query}%`;
           
@@ -1236,10 +1200,10 @@ httpServer.listen(port, '0.0.0.0', () => {
             }
           });
           
-          res.json({ success: true, users });
+          res.json(users);
         } catch (e: any) {
           console.error('User search error:', e);
-          res.status(500).json({ success: false, error: e.message, users: [] });
+          res.status(500).json({ error: e.message });
         }
       });
       
