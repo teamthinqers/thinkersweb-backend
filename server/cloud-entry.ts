@@ -218,6 +218,82 @@ httpServer.listen(port, '0.0.0.0', () => {
         }
       });
       
+      // ThinQ Circles - My Circles
+      app.get('/api/thinq-circles/my-circles', async (req, res) => {
+        try {
+          const userId = req.query.userId as string;
+          if (!userId) return res.json([]);
+          const circles = await db.query.thinqCircles.findMany({
+            where: eq(schema.thinqCircles.creatorId, parseInt(userId)),
+            orderBy: desc(schema.thinqCircles.createdAt)
+          });
+          res.json(circles);
+        } catch (e: any) {
+          res.status(500).json({ error: e.message });
+        }
+      });
+      
+      // ThinQ Circles - Pending Invites
+      app.get('/api/thinq-circles/pending-invites', (req, res) => {
+        res.json([]);
+      });
+      
+      // Badges - Pending
+      app.get('/api/badges/pending', (req, res) => {
+        res.json([]);
+      });
+      
+      // Notifications - Simple
+      app.get('/api/notifications-simple', (req, res) => {
+        res.json({ notifications: [], unreadCount: 0 });
+      });
+      
+      // Notifications
+      app.get('/api/notifications', (req, res) => {
+        res.json({ success: true, notifications: [], unreadCount: 0 });
+      });
+      
+      // Dashboard
+      app.get('/api/dashboard', async (req, res) => {
+        try {
+          const userId = req.query.userId as string;
+          if (!userId) return res.json({ dots: 0, wheels: 0, chakras: 0, sparks: 0 });
+          
+          const dotsCount = await db.select({ count: count() }).from(schema.dots).where(eq(schema.dots.userId, parseInt(userId)));
+          const wheelsCount = await db.select({ count: count() }).from(schema.wheels).where(eq(schema.wheels.userId, parseInt(userId)));
+          const chakrasCount = await db.select({ count: count() }).from(schema.chakras).where(eq(schema.chakras.userId, parseInt(userId)));
+          const sparksCount = await db.select({ count: count() }).from(schema.sparks).where(eq(schema.sparks.userId, parseInt(userId)));
+          
+          res.json({
+            dots: dotsCount[0]?.count || 0,
+            wheels: wheelsCount[0]?.count || 0,
+            chakras: chakrasCount[0]?.count || 0,
+            sparks: sparksCount[0]?.count || 0
+          });
+        } catch (e: any) {
+          res.status(500).json({ error: e.message });
+        }
+      });
+      
+      // Cognitive Identity Config
+      app.get('/api/cognitive-identity/config', (req, res) => {
+        res.json({ 
+          sections: [],
+          progress: 0,
+          isComplete: false
+        });
+      });
+      
+      // Thoughts Stats
+      app.get('/api/thoughts/stats', async (req, res) => {
+        try {
+          const thoughtsCount = await db.select({ count: count() }).from(schema.thoughts);
+          res.json({ total: thoughtsCount[0]?.count || 0 });
+        } catch (e: any) {
+          res.status(500).json({ error: e.message });
+        }
+      });
+      
       // Auth login - Firebase token verification
       app.post('/api/auth/login', async (req, res) => {
         try {
