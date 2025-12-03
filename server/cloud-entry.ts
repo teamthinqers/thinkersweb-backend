@@ -78,12 +78,12 @@ httpServer.listen(port, '0.0.0.0', () => {
       };
       
       console.log('Importing db module...');
-      const dbModule = await importWithTimeout(() => import('@db'), '@db');
+      const dbModule = await importWithTimeout(() => import('../db'), '../db');
       const db = dbModule.db;
       console.log('db module imported');
       
       console.log('Importing schema...');
-      const schema = await importWithTimeout(() => import('@shared/schema'), '@shared/schema');
+      const schema = await importWithTimeout(() => import('../shared/schema'), '../shared/schema');
       console.log('schema imported');
       
       console.log('Importing drizzle-orm...');
