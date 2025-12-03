@@ -1,7 +1,7 @@
 import { createContext, useContext, useState, useCallback, ReactNode, useEffect } from "react";
 import { onAuthStateChanged, User as FirebaseUser } from "firebase/auth";
 import { auth as firebaseAuth, signInWithGoogle as firebaseSignInWithGoogle, signOut as firebaseSignOut } from "@/lib/firebase";
-import { apiRequest } from "@/lib/queryClient";
+import { apiRequest, queryClient } from "@/lib/queryClient";
 
 // User type matching backend
 export interface User {
@@ -121,6 +121,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           setUser(storedUser);
           setIsLoading(false);
           
+          // Invalidate queries so they refetch with auth token
+          console.log("🔄 Invalidating queries after auth restore...");
+          queryClient.invalidateQueries({ queryKey: ['/api/me'] });
+          queryClient.invalidateQueries({ queryKey: ['/api/cognitive-identity'] });
+          queryClient.invalidateQueries({ queryKey: ['/api/thinq-circles'] });
+          queryClient.invalidateQueries({ queryKey: ['/api/dashboard'] });
+          
           // Sync with backend in background (don't block UI)
           syncUserWithBackend(fbUser).then((syncedUser) => {
             if (syncedUser) {
@@ -133,6 +140,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           const syncedUser = await syncUserWithBackend(fbUser);
           if (syncedUser) {
             setUser(syncedUser);
+            // Invalidate queries so they refetch with auth token
+            console.log("🔄 Invalidating queries after backend sync...");
+            queryClient.invalidateQueries({ queryKey: ['/api/me'] });
+            queryClient.invalidateQueries({ queryKey: ['/api/cognitive-identity'] });
+            queryClient.invalidateQueries({ queryKey: ['/api/thinq-circles'] });
+            queryClient.invalidateQueries({ queryKey: ['/api/dashboard'] });
           } else {
             // Fallback: create user object from Firebase data
             const fallbackUser: User = {
