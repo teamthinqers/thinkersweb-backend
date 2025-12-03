@@ -28,26 +28,80 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+// Helper to get stored user from localStorage
+const getStoredUser = (): User | null => {
+  try {
+    const stored = localStorage.getItem('dotspark_user');
+    if (stored) {
+      const parsed = JSON.parse(stored);
+      // Convert date strings back to Date objects
+      if (parsed.createdAt) parsed.createdAt = new Date(parsed.createdAt);
+      if (parsed.updatedAt) parsed.updatedAt = new Date(parsed.updatedAt);
+      return parsed;
+    }
+  } catch (e) {
+    console.error('Error reading stored user:', e);
+  }
+  return null;
+};
+
+// Helper to store user in localStorage
+const storeUser = (user: User | null) => {
+  try {
+    if (user) {
+      localStorage.setItem('dotspark_user', JSON.stringify(user));
+    } else {
+      localStorage.removeItem('dotspark_user');
+    }
+  } catch (e) {
+    console.error('Error storing user:', e);
+  }
+};
+
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Check authentication status from backend session
+  // Check authentication status - first from localStorage, then optionally from backend
   const checkAuth = useCallback(async () => {
     try {
       setIsLoading(true);
       setError(null);
       
-      const response = await fetch('/api/auth/me', {
-        method: 'GET',
-        credentials: 'include', // Important: include session cookie
-      });
+      // First check localStorage for persisted user
+      const storedUser = getStoredUser();
+      if (storedUser) {
+        console.log("✅ Found stored user:", storedUser.email);
+        setUser(storedUser);
+        setIsLoading(false);
+        return;
+      }
+      
+      // If no stored user, try backend session (for development environment)
+      try {
+        const response = await fetch('/api/auth/me', {
+          method: 'GET',
+          credentials: 'include',
+        });
 
-      if (response.ok) {
-        const data = await response.json();
-        setUser(data.user || null);
-      } else {
+        if (response.ok) {
+          const data = await response.json();
+          if (data && data.user) {
+            setUser(data.user);
+            storeUser(data.user);
+          } else if (data) {
+            setUser(data);
+            storeUser(data);
+          } else {
+            setUser(null);
+          }
+        } else {
+          setUser(null);
+        }
+      } catch (err) {
+        // Backend might not be available, that's OK if we have localStorage
+        console.log("Backend auth check failed, using localStorage only");
         setUser(null);
       }
     } catch (err) {
@@ -130,6 +184,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (data && data.user) {
         console.log("✅ Backend session created successfully");
         setUser(data.user);
+        storeUser(data.user); // Persist to localStorage for stateless backend
       } else {
         throw new Error("Failed to create session");
       }
@@ -147,12 +202,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
-  // Logout - destroy backend session
+  // Logout - destroy backend session and clear local storage
   const logout = useCallback(async () => {
     try {
       setIsLoading(true);
       
-      await apiRequest('POST', '/api/auth/logout', {});
+      // Clear local storage first
+      storeUser(null);
+      setUser(null);
+      
+      // Try to logout from backend (may fail if stateless)
+      try {
+        await apiRequest('POST', '/api/auth/logout', {});
+      } catch (e) {
+        // Ignore backend logout errors for stateless setup
+      }
       
       // Also sign out from Firebase if somehow still signed in
       try {
@@ -160,8 +224,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       } catch (e) {
         // Ignore Firebase signout errors
       }
-      
-      setUser(null);
       
     } catch (err) {
       console.error("Logout error:", err);
