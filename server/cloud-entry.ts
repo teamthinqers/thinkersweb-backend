@@ -719,14 +719,30 @@ httpServer.listen(port, '0.0.0.0', () => {
             where: eq(schema.cognitiveIdentity.userId, req.user.id)
           });
           
+          // Convert decimal strings to numbers for frontend tag generation
+          const numericIdentity = identity ? {
+            cognitivePace: parseFloat(identity.cognitivePace || '0.5'),
+            signalFocus: parseFloat(identity.signalFocus || '0.5'),
+            impulseControl: parseFloat(identity.impulseControl || '0.5'),
+            mentalEnergyFlow: parseFloat(identity.mentalEnergyFlow || '0.5'),
+            analytical: parseFloat(identity.analytical || '0.5'),
+            intuitive: parseFloat(identity.intuitive || '0.5'),
+            contextualThinking: parseFloat(identity.contextualThinking || '0.5'),
+            memoryBandwidth: parseFloat(identity.memoryBandwidth || '0.5'),
+            thoughtComplexity: parseFloat(identity.thoughtComplexity || '0.5'),
+            mentalModelDensity: parseFloat(identity.mentalModelDensity || '0.5'),
+            patternDetectionSensitivity: parseFloat(identity.patternDetectionSensitivity || '0.5'),
+            decisionMakingIndex: parseFloat(identity.decisionMakingIndex || '0.5'),
+          } : null;
+          
           res.json({ 
             success: true,
             configured: req.user.cognitiveIdentityCompleted || !!identity,
-            data: identity || null,
+            data: numericIdentity,
             sections: [],
             progress: identity ? 100 : 0,
             isComplete: req.user.cognitiveIdentityCompleted || false,
-            identity: identity || null
+            identity: numericIdentity
           });
         } catch (e: any) {
           res.status(500).json({ error: e.message });
