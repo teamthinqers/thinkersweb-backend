@@ -946,12 +946,7 @@ httpServer.listen(port, '0.0.0.0', () => {
               linkedinPhotoUrl: user.linkedinPhotoUrl,
               aboutMe: user.aboutMe,
               cognitiveIdentityPublic: user.cognitiveIdentityPublic,
-              primaryArchetype: cognitiveIdentity?.primaryArchetype || null,
-              secondaryArchetype: cognitiveIdentity?.secondaryArchetype || null,
-              thinkingStyle: cognitiveIdentity?.thinkingStyle || null,
-              emotionalPattern: cognitiveIdentity?.emotionalPattern || null,
-              lifePhilosophy: cognitiveIdentity?.lifePhilosophy || null,
-              coreValues: cognitiveIdentity?.coreValues || null,
+              hasCognitiveIdentity: !!cognitiveIdentity,
             }
           });
         } catch (e: any) {
