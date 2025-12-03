@@ -4,6 +4,7 @@ import { createServer } from 'http';
 // Catch any uncaught errors
 process.on('uncaughtException', (err) => {
   console.error('Uncaught Exception:', err.message);
+  console.error(err.stack);
 });
 
 process.on('unhandledRejection', (reason) => {
@@ -11,6 +12,7 @@ process.on('unhandledRejection', (reason) => {
 });
 
 console.log('Starting server...');
+console.log('DATABASE_URL exists:', !!process.env.DATABASE_URL);
 
 const app = express();
 const port = parseInt(process.env.PORT || '8080', 10);
@@ -52,14 +54,15 @@ const httpServer = createServer(app);
 httpServer.listen(port, '0.0.0.0', async () => {
   console.log(`Server listening on port ${port}`);
   
-  // Now load full routes
+  // Now load routes
   try {
-    console.log('Loading routes...');
-    const { registerRoutes } = await import('./routes');
-    await registerRoutes(app);
+    console.log('Loading cloud routes...');
+    const { registerCloudRoutes } = await import('./cloud-routes');
+    await registerCloudRoutes(app);
     console.log('Routes loaded successfully');
   } catch (error: any) {
     console.error('Failed to load routes:', error.message);
+    console.error(error.stack);
     
     // Fallback route
     app.get('/', (req, res) => {
