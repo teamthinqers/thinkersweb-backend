@@ -66,9 +66,38 @@ httpServer.listen(port, '0.0.0.0', () => {
   const loadRoutes = async () => {
     try {
       console.log('Loading database and schema...');
-      const { db } = await import('@db');
-      const schema = await import('@shared/schema');
+      
+      // Add timeout wrapper for imports
+      const importWithTimeout = async <T>(importFn: () => Promise<T>, name: string, timeoutMs = 10000): Promise<T> => {
+        return Promise.race([
+          importFn(),
+          new Promise<never>((_, reject) => 
+            setTimeout(() => reject(new Error(`Import of ${name} timed out after ${timeoutMs}ms`)), timeoutMs)
+          )
+        ]);
+      };
+      
+      console.log('Importing db module...');
+      const dbModule = await importWithTimeout(() => import('@db'), '@db');
+      const db = dbModule.db;
+      console.log('db module imported');
+      
+      console.log('Importing schema...');
+      const schema = await importWithTimeout(() => import('@shared/schema'), '@shared/schema');
+      console.log('schema imported');
+      
+      console.log('Importing drizzle-orm...');
       const { eq, desc, count, or, and, sql } = await import('drizzle-orm');
+      console.log('drizzle-orm imported');
+      
+      // Test database connection with a simple query
+      console.log('Testing database connection...');
+      try {
+        const testResult = await db.query.users.findFirst();
+        console.log('Database connection verified - found user:', testResult?.email || 'no users yet');
+      } catch (dbError: any) {
+        console.error('Database connection test failed:', dbError.message);
+      }
       
       console.log('Database connected successfully');
       
