@@ -25,7 +25,7 @@ app.use((req, res, next) => {
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: false, limit: '10mb' }));
 
-// Health endpoints - respond immediately
+// Health endpoints
 app.get('/health', (req, res) => {
   res.json({ status: 'healthy', timestamp: new Date().toISOString() });
 });
@@ -42,25 +42,7 @@ app.get('/', (req, res) => {
   });
 });
 
-// Start server immediately
-const server = app.listen(port, '0.0.0.0', () => {
+// Start server
+app.listen(port, '0.0.0.0', () => {
   console.log(`Server started on port ${port}`);
-  
-  // Load full routes after server is listening
-  loadFullRoutes();
 });
-
-async function loadFullRoutes() {
-  try {
-    console.log('Loading full routes...');
-    
-    // Dynamically import the compiled routes
-    const { registerRoutes } = require('./dist/routes.js');
-    await registerRoutes(app);
-    
-    console.log('Full routes loaded successfully');
-  } catch (error) {
-    console.error('Failed to load full routes:', error.message);
-    console.log('Server running with basic health endpoints only');
-  }
-}

@@ -1,0 +1,166 @@
+
+starting build "9d48a543-2332-4bbf-9d47-8e85f7441219"
+FETCHSOURCE
+From https://github.com/teamthinqers/thinkersweb-backend
+ * branch            d40372c3383e6937b8b162754efdcfe3b798e3b2 -> FETCH_HEAD
+Updating files:  33% (375/1128)Updating files:  34% (384/1128)Updating files:  35% (395/1128)Updating files:  36% (407/1128)Updating files:  37% (418/1128)Updating files:  38% (429/1128)Updating files:  39% (440/1128)Updating files:  40% (452/1128)Updating files:  41% (463/1128)Updating files:  42% (474/1128)Updating files:  43% (486/1128)Updating files:  44% (497/1128)Updating files:  45% (508/1128)Updating files:  46% (519/1128)Updating files:  47% (531/1128)Updating files:  48% (542/1128)Updating files:  49% (553/1128)Updating files:  50% (564/1128)Updating files:  51% (576/1128)Updating files:  52% (587/1128)Updating files:  53% (598/1128)Updating files:  54% (610/1128)Updating files:  55% (621/1128)Updating files:  56% (632/1128)Updating files:  57% (643/1128)Updating files:  58% (655/1128)Updating files:  59% (666/1128)Updating files:  60% (677/1128)Updating files:  61% (689/1128)Updating files:  62% (700/1128)Updating files:  63% (711/1128)Updating files:  64% (722/1128)Updating files:  65% (734/1128)Updating files:  66% (745/1128)Updating files:  67% (756/1128)Updating files:  68% (768/1128)Updating files:  69% (779/1128)Updating files:  70% (790/1128)Updating files:  71% (801/1128)Updating files:  72% (813/1128)Updating files:  73% (824/1128)Updating files:  74% (835/1128)Updating files:  75% (846/1128)Updating files:  76% (858/1128)Updating files:  77% (869/1128)Updating files:  78% (880/1128)Updating files:  79% (892/1128)Updating files:  80% (903/1128)Updating files:  81% (914/1128)Updating files:  82% (925/1128)Updating files:  83% (937/1128)Updating files:  84% (948/1128)Updating files:  85% (959/1128)Updating files:  86% (971/1128)Updating files:  87% (982/1128)Updating files:  88% (993/1128)Updating files:  89% (1004/1128)Updating files:  90% (1016/1128)Updating files:  91% (1027/1128)Updating files:  92% (1038/1128)Updating files:  93% (1050/1128)Updating files:  94% (1061/1128)Updating files:  95% (1072/1128)Updating files:  96% (1083/1128)Updating files:  97% (1095/1128)Updating files:  98% (1106/1128)Updating files:  99% (1117/1128)Updating files: 100% (1128/1128)Updating files: 100% (1128/1128), done.
+HEAD is now at d40372c Update server to include all API routes and improve deployment
+GitCommit:
+d40372c3383e6937b8b162754efdcfe3b798e3b2
+BUILD
+Starting Step #0 - "Build"
+Already have image (with digest): gcr.io/cloud-builders/docker
+Sending build context to Docker daemon  10.23MB
+Step 1/11 : FROM node:20-slim
+20-slim: Pulling from library/node
+8e44f01296e3: Pulling fs layer
+667488fa5220: Pulling fs layer
+e96ce70b461a: Pulling fs layer
+6c2b787b4c45: Pulling fs layer
+aa42edbc26fe: Pulling fs layer
+6c2b787b4c45: Verifying Checksum
+6c2b787b4c45: Download complete
+667488fa5220: Verifying Checksum
+667488fa5220: Download complete
+aa42edbc26fe: Verifying Checksum
+aa42edbc26fe: Download complete
+8e44f01296e3: Verifying Checksum
+8e44f01296e3: Download complete
+e96ce70b461a: Verifying Checksum
+e96ce70b461a: Download complete
+8e44f01296e3: Pull complete
+667488fa5220: Pull complete
+e96ce70b461a: Pull complete
+6c2b787b4c45: Pull complete
+aa42edbc26fe: Pull complete
+Digest: sha256:fbb357f69d05c97333855b0846e4ef65462409728312df3c9ff12c941741c0a5
+Status: Downloaded newer image for node:20-slim
+ ---> 2438320b4ccb
+Step 2/11 : WORKDIR /app
+ ---> Running in f891b0245f37
+Removing intermediate container f891b0245f37
+ ---> cf966708b7e6
+Step 3/11 : COPY package*.json ./
+ ---> 9b0f3538bb43
+Step 4/11 : RUN npm ci
+ ---> Running in 904de48be9b5
+npm warn deprecated q@1.5.1: You or someone you depend on is using Q, the JavaScript Promise library that gave JavaScript developers strong feelings about promises. They can almost certainly migrate to the native JavaScript promise now. Thank you literally everyone for joining me in this bet against the odds. Be excellent to each other.
+npm warn deprecated
+npm warn deprecated (For a CapTP with native promises, see @endo/eventual-send and @endo/captp)
+npm warn deprecated node-domexception@1.0.0: Use your platform's native DOMException instead
+npm warn deprecated @esbuild-kit/esm-loader@2.6.5: Merged into tsx: https://tsx.is
+npm warn deprecated @esbuild-kit/core-utils@3.3.2: Merged into tsx: https://tsx.is
+added 776 packages, and audited 777 packages in 29s
+85 packages are looking for funding
+  run `npm fund` for details
+12 vulnerabilities (3 low, 5 moderate, 3 high, 1 critical)
+To address issues that do not require attention, run:
+  npm audit fix
+To address all issues (including breaking changes), run:
+  npm audit fix --force
+Run `npm audit` for details.
+npm notice
+npm notice New major version of npm available! 10.8.2 -> 11.6.4
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v11.6.4
+npm notice To update run: npm install -g npm@11.6.4
+npm notice
+Removing intermediate container 904de48be9b5
+ ---> 3d28bbcc2809
+Step 5/11 : COPY . .
+ ---> 2b05db58d104
+Step 6/11 : RUN npx esbuild server/routes.ts   --platform=node   --bundle   --format=cjs   --outfile=server/dist/routes.js   --external:@neondatabase/serverless   --external:ws   --external:bufferutil   --external:utf-8-validate   --external:better-sqlite3
+ ---> Running in b41a85fe2cf1
+  server/dist/routes.js  15.5mb ⚠️
+⚡ Done in 1676ms
+Removing intermediate container b41a85fe2cf1
+ ---> 6f692b5c89b8
+Step 7/11 : RUN npm prune --production
+ ---> Running in 2296695b9d71
+npm warn config production Use `--omit=dev` instead.
+up to date, audited 709 packages in 2s
+76 packages are looking for funding
+  run `npm fund` for details
+7 vulnerabilities (3 low, 3 high, 1 critical)
+To address all issues, run:
+  npm audit fix
+Run `npm audit` for details.
+Removing intermediate container 2296695b9d71
+ ---> 1c5bdec4761d
+Step 8/11 : EXPOSE 8080
+ ---> Running in 3574fc9a87c7
+Removing intermediate container 3574fc9a87c7
+ ---> ba0ab3df19e3
+Step 9/11 : ENV NODE_ENV=production
+ ---> Running in ae832f8a185c
+Removing intermediate container ae832f8a185c
+ ---> 7e061e635463
+Step 10/11 : ENV PORT=8080
+ ---> Running in b4ee0e533087
+Removing intermediate container b4ee0e533087
+ ---> 8375b58c5349
+Step 11/11 : CMD ["node", "server/server-cloud.js"]
+ ---> Running in d5e6e737854c
+Removing intermediate container d5e6e737854c
+ ---> b45219605ece
+Successfully built b45219605ece
+Successfully tagged europe-west1-docker.pkg.dev/graphite-setup-480107-n8/cloud-run-source-deploy/thinkersweb-backend/thinkersweb-backend:d40372c3383e6937b8b162754efdcfe3b798e3b2
+Finished Step #0 - "Build"
+Starting Step #1 - "Push"
+Already have image (with digest): gcr.io/cloud-builders/docker
+The push refers to repository [europe-west1-docker.pkg.dev/graphite-setup-480107-n8/cloud-run-source-deploy/thinkersweb-backend/thinkersweb-backend]
+84225067e1fd: Preparing
+c42ab4951ea8: Preparing
+72462f553722: Preparing
+04c029d50976: Preparing
+1650f753f0ee: Preparing
+e62ff6781886: Preparing
+be4bdbbdbdab: Preparing
+988c0d98d206: Preparing
+e52a4c483cc2: Preparing
+dda58b1779fc: Preparing
+bd2be69c2f99: Preparing
+bd2be69c2f99: Waiting
+e52a4c483cc2: Layer already exists
+dda58b1779fc: Layer already exists
+988c0d98d206: Layer already exists
+be4bdbbdbdab: Layer already exists
+e62ff6781886: Pushed
+1650f753f0ee: Pushed
+84225067e1fd: Pushed
+c42ab4951ea8: Pushed
+72462f553722: Pushed
+bd2be69c2f99: Pushed
+04c029d50976: Pushed
+d40372c3383e6937b8b162754efdcfe3b798e3b2: digest: sha256:107fde2c748acac58c47af2ebdd3ce510b3616b9e436ee6fc6ef6b5aa76f023a size: 2629
+Finished Step #1 - "Push"
+Starting Step #2 - "Deploy"
+Pulling image: gcr.io/google.com/cloudsdktool/cloud-sdk:slim
+slim: Pulling from google.com/cloudsdktool/cloud-sdk
+bfecd07633a3: Pulling fs layer
+fed15a2cd901: Pulling fs layer
+c569e73b6675: Pulling fs layer
+99269c27417b: Pulling fs layer
+fed15a2cd901: Verifying Checksum
+fed15a2cd901: Download complete
+99269c27417b: Verifying Checksum
+99269c27417b: Download complete
+bfecd07633a3: Verifying Checksum
+bfecd07633a3: Download complete
+bfecd07633a3: Pull complete
+fed15a2cd901: Pull complete
+c569e73b6675: Verifying Checksum
+c569e73b6675: Download complete
+c569e73b6675: Pull complete
+99269c27417b: Pull complete
+Digest: sha256:17a274eee28444fbdc1ce7410a064943c0dead47042cac07944a9020bd93cbc6
+Status: Downloaded newer image for gcr.io/google.com/cloudsdktool/cloud-sdk:slim
+gcr.io/google.com/cloudsdktool/cloud-sdk:slim
+Deploying...
+Creating Revision......................................................................................................................................................................................................failed
+Deployment failed
+ERROR: (gcloud.run.services.update) The user-provided container failed to start and listen on the port defined provided by the PORT=8080 environment variable within the allocated timeout. This can happen when the container port is misconfigured or if the timeout is too short. The health check timeout can be extended. Logs for this revision might contain more information.
+Logs URL: https://console.cloud.google.com/logs/viewer?project=graphite-setup-480107-n8&resource=cloud_run_revision/service_name/thinkersweb-backend/revision_name/thinkersweb-backend-00008-sm6&advancedFilter=resource.type%3D%22cloud_run_revision%22%0Aresource.labels.service_name%3D%22thinkersweb-backend%22%0Aresource.labels.revision_name%3D%22thinkersweb-backend-00008-sm6%22 
+For more troubleshooting guidance, see https://cloud.google.com/run/docs/troubleshooting#container-failed-to-start
+Finished Step #2 - "Deploy"
+ERROR
+ERROR: build step 2 "gcr.io/google.com/cloudsdktool/cloud-sdk:slim" failed: step exited with non-zero status: 1
