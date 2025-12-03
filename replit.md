@@ -97,3 +97,32 @@ Admin User: aravindhraj1410@gmail.com has special moderation privileges for mana
 - **Lucide React**: Icon library.
 - **Tailwind CSS**: Utility-first CSS framework.
 - **React Hook Form**: Form management.
+
+## Cloud Run Deployment Rules
+
+### Critical: No Dynamic Imports in cloud-entry.ts
+Dynamic imports (`await import('module')`) hang indefinitely in Cloud Run's containerized environment. Always use top-level imports:
+
+```typescript
+// ✅ CORRECT - Top-level imports
+import { db } from '../db';
+import * as schema from '../shared/schema';
+import { eq, desc, count, or, and, sql } from 'drizzle-orm';
+
+// ❌ WRONG - Dynamic imports hang in Cloud Run
+const loadRoutes = async () => {
+  const dbModule = await import('../db'); // HANGS!
+}
+```
+
+### Database Connection
+- Use Neon HTTP driver in Cloud Run (auto-detected via NODE_ENV/K_SERVICE/PORT)
+- Use WebSocket driver locally for development
+- Database region: Neon in us-east-2, Cloud Run in europe-west1 (cross-region latency expected)
+
+### Deployment Checklist
+1. All db/schema/drizzle-orm imports at top of `server/cloud-entry.ts`
+2. Health check `/health` responds before database logic
+3. Fail fast on DB errors (throw instead of silent fallback)
+4. Push to GitHub: `git push github main`
+5. Cloud Build auto-triggers from GitHub push
