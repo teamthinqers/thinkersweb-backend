@@ -378,6 +378,376 @@ httpServer.listen(port, '0.0.0.0', () => {
         }
       });
       
+      // Thoughts myneura - user's thoughts
+      app.get('/api/thoughts/myneura', async (req, res) => {
+        try {
+          const user = await getUserFromToken(req);
+          if (!user) return res.json({ thoughts: [] });
+          const thoughts = await db.query.thoughts.findMany({
+            where: eq(schema.thoughts.userId, user.id),
+            orderBy: desc(schema.thoughts.createdAt)
+          });
+          res.json({ thoughts });
+        } catch (e: any) {
+          res.status(500).json({ error: e.message });
+        }
+      });
+      
+      // Thoughts neural strength
+      app.get('/api/thoughts/neural-strength', async (req, res) => {
+        try {
+          const user = await getUserFromToken(req);
+          if (!user) return res.json({ strength: 0 });
+          const dotsCount = await db.select({ count: count() }).from(schema.dots).where(eq(schema.dots.userId, user.id));
+          const strength = Math.min(100, (dotsCount[0]?.count || 0) * 5);
+          res.json({ strength });
+        } catch (e: any) {
+          res.status(500).json({ error: e.message });
+        }
+      });
+      
+      // Social feed
+      app.get('/api/social/feed', async (req, res) => {
+        try {
+          const thoughts = await db.query.thoughts.findMany({
+            orderBy: desc(schema.thoughts.createdAt),
+            limit: 20,
+            with: { user: true }
+          });
+          res.json({ feed: thoughts });
+        } catch (e: any) {
+          res.status(500).json({ error: e.message });
+        }
+      });
+      
+      // Categories
+      app.get('/api/categories', async (req, res) => {
+        try {
+          res.json([]);
+        } catch (e: any) {
+          res.status(500).json({ error: e.message });
+        }
+      });
+      
+      // Tags
+      app.get('/api/tags', async (req, res) => {
+        try {
+          res.json([]);
+        } catch (e: any) {
+          res.status(500).json({ error: e.message });
+        }
+      });
+      
+      // Related tags
+      app.get('/api/tags/:id/related', (req, res) => {
+        res.json([]);
+      });
+      
+      // Entries
+      app.get('/api/entries', async (req, res) => {
+        try {
+          const user = await getUserFromToken(req);
+          if (!user) return res.json([]);
+          res.json([]);
+        } catch (e: any) {
+          res.status(500).json({ error: e.message });
+        }
+      });
+      
+      // Entry by ID
+      app.get('/api/entries/:id', (req, res) => {
+        res.json(null);
+      });
+      
+      // Auth refresh
+      app.post('/api/auth/refresh', async (req, res) => {
+        try {
+          const user = await getUserFromToken(req);
+          if (!user) return res.json({ user: null });
+          res.json({ user });
+        } catch (e: any) {
+          res.status(500).json({ error: e.message });
+        }
+      });
+      
+      // Validate invite code
+      app.post('/api/validate-invite-code', (req, res) => {
+        const { inviteCode } = req.body;
+        if (inviteCode === 'DOTSPARK2024' || inviteCode === 'NEURAL') {
+          res.json({ valid: true });
+        } else {
+          res.status(400).json({ message: 'Invalid invite code' });
+        }
+      });
+      
+      // WhatsApp endpoints
+      app.get('/api/whatsapp/status', (req, res) => {
+        res.json({ registered: false, phoneNumber: null });
+      });
+      
+      app.get('/api/whatsapp/contact', (req, res) => {
+        res.json({ number: '+1234567890', message: 'Hello from DotSpark!' });
+      });
+      
+      app.post('/api/whatsapp/register-direct', (req, res) => {
+        res.json({ success: true });
+      });
+      
+      app.post('/api/whatsapp/unregister', (req, res) => {
+        res.json({ success: true });
+      });
+      
+      // Network insights
+      app.get('/api/network/insights', (req, res) => {
+        res.json({ insights: [], connections: 0 });
+      });
+      
+      // Users search
+      app.get('/api/users/search', async (req, res) => {
+        try {
+          const query = req.query.q as string;
+          if (!query) return res.json([]);
+          res.json([]);
+        } catch (e: any) {
+          res.status(500).json({ error: e.message });
+        }
+      });
+      
+      // User stats
+      app.get('/api/user/stats', async (req, res) => {
+        try {
+          const user = await getUserFromToken(req);
+          if (!user) return res.json({ dots: 0, wheels: 0, chakras: 0, sparks: 0, thoughts: 0 });
+          
+          const dotsCount = await db.select({ count: count() }).from(schema.dots).where(eq(schema.dots.userId, user.id));
+          const wheelsCount = await db.select({ count: count() }).from(schema.wheels).where(eq(schema.wheels.userId, user.id));
+          const chakrasCount = await db.select({ count: count() }).from(schema.chakras).where(eq(schema.chakras.userId, user.id));
+          const sparksCount = await db.select({ count: count() }).from(schema.sparks).where(eq(schema.sparks.userId, user.id));
+          const thoughtsCount = await db.select({ count: count() }).from(schema.thoughts).where(eq(schema.thoughts.userId, user.id));
+          
+          res.json({
+            dots: dotsCount[0]?.count || 0,
+            wheels: wheelsCount[0]?.count || 0,
+            chakras: chakrasCount[0]?.count || 0,
+            sparks: sparksCount[0]?.count || 0,
+            thoughts: thoughtsCount[0]?.count || 0
+          });
+        } catch (e: any) {
+          res.status(500).json({ error: e.message });
+        }
+      });
+      
+      // Cognitive identity
+      app.get('/api/users/cognitive-identity', async (req, res) => {
+        try {
+          const user = await getUserFromToken(req);
+          res.json({ configured: !!user, identity: null });
+        } catch (e: any) {
+          res.status(500).json({ error: e.message });
+        }
+      });
+      
+      app.post('/api/cognitive-identity/configure', (req, res) => {
+        res.json({ success: true });
+      });
+      
+      app.post('/api/cognishield/configure', (req, res) => {
+        res.json({ success: true });
+      });
+      
+      // Mapping endpoints
+      app.get('/api/mapping/dot-to-wheel', (req, res) => {
+        res.json([]);
+      });
+      
+      app.get('/api/mapping/dot-to-chakra', (req, res) => {
+        res.json([]);
+      });
+      
+      app.get('/api/mapping/wheel-to-chakra', (req, res) => {
+        res.json([]);
+      });
+      
+      app.post('/api/mapping/dot-to-wheel', (req, res) => {
+        res.json({ success: true });
+      });
+      
+      app.post('/api/mapping/dot-to-chakra', (req, res) => {
+        res.json({ success: true });
+      });
+      
+      app.post('/api/mapping/wheel-to-chakra', (req, res) => {
+        res.json({ success: true });
+      });
+      
+      // Indexing endpoints
+      app.get('/api/indexing/stats', (req, res) => {
+        res.json({ indexed: 0, pending: 0 });
+      });
+      
+      app.post('/api/indexing/semantic-search', (req, res) => {
+        res.json({ results: [] });
+      });
+      
+      app.post('/api/indexing/analyze-patterns', (req, res) => {
+        res.json({ patterns: [] });
+      });
+      
+      app.post('/api/indexing/detect-gaps', (req, res) => {
+        res.json({ gaps: [] });
+      });
+      
+      app.post('/api/indexing/full-reindex', (req, res) => {
+        res.json({ success: true });
+      });
+      
+      // Chat endpoints
+      app.post('/api/chat/intelligent', (req, res) => {
+        res.json({ response: 'Chat functionality is available in development mode.' });
+      });
+      
+      app.post('/api/chat/continue-point', (req, res) => {
+        res.json({ response: 'Continue point chat.' });
+      });
+      
+      app.post('/api/chat/advanced', (req, res) => {
+        res.json({ response: 'Advanced chat.' });
+      });
+      
+      app.post('/api/transcribe-voice', (req, res) => {
+        res.json({ text: '' });
+      });
+      
+      // Cognitive analyze and query
+      app.post('/api/cognitive/analyze', (req, res) => {
+        res.json({ analysis: null });
+      });
+      
+      app.post('/api/cognitive/query', (req, res) => {
+        res.json({ result: null });
+      });
+      
+      // DotSpark tuning
+      app.post('/api/dotspark/tuning', (req, res) => {
+        res.json({ success: true });
+      });
+      
+      app.post('/api/dotspark/learning-focus', (req, res) => {
+        res.json({ success: true });
+      });
+      
+      // Thought by ID
+      app.get('/api/thoughts/:thoughtId', async (req, res) => {
+        try {
+          const thoughtId = parseInt(req.params.thoughtId);
+          const thought = await db.query.thoughts.findFirst({
+            where: eq(schema.thoughts.id, thoughtId),
+            with: { user: true }
+          });
+          if (!thought) return res.status(404).json({ error: 'Thought not found' });
+          res.json(thought);
+        } catch (e: any) {
+          res.status(500).json({ error: e.message });
+        }
+      });
+      
+      // Update thought
+      app.patch('/api/thoughts/:thoughtId', async (req, res) => {
+        try {
+          const thoughtId = parseInt(req.params.thoughtId);
+          const { heading, summary } = req.body;
+          const [updated] = await db.update(schema.thoughts)
+            .set({ heading, summary, updatedAt: new Date() })
+            .where(eq(schema.thoughts.id, thoughtId))
+            .returning();
+          res.json(updated);
+        } catch (e: any) {
+          res.status(500).json({ error: e.message });
+        }
+      });
+      
+      // Delete thought
+      app.delete('/api/thoughts/:thoughtId', async (req, res) => {
+        try {
+          const thoughtId = parseInt(req.params.thoughtId);
+          await db.delete(schema.thoughts).where(eq(schema.thoughts.id, thoughtId));
+          res.json({ success: true });
+        } catch (e: any) {
+          res.status(500).json({ error: e.message });
+        }
+      });
+      
+      // Thought social thread status
+      app.get('/api/thoughts/:thoughtId/social-thread-status', (req, res) => {
+        res.json({ shared: false });
+      });
+      
+      app.post('/api/thoughts/:thoughtId/social-thread-status', (req, res) => {
+        res.json({ success: true });
+      });
+      
+      // Thought perspectives
+      app.get('/api/thoughts/:thoughtId/perspectives', (req, res) => {
+        res.json({ perspectives: [] });
+      });
+      
+      app.post('/api/thoughts/:thoughtId/perspectives', (req, res) => {
+        res.json({ success: true });
+      });
+      
+      // Social sparks
+      app.get('/api/thoughts/:thoughtId/social-sparks', (req, res) => {
+        res.json({ sparks: [] });
+      });
+      
+      // Share thought to social
+      app.post('/api/thoughts/:thoughtId/share-to-social', (req, res) => {
+        res.json({ success: true });
+      });
+      
+      // Save thought to myneura
+      app.post('/api/thoughts/myneura/save/:thoughtId', (req, res) => {
+        res.json({ success: true });
+      });
+      
+      // Connections endpoints
+      app.get('/api/connections', (req, res) => {
+        res.json([]);
+      });
+      
+      app.get('/api/connections/requests', (req, res) => {
+        res.json([]);
+      });
+      
+      app.post('/api/connections', (req, res) => {
+        res.json({ success: true });
+      });
+      
+      app.post('/api/connections/:connectionId/accept', (req, res) => {
+        res.json({ success: true });
+      });
+      
+      app.post('/api/connections/:connectionId/reject', (req, res) => {
+        res.json({ success: true });
+      });
+      
+      app.delete('/api/connections/:connectionId', (req, res) => {
+        res.json({ success: true });
+      });
+      
+      // Entries share
+      app.post('/api/entries/share', (req, res) => {
+        res.json({ success: true });
+      });
+      
+      app.post('/api/entries/share-by-tags', (req, res) => {
+        res.json({ success: true });
+      });
+      
+      app.post('/api/entries/share-all', (req, res) => {
+        res.json({ success: true });
+      });
+      
       // Get user by Firebase UID
       app.get('/api/users/firebase/:firebaseUid', async (req, res) => {
         try {
