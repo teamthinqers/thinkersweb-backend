@@ -460,12 +460,13 @@ httpServer.listen(port, '0.0.0.0', () => {
           const userId = req.query.userId ? parseInt(req.query.userId as string) : req.user?.id;
           
           // Get user counts
-          const [dotsCount, wheelsCount, chakrasCount, userSparksCount, userThoughtsCount] = await Promise.all([
+          const [dotsCount, wheelsCount, chakrasCount, userSparksCount, userThoughtsCount, userPerspectivesCount] = await Promise.all([
             userId ? db.select({ count: count() }).from(schema.dots).where(eq(schema.dots.userId, userId)) : [{ count: 0 }],
             userId ? db.select({ count: count() }).from(schema.wheels).where(eq(schema.wheels.userId, userId)) : [{ count: 0 }],
             userId ? db.select({ count: count() }).from(schema.chakras).where(eq(schema.chakras.userId, userId)) : [{ count: 0 }],
             userId ? db.select({ count: count() }).from(schema.sparks).where(eq(schema.sparks.userId, userId)) : [{ count: 0 }],
-            userId ? db.select({ count: count() }).from(schema.thoughts).where(eq(schema.thoughts.userId, userId)) : [{ count: 0 }]
+            userId ? db.select({ count: count() }).from(schema.thoughts).where(eq(schema.thoughts.userId, userId)) : [{ count: 0 }],
+            userId ? db.select({ count: count() }).from(schema.perspectivesMessages).where(and(eq(schema.perspectivesMessages.userId, userId), eq(schema.perspectivesMessages.isDeleted, false))) : [{ count: 0 }]
           ]);
           
           // Calculate collective growth (platform-wide social engagement)
@@ -495,8 +496,13 @@ httpServer.listen(port, '0.0.0.0', () => {
                 dots: dotsCount[0]?.count || 0,
                 wheels: wheelsCount[0]?.count || 0,
                 chakras: chakrasCount[0]?.count || 0,
-                sparks: userSparksCount[0]?.count || 0,
                 thoughts: userThoughtsCount[0]?.count || 0,
+                savedSparks: userSparksCount[0]?.count || 0,
+                perspectives: userPerspectivesCount[0]?.count || 0,
+              },
+              myNeuraStats: {
+                thoughts: userThoughtsCount[0]?.count || 0,
+                sparks: userSparksCount[0]?.count || 0,
               },
               socialStats: {
                 thoughts: platformThoughtsCount?.count || 0,
@@ -654,16 +660,36 @@ httpServer.listen(port, '0.0.0.0', () => {
         }
       });
       
-      // User badges
+      // User badges - returns ALL badges with earned/locked status for gamification
       app.get('/api/users/:userId/badges', async (req: any, res) => {
         try {
           const userId = parseInt(req.params.userId);
-          const userBadges = await db.query.userBadges.findMany({
+          
+          // Get all badges
+          const allBadges = await db.query.badges.findMany({
+            orderBy: desc(schema.badges.createdAt),
+          });
+          
+          // Get user's earned badges
+          const earnedBadges = await db.query.userBadges.findMany({
             where: eq(schema.userBadges.userId, userId),
             with: { badge: true }
           });
-          res.json({ badges: userBadges.map(ub => ub.badge) });
+          
+          // Create a map of earned badge IDs
+          const earnedBadgeIds = new Set(earnedBadges.map(ub => ub.badgeId));
+          const earnedBadgeMap = new Map(earnedBadges.map(ub => [ub.badgeId, ub.earnedAt]));
+          
+          // Combine all badges with earned status
+          const badgesWithStatus = allBadges.map(badge => ({
+            ...badge,
+            earned: earnedBadgeIds.has(badge.id),
+            earnedAt: earnedBadgeMap.get(badge.id) || null,
+          }));
+          
+          res.json({ success: true, badges: badgesWithStatus });
         } catch (e: any) {
+          console.error('Error fetching user badges:', e);
           res.status(500).json({ error: e.message });
         }
       });
