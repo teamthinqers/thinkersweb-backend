@@ -1,5 +1,18 @@
 import express from 'express';
 import { createServer } from 'http';
+import admin from 'firebase-admin';
+
+// Initialize Firebase Admin
+if (!admin.apps.length) {
+  const privateKey = process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n');
+  admin.initializeApp({
+    credential: admin.credential.cert({
+      projectId: 'dotspark-4846b',
+      clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+      privateKey: privateKey,
+    }),
+  });
+}
 
 // Catch any uncaught errors FIRST
 process.on('uncaughtException', (err) => {
@@ -203,6 +216,83 @@ httpServer.listen(port, '0.0.0.0', () => {
         } catch (e: any) {
           res.status(500).json({ error: e.message });
         }
+      });
+      
+      // Auth login - Firebase token verification
+      app.post('/api/auth/login', async (req, res) => {
+        try {
+          const { idToken, email, displayName, photoURL } = req.body;
+          
+          if (!idToken) {
+            return res.status(400).json({ error: 'ID token required' });
+          }
+          
+          // Verify Firebase token
+          const decodedToken = await admin.auth().verifyIdToken(idToken);
+          const firebaseUid = decodedToken.uid;
+          const userEmail = decodedToken.email || email;
+          
+          // Find or create user
+          let user = await db.query.users.findFirst({
+            where: eq(schema.users.firebaseUid, firebaseUid)
+          });
+          
+          if (!user && userEmail) {
+            // Try to find by email
+            user = await db.query.users.findFirst({
+              where: eq(schema.users.email, userEmail)
+            });
+            
+            if (user) {
+              // Link existing user to Firebase
+              const [updated] = await db.update(schema.users)
+                .set({ firebaseUid, updatedAt: new Date() })
+                .where(eq(schema.users.id, user.id))
+                .returning();
+              user = updated;
+            }
+          }
+          
+          if (!user) {
+            // Create new user
+            const username = userEmail?.split('@')[0] || `user_${Date.now()}`;
+            const [newUser] = await db.insert(schema.users)
+              .values({
+                firebaseUid,
+                email: userEmail,
+                fullName: displayName || decodedToken.name,
+                avatar: photoURL || decodedToken.picture,
+                username
+              })
+              .returning();
+            user = newUser;
+          }
+          
+          res.json({
+            success: true,
+            user: {
+              id: user.id,
+              email: user.email,
+              username: user.username,
+              fullName: user.fullName,
+              avatar: user.avatar,
+              firebaseUid: user.firebaseUid
+            }
+          });
+        } catch (e: any) {
+          console.error('Auth login error:', e);
+          res.status(401).json({ error: 'Authentication failed: ' + e.message });
+        }
+      });
+      
+      // Auth me - get current user (stateless for now)
+      app.get('/api/auth/me', (req, res) => {
+        res.json(null);
+      });
+      
+      // Auth logout
+      app.post('/api/auth/logout', (req, res) => {
+        res.json({ success: true });
       });
       
       console.log('=== All routes registered ===');
