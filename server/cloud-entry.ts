@@ -75,7 +75,7 @@ httpServer.listen(port, '0.0.0.0', () => {
       const schema = await import('@shared/schema');
       console.log('Step 5: Schema imported');
       
-      const { eq, desc, count, or } = await import('drizzle-orm');
+      const { eq, desc, count, or, and } = await import('drizzle-orm');
       console.log('Step 6: Drizzle operators imported');
       
       // Helper to get user from Bearer token
@@ -387,16 +387,48 @@ httpServer.listen(port, '0.0.0.0', () => {
         }
       });
       
-      // Thoughts myneura - user's thoughts
+      // Thoughts myneura - user's PERSONAL thoughts only (visibility='personal')
       app.get('/api/thoughts/myneura', async (req, res) => {
         try {
           const user = await getUserFromToken(req);
-          if (!user) return res.json({ thoughts: [] });
-          const thoughts = await db.query.thoughts.findMany({
-            where: eq(schema.thoughts.userId, user.id),
-            orderBy: desc(schema.thoughts.createdAt)
+          if (!user) return res.json({ thoughts: [], savedThoughts: [] });
+          
+          // Get user's own personal thoughts (not social ones)
+          const personalThoughts = await db.query.thoughts.findMany({
+            where: and(
+              eq(schema.thoughts.userId, user.id),
+              eq(schema.thoughts.visibility, 'personal')
+            ),
+            orderBy: desc(schema.thoughts.createdAt),
+            with: { user: true }
           });
-          res.json({ thoughts });
+          
+          // Also get thoughts the user has shared to social (their own)
+          const sharedThoughts = await db.query.thoughts.findMany({
+            where: and(
+              eq(schema.thoughts.userId, user.id),
+              eq(schema.thoughts.sharedToSocial, true)
+            ),
+            orderBy: desc(schema.thoughts.createdAt),
+            with: { user: true }
+          });
+          
+          // Get saved thoughts from others
+          const savedThoughtRecords = await db.query.savedThoughts.findMany({
+            where: eq(schema.savedThoughts.userId, user.id),
+            with: {
+              thought: {
+                with: { user: true }
+              }
+            }
+          });
+          const savedThoughtsData = savedThoughtRecords.map(s => s.thought).filter(Boolean);
+          
+          res.json({ 
+            thoughts: personalThoughts,
+            sharedThoughts,
+            savedThoughts: savedThoughtsData
+          });
         } catch (e: any) {
           res.status(500).json({ error: e.message });
         }
