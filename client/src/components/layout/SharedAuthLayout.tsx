@@ -62,7 +62,7 @@ export default function SharedAuthLayout({ children }: SharedAuthLayoutProps) {
     refetchInterval: 30000, // Refetch every 30 seconds
   });
 
-  // Debounced search
+  // Debounced search with Firebase authentication
   useEffect(() => {
     if (!searchQuery.trim() || searchQuery.length < 2) {
       setSearchResults([]);
@@ -73,8 +73,19 @@ export default function SharedAuthLayout({ children }: SharedAuthLayoutProps) {
 
     const timer = setTimeout(async () => {
       try {
+        // Get Firebase token for authenticated request
+        const { getAuth } = await import('firebase/auth');
+        const auth = getAuth();
+        const token = auth.currentUser ? await auth.currentUser.getIdToken() : null;
+        
+        const headers: Record<string, string> = {};
+        if (token) {
+          headers['Authorization'] = `Bearer ${token}`;
+        }
+        
         const response = await fetch(`/api/users/search?q=${encodeURIComponent(searchQuery)}`, {
           credentials: 'include',
+          headers,
         });
         const data = await response.json();
         if (data.success) {
