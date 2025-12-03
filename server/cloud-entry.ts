@@ -67,8 +67,8 @@ httpServer.listen(port, '0.0.0.0', () => {
     try {
       console.log('Loading database and schema...');
       
-      // Add timeout wrapper for imports
-      const importWithTimeout = async <T>(importFn: () => Promise<T>, name: string, timeoutMs = 10000): Promise<T> => {
+      // Add timeout wrapper for imports (30s for cold starts)
+      const importWithTimeout = async <T>(importFn: () => Promise<T>, name: string, timeoutMs = 30000): Promise<T> => {
         return Promise.race([
           importFn(),
           new Promise<never>((_, reject) => 
