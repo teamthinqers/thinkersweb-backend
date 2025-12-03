@@ -78,6 +78,24 @@ httpServer.listen(port, '0.0.0.0', () => {
       const { eq, desc, count } = await import('drizzle-orm');
       console.log('Step 6: Drizzle operators imported');
       
+      // Helper to get user from Bearer token
+      async function getUserFromToken(req: any): Promise<any | null> {
+        try {
+          const authHeader = req.headers.authorization;
+          if (!authHeader || !authHeader.startsWith('Bearer ')) {
+            return null;
+          }
+          const idToken = authHeader.substring(7);
+          const decodedToken = await admin.auth().verifyIdToken(idToken);
+          const user = await db.query.users.findFirst({
+            where: eq(schema.users.firebaseUid, decodedToken.uid)
+          });
+          return user;
+        } catch (e) {
+          return null;
+        }
+      }
+      
       // Register routes inline
       app.get('/', (req, res) => {
         res.json({ message: 'DotSpark API', status: 'running' });
@@ -99,8 +117,12 @@ httpServer.listen(port, '0.0.0.0', () => {
       // Get dots
       app.get('/api/dots', async (req, res) => {
         try {
-          const userId = req.query.userId as string;
-          if (!userId) return res.status(400).json({ error: 'userId required' });
+          let userId = req.query.userId as string;
+          if (!userId) {
+            const user = await getUserFromToken(req);
+            if (user) userId = String(user.id);
+          }
+          if (!userId) return res.json([]);
           const dots = await db.query.dots.findMany({
             where: eq(schema.dots.userId, parseInt(userId)),
             orderBy: desc(schema.dots.createdAt)
@@ -114,8 +136,12 @@ httpServer.listen(port, '0.0.0.0', () => {
       // Get wheels
       app.get('/api/wheels', async (req, res) => {
         try {
-          const userId = req.query.userId as string;
-          if (!userId) return res.status(400).json({ error: 'userId required' });
+          let userId = req.query.userId as string;
+          if (!userId) {
+            const user = await getUserFromToken(req);
+            if (user) userId = String(user.id);
+          }
+          if (!userId) return res.json([]);
           const wheels = await db.query.wheels.findMany({
             where: eq(schema.wheels.userId, parseInt(userId)),
             orderBy: desc(schema.wheels.createdAt)
@@ -129,8 +155,12 @@ httpServer.listen(port, '0.0.0.0', () => {
       // Get chakras
       app.get('/api/chakras', async (req, res) => {
         try {
-          const userId = req.query.userId as string;
-          if (!userId) return res.status(400).json({ error: 'userId required' });
+          let userId = req.query.userId as string;
+          if (!userId) {
+            const user = await getUserFromToken(req);
+            if (user) userId = String(user.id);
+          }
+          if (!userId) return res.json([]);
           const chakras = await db.query.chakras.findMany({
             where: eq(schema.chakras.userId, parseInt(userId)),
             orderBy: desc(schema.chakras.createdAt)
@@ -144,8 +174,12 @@ httpServer.listen(port, '0.0.0.0', () => {
       // Get sparks
       app.get('/api/sparks', async (req, res) => {
         try {
-          const userId = req.query.userId as string;
-          if (!userId) return res.status(400).json({ error: 'userId required' });
+          let userId = req.query.userId as string;
+          if (!userId) {
+            const user = await getUserFromToken(req);
+            if (user) userId = String(user.id);
+          }
+          if (!userId) return res.json([]);
           const sparks = await db.query.sparks.findMany({
             where: eq(schema.sparks.userId, parseInt(userId)),
             orderBy: desc(schema.sparks.createdAt)
@@ -254,7 +288,11 @@ httpServer.listen(port, '0.0.0.0', () => {
       // Dashboard
       app.get('/api/dashboard', async (req, res) => {
         try {
-          const userId = req.query.userId as string;
+          let userId = req.query.userId as string;
+          if (!userId) {
+            const user = await getUserFromToken(req);
+            if (user) userId = String(user.id);
+          }
           if (!userId) return res.json({ dots: 0, wheels: 0, chakras: 0, sparks: 0 });
           
           const dotsCount = await db.select({ count: count() }).from(schema.dots).where(eq(schema.dots.userId, parseInt(userId)));
@@ -362,9 +400,41 @@ httpServer.listen(port, '0.0.0.0', () => {
         }
       });
       
-      // Auth me - get current user (stateless for now)
-      app.get('/api/auth/me', (req, res) => {
-        res.json(null);
+      // Auth me - get current user from Bearer token
+      app.get('/api/auth/me', async (req, res) => {
+        try {
+          const authHeader = req.headers.authorization;
+          if (!authHeader || !authHeader.startsWith('Bearer ')) {
+            return res.json(null);
+          }
+          
+          const idToken = authHeader.substring(7);
+          const decodedToken = await admin.auth().verifyIdToken(idToken);
+          const firebaseUid = decodedToken.uid;
+          
+          const user = await db.query.users.findFirst({
+            where: eq(schema.users.firebaseUid, firebaseUid)
+          });
+          
+          if (!user) {
+            return res.json(null);
+          }
+          
+          res.json({
+            id: user.id,
+            email: user.email,
+            username: user.username,
+            fullName: user.fullName,
+            avatar: user.avatar,
+            avatarUrl: user.avatar,
+            firebaseUid: user.firebaseUid,
+            createdAt: user.createdAt,
+            updatedAt: user.updatedAt
+          });
+        } catch (e: any) {
+          console.error('Auth me error:', e);
+          res.json(null);
+        }
       });
       
       // Auth logout
