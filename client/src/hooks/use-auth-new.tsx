@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useCallback, ReactNode, useEffect } from "react";
-import { auth as firebaseAuth, signInWithGoogle as firebaseSignInWithGoogle } from "@/lib/firebase";
+import { onAuthStateChanged, User as FirebaseUser } from "firebase/auth";
+import { auth as firebaseAuth, signInWithGoogle as firebaseSignInWithGoogle, signOut as firebaseSignOut } from "@/lib/firebase";
 import { apiRequest } from "@/lib/queryClient";
 
 // User type matching backend
@@ -10,6 +11,7 @@ export interface User {
   firebaseUid?: string | null;
   fullName?: string | null;
   avatarUrl?: string | null;
+  avatar?: string | null;
   bio?: string | null;
   createdAt: Date;
   updatedAt: Date;
@@ -17,6 +19,7 @@ export interface User {
 
 interface AuthContextType {
   user: User | null;
+  firebaseUser: FirebaseUser | null;
   isLoading: boolean;
   error: string | null;
   checkAuth: () => Promise<void>;
@@ -32,7 +35,6 @@ const getStoredUser = (): User | null => {
     const stored = localStorage.getItem('dotspark_user');
     if (stored) {
       const parsed = JSON.parse(stored);
-      // Convert date strings back to Date objects
       if (parsed.createdAt) parsed.createdAt = new Date(parsed.createdAt);
       if (parsed.updatedAt) parsed.updatedAt = new Date(parsed.updatedAt);
       return parsed;
@@ -58,81 +60,111 @@ const storeUser = (user: User | null) => {
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
+  const [firebaseUser, setFirebaseUser] = useState<FirebaseUser | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Check authentication status - first from localStorage, then optionally from backend
-  const checkAuth = useCallback(async () => {
+  // Sync user from Firebase to backend
+  const syncUserWithBackend = useCallback(async (fbUser: FirebaseUser): Promise<User | null> => {
     try {
-      setIsLoading(true);
-      setError(null);
+      const idToken = await fbUser.getIdToken();
       
-      // First check localStorage for persisted user
-      const storedUser = getStoredUser();
-      if (storedUser) {
-        console.log("✅ Found stored user:", storedUser.email);
-        setUser(storedUser);
-        setIsLoading(false);
-        return;
-      }
+      const response = await apiRequest('POST', '/api/auth/login', {
+        idToken,
+        email: fbUser.email,
+        displayName: fbUser.displayName,
+        photoURL: fbUser.photoURL,
+      });
       
-      // If no stored user, try backend session (for development environment)
-      try {
-        const response = await fetch('/api/auth/me', {
-          method: 'GET',
-          credentials: 'include',
-        });
-
-        if (response.ok) {
-          const data = await response.json();
-          if (data && data.user) {
-            setUser(data.user);
-            storeUser(data.user);
-          } else if (data) {
-            setUser(data);
-            storeUser(data);
-          } else {
-            setUser(null);
-          }
-        } else {
-          setUser(null);
+      if (response.ok) {
+        const data = await response.json();
+        if (data && data.user) {
+          // Ensure avatarUrl is set from multiple sources
+          const userData: User = {
+            ...data.user,
+            avatarUrl: data.user.avatarUrl || data.user.avatar || fbUser.photoURL,
+            avatar: data.user.avatar || fbUser.photoURL,
+          };
+          storeUser(userData);
+          return userData;
         }
-      } catch (err) {
-        // Backend might not be available, that's OK if we have localStorage
-        console.log("Backend auth check failed, using localStorage only");
-        setUser(null);
       }
+      return null;
     } catch (err) {
-      console.error("Auth check error:", err);
-      setUser(null);
-      setError("Failed to check authentication");
-    } finally {
-      setIsLoading(false);
+      console.error('Failed to sync user with backend:', err);
+      return null;
     }
   }, []);
 
-  // Check auth status on mount
+  // Listen to Firebase auth state changes
   useEffect(() => {
-    let processed = false;
+    console.log("🔐 Setting up Firebase auth listener...");
     
-    const initAuth = async () => {
-      if (processed) return;
-      processed = true;
+    const unsubscribe = onAuthStateChanged(firebaseAuth, async (fbUser) => {
+      console.log("🔄 Firebase auth state changed:", fbUser?.email || 'null');
+      setFirebaseUser(fbUser);
       
-      try {
+      if (fbUser) {
+        // User is signed in with Firebase
         setIsLoading(true);
-        console.log("🔍 Checking existing session...");
-        await checkAuth();
-      } catch (err) {
-        console.error("❌ Auth check error:", err);
-        setError("Failed to check authentication");
-      } finally {
+        
+        // First, check localStorage for cached user data
+        const storedUser = getStoredUser();
+        if (storedUser && storedUser.firebaseUid === fbUser.uid) {
+          console.log("✅ Using cached user data for:", storedUser.email);
+          setUser(storedUser);
+          setIsLoading(false);
+          
+          // Sync with backend in background (don't block UI)
+          syncUserWithBackend(fbUser).then((syncedUser) => {
+            if (syncedUser) {
+              setUser(syncedUser);
+            }
+          });
+        } else {
+          // No cached data or different user, sync with backend
+          console.log("🔄 Syncing user with backend...");
+          const syncedUser = await syncUserWithBackend(fbUser);
+          if (syncedUser) {
+            setUser(syncedUser);
+          } else {
+            // Fallback: create user object from Firebase data
+            const fallbackUser: User = {
+              id: 0,
+              username: fbUser.email?.split('@')[0] || 'user',
+              email: fbUser.email || '',
+              firebaseUid: fbUser.uid,
+              fullName: fbUser.displayName,
+              avatarUrl: fbUser.photoURL,
+              avatar: fbUser.photoURL,
+              createdAt: new Date(),
+              updatedAt: new Date(),
+            };
+            setUser(fallbackUser);
+            storeUser(fallbackUser);
+          }
+        }
         setIsLoading(false);
-        console.log("✅ Auth check complete");
+      } else {
+        // User is signed out
+        console.log("👋 User signed out");
+        setUser(null);
+        storeUser(null);
+        setIsLoading(false);
       }
-    };
-    
-    initAuth();
+    });
+
+    return () => unsubscribe();
+  }, [syncUserWithBackend]);
+
+  // Check auth - now just triggers a re-check
+  const checkAuth = useCallback(async () => {
+    // Firebase auth listener handles this automatically
+    // This is kept for API compatibility
+    const storedUser = getStoredUser();
+    if (storedUser) {
+      setUser(storedUser);
+    }
   }, []);
 
   // Login with Google OAuth
@@ -141,63 +173,26 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setIsLoading(true);
       setError(null);
       
-      // Use the configured signInWithGoogle from firebase.ts
-      console.log("🔐 Starting Google sign-in with popup flow...");
-      const firebaseUser = await firebaseSignInWithGoogle();
+      console.log("🔐 Starting Google sign-in...");
+      const fbUser = await firebaseSignInWithGoogle();
 
-      if (!firebaseUser) {
+      if (!fbUser) {
         throw new Error("No user returned from Google Sign-In");
       }
 
-      console.log("✅ Google sign-in successful, getting ID token...");
-
-      // Step 2: Get the Firebase ID token
-      const idToken = await firebaseUser.getIdToken();
-
-      if (!idToken) {
-        throw new Error("Failed to get Firebase ID token");
-      }
-
-      console.log("✅ ID token obtained, exchanging for backend session...");
-
-      // Step 3: Exchange Firebase ID token for backend session
-      const response = await apiRequest('POST', '/api/auth/login', {
-        idToken,
-      });
+      console.log("✅ Google sign-in successful:", fbUser.email);
+      // Firebase auth listener will handle the rest automatically
       
-      console.log("📡 Backend response status:", response.status, response.statusText);
-      
-      const data = await response.json() as { user: User; isNewUser: boolean };
-      
-      console.log("📡 Backend response data:", data);
-
-      if (!response.ok) {
-        console.error("❌ Backend returned error:", data);
-        throw new Error((data as any).error || "Failed to create session");
-      }
-
-      if (data && data.user) {
-        console.log("✅ Backend session created successfully");
-        setUser(data.user);
-        storeUser(data.user); // Persist to localStorage for stateless backend
-      } else {
-        throw new Error("Failed to create session");
-      }
-
-      // Step 3: Sign out from Firebase (we only use it for OAuth, not for session)
-      await firebaseAuth.signOut();
-
     } catch (err: any) {
       console.error("Login error:", err);
       setUser(null);
       setError(err.message || "Failed to sign in with Google");
-      throw err;
-    } finally {
       setIsLoading(false);
+      throw err;
     }
   }, []);
 
-  // Logout - destroy backend session and clear local storage
+  // Logout
   const logout = useCallback(async () => {
     try {
       setIsLoading(true);
@@ -206,18 +201,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       storeUser(null);
       setUser(null);
       
-      // Try to logout from backend (may fail if stateless)
+      // Sign out from Firebase
+      await firebaseSignOut();
+      
+      // Try to logout from backend
       try {
         await apiRequest('POST', '/api/auth/logout', {});
       } catch (e) {
-        // Ignore backend logout errors for stateless setup
-      }
-      
-      // Also sign out from Firebase if somehow still signed in
-      try {
-        await firebaseAuth.signOut();
-      } catch (e) {
-        // Ignore Firebase signout errors
+        // Ignore backend logout errors
       }
       
     } catch (err) {
@@ -229,7 +220,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, isLoading, error, checkAuth, loginWithGoogle, logout }}>
+    <AuthContext.Provider value={{ user, firebaseUser, isLoading, error, checkAuth, loginWithGoogle, logout }}>
       {children}
     </AuthContext.Provider>
   );
