@@ -13,6 +13,12 @@ export interface User {
   avatarUrl?: string | null;
   avatar?: string | null;
   bio?: string | null;
+  aboutMe?: string | null;
+  linkedinHeadline?: string | null;
+  linkedinProfileUrl?: string | null;
+  linkedinPhotoUrl?: string | null;
+  cognitiveIdentityPublic?: boolean;
+  hasCognitiveIdentity?: boolean;
   createdAt: Date;
   updatedAt: Date;
 }
