@@ -1,5 +1,16 @@
 import { QueryClient, QueryFunction } from "@tanstack/react-query";
 
+// API Base URL - uses environment variable in production, empty string (relative) in development
+export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '';
+
+// Helper to build full API URL
+export function getApiUrl(path: string): string {
+  // If path already starts with http, return as-is
+  if (path.startsWith('http')) return path;
+  // Otherwise prepend the base URL
+  return `${API_BASE_URL}${path}`;
+}
+
 // Ultra-simplified network status without complex tracking
 /**
  * A drastically simplified network status to prevent app crashing
@@ -45,8 +56,11 @@ export async function apiRequest(
   data?: unknown | undefined
 ): Promise<Response> {
   try {
+    // Build full URL with API base
+    const fullUrl = getApiUrl(url);
+    
     // Simple fetch with minimum options
-    const res = await fetch(url, {
+    const res = await fetch(fullUrl, {
       method,
       headers: data ? { "Content-Type": "application/json" } : {},
       body: data ? JSON.stringify(data) : undefined,
@@ -98,9 +112,11 @@ export const getQueryFn: <T>(options: {
         }
       }
       
-      console.log('Making API request to:', url);
+      // Build full URL with API base
+      const fullUrl = getApiUrl(url);
+      console.log('Making API request to:', fullUrl);
       
-      const res = await fetch(url, {
+      const res = await fetch(fullUrl, {
         credentials: "include",
       });
 
