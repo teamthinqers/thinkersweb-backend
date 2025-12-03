@@ -74,14 +74,18 @@ export default function MyDotSparkPage() {
   });
 
   // Fetch cognitive identity configuration using the authenticated user's endpoint (original working version)
-  const { data: cognitiveConfig } = useQuery<{ success: boolean; data: any; configured: boolean }>({
+  const { data: cognitiveConfig, isError: cognitiveConfigError } = useQuery<{ success: boolean; data: any; configured: boolean }>({
     queryKey: ['/api/cognitive-identity/config'],
     enabled: !!user,
-    staleTime: 30000, // Refetch after 30 seconds
+    staleTime: 5 * 60 * 1000, // Keep fresh for 5 minutes
+    gcTime: 30 * 60 * 1000, // Keep in cache for 30 minutes
     refetchOnWindowFocus: true, // Refetch when user returns to tab
+    retry: 2, // Retry failed requests twice
+    placeholderData: (previousData) => previousData, // Keep previous data while refetching
   });
 
-  const cognitiveIdentityConfigured = cognitiveConfig?.configured || false;
+  // Use previous known state - don't default to false on errors/loading
+  const cognitiveIdentityConfigured = cognitiveConfig?.configured ?? false;
 
   // Get cognitive identity tags from the config data
   const cognitiveIdentityTags = generateCognitiveIdentityTags(cognitiveConfig?.data || {});
