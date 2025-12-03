@@ -940,13 +940,436 @@ httpServer.listen(port, '0.0.0.0', () => {
           if (isNaN(circleId)) {
             return res.status(400).json({ error: 'Invalid circle ID' });
           }
-          const circleDots = await db.query.circleDots.findMany({
+          const circleDotsData = await db.query.circleDots.findMany({
             where: eq(schema.circleDots.circleId, circleId),
-            with: { thought: { with: { user: true } } }
+            with: { 
+              thought: { 
+                with: { user: true } 
+              },
+              sharedByUser: {
+                columns: {
+                  id: true,
+                  fullName: true,
+                  avatar: true,
+                  linkedinPhotoUrl: true,
+                }
+              }
+            },
+            orderBy: desc(schema.circleDots.sharedAt),
           });
-          const thoughts = circleDots.map(cd => cd.thought).filter(Boolean);
+          const thoughts = circleDotsData.map(cd => ({
+            ...cd.thought,
+            sharedBy: cd.sharedByUser,
+            sharedAt: cd.sharedAt,
+          })).filter(t => t.id);
           res.json({ thoughts });
         } catch (e: any) {
+          console.error('Get circle thoughts error:', e);
+          res.status(500).json({ error: e.message });
+        }
+      });
+      
+      // Invite users to circle
+      app.post('/api/thinq-circles/:circleId/invite', async (req: any, res) => {
+        try {
+          if (!req.user) return res.status(401).json({ error: 'Unauthorized' });
+          
+          const circleId = parseInt(req.params.circleId);
+          const { existingUserIds, emailInvites } = req.body;
+          
+          // Verify user is circle member
+          const membership = await db.query.thinqCircleMembers.findFirst({
+            where: and(
+              eq(schema.thinqCircleMembers.circleId, circleId),
+              eq(schema.thinqCircleMembers.userId, req.user.id)
+            ),
+          });
+          
+          if (!membership) {
+            return res.status(403).json({ error: 'You are not a member of this circle' });
+          }
+          
+          const circle = await db.query.thinqCircles.findFirst({
+            where: eq(schema.thinqCircles.id, circleId),
+          });
+          
+          if (!circle) {
+            return res.status(404).json({ error: 'Circle not found' });
+          }
+          
+          const results = { existingUsers: [] as any[], emailInvites: [] as any[] };
+          
+          // Invite existing users
+          if (existingUserIds && existingUserIds.length > 0) {
+            for (const inviteeUserId of existingUserIds) {
+              const existingMember = await db.query.thinqCircleMembers.findFirst({
+                where: and(
+                  eq(schema.thinqCircleMembers.circleId, circleId),
+                  eq(schema.thinqCircleMembers.userId, inviteeUserId)
+                ),
+              });
+              
+              if (existingMember) {
+                results.existingUsers.push({ userId: inviteeUserId, status: 'already_member' });
+                continue;
+              }
+              
+              const token = `circle_${circleId}_${inviteeUserId}_${Date.now()}`;
+              const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+              
+              const [invite] = await db.insert(schema.thinqCircleInvites).values({
+                circleId,
+                inviterUserId: req.user.id,
+                inviteeEmail: '',
+                inviteeUserId: inviteeUserId,
+                token,
+                expiresAt,
+              }).returning();
+              
+              await db.insert(schema.notifications).values({
+                recipientId: inviteeUserId,
+                actorIds: JSON.stringify([req.user.id]),
+                notificationType: 'circle_invite',
+                circleInviteId: invite.id,
+                circleName: circle.name,
+              });
+              
+              results.existingUsers.push({ userId: inviteeUserId, status: 'invited', inviteId: invite.id });
+            }
+          }
+          
+          // Email invites
+          if (emailInvites && emailInvites.length > 0) {
+            for (const email of emailInvites) {
+              const existingUser = await db.query.users.findFirst({
+                where: eq(schema.users.email, email),
+              });
+              
+              if (existingUser) {
+                const existingMember = await db.query.thinqCircleMembers.findFirst({
+                  where: and(
+                    eq(schema.thinqCircleMembers.circleId, circleId),
+                    eq(schema.thinqCircleMembers.userId, existingUser.id)
+                  ),
+                });
+                
+                if (existingMember) {
+                  results.emailInvites.push({ email, status: 'already_member', userId: existingUser.id });
+                  continue;
+                }
+                
+                const token = `circle_${circleId}_${existingUser.id}_${Date.now()}`;
+                const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+                
+                const [invite] = await db.insert(schema.thinqCircleInvites).values({
+                  circleId,
+                  inviterUserId: req.user.id,
+                  inviteeEmail: email,
+                  inviteeUserId: existingUser.id,
+                  token,
+                  expiresAt,
+                }).returning();
+                
+                await db.insert(schema.notifications).values({
+                  recipientId: existingUser.id,
+                  actorIds: JSON.stringify([req.user.id]),
+                  notificationType: 'circle_invite',
+                  circleInviteId: invite.id,
+                  circleName: circle.name,
+                });
+                
+                results.emailInvites.push({ email, status: 'invited', userId: existingUser.id, inviteId: invite.id });
+                continue;
+              }
+              
+              const crypto = await import('crypto');
+              const token = crypto.randomBytes(32).toString('hex');
+              const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+              
+              const [invite] = await db.insert(schema.thinqCircleInvites).values({
+                circleId,
+                inviterUserId: req.user.id,
+                inviteeEmail: email,
+                token,
+                expiresAt,
+              }).returning();
+              
+              results.emailInvites.push({ email, status: 'invited', inviteId: invite.id });
+            }
+          }
+          
+          res.json({ success: true, results });
+        } catch (e: any) {
+          console.error('Invite to circle error:', e);
+          res.status(500).json({ error: e.message });
+        }
+      });
+      
+      // Accept circle invite
+      app.post('/api/thinq-circles/invites/:inviteId/accept', async (req: any, res) => {
+        try {
+          if (!req.user) return res.status(401).json({ error: 'Unauthorized' });
+          
+          const inviteId = parseInt(req.params.inviteId);
+          
+          const invite = await db.query.thinqCircleInvites.findFirst({
+            where: eq(schema.thinqCircleInvites.id, inviteId),
+          });
+          
+          if (!invite) return res.status(404).json({ error: 'Invite not found' });
+          if (invite.inviteeUserId !== req.user.id) return res.status(403).json({ error: 'This invite is not for you' });
+          if (invite.status !== 'pending') return res.status(400).json({ error: 'Invite already processed' });
+          
+          if (new Date() > invite.expiresAt) {
+            await db.update(schema.thinqCircleInvites)
+              .set({ status: 'expired' })
+              .where(eq(schema.thinqCircleInvites.id, inviteId));
+            return res.status(400).json({ error: 'Invite expired' });
+          }
+          
+          await db.insert(schema.thinqCircleMembers).values({
+            circleId: invite.circleId,
+            userId: req.user.id,
+            role: 'member',
+          });
+          
+          await db.update(schema.thinqCircleInvites)
+            .set({ status: 'accepted', claimedAt: new Date() })
+            .where(eq(schema.thinqCircleInvites.id, inviteId));
+          
+          await db.update(schema.notifications)
+            .set({ isRead: true })
+            .where(eq(schema.notifications.circleInviteId, inviteId));
+          
+          res.json({ success: true, circleId: invite.circleId });
+        } catch (e: any) {
+          console.error('Accept invite error:', e);
+          res.status(500).json({ error: e.message });
+        }
+      });
+      
+      // Reject circle invite
+      app.post('/api/thinq-circles/invites/:inviteId/reject', async (req: any, res) => {
+        try {
+          if (!req.user) return res.status(401).json({ error: 'Unauthorized' });
+          
+          const inviteId = parseInt(req.params.inviteId);
+          
+          const invite = await db.query.thinqCircleInvites.findFirst({
+            where: eq(schema.thinqCircleInvites.id, inviteId),
+          });
+          
+          if (!invite) return res.status(404).json({ error: 'Invite not found' });
+          if (invite.inviteeUserId !== req.user.id) return res.status(403).json({ error: 'This invite is not for you' });
+          
+          await db.update(schema.thinqCircleInvites)
+            .set({ status: 'rejected' })
+            .where(eq(schema.thinqCircleInvites.id, inviteId));
+          
+          await db.update(schema.notifications)
+            .set({ isRead: true })
+            .where(eq(schema.notifications.circleInviteId, inviteId));
+          
+          res.json({ success: true });
+        } catch (e: any) {
+          console.error('Reject invite error:', e);
+          res.status(500).json({ error: e.message });
+        }
+      });
+      
+      // Validate invite token (public)
+      app.get('/api/thinq-circles/invites/validate/:token', async (req: any, res) => {
+        try {
+          const token = req.params.token;
+          
+          const invite = await db.query.thinqCircleInvites.findFirst({
+            where: eq(schema.thinqCircleInvites.token, token),
+          });
+          
+          if (!invite) return res.status(404).json({ error: 'Invite not found' });
+          
+          const circle = await db.query.thinqCircles.findFirst({
+            where: eq(schema.thinqCircles.id, invite.circleId),
+          });
+          
+          const inviter = await db.query.users.findFirst({
+            where: eq(schema.users.id, invite.inviterUserId),
+          });
+          
+          res.json({
+            success: true,
+            invite: {
+              id: invite.id,
+              circleId: invite.circleId,
+              circleName: circle?.name || 'Unknown Circle',
+              inviterName: inviter?.fullName || 'Someone',
+              inviteeEmail: invite.inviteeEmail,
+              status: invite.status,
+              expiresAt: invite.expiresAt,
+            },
+          });
+        } catch (e: any) {
+          console.error('Validate invite error:', e);
+          res.status(500).json({ error: e.message });
+        }
+      });
+      
+      // Create thought in circle
+      app.post('/api/thinq-circles/:circleId/create-thought', async (req: any, res) => {
+        try {
+          if (!req.user) return res.status(401).json({ error: 'Unauthorized' });
+          
+          const circleId = parseInt(req.params.circleId);
+          const { heading, summary, emotions, anchor } = req.body;
+          
+          const membership = await db.query.thinqCircleMembers.findFirst({
+            where: and(
+              eq(schema.thinqCircleMembers.circleId, circleId),
+              eq(schema.thinqCircleMembers.userId, req.user.id)
+            ),
+          });
+          
+          if (!membership) return res.status(403).json({ error: 'You are not a member of this circle' });
+          if (!heading || !summary) return res.status(400).json({ error: 'Heading and summary are required' });
+          
+          const [thought] = await db.insert(schema.thoughts).values({
+            userId: req.user.id,
+            heading: heading.trim(),
+            summary: summary.trim(),
+            emotions: emotions?.trim() || null,
+            anchor: anchor?.trim() || null,
+            visibility: 'personal',
+            channel: 'circle',
+            sharedToSocial: false,
+          }).returning();
+          
+          await db.insert(schema.circleDots).values({
+            circleId,
+            thoughtId: thought.id,
+            sharedBy: req.user.id,
+          });
+          
+          res.json({ success: true, thought });
+        } catch (e: any) {
+          console.error('Create circle thought error:', e);
+          res.status(500).json({ error: e.message });
+        }
+      });
+      
+      // Share existing thought to circle
+      app.post('/api/thinq-circles/:circleId/share-thought', async (req: any, res) => {
+        try {
+          if (!req.user) return res.status(401).json({ error: 'Unauthorized' });
+          
+          const circleId = parseInt(req.params.circleId);
+          const { thoughtId } = req.body;
+          
+          if (!thoughtId) return res.status(400).json({ error: 'Thought ID is required' });
+          
+          const membership = await db.query.thinqCircleMembers.findFirst({
+            where: and(
+              eq(schema.thinqCircleMembers.circleId, circleId),
+              eq(schema.thinqCircleMembers.userId, req.user.id)
+            ),
+          });
+          
+          if (!membership) return res.status(403).json({ error: 'You are not a member of this circle' });
+          
+          const thought = await db.query.thoughts.findFirst({
+            where: eq(schema.thoughts.id, thoughtId),
+          });
+          
+          if (!thought) return res.status(404).json({ error: 'Thought not found' });
+          if (thought.userId !== req.user.id) return res.status(403).json({ error: 'You can only share your own thoughts' });
+          
+          const existingShare = await db.query.circleDots.findFirst({
+            where: and(
+              eq(schema.circleDots.circleId, circleId),
+              eq(schema.circleDots.thoughtId, thoughtId)
+            ),
+          });
+          
+          if (existingShare) return res.status(400).json({ error: 'Thought already shared to this circle' });
+          
+          await db.insert(schema.circleDots).values({
+            circleId,
+            thoughtId,
+            sharedBy: req.user.id,
+          });
+          
+          res.json({ success: true, message: 'Thought shared to circle successfully' });
+        } catch (e: any) {
+          console.error('Share thought to circle error:', e);
+          res.status(500).json({ error: e.message });
+        }
+      });
+      
+      // Create spark in circle
+      app.post('/api/thinq-circles/:circleId/thoughts/:thoughtId/sparks', async (req: any, res) => {
+        try {
+          if (!req.user) return res.status(401).json({ error: 'Unauthorized' });
+          
+          const circleId = parseInt(req.params.circleId);
+          const thoughtId = parseInt(req.params.thoughtId);
+          const { content } = req.body;
+          
+          if (!content || !content.trim()) return res.status(400).json({ error: 'Content is required' });
+          
+          const membership = await db.query.thinqCircleMembers.findFirst({
+            where: and(
+              eq(schema.thinqCircleMembers.circleId, circleId),
+              eq(schema.thinqCircleMembers.userId, req.user.id)
+            ),
+          });
+          
+          if (!membership) return res.status(403).json({ error: 'You are not a member of this circle' });
+          
+          const [newSpark] = await db.insert(schema.sparks).values({
+            thoughtId,
+            userId: req.user.id,
+            content: content.trim(),
+          }).returning();
+          
+          await db.insert(schema.circleSparks).values({
+            circleId,
+            sparkId: newSpark.id,
+            sharedBy: req.user.id,
+          });
+          
+          res.json({ success: true, spark: newSpark });
+        } catch (e: any) {
+          console.error('Create circle spark error:', e);
+          res.status(500).json({ error: e.message });
+        }
+      });
+      
+      // Delete circle
+      app.delete('/api/thinq-circles/:circleId', async (req: any, res) => {
+        try {
+          if (!req.user) return res.status(401).json({ error: 'Unauthorized' });
+          
+          const circleId = parseInt(req.params.circleId);
+          if (isNaN(circleId)) return res.status(400).json({ error: 'Invalid circle ID' });
+          
+          const circle = await db.query.thinqCircles.findFirst({
+            where: eq(schema.thinqCircles.id, circleId),
+          });
+          
+          if (!circle) return res.status(404).json({ error: 'Circle not found' });
+          if (circle.createdBy !== req.user.id) return res.status(403).json({ error: 'Only the circle owner can delete the circle' });
+          
+          await db.transaction(async (tx: any) => {
+            await tx.delete(schema.thinqCircleInvites).where(eq(schema.thinqCircleInvites.circleId, circleId));
+            await tx.delete(schema.circlePerspectives).where(eq(schema.circlePerspectives.circleId, circleId));
+            await tx.delete(schema.circleSparks).where(eq(schema.circleSparks.circleId, circleId));
+            await tx.delete(schema.circleDots).where(eq(schema.circleDots.circleId, circleId));
+            await tx.delete(schema.thinqCircleMembers).where(eq(schema.thinqCircleMembers.circleId, circleId));
+            await tx.delete(schema.thinqCircles).where(eq(schema.thinqCircles.id, circleId));
+          });
+          
+          res.status(204).send();
+        } catch (e: any) {
+          console.error('Delete circle error:', e);
           res.status(500).json({ error: e.message });
         }
       });
