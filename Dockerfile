@@ -3,11 +3,29 @@ FROM node:20-slim
 
 WORKDIR /app
 
-# Only need express
-RUN npm init -y && npm install express
+# Copy package files
+COPY package*.json ./
 
-# Copy the server file
-COPY server/server-cloud.js ./server.js
+# Install all dependencies
+RUN npm ci
+
+# Copy all source code
+COPY . .
+
+# Build routes with esbuild (external db drivers to avoid bundling issues)
+RUN npx esbuild server/routes.ts \
+  --platform=node \
+  --bundle \
+  --format=cjs \
+  --outfile=server/dist/routes.js \
+  --external:@neondatabase/serverless \
+  --external:ws \
+  --external:bufferutil \
+  --external:utf-8-validate \
+  --external:better-sqlite3
+
+# Prune dev dependencies
+RUN npm prune --production
 
 # Expose port
 EXPOSE 8080
@@ -15,5 +33,5 @@ EXPOSE 8080
 ENV NODE_ENV=production
 ENV PORT=8080
 
-# Start server
-CMD ["node", "server.js"]
+# Start with the minimal server that loads routes
+CMD ["node", "server/server-cloud.js"]
