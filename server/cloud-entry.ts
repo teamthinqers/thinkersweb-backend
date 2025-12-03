@@ -276,7 +276,10 @@ httpServer.listen(port, '0.0.0.0', () => {
               username: user.username,
               fullName: user.fullName,
               avatar: user.avatar,
-              firebaseUid: user.firebaseUid
+              avatarUrl: user.avatar, // Frontend expects avatarUrl
+              firebaseUid: user.firebaseUid,
+              createdAt: user.createdAt,
+              updatedAt: user.updatedAt
             }
           });
         } catch (e: any) {
