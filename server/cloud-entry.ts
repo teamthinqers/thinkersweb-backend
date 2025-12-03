@@ -1039,11 +1039,27 @@ httpServer.listen(port, '0.0.0.0', () => {
             });
           }
           
+          // Convert decimal strings to numbers for frontend tag generation
+          const numericData = cognitiveIdentity ? {
+            cognitivePace: parseFloat(cognitiveIdentity.cognitivePace || '0.5'),
+            signalFocus: parseFloat(cognitiveIdentity.signalFocus || '0.5'),
+            impulseControl: parseFloat(cognitiveIdentity.impulseControl || '0.5'),
+            mentalEnergyFlow: parseFloat(cognitiveIdentity.mentalEnergyFlow || '0.5'),
+            analytical: parseFloat(cognitiveIdentity.analytical || '0.5'),
+            intuitive: parseFloat(cognitiveIdentity.intuitive || '0.5'),
+            contextualThinking: parseFloat(cognitiveIdentity.contextualThinking || '0.5'),
+            memoryBandwidth: parseFloat(cognitiveIdentity.memoryBandwidth || '0.5'),
+            thoughtComplexity: parseFloat(cognitiveIdentity.thoughtComplexity || '0.5'),
+            mentalModelDensity: parseFloat(cognitiveIdentity.mentalModelDensity || '0.5'),
+            patternDetectionSensitivity: parseFloat(cognitiveIdentity.patternDetectionSensitivity || '0.5'),
+            decisionMakingIndex: parseFloat(cognitiveIdentity.decisionMakingIndex || '0.5'),
+          } : null;
+          
           res.json({
             success: true,
             configured: !!cognitiveIdentity,
             isPublic: isPublic,
-            data: cognitiveIdentity || null
+            data: numericData
           });
         } catch (e: any) {
           console.error('Error fetching user cognitive identity:', e);
@@ -1176,11 +1192,11 @@ httpServer.listen(port, '0.0.0.0', () => {
       // Network insights (stub)
       app.get('/api/network/insights', (req, res) => res.json({ insights: [], connections: 0 }));
       
-      // Users search
+      // Users search - returns { success, users } format for SharedAuthLayout
       app.get('/api/users/search', async (req, res) => {
         try {
           const query = req.query.q as string;
-          if (!query || query.length < 2) return res.json([]);
+          if (!query || query.length < 2) return res.json({ success: true, users: [] });
           
           const searchPattern = `%${query}%`;
           
@@ -1204,10 +1220,10 @@ httpServer.listen(port, '0.0.0.0', () => {
             }
           });
           
-          res.json(users);
+          res.json({ success: true, users });
         } catch (e: any) {
           console.error('User search error:', e);
-          res.status(500).json({ error: e.message });
+          res.status(500).json({ success: false, error: e.message, users: [] });
         }
       });
       
