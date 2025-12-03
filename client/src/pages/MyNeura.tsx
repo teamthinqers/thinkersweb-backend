@@ -3,6 +3,7 @@ import { useLocation } from 'wouter';
 
 import { useToast } from '@/hooks/use-toast';
 import { useDotSparkTuning } from '@/hooks/useDotSparkTuning';
+import Header from '@/components/layout/Header';
 
 import { neuraStorage } from '@/lib/neuraStorage';
 import { Slider } from '@/components/ui/slider';
@@ -582,13 +583,16 @@ export default function MyNeura() {
   // Loading state
   if (isTuningLoading) {
     return (
-      <div className="container max-w-4xl mx-auto py-6 px-4">
-        {renderHeader()}
-        <div className="flex items-center justify-center h-[400px]">
-          <div className="flex flex-col items-center">
-            <BrainCircuit className="h-16 w-16 text-amber-400 animate-pulse mb-4" />
-            <h3 className="text-xl font-medium mb-2">Loading DotSpark...</h3>
-            <p className="text-muted-foreground">Connecting to your DotSpark</p>
+      <div className="min-h-screen flex flex-col">
+        <Header onSearch={() => {}} />
+        <div className="container max-w-4xl mx-auto py-6 px-4">
+          {renderHeader()}
+          <div className="flex items-center justify-center h-[400px]">
+            <div className="flex flex-col items-center">
+              <BrainCircuit className="h-16 w-16 text-amber-400 animate-pulse mb-4" />
+              <h3 className="text-xl font-medium mb-2">Loading DotSpark...</h3>
+              <p className="text-muted-foreground">Connecting to your DotSpark</p>
+            </div>
           </div>
         </div>
       </div>
@@ -596,9 +600,11 @@ export default function MyNeura() {
   }
 
   return (
-    <div className="container max-w-4xl mx-auto py-6 px-4">
-      {/* Header Section with Status Indicators */}
-      {renderHeader()}
+    <div className="min-h-screen flex flex-col">
+      <Header onSearch={() => {}} />
+      <div className="container max-w-4xl mx-auto py-6 px-4">
+        {/* Header Section with Status Indicators */}
+        {renderHeader()}
       
       {/* My Neural Capacity Card with Metrics */}
       <Card className="mb-8 bg-gradient-to-br from-amber-50 to-slate-50 dark:from-amber-950/30 dark:to-slate-950 border border-amber-100 dark:border-amber-900/50 overflow-hidden">
@@ -808,6 +814,7 @@ export default function MyNeura() {
           </div>
         </DialogContent>
       </Dialog>
+      </div>
     </div>
   );
 }
