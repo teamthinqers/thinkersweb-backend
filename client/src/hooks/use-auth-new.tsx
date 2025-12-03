@@ -121,12 +121,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           setUser(storedUser);
           setIsLoading(false);
           
-          // Invalidate queries so they refetch with auth token
-          console.log("🔄 Invalidating queries after auth restore...");
-          queryClient.invalidateQueries({ queryKey: ['/api/me'] });
-          queryClient.invalidateQueries({ queryKey: ['/api/cognitive-identity'] });
-          queryClient.invalidateQueries({ queryKey: ['/api/thinq-circles'] });
-          queryClient.invalidateQueries({ queryKey: ['/api/dashboard'] });
+          // Invalidate ALL user-dependent queries so they refetch with auth token
+          console.log("🔄 Invalidating ALL queries after auth restore...");
+          queryClient.invalidateQueries({
+            predicate: (query) => {
+              const key = query.queryKey[0];
+              if (typeof key !== 'string') return false;
+              return key.startsWith('/api/thinq-circles') ||
+                     key.startsWith('/api/cognitive-identity') ||
+                     key.startsWith('/api/dashboard') ||
+                     key.startsWith('/api/me') ||
+                     key.startsWith('/api/users');
+            }
+          });
           
           // Sync with backend in background (don't block UI)
           syncUserWithBackend(fbUser).then((syncedUser) => {
@@ -140,12 +147,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           const syncedUser = await syncUserWithBackend(fbUser);
           if (syncedUser) {
             setUser(syncedUser);
-            // Invalidate queries so they refetch with auth token
-            console.log("🔄 Invalidating queries after backend sync...");
-            queryClient.invalidateQueries({ queryKey: ['/api/me'] });
-            queryClient.invalidateQueries({ queryKey: ['/api/cognitive-identity'] });
-            queryClient.invalidateQueries({ queryKey: ['/api/thinq-circles'] });
-            queryClient.invalidateQueries({ queryKey: ['/api/dashboard'] });
+            // Invalidate ALL user-dependent queries so they refetch with auth token
+            console.log("🔄 Invalidating ALL queries after backend sync...");
+            queryClient.invalidateQueries({
+              predicate: (query) => {
+                const key = query.queryKey[0];
+                if (typeof key !== 'string') return false;
+                return key.startsWith('/api/thinq-circles') ||
+                       key.startsWith('/api/cognitive-identity') ||
+                       key.startsWith('/api/dashboard') ||
+                       key.startsWith('/api/me') ||
+                       key.startsWith('/api/users');
+              }
+            });
           } else {
             // Fallback: create user object from Firebase data
             const fallbackUser: User = {
