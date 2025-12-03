@@ -75,6 +75,7 @@ export default function SharedAuthLayout({ children }: SharedAuthLayoutProps) {
       try {
         // Get Firebase token for authenticated request
         const token = await getAuthToken();
+        console.log('[Search] Token obtained:', token ? 'yes' : 'no', 'Query:', searchQuery);
         
         const headers: Record<string, string> = {};
         if (token) {
@@ -86,10 +87,13 @@ export default function SharedAuthLayout({ children }: SharedAuthLayoutProps) {
           headers,
         });
         const data = await response.json();
+        console.log('[Search] Response:', data);
         if (data.success) {
           setSearchResults(data.users || []);
           setShowSearchResults(true);
           setSelectedIndex(-1);
+        } else {
+          console.log('[Search] Response not successful:', data);
         }
       } catch (error) {
         console.error('Search error:', error);
