@@ -983,6 +983,74 @@ httpServer.listen(port, '0.0.0.0', () => {
         }
       });
       
+      // Toggle cognitive identity privacy
+      app.patch('/api/users/cognitive-identity-privacy', async (req: any, res) => {
+        try {
+          if (!req.user) {
+            return res.status(401).json({ success: false, error: 'Unauthorized' });
+          }
+          
+          const { isPublic } = req.body;
+          
+          await db.update(schema.users)
+            .set({ 
+              cognitiveIdentityPublic: isPublic,
+              updatedAt: new Date()
+            })
+            .where(eq(schema.users.id, req.user.id));
+          
+          res.json({ success: true, isPublic });
+        } catch (e: any) {
+          console.error('Error updating privacy:', e);
+          res.status(500).json({ success: false, error: e.message });
+        }
+      });
+      
+      // User cognitive identity for public profile (CognitiveIdentityCard)
+      app.get('/api/users/:userId/cognitive-identity', async (req: any, res) => {
+        try {
+          const userId = parseInt(req.params.userId);
+          
+          // Get the user to check privacy settings
+          const user = await db.query.users.findFirst({
+            where: eq(schema.users.id, userId)
+          });
+          
+          if (!user) {
+            return res.status(404).json({ success: false, error: 'User not found' });
+          }
+          
+          // Get cognitive identity
+          const cognitiveIdentity = await db.query.cognitiveIdentity.findFirst({
+            where: eq(schema.cognitiveIdentity.userId, userId)
+          });
+          
+          // Check if viewing own profile or if identity is public
+          const isOwnProfile = req.user?.id === userId;
+          const isPublic = user.cognitiveIdentityPublic;
+          
+          // If not own profile and not public, return limited data
+          if (!isOwnProfile && !isPublic) {
+            return res.json({
+              success: true,
+              configured: !!cognitiveIdentity,
+              isPublic: false,
+              data: null // Don't expose private data
+            });
+          }
+          
+          res.json({
+            success: true,
+            configured: !!cognitiveIdentity,
+            isPublic: isPublic,
+            data: cognitiveIdentity || null
+          });
+        } catch (e: any) {
+          console.error('Error fetching user cognitive identity:', e);
+          res.status(500).json({ success: false, error: e.message });
+        }
+      });
+      
       // User public dashboard for PublicProfile.tsx
       app.get('/api/users/:userId/dashboard', async (req: any, res) => {
         try {
@@ -1110,20 +1178,31 @@ httpServer.listen(port, '0.0.0.0', () => {
           const query = req.query.q as string;
           if (!query || query.length < 2) return res.json([]);
           
+          const searchPattern = `%${query}%`;
+          
+          // Use proper Drizzle ORM syntax with ilike
+          const { ilike } = await import('drizzle-orm');
+          
           const users = await db.query.users.findMany({
-            where: sql`${schema.users.fullName} ILIKE ${'%' + query + '%'} OR ${schema.users.username} ILIKE ${'%' + query + '%'}`,
+            where: or(
+              ilike(schema.users.fullName, searchPattern),
+              ilike(schema.users.username, searchPattern),
+              ilike(schema.users.email, searchPattern)
+            ),
             limit: 10,
             columns: {
               id: true,
               username: true,
               fullName: true,
               avatar: true,
-              linkedinHeadline: true
+              linkedinHeadline: true,
+              linkedinPhotoUrl: true
             }
           });
           
           res.json(users);
         } catch (e: any) {
+          console.error('User search error:', e);
           res.status(500).json({ error: e.message });
         }
       });
