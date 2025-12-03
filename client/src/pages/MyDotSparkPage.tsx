@@ -73,16 +73,15 @@ export default function MyDotSparkPage() {
     enabled: !!user,
   });
 
-  // Fetch cognitive identity using the same endpoint as Profile page (works)
-  const userId = (user as any)?.id;
-  const { data: cognitiveConfig } = useQuery<{ success: boolean; data: any; configured: boolean; isPublic: boolean }>({
-    queryKey: [`/api/users/${userId}/cognitive-identity`],
-    enabled: !!userId,
+  // Fetch cognitive identity configuration using the authenticated user's endpoint (original working version)
+  const { data: cognitiveConfig } = useQuery<{ success: boolean; data: any; configured: boolean }>({
+    queryKey: ['/api/cognitive-identity/config'],
+    enabled: !!user,
   });
 
   const cognitiveIdentityConfigured = cognitiveConfig?.configured || false;
 
-  // Get cognitive identity tags - exact same approach as CognitiveIdentityCard (no useMemo)
+  // Get cognitive identity tags from the config data
   const cognitiveIdentityTags = generateCognitiveIdentityTags(cognitiveConfig?.data || {});
 
   // Fetch ALL badges with earned/locked status for gamification
@@ -371,14 +370,6 @@ export default function MyDotSparkPage() {
             3. My Thought Circle - TODO: To be built
             4. Learning Engine - TODO: To be built
             ======================================== */}
-        
-        {/* DEBUG: Show cognitive identity data status */}
-        <div className="mb-2 p-2 bg-yellow-100 text-xs text-black rounded">
-          DEBUG: userId={userId}, configured={String(cognitiveIdentityConfigured)}, 
-          hasData={String(!!cognitiveConfig?.data)}, 
-          tagsCount={cognitiveIdentityTags.length},
-          rawData={JSON.stringify(cognitiveConfig?.data || {}).slice(0, 100)}
-        </div>
         
         {/* Cognitive Identity Box - Full Width - Links conditionally based on config status */}
         <Link href={cognitiveIdentityConfigured ? "/cognitive-identity-config" : "/cognitive-identity"}>
