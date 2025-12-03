@@ -1,0 +1,10 @@
+PUSH THE FIX TO GITHUB - Run these commands in Replit Shell:
+
+COMMAND 1 (add all files):
+git add -A
+
+COMMAND 2 (commit):
+git commit -m "Fix server startup for Cloud Run"
+
+COMMAND 3 (push):
+git push github main

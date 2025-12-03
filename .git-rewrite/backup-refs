@@ -1,9 +1,0 @@
-2b2986244a6d4f14decee9273051e54efff1ab5d commit	refs/heads/main
-2010f24046c9cfc6f320a40093b7ee085dfbd047 commit	refs/heads/replit-agent
-8e687337513f42a4e40280010983c011de85e35f commit	refs/notes/commits
-9ad35828dc04788c20c0296a1a2fed7f8420d554 commit	refs/original/refs/heads/main
-ecd56d137241a13b129c79a429e5cd053edc850e commit	refs/original/refs/heads/replit-agent
-b89de4a6f82f896ac2951d0f0c1a8a274bc549a3 commit	refs/original/refs/remotes/gitsafe-backup/main
-ecd56d137241a13b129c79a429e5cd053edc850e commit	refs/original/refs/replit/agent-ledger
-368b094add3a933b2236f1640d06941d9dfcd290 commit	refs/remotes/gitsafe-backup/main
-2010f24046c9cfc6f320a40093b7ee085dfbd047 commit	refs/replit/agent-ledger
