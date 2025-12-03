@@ -1,8 +1,6 @@
 import { createContext, useContext, useState, useCallback, ReactNode, useEffect } from "react";
-import { GoogleAuthProvider, signInWithPopup, signInWithRedirect, getRedirectResult } from "firebase/auth";
-import { auth as firebaseAuth } from "@/lib/firebase";
+import { auth as firebaseAuth, signInWithGoogle as firebaseSignInWithGoogle } from "@/lib/firebase";
 import { apiRequest } from "@/lib/queryClient";
-import { isMobileBrowser } from "@/lib/mobile-detection";
 
 // User type matching backend
 export interface User {
@@ -143,12 +141,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setIsLoading(true);
       setError(null);
       
-      const provider = new GoogleAuthProvider();
-      
-      // Try popup flow for all devices (more reliable than redirect)
+      // Use the configured signInWithGoogle from firebase.ts
       console.log("🔐 Starting Google sign-in with popup flow...");
-      const result = await signInWithPopup(firebaseAuth, provider);
-      const firebaseUser = result.user;
+      const firebaseUser = await firebaseSignInWithGoogle();
 
       if (!firebaseUser) {
         throw new Error("No user returned from Google Sign-In");
