@@ -1,9 +1,8 @@
-// Minimal standalone server - no external dependencies except express
 const express = require('express');
 
 const app = express();
 
-app.use((req: any, res: any, next: any) => {
+app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
   res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
   res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
@@ -13,15 +12,15 @@ app.use((req: any, res: any, next: any) => {
 
 app.use(express.json());
 
-app.get('/health', (req: any, res: any) => {
+app.get('/health', (req, res) => {
   res.json({ status: 'healthy' });
 });
 
-app.get('/api/health', (req: any, res: any) => {
+app.get('/api/health', (req, res) => {
   res.json({ status: 'ok' });
 });
 
-app.get('/', (req: any, res: any) => {
+app.get('/', (req, res) => {
   res.json({ message: 'DotSpark API', status: 'running' });
 });
 
