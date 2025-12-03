@@ -458,22 +458,55 @@ httpServer.listen(port, '0.0.0.0', () => {
       app.get('/api/dashboard', async (req: any, res) => {
         try {
           const userId = req.query.userId ? parseInt(req.query.userId as string) : req.user?.id;
-          if (!userId) return res.json({ dots: 0, wheels: 0, chakras: 0, sparks: 0 });
           
-          const [dotsCount, wheelsCount, chakrasCount, sparksCount] = await Promise.all([
-            db.select({ count: count() }).from(schema.dots).where(eq(schema.dots.userId, userId)),
-            db.select({ count: count() }).from(schema.wheels).where(eq(schema.wheels.userId, userId)),
-            db.select({ count: count() }).from(schema.chakras).where(eq(schema.chakras.userId, userId)),
-            db.select({ count: count() }).from(schema.sparks).where(eq(schema.sparks.userId, userId))
+          // Get user counts
+          const [dotsCount, wheelsCount, chakrasCount, userSparksCount, userThoughtsCount] = await Promise.all([
+            userId ? db.select({ count: count() }).from(schema.dots).where(eq(schema.dots.userId, userId)) : [{ count: 0 }],
+            userId ? db.select({ count: count() }).from(schema.wheels).where(eq(schema.wheels.userId, userId)) : [{ count: 0 }],
+            userId ? db.select({ count: count() }).from(schema.chakras).where(eq(schema.chakras.userId, userId)) : [{ count: 0 }],
+            userId ? db.select({ count: count() }).from(schema.sparks).where(eq(schema.sparks.userId, userId)) : [{ count: 0 }],
+            userId ? db.select({ count: count() }).from(schema.thoughts).where(eq(schema.thoughts.userId, userId)) : [{ count: 0 }]
           ]);
           
+          // Calculate collective growth (platform-wide social engagement)
+          const [platformThoughtsCount] = await db.select({ count: count() }).from(schema.thoughts).where(or(
+            eq(schema.thoughts.visibility, 'social'),
+            eq(schema.thoughts.sharedToSocial, true)
+          ));
+          
+          const [platformSparksCount] = await db.select({ count: count() }).from(schema.sparks);
+          
+          const [platformPerspectivesCount] = await db.select({ count: count() }).from(schema.perspectivesMessages).where(
+            eq(schema.perspectivesMessages.isDeleted, false)
+          );
+          
+          const totalPlatformItems = (platformThoughtsCount?.count || 0) + 
+                                      (platformSparksCount?.count || 0) + 
+                                      (platformPerspectivesCount?.count || 0);
+          const collectiveGrowthPercentage = Math.min(100, Math.round(Number(totalPlatformItems) * 0.5));
+          
           res.json({
-            dots: dotsCount[0]?.count || 0,
-            wheels: wheelsCount[0]?.count || 0,
-            chakras: chakrasCount[0]?.count || 0,
-            sparks: sparksCount[0]?.count || 0
+            success: true,
+            data: {
+              collectiveGrowth: {
+                percentage: collectiveGrowthPercentage,
+              },
+              stats: {
+                dots: dotsCount[0]?.count || 0,
+                wheels: wheelsCount[0]?.count || 0,
+                chakras: chakrasCount[0]?.count || 0,
+                sparks: userSparksCount[0]?.count || 0,
+                thoughts: userThoughtsCount[0]?.count || 0,
+              },
+              socialStats: {
+                thoughts: platformThoughtsCount?.count || 0,
+                sparks: platformSparksCount?.count || 0,
+                perspectives: platformPerspectivesCount?.count || 0,
+              }
+            }
           });
         } catch (e: any) {
+          console.error('Dashboard error:', e);
           res.status(500).json({ error: e.message });
         }
       });
