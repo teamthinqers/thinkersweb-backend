@@ -454,61 +454,181 @@ httpServer.listen(port, '0.0.0.0', () => {
         }
       });
       
-      // Dashboard
+      // Dashboard - Complete implementation matching routes.ts
       app.get('/api/dashboard', async (req: any, res) => {
         try {
           const userId = req.query.userId ? parseInt(req.query.userId as string) : req.user?.id;
           
-          // Get user counts
-          const [dotsCount, wheelsCount, chakrasCount, userSparksCount, userThoughtsCount, userPerspectivesCount] = await Promise.all([
-            userId ? db.select({ count: count() }).from(schema.dots).where(eq(schema.dots.userId, userId)) : [{ count: 0 }],
-            userId ? db.select({ count: count() }).from(schema.wheels).where(eq(schema.wheels.userId, userId)) : [{ count: 0 }],
-            userId ? db.select({ count: count() }).from(schema.chakras).where(eq(schema.chakras.userId, userId)) : [{ count: 0 }],
-            userId ? db.select({ count: count() }).from(schema.sparks).where(eq(schema.sparks.userId, userId)) : [{ count: 0 }],
-            userId ? db.select({ count: count() }).from(schema.thoughts).where(eq(schema.thoughts.userId, userId)) : [{ count: 0 }],
-            userId ? db.select({ count: count() }).from(schema.perspectivesMessages).where(and(eq(schema.perspectivesMessages.userId, userId), eq(schema.perspectivesMessages.isDeleted, false))) : [{ count: 0 }]
+          if (!userId) {
+            return res.status(401).json({ error: 'Authentication required' });
+          }
+          
+          // Get user data for cognitive identity status
+          const user = await db.query.users.findFirst({
+            where: eq(schema.users.id, userId)
+          });
+          
+          // Get basic counts
+          const [dotsCount, wheelsCount, chakrasCount] = await Promise.all([
+            db.select({ count: count() }).from(schema.dots).where(eq(schema.dots.userId, userId)),
+            db.select({ count: count() }).from(schema.wheels).where(eq(schema.wheels.userId, userId)),
+            db.select({ count: count() }).from(schema.chakras).where(eq(schema.chakras.userId, userId))
           ]);
           
+          // Get user's thoughts count
+          const [userThoughtsCount] = await db.select({ count: count() })
+            .from(schema.thoughts)
+            .where(eq(schema.thoughts.userId, userId));
+          
+          // Get saved thoughts count (for MyNeura)
+          const [savedThoughtsCount] = await db.select({ count: count() })
+            .from(schema.savedThoughts)
+            .where(eq(schema.savedThoughts.userId, userId));
+          
+          // Get user's sparks count
+          const [userSparksCount] = await db.select({ count: count() })
+            .from(schema.sparks)
+            .where(eq(schema.sparks.userId, userId));
+          
+          // Get user's perspectives count
+          const [userPerspectivesCount] = await db.select({ count: count() })
+            .from(schema.perspectivesMessages)
+            .where(and(
+              eq(schema.perspectivesMessages.userId, userId),
+              eq(schema.perspectivesMessages.isDeleted, false)
+            ));
+          
+          // Count personal thoughts (for MyNeura)
+          const [personalThoughtsCount] = await db.select({ count: count() })
+            .from(schema.thoughts)
+            .where(and(
+              eq(schema.thoughts.userId, userId),
+              eq(schema.thoughts.visibility, 'personal')
+            ));
+          
+          // MyNeura thoughts = personal thoughts + saved social thoughts
+          const myNeuraThoughtsCount = Number(personalThoughtsCount?.count || 0) + Number(savedThoughtsCount?.count || 0);
+          
+          // Get circle contributions
+          const [circleDotsCount] = await db.select({ count: count() })
+            .from(schema.circleDots)
+            .where(eq(schema.circleDots.sharedBy, userId));
+          
+          const [circleSparksCount] = await db.select({ count: count() })
+            .from(schema.circleSparks)
+            .where(eq(schema.circleSparks.sharedBy, userId));
+          
+          const [circlePerspectivesCount] = await db.select({ count: count() })
+            .from(schema.circlePerspectives)
+            .where(eq(schema.circlePerspectives.sharedBy, userId));
+          
           // Calculate collective growth (platform-wide social engagement)
-          const [platformThoughtsCount] = await db.select({ count: count() }).from(schema.thoughts).where(or(
-            eq(schema.thoughts.visibility, 'social'),
-            eq(schema.thoughts.sharedToSocial, true)
-          ));
+          const [platformThoughtsCount] = await db.select({ count: count() })
+            .from(schema.thoughts)
+            .where(or(
+              eq(schema.thoughts.visibility, 'social'),
+              eq(schema.thoughts.sharedToSocial, true)
+            ));
           
           const [platformSparksCount] = await db.select({ count: count() }).from(schema.sparks);
           
-          const [platformPerspectivesCount] = await db.select({ count: count() }).from(schema.perspectivesMessages).where(
-            eq(schema.perspectivesMessages.isDeleted, false)
-          );
+          const [platformPerspectivesCount] = await db.select({ count: count() })
+            .from(schema.perspectivesMessages)
+            .where(eq(schema.perspectivesMessages.isDeleted, false));
           
-          const totalPlatformItems = (platformThoughtsCount?.count || 0) + 
-                                      (platformSparksCount?.count || 0) + 
-                                      (platformPerspectivesCount?.count || 0);
-          const collectiveGrowthPercentage = Math.min(100, Math.round(Number(totalPlatformItems) * 0.5));
+          const totalPlatformItems = Number(platformThoughtsCount?.count || 0) + 
+                                      Number(platformSparksCount?.count || 0) + 
+                                      Number(platformPerspectivesCount?.count || 0);
+          const collectiveGrowthPercentage = Math.min(100, Math.round(totalPlatformItems * 0.5));
+          
+          // Get recent activity (last 5 items)
+          const recentDots = await db.query.dots.findMany({
+            where: eq(schema.dots.userId, userId),
+            orderBy: desc(schema.dots.createdAt),
+            limit: 5,
+          });
+          
+          const recentWheels = await db.query.wheels.findMany({
+            where: eq(schema.wheels.userId, userId),
+            orderBy: desc(schema.wheels.createdAt),
+            limit: 5,
+          });
+          
+          const recentThoughts = await db.query.thoughts.findMany({
+            where: and(
+              eq(schema.thoughts.userId, userId),
+              eq(schema.thoughts.visibility, 'social')
+            ),
+            orderBy: desc(schema.thoughts.createdAt),
+            limit: 5,
+          });
+          
+          // Combine and sort recent activity
+          const recentActivity = [
+            ...recentDots.map(d => ({ type: 'dot', data: d, timestamp: d.createdAt })),
+            ...recentWheels.map(w => ({ type: 'wheel', data: w, timestamp: w.createdAt })),
+            ...recentThoughts.map(t => ({ type: 'thought', data: t, timestamp: t.createdAt })),
+          ]
+            .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
+            .slice(0, 5);
+          
+          // Calculate neural strength (inline calculation)
+          const thoughtsCount = Number(userThoughtsCount?.count || 0);
+          const sparksCount = Number(userSparksCount?.count || 0);
+          const perspectivesCount = Number(userPerspectivesCount?.count || 0);
+          const savedSparksCount = Number(savedThoughtsCount?.count || 0);
+          const hasFirstThought = thoughtsCount > 0;
+          
+          // Neural strength calculation
+          let neuralStrengthPercentage = 0; // Base
+          if (user?.cognitiveIdentityCompleted) neuralStrengthPercentage += 25;
+          if (user?.learningEngineCompleted) neuralStrengthPercentage += 25;
+          if (hasFirstThought) neuralStrengthPercentage += 10;
+          
+          // Activity-based growth
+          const totalActivity = thoughtsCount + sparksCount + perspectivesCount;
+          neuralStrengthPercentage += Math.min(30, (totalActivity / 3) * 2);
+          neuralStrengthPercentage += Math.min(10, savedSparksCount * 1);
+          neuralStrengthPercentage = Math.min(100, Math.round(neuralStrengthPercentage));
           
           res.json({
             success: true,
             data: {
+              neuralStrength: {
+                percentage: neuralStrengthPercentage,
+                milestones: {
+                  cognitiveIdentityCompleted: user?.cognitiveIdentityCompleted || false,
+                  learningEngineCompleted: user?.learningEngineCompleted || false,
+                  hasActivity: hasFirstThought,
+                },
+                stats: {
+                  thoughtsCount,
+                  savedSparksCount,
+                  userSparksCount: sparksCount,
+                  perspectivesCount,
+                },
+              },
               collectiveGrowth: {
                 percentage: collectiveGrowthPercentage,
               },
               stats: {
-                dots: dotsCount[0]?.count || 0,
-                wheels: wheelsCount[0]?.count || 0,
-                chakras: chakrasCount[0]?.count || 0,
-                thoughts: userThoughtsCount[0]?.count || 0,
-                savedSparks: userSparksCount[0]?.count || 0,
-                perspectives: userPerspectivesCount[0]?.count || 0,
+                dots: Number(dotsCount[0]?.count || 0),
+                wheels: Number(wheelsCount[0]?.count || 0),
+                chakras: Number(chakrasCount[0]?.count || 0),
+                thoughts: thoughtsCount + Number(circleDotsCount?.count || 0),
+                savedSparks: sparksCount + Number(circleSparksCount?.count || 0),
+                perspectives: perspectivesCount + Number(circlePerspectivesCount?.count || 0),
               },
               myNeuraStats: {
-                thoughts: userThoughtsCount[0]?.count || 0,
-                sparks: userSparksCount[0]?.count || 0,
+                thoughts: myNeuraThoughtsCount,
+                sparks: sparksCount,
               },
               socialStats: {
-                thoughts: platformThoughtsCount?.count || 0,
-                sparks: platformSparksCount?.count || 0,
-                perspectives: platformPerspectivesCount?.count || 0,
-              }
+                thoughts: Number(platformThoughtsCount?.count || 0),
+                sparks: Number(platformSparksCount?.count || 0),
+                perspectives: Number(platformPerspectivesCount?.count || 0),
+              },
+              recentActivity,
             }
           });
         } catch (e: any) {
