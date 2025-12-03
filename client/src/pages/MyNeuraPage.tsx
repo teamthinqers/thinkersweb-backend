@@ -437,6 +437,8 @@ function SocialSparksContent({ thoughtId }: { thoughtId: number }) {
         id: number;
         fullName: string | null;
         avatar: string | null;
+        avatarUrl?: string | null;
+        linkedinPhotoUrl?: string | null;
       };
     }>;
   }>({
@@ -955,7 +957,7 @@ export default function MyNeuraPage() {
                             ) : (
                               <>
                                 <Avatar className="h-10 w-10 border-2 border-amber-200">
-                                  <AvatarImage src={thought.user?.linkedinPhotoUrl || thought.user?.avatar || thought.user?.avatarUrl} alt={thought.user?.fullName || 'User'} />
+                                  <AvatarImage src={thought.user?.linkedinPhotoUrl || thought.user?.avatar || undefined} alt={thought.user?.fullName || 'User'} />
                                   <AvatarFallback className="bg-gradient-to-r from-amber-500 to-orange-500 text-white text-sm">
                                     {thought.user?.fullName?.charAt(0).toUpperCase() || 'U'}
                                   </AvatarFallback>
@@ -1068,7 +1070,7 @@ export default function MyNeuraPage() {
                           className="focus:outline-none focus:ring-2 focus:ring-amber-500 rounded-full"
                         >
                           <Avatar className="h-12 w-12 border-2 border-amber-200 hover:border-amber-400 hover:scale-110 transition-all cursor-pointer">
-                            <AvatarImage src={selectedThought.user?.linkedinPhotoUrl || selectedThought.user?.avatar || selectedThought.user?.avatarUrl} alt={selectedThought.user?.fullName || 'User'} />
+                            <AvatarImage src={selectedThought.user?.linkedinPhotoUrl || selectedThought.user?.avatar || undefined} alt={selectedThought.user?.fullName || 'User'} />
                             <AvatarFallback className="bg-gradient-to-r from-amber-500 to-orange-500 text-white">
                               {selectedThought.user?.fullName?.charAt(0).toUpperCase() || 'U'}
                             </AvatarFallback>

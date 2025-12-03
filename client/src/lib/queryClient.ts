@@ -180,7 +180,7 @@ export const queryClient = new QueryClient({
       queryFn: getQueryFn({ on401: "throw" }),
       refetchInterval: false,
       refetchOnWindowFocus: false,
-      staleTime: Infinity,
+      staleTime: 30000, // 30 seconds - prevents stale auth-related caching issues
       retry: 1, // Simple retry - just once
       retryDelay: 1000, // Wait 1 second before retry
     },
