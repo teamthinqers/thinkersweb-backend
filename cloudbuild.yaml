@@ -1,0 +1,30 @@
+steps:
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-t', 'gcr.io/$PROJECT_ID/dotspark-api:$COMMIT_SHA', '.']
+
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'gcr.io/$PROJECT_ID/dotspark-api:$COMMIT_SHA']
+
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: gcloud
+    args:
+      - 'run'
+      - 'deploy'
+      - 'dotspark-api'
+      - '--image'
+      - 'gcr.io/$PROJECT_ID/dotspark-api:$COMMIT_SHA'
+      - '--region'
+      - 'us-central1'
+      - '--platform'
+      - 'managed'
+      - '--allow-unauthenticated'
+      - '--memory'
+      - '512Mi'
+      - '--set-env-vars'
+      - 'NODE_ENV=production,FRONTEND_URL=https://www.thinqers.in'
+
+images:
+  - 'gcr.io/$PROJECT_ID/dotspark-api:$COMMIT_SHA'
+
+options:
+  logging: CLOUD_LOGGING_ONLY
