@@ -262,6 +262,187 @@ httpServer.listen(port, '0.0.0.0', () => {
         }
       });
       
+      // ============================================
+      // LINKEDIN OAUTH ENDPOINTS
+      // ============================================
+      const LINKEDIN_CLIENT_ID = process.env.LINKEDIN_CLIENT_ID;
+      const LINKEDIN_CLIENT_SECRET = process.env.LINKEDIN_CLIENT_SECRET;
+      const LINKEDIN_REDIRECT_URI = 'https://thinkersweb-backend-908196010054.europe-west1.run.app/api/auth/linkedin/callback';
+      
+      // In-memory state store for CSRF protection (simple for Cloud Run)
+      const oauthStates = new Map<string, { createdAt: number }>();
+      
+      // Clean up old states periodically
+      setInterval(() => {
+        const now = Date.now();
+        for (const [state, data] of oauthStates.entries()) {
+          if (now - data.createdAt > 10 * 60 * 1000) { // 10 minutes
+            oauthStates.delete(state);
+          }
+        }
+      }, 60 * 1000);
+      
+      // GET /api/auth/linkedin - Initiate LinkedIn OAuth flow
+      app.get('/api/auth/linkedin', (req, res) => {
+        console.log('📱 LinkedIn OAuth initiation requested');
+        
+        if (!LINKEDIN_CLIENT_ID) {
+          console.error('❌ LinkedIn Client ID not configured');
+          return res.status(500).json({ error: 'LinkedIn OAuth not configured' });
+        }
+        
+        const crypto = require('crypto');
+        const state = crypto.randomBytes(32).toString('hex');
+        oauthStates.set(state, { createdAt: Date.now() });
+        
+        const scope = 'openid profile email';
+        const authUrl = `https://www.linkedin.com/oauth/v2/authorization?` +
+          `response_type=code&` +
+          `client_id=${LINKEDIN_CLIENT_ID}&` +
+          `redirect_uri=${encodeURIComponent(LINKEDIN_REDIRECT_URI)}&` +
+          `state=${state}&` +
+          `scope=${encodeURIComponent(scope)}`;
+        
+        console.log('🔗 Redirecting to LinkedIn OAuth');
+        res.redirect(authUrl);
+      });
+      
+      // GET /api/auth/linkedin/callback - Handle LinkedIn OAuth callback
+      app.get('/api/auth/linkedin/callback', async (req, res) => {
+        try {
+          const { code, state } = req.query;
+          
+          // Verify state
+          if (!state || !oauthStates.has(state as string)) {
+            console.error('❌ Invalid OAuth state');
+            return res.redirect('https://www.thinqers.in/?error=invalid_state');
+          }
+          oauthStates.delete(state as string);
+          
+          if (!code) {
+            console.error('❌ No authorization code received');
+            return res.redirect('https://www.thinqers.in/?error=no_code');
+          }
+          
+          console.log('🔐 Exchanging code for LinkedIn access token...');
+          
+          // Exchange code for access token
+          const tokenResponse = await fetch('https://www.linkedin.com/oauth/v2/accessToken', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: new URLSearchParams({
+              grant_type: 'authorization_code',
+              code: code as string,
+              redirect_uri: LINKEDIN_REDIRECT_URI,
+              client_id: LINKEDIN_CLIENT_ID!,
+              client_secret: LINKEDIN_CLIENT_SECRET!,
+            }),
+          });
+          
+          if (!tokenResponse.ok) {
+            const errorText = await tokenResponse.text();
+            console.error('❌ Token exchange failed:', errorText);
+            return res.redirect('https://www.thinqers.in/?error=token_exchange_failed');
+          }
+          
+          const tokenData = await tokenResponse.json();
+          const accessToken = tokenData.access_token;
+          console.log('✅ Access token obtained');
+          
+          // Get user profile
+          const profileResponse = await fetch('https://api.linkedin.com/v2/userinfo', {
+            headers: { 'Authorization': `Bearer ${accessToken}` },
+          });
+          
+          if (!profileResponse.ok) {
+            console.error('❌ Profile fetch failed');
+            return res.redirect('https://www.thinqers.in/?error=profile_fetch_failed');
+          }
+          
+          const profile = await profileResponse.json();
+          console.log('✅ LinkedIn profile obtained:', profile.email);
+          
+          const { sub: linkedinId, email, name, picture } = profile;
+          
+          if (!linkedinId || !email) {
+            console.error('❌ Missing required profile data');
+            return res.redirect('https://www.thinqers.in/?error=missing_profile_data');
+          }
+          
+          // Find or create user
+          let user = await db.query.users.findFirst({
+            where: eq(schema.users.linkedinId, linkedinId)
+          });
+          
+          if (!user) {
+            user = await db.query.users.findFirst({
+              where: eq(schema.users.email, email)
+            });
+            
+            if (user) {
+              // Link LinkedIn to existing user
+              const [updated] = await db.update(schema.users)
+                .set({
+                  linkedinId,
+                  fullName: name || user.fullName,
+                  linkedinPhotoUrl: picture,
+                  avatar: picture || user.avatar,
+                  updatedAt: new Date()
+                })
+                .where(eq(schema.users.id, user.id))
+                .returning();
+              user = updated;
+              console.log('✅ Linked LinkedIn to existing user:', user.email);
+            } else {
+              // Create new user
+              const username = email.split('@')[0] + '_' + Date.now().toString(36);
+              const [newUser] = await db.insert(schema.users)
+                .values({
+                  username,
+                  email,
+                  linkedinId,
+                  fullName: name || username,
+                  linkedinPhotoUrl: picture,
+                  avatar: picture,
+                  dotSparkActivated: true
+                })
+                .returning();
+              user = newUser;
+              console.log('✅ Created new user from LinkedIn:', user.email);
+            }
+          }
+          
+          // Create Firebase Custom Token for the user
+          // Use a unique identifier that Firebase can recognize
+          const customTokenUid = user.firebaseUid || `linkedin_${user.id}`;
+          
+          // If user doesn't have a firebaseUid, update them with one
+          if (!user.firebaseUid) {
+            const [updated] = await db.update(schema.users)
+              .set({ firebaseUid: customTokenUid, updatedAt: new Date() })
+              .where(eq(schema.users.id, user.id))
+              .returning();
+            user = updated;
+          }
+          
+          // Create Firebase custom token
+          const customToken = await admin.auth().createCustomToken(customTokenUid, {
+            userId: user.id,
+            email: user.email,
+            provider: 'linkedin'
+          });
+          
+          console.log('✅ LinkedIn auth successful, created custom token for user:', user.id);
+          
+          // Redirect to frontend with token in hash fragment (more secure than query params)
+          res.redirect(`https://www.thinqers.in/linkedin-callback#token=${customToken}`);
+          
+        } catch (error: any) {
+          console.error('❌ LinkedIn OAuth error:', error);
+          res.redirect('https://www.thinqers.in/?error=oauth_failed');
+        }
+      });
+      
       // Auth refresh
       app.post('/api/auth/refresh', (req: any, res) => {
         if (req.user) {

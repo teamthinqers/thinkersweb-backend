@@ -84,6 +84,7 @@ import ActivationPage from "@/pages/ActivationPage";
 import ProductionTest from "@/pages/ProductionTest";
 import VectorMigrationTest from "@/pages/VectorMigrationTest";
 import AuthTest from "@/pages/AuthTest";
+import LinkedInCallback from "@/pages/LinkedInCallback";
 
 import { neuraStorage } from "@/lib/neuraStorage";
 import { Loader2 } from "lucide-react";
@@ -217,6 +218,7 @@ function Router() {
       <Route path="/thinq-circle/:circleId" component={ThinQCirclePage} />
       <Route path="/learning-engine" component={LearningEnginePage} />
       <Route path="/auth" component={AuthPage} />
+      <Route path="/linkedin-callback" component={LinkedInCallback} />
       <Route path="/notifications" component={NotificationsPage} />
       <Route path="/admin" component={AdminPage} />
       
