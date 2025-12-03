@@ -190,6 +190,194 @@ httpServer.listen(port, '0.0.0.0', () => {
         }
       });
       
+      // Get user-content dots (for Dashboard and UserGrid)
+      app.get('/api/user-content/dots', async (req, res) => {
+        try {
+          const user = await getUserFromToken(req);
+          if (!user) return res.json([]);
+          const dots = await db.query.dots.findMany({
+            where: eq(schema.dots.userId, user.id),
+            orderBy: desc(schema.dots.createdAt)
+          });
+          res.json(dots);
+        } catch (e: any) {
+          res.status(500).json({ error: e.message });
+        }
+      });
+      
+      // Get user-content wheels
+      app.get('/api/user-content/wheels', async (req, res) => {
+        try {
+          const user = await getUserFromToken(req);
+          if (!user) return res.json([]);
+          const wheels = await db.query.wheels.findMany({
+            where: eq(schema.wheels.userId, user.id),
+            orderBy: desc(schema.wheels.createdAt)
+          });
+          res.json(wheels);
+        } catch (e: any) {
+          res.status(500).json({ error: e.message });
+        }
+      });
+      
+      // Get user-content chakras
+      app.get('/api/user-content/chakras', async (req, res) => {
+        try {
+          const user = await getUserFromToken(req);
+          if (!user) return res.json([]);
+          const chakras = await db.query.chakras.findMany({
+            where: eq(schema.chakras.userId, user.id),
+            orderBy: desc(schema.chakras.createdAt)
+          });
+          res.json(chakras);
+        } catch (e: any) {
+          res.status(500).json({ error: e.message });
+        }
+      });
+      
+      // Get social dots (public dots for social feed)
+      app.get('/api/social/dots', async (req, res) => {
+        try {
+          const dots = await db.query.dots.findMany({
+            orderBy: desc(schema.dots.createdAt),
+            limit: 50,
+            with: { user: true }
+          });
+          res.json(dots);
+        } catch (e: any) {
+          res.status(500).json({ error: e.message });
+        }
+      });
+      
+      // Get grid positions
+      app.get('/api/grid/positions', async (req, res) => {
+        try {
+          const user = await getUserFromToken(req);
+          if (!user) {
+            return res.json({ 
+              data: { 
+                dotPositions: {}, 
+                wheelPositions: {}, 
+                chakraPositions: {}, 
+                statistics: { totalDots: 0, totalWheels: 0, totalChakras: 0, freeDots: 0 } 
+              } 
+            });
+          }
+          
+          // Return positions for user's content
+          const dots = await db.query.dots.findMany({
+            where: eq(schema.dots.userId, user.id)
+          });
+          const wheels = await db.query.wheels.findMany({
+            where: eq(schema.wheels.userId, user.id)
+          });
+          const chakras = await db.query.chakras.findMany({
+            where: eq(schema.chakras.userId, user.id)
+          });
+          
+          const dotPositions: Record<string, any> = {};
+          const wheelPositions: Record<string, any> = {};
+          const chakraPositions: Record<string, any> = {};
+          
+          dots.forEach((dot, i) => {
+            dotPositions[dot.id] = { x: (i % 5) * 100, y: Math.floor(i / 5) * 100 };
+          });
+          wheels.forEach((wheel, i) => {
+            wheelPositions[wheel.id] = { x: (i % 3) * 150, y: Math.floor(i / 3) * 150 };
+          });
+          chakras.forEach((chakra, i) => {
+            chakraPositions[chakra.id] = { x: (i % 2) * 200, y: Math.floor(i / 2) * 200 };
+          });
+          
+          res.json({
+            data: {
+              dotPositions,
+              wheelPositions,
+              chakraPositions,
+              statistics: { 
+                totalDots: dots.length, 
+                totalWheels: wheels.length, 
+                totalChakras: chakras.length, 
+                freeDots: dots.length 
+              }
+            }
+          });
+        } catch (e: any) {
+          res.status(500).json({ error: e.message });
+        }
+      });
+      
+      // ThinQ Circle by ID
+      app.get('/api/thinq-circles/:circleId', async (req, res) => {
+        try {
+          const circleId = parseInt(req.params.circleId);
+          const circle = await db.query.thinqCircles.findFirst({
+            where: eq(schema.thinqCircles.id, circleId)
+          });
+          if (!circle) {
+            return res.json({ success: false, circle: null });
+          }
+          res.json({ success: true, circle });
+        } catch (e: any) {
+          res.status(500).json({ error: e.message });
+        }
+      });
+      
+      // ThinQ Circle thoughts
+      app.get('/api/thinq-circles/:circleId/thoughts', async (req, res) => {
+        try {
+          res.json({ thoughts: [] });
+        } catch (e: any) {
+          res.status(500).json({ error: e.message });
+        }
+      });
+      
+      // Thoughts sparks
+      app.get('/api/thoughts/:thoughtId/sparks', async (req, res) => {
+        try {
+          res.json({ success: true, sparks: [] });
+        } catch (e: any) {
+          res.status(500).json({ error: e.message });
+        }
+      });
+      
+      // Thoughts perspectives
+      app.get('/api/thoughts/:thoughtId/perspectives/personal', async (req, res) => {
+        try {
+          res.json({ perspectives: [] });
+        } catch (e: any) {
+          res.status(500).json({ error: e.message });
+        }
+      });
+      
+      // DotSpark status
+      app.get('/api/dotspark/status', async (req, res) => {
+        try {
+          const user = await getUserFromToken(req);
+          res.json({
+            isActive: !!user,
+            features: {
+              cogniShield: true,
+              neuralProcessing: true
+            }
+          });
+        } catch (e: any) {
+          res.status(500).json({ error: e.message });
+        }
+      });
+      
+      // User sparks count
+      app.get('/api/thoughts/user/sparks-count', async (req, res) => {
+        try {
+          const user = await getUserFromToken(req);
+          if (!user) return res.json({ count: 0 });
+          const sparksCount = await db.select({ count: count() }).from(schema.sparks).where(eq(schema.sparks.userId, user.id));
+          res.json({ count: sparksCount[0]?.count || 0 });
+        } catch (e: any) {
+          res.status(500).json({ error: e.message });
+        }
+      });
+      
       // Get user by Firebase UID
       app.get('/api/users/firebase/:firebaseUid', async (req, res) => {
         try {
