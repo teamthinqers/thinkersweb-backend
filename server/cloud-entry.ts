@@ -919,27 +919,72 @@ httpServer.listen(port, '0.0.0.0', () => {
         }
       });
       
-      // User profile
+      // User profile - returns { success, user } format for PublicProfile.tsx
       app.get('/api/users/:userId', async (req: any, res) => {
         try {
           const userId = parseInt(req.params.userId);
           const user = await db.query.users.findFirst({
             where: eq(schema.users.id, userId)
           });
-          if (!user) return res.status(404).json({ error: 'User not found' });
+          if (!user) return res.status(404).json({ success: false, error: 'User not found' });
+          
+          // Get cognitive identity for profile display
+          const cognitiveIdentity = await db.query.cognitiveIdentity.findFirst({
+            where: eq(schema.cognitiveIdentity.userId, userId)
+          });
           
           res.json({
-            id: user.id,
-            username: user.username,
-            fullName: user.fullName,
-            avatar: user.avatar,
-            linkedinHeadline: user.linkedinHeadline,
-            linkedinProfileUrl: user.linkedinProfileUrl,
-            linkedinPhotoUrl: user.linkedinPhotoUrl,
-            aboutMe: user.aboutMe
+            success: true,
+            user: {
+              id: user.id,
+              email: user.email,
+              username: user.username,
+              fullName: user.fullName,
+              avatar: user.avatar,
+              linkedinHeadline: user.linkedinHeadline,
+              linkedinProfileUrl: user.linkedinProfileUrl,
+              linkedinPhotoUrl: user.linkedinPhotoUrl,
+              aboutMe: user.aboutMe,
+              cognitiveIdentityPublic: user.cognitiveIdentityPublic,
+              primaryArchetype: cognitiveIdentity?.primaryArchetype || null,
+              secondaryArchetype: cognitiveIdentity?.secondaryArchetype || null,
+              thinkingStyle: cognitiveIdentity?.thinkingStyle || null,
+              emotionalPattern: cognitiveIdentity?.emotionalPattern || null,
+              lifePhilosophy: cognitiveIdentity?.lifePhilosophy || null,
+              coreValues: cognitiveIdentity?.coreValues || null,
+            }
           });
         } catch (e: any) {
-          res.status(500).json({ error: e.message });
+          res.status(500).json({ success: false, error: e.message });
+        }
+      });
+      
+      // User public dashboard for PublicProfile.tsx
+      app.get('/api/users/:userId/dashboard', async (req: any, res) => {
+        try {
+          const userId = parseInt(req.params.userId);
+          
+          // Get user's public stats
+          const [dotsCount, wheelsCount, chakrasCount, thoughtsCount] = await Promise.all([
+            db.select({ count: count() }).from(schema.dots).where(eq(schema.dots.userId, userId)),
+            db.select({ count: count() }).from(schema.wheels).where(eq(schema.wheels.userId, userId)),
+            db.select({ count: count() }).from(schema.chakras).where(eq(schema.chakras.userId, userId)),
+            db.select({ count: count() }).from(schema.thoughts).where(eq(schema.thoughts.userId, userId)),
+          ]);
+          
+          res.json({
+            success: true,
+            data: {
+              stats: {
+                dots: dotsCount[0]?.count || 0,
+                wheels: wheelsCount[0]?.count || 0,
+                chakras: chakrasCount[0]?.count || 0,
+                thoughts: thoughtsCount[0]?.count || 0,
+              }
+            }
+          });
+        } catch (e: any) {
+          res.status(500).json({ success: false, error: e.message });
         }
       });
       
