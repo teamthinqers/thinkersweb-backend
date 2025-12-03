@@ -1,0 +1,147 @@
+starting build "b172fac7-017b-4760-be6e-f42bac2f8259"
+FETCHSOURCE
+From https://github.com/teamthinqers/thinkersweb-backend
+ * branch            385da6f6f3fc1def6d88df426878f1478d8eab50 -> FETCH_HEAD
+Updating files:  35% (425/1187)Updating files:  36% (428/1187)Updating files:  37% (440/1187)Updating files:  38% (452/1187)Updating files:  39% (463/1187)Updating files:  40% (475/1187)Updating files:  41% (487/1187)Updating files:  42% (499/1187)Updating files:  43% (511/1187)Updating files:  44% (523/1187)Updating files:  45% (535/1187)Updating files:  46% (547/1187)Updating files:  47% (558/1187)Updating files:  48% (570/1187)Updating files:  49% (582/1187)Updating files:  50% (594/1187)Updating files:  51% (606/1187)Updating files:  52% (618/1187)Updating files:  53% (630/1187)Updating files:  54% (641/1187)Updating files:  55% (653/1187)Updating files:  56% (665/1187)Updating files:  57% (677/1187)Updating files:  58% (689/1187)Updating files:  59% (701/1187)Updating files:  60% (713/1187)Updating files:  61% (725/1187)Updating files:  62% (736/1187)Updating files:  63% (748/1187)Updating files:  64% (760/1187)Updating files:  65% (772/1187)Updating files:  66% (784/1187)Updating files:  67% (796/1187)Updating files:  68% (808/1187)Updating files:  69% (820/1187)Updating files:  70% (831/1187)Updating files:  71% (843/1187)Updating files:  72% (855/1187)Updating files:  73% (867/1187)Updating files:  74% (879/1187)Updating files:  75% (891/1187)Updating files:  76% (903/1187)Updating files:  77% (914/1187)Updating files:  78% (926/1187)Updating files:  79% (938/1187)Updating files:  80% (950/1187)Updating files:  81% (962/1187)Updating files:  82% (974/1187)Updating files:  83% (986/1187)Updating files:  84% (998/1187)Updating files:  85% (1009/1187)Updating files:  86% (1021/1187)Updating files:  87% (1033/1187)Updating files:  88% (1045/1187)Updating files:  89% (1057/1187)Updating files:  90% (1069/1187)Updating files:  91% (1081/1187)Updating files:  92% (1093/1187)Updating files:  93% (1104/1187)Updating files:  94% (1116/1187)Updating files:  95% (1128/1187)Updating files:  96% (1140/1187)Updating files:  97% (1152/1187)Updating files:  98% (1164/1187)Updating files:  99% (1176/1187)Updating files: 100% (1187/1187)Updating files: 100% (1187/1187), done.
+HEAD is now at 385da6f Move backend service to a closer region for improved performance
+GitCommit:
+385da6f6f3fc1def6d88df426878f1478d8eab50
+BUILD
+Starting Step #0 - "Build"
+Already have image (with digest): gcr.io/cloud-builders/docker
+Sending build context to Docker daemon  12.64MB
+Step 1/9 : FROM node:20-slim
+20-slim: Pulling from library/node
+8e44f01296e3: Pulling fs layer
+667488fa5220: Pulling fs layer
+e96ce70b461a: Pulling fs layer
+6c2b787b4c45: Pulling fs layer
+aa42edbc26fe: Pulling fs layer
+667488fa5220: Verifying Checksum
+667488fa5220: Download complete
+6c2b787b4c45: Verifying Checksum
+6c2b787b4c45: Download complete
+aa42edbc26fe: Verifying Checksum
+aa42edbc26fe: Download complete
+8e44f01296e3: Verifying Checksum
+8e44f01296e3: Download complete
+e96ce70b461a: Verifying Checksum
+e96ce70b461a: Download complete
+8e44f01296e3: Pull complete
+667488fa5220: Pull complete
+e96ce70b461a: Pull complete
+6c2b787b4c45: Pull complete
+aa42edbc26fe: Pull complete
+Digest: sha256:fbb357f69d05c97333855b0846e4ef65462409728312df3c9ff12c941741c0a5
+Status: Downloaded newer image for node:20-slim
+ ---> 2438320b4ccb
+Step 2/9 : WORKDIR /app
+ ---> Running in 515fc05e8046
+Removing intermediate container 515fc05e8046
+ ---> 183305ad8279
+Step 3/9 : COPY package*.json ./
+ ---> 158597b8edc9
+Step 4/9 : RUN npm ci
+ ---> Running in f25879dc1b97
+npm warn deprecated q@1.5.1: You or someone you depend on is using Q, the JavaScript Promise library that gave JavaScript developers strong feelings about promises. They can almost certainly migrate to the native JavaScript promise now. Thank you literally everyone for joining me in this bet against the odds. Be excellent to each other.
+npm warn deprecated
+npm warn deprecated (For a CapTP with native promises, see @endo/eventual-send and @endo/captp)
+npm warn deprecated node-domexception@1.0.0: Use your platform's native DOMException instead
+npm warn deprecated @esbuild-kit/esm-loader@2.6.5: Merged into tsx: https://tsx.is
+npm warn deprecated @esbuild-kit/core-utils@3.3.2: Merged into tsx: https://tsx.is
+added 776 packages, and audited 777 packages in 25s
+85 packages are looking for funding
+  run `npm fund` for details
+12 vulnerabilities (3 low, 5 moderate, 3 high, 1 critical)
+To address issues that do not require attention, run:
+  npm audit fix
+To address all issues (including breaking changes), run:
+  npm audit fix --force
+Run `npm audit` for details.
+npm notice
+npm notice New major version of npm available! 10.8.2 -> 11.6.4
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v11.6.4
+npm notice To update run: npm install -g npm@11.6.4
+npm notice
+Removing intermediate container f25879dc1b97
+ ---> 4b0f40ae5934
+Step 5/9 : COPY . .
+ ---> 0999136cc51f
+Step 6/9 : EXPOSE 8080
+ ---> Running in 219b5a99fda6
+Removing intermediate container 219b5a99fda6
+ ---> 364df83b9322
+Step 7/9 : ENV NODE_ENV=production
+ ---> Running in 36fcce0e978e
+Removing intermediate container 36fcce0e978e
+ ---> 5fee0251afbc
+Step 8/9 : ENV PORT=8080
+ ---> Running in 97eed2838a0b
+Removing intermediate container 97eed2838a0b
+ ---> 18761cbb8bc3
+Step 9/9 : CMD ["npx", "tsx", "server/cloud-entry.ts"]
+ ---> Running in b400356b4052
+Removing intermediate container b400356b4052
+ ---> 791d7c91c2b2
+Successfully built 791d7c91c2b2
+Successfully tagged europe-west1-docker.pkg.dev/graphite-setup-480107-n8/cloud-run-source-deploy/thinkersweb-backend/thinkersweb-backend:385da6f6f3fc1def6d88df426878f1478d8eab50
+Finished Step #0 - "Build"
+Starting Step #1 - "Push"
+Already have image (with digest): gcr.io/cloud-builders/docker
+The push refers to repository [europe-west1-docker.pkg.dev/graphite-setup-480107-n8/cloud-run-source-deploy/thinkersweb-backend/thinkersweb-backend]
+7c523a8c5406: Preparing
+d1d81ecd4fe6: Preparing
+4dbe0bc5853a: Preparing
+b4929f07b856: Preparing
+be4bdbbdbdab: Preparing
+988c0d98d206: Preparing
+e52a4c483cc2: Preparing
+dda58b1779fc: Preparing
+bd2be69c2f99: Preparing
+dda58b1779fc: Layer already exists
+e52a4c483cc2: Layer already exists
+be4bdbbdbdab: Layer already exists
+988c0d98d206: Layer already exists
+4dbe0bc5853a: Pushed
+b4929f07b856: Pushed
+7c523a8c5406: Pushed
+bd2be69c2f99: Pushed
+d1d81ecd4fe6: Pushed
+385da6f6f3fc1def6d88df426878f1478d8eab50: digest: sha256:a06fb3b933e14ef72b2378dc1c708e896eb3ab75ddc48b170b92f58913627938 size: 2208
+Finished Step #1 - "Push"
+Starting Step #2 - "Deploy"
+Pulling image: gcr.io/google.com/cloudsdktool/cloud-sdk:slim
+slim: Pulling from google.com/cloudsdktool/cloud-sdk
+Digest: sha256:17a274eee28444fbdc1ce7410a064943c0dead47042cac07944a9020bd93cbc6
+Status: Downloaded newer image for gcr.io/google.com/cloudsdktool/cloud-sdk:slim
+gcr.io/google.com/cloudsdktool/cloud-sdk:slim
+Deploying...
+Creating Revision...........................................................................................................................................................................................................................................................................................................................................................................................................................................................................done
+Routing traffic.....done
+Done.
+Service [thinkersweb-backend] revision [thinkersweb-backend-00047-dzx] has been deployed and is serving 100 percent of traffic.
+Service URL: https://thinkersweb-backend-908196010054.europe-west1.run.app
+Finished Step #2 - "Deploy"
+PUSH
+Pushing europe-west1-docker.pkg.dev/graphite-setup-480107-n8/cloud-run-source-deploy/thinkersweb-backend/thinkersweb-backend:385da6f6f3fc1def6d88df426878f1478d8eab50
+The push refers to repository [europe-west1-docker.pkg.dev/graphite-setup-480107-n8/cloud-run-source-deploy/thinkersweb-backend/thinkersweb-backend]
+7c523a8c5406: Preparing
+d1d81ecd4fe6: Preparing
+4dbe0bc5853a: Preparing
+b4929f07b856: Preparing
+be4bdbbdbdab: Preparing
+988c0d98d206: Preparing
+e52a4c483cc2: Preparing
+dda58b1779fc: Preparing
+bd2be69c2f99: Preparing
+dda58b1779fc: Layer already exists
+d1d81ecd4fe6: Layer already exists
+7c523a8c5406: Layer already exists
+bd2be69c2f99: Layer already exists
+4dbe0bc5853a: Layer already exists
+e52a4c483cc2: Layer already exists
+988c0d98d206: Layer already exists
+be4bdbbdbdab: Layer already exists
+b4929f07b856: Layer already exists
+385da6f6f3fc1def6d88df426878f1478d8eab50: digest: sha256:a06fb3b933e14ef72b2378dc1c708e896eb3ab75ddc48b170b92f58913627938 size: 2208
+DONE
