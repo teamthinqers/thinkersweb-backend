@@ -756,71 +756,7 @@ httpServer.listen(port, '0.0.0.0', () => {
       });
       
       // ThinQ Circles endpoints
-      app.get('/api/thinq-circles', async (req: any, res) => {
-        try {
-          if (!req.user) return res.json({ circles: [] });
-          
-          const circles = await db.query.thinqCircles.findMany({
-            where: or(
-              eq(schema.thinqCircles.createdBy, req.user.id),
-              sql`${req.user.id} IN (SELECT user_id FROM thinq_circle_members WHERE circle_id = ${schema.thinqCircles.id})`
-            ),
-            orderBy: desc(schema.thinqCircles.createdAt)
-          });
-          
-          res.json({ circles });
-        } catch (e: any) {
-          res.status(500).json({ error: e.message });
-        }
-      });
-      
-      app.get('/api/thinq-circles/:circleId', async (req: any, res) => {
-        try {
-          const circleId = parseInt(req.params.circleId);
-          const circle = await db.query.thinqCircles.findFirst({
-            where: eq(schema.thinqCircles.id, circleId)
-          });
-          res.json({ success: !!circle, circle: circle || null });
-        } catch (e: any) {
-          res.status(500).json({ error: e.message });
-        }
-      });
-      
-      app.get('/api/thinq-circles/:circleId/thoughts', async (req: any, res) => {
-        try {
-          const circleId = parseInt(req.params.circleId);
-          const circleDots = await db.query.circleDots.findMany({
-            where: eq(schema.circleDots.circleId, circleId),
-            with: { thought: { with: { user: true } } }
-          });
-          const thoughts = circleDots.map(cd => cd.thought).filter(Boolean);
-          res.json({ thoughts });
-        } catch (e: any) {
-          res.status(500).json({ error: e.message });
-        }
-      });
-      
-      app.post('/api/thinq-circles', async (req: any, res) => {
-        try {
-          if (!req.user) return res.status(401).json({ error: 'Unauthorized' });
-          
-          const { name, description } = req.body;
-          
-          const [circle] = await db.insert(schema.thinqCircles)
-            .values({
-              name,
-              description,
-              createdBy: req.user.id
-            })
-            .returning();
-          
-          res.json({ success: true, circle });
-        } catch (e: any) {
-          res.status(500).json({ error: e.message });
-        }
-      });
-      
-      // Get user's circles (my-circles)
+      // IMPORTANT: my-circles must come BEFORE :circleId to prevent "my-circles" matching as a circleId
       app.get('/api/thinq-circles/my-circles', async (req: any, res) => {
         try {
           if (!req.user) return res.json({ success: true, circles: [] });
@@ -895,6 +831,80 @@ httpServer.listen(port, '0.0.0.0', () => {
           });
         } catch (e: any) {
           console.error('Get pending invites error:', e);
+          res.status(500).json({ error: e.message });
+        }
+      });
+      
+      // List all circles for user
+      app.get('/api/thinq-circles', async (req: any, res) => {
+        try {
+          if (!req.user) return res.json({ circles: [] });
+          
+          const circles = await db.query.thinqCircles.findMany({
+            where: or(
+              eq(schema.thinqCircles.createdBy, req.user.id),
+              sql`${req.user.id} IN (SELECT user_id FROM thinq_circle_members WHERE circle_id = ${schema.thinqCircles.id})`
+            ),
+            orderBy: desc(schema.thinqCircles.createdAt)
+          });
+          
+          res.json({ circles });
+        } catch (e: any) {
+          res.status(500).json({ error: e.message });
+        }
+      });
+      
+      // Create new circle
+      app.post('/api/thinq-circles', async (req: any, res) => {
+        try {
+          if (!req.user) return res.status(401).json({ error: 'Unauthorized' });
+          
+          const { name, description } = req.body;
+          
+          const [circle] = await db.insert(schema.thinqCircles)
+            .values({
+              name,
+              description,
+              createdBy: req.user.id
+            })
+            .returning();
+          
+          res.json({ success: true, circle });
+        } catch (e: any) {
+          res.status(500).json({ error: e.message });
+        }
+      });
+      
+      // Get specific circle by ID (must come AFTER literal routes like /my-circles)
+      app.get('/api/thinq-circles/:circleId', async (req: any, res) => {
+        try {
+          const circleId = parseInt(req.params.circleId);
+          if (isNaN(circleId)) {
+            return res.status(400).json({ error: 'Invalid circle ID' });
+          }
+          const circle = await db.query.thinqCircles.findFirst({
+            where: eq(schema.thinqCircles.id, circleId)
+          });
+          res.json({ success: !!circle, circle: circle || null });
+        } catch (e: any) {
+          res.status(500).json({ error: e.message });
+        }
+      });
+      
+      // Get thoughts for specific circle
+      app.get('/api/thinq-circles/:circleId/thoughts', async (req: any, res) => {
+        try {
+          const circleId = parseInt(req.params.circleId);
+          if (isNaN(circleId)) {
+            return res.status(400).json({ error: 'Invalid circle ID' });
+          }
+          const circleDots = await db.query.circleDots.findMany({
+            where: eq(schema.circleDots.circleId, circleId),
+            with: { thought: { with: { user: true } } }
+          });
+          const thoughts = circleDots.map(cd => cd.thought).filter(Boolean);
+          res.json({ thoughts });
+        } catch (e: any) {
           res.status(500).json({ error: e.message });
         }
       });
@@ -1157,11 +1167,11 @@ httpServer.listen(port, '0.0.0.0', () => {
       // Network insights (stub)
       app.get('/api/network/insights', (req, res) => res.json({ insights: [], connections: 0 }));
       
-      // Users search
+      // Users search - returns { success: true, users: [...] } format
       app.get('/api/users/search', async (req, res) => {
         try {
           const query = req.query.q as string;
-          if (!query || query.length < 2) return res.json([]);
+          if (!query || query.length < 2) return res.json({ success: true, users: [] });
           
           const searchPattern = `%${query}%`;
           
@@ -1179,16 +1189,17 @@ httpServer.listen(port, '0.0.0.0', () => {
               id: true,
               username: true,
               fullName: true,
+              email: true,
               avatar: true,
               linkedinHeadline: true,
               linkedinPhotoUrl: true
             }
           });
           
-          res.json(users);
+          res.json({ success: true, users });
         } catch (e: any) {
           console.error('User search error:', e);
-          res.status(500).json({ error: e.message });
+          res.status(500).json({ success: false, error: e.message, users: [] });
         }
       });
       
