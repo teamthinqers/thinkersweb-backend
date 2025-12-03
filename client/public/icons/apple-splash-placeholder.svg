@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1242" height="2688" viewBox="0 0 1242 2688" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1242" height="2688" fill="#7c3aed"/>
+  <g transform="translate(371, 1094) scale(1)">
+    <rect width="500" height="500" rx="125" fill="#6B21A8" />
+    <path d="M199 85C229 85 252 108 252 138V458C252 488 225 512 195 512C154 512 136 471 171 441C199 416 202 392 199 346C197 311 179 304 161 332C149 351 124 332 139 307C156 277 142 249 119 249C86 249 91 196 124 196C149 196 161 170 154 153C142 127 169 85 199 85Z" fill="white"/>
+    <path d="M305 85C275 85 252 108 252 138V458C252 488 279 512 309 512C350 512 368 471 333 441C305 416 302 392 305 346C307 311 325 304 343 332C355 351 380 332 365 307C348 277 362 249 385 249C418 249 413 196 380 196C355 196 343 170 350 153C362 127 335 85 305 85Z" fill="white"/>
+  </g>
+  <text x="621" y="1750" font-family="system-ui, sans-serif" font-size="60" font-weight="bold" fill="white" text-anchor="middle">DotSpark Neura</text>
+  <text x="621" y="1830" font-family="system-ui, sans-serif" font-size="40" fill="white" text-anchor="middle">Think Sharper. Stay You.</text>
+</svg>
