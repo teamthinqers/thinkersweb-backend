@@ -12,9 +12,10 @@ if (!admin.apps.length) {
       privateKey: privateKey,
     }),
   });
+  console.log('✅ Firebase Admin initialized');
 }
 
-// Catch any uncaught errors FIRST
+// Catch any uncaught errors
 process.on('uncaughtException', (err) => {
   console.error('UNCAUGHT:', err.message);
 });
@@ -23,14 +24,14 @@ process.on('unhandledRejection', (reason) => {
   console.error('UNHANDLED:', reason);
 });
 
-console.log('=== Server Starting ===');
+console.log('=== Cloud Run Server Starting ===');
 console.log('PORT:', process.env.PORT);
 console.log('DATABASE_URL exists:', !!process.env.DATABASE_URL);
 
 const app = express();
 const port = parseInt(process.env.PORT || '8080', 10);
 
-// CORS
+// CORS middleware
 app.use((req, res, next) => {
   const allowedOrigins = [
     'https://www.thinqers.in',
@@ -52,9 +53,9 @@ app.use((req, res, next) => {
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: false, limit: '10mb' }));
 
-// Health endpoints
+// Health endpoints (before auth middleware)
 app.get('/health', (req, res) => res.json({ status: 'healthy' }));
-app.get('/api/health', (req, res) => res.json({ status: 'ok' }));
+app.get('/api/health', (req, res) => res.json({ status: 'ok', time: new Date().toISOString() }));
 
 // Start listening first, then load routes
 const httpServer = createServer(app);
@@ -62,73 +63,271 @@ const httpServer = createServer(app);
 httpServer.listen(port, '0.0.0.0', () => {
   console.log(`=== Listening on port ${port} ===`);
   
-  // Load routes with timeout protection
   const loadRoutes = async () => {
-    console.log('Step 1: Starting route load...');
-    
     try {
-      console.log('Step 2: Importing db...');
+      console.log('Loading database and schema...');
       const { db } = await import('@db');
-      console.log('Step 3: DB imported');
-      
-      console.log('Step 4: Importing schema...');
       const schema = await import('@shared/schema');
-      console.log('Step 5: Schema imported');
+      const { eq, desc, count, or, and, sql } = await import('drizzle-orm');
       
-      const { eq, desc, count, or, and } = await import('drizzle-orm');
-      console.log('Step 6: Drizzle operators imported');
+      console.log('Database connected successfully');
       
-      // Helper to get user from Bearer token
-      const getUserFromToken = async (req: any): Promise<any | null> => {
+      // ============================================
+      // BEARER TOKEN AUTH MIDDLEWARE
+      // Populates req.user for all requests
+      // ============================================
+      app.use(async (req: any, res, next) => {
         try {
           const authHeader = req.headers.authorization;
-          if (!authHeader || !authHeader.startsWith('Bearer ')) {
-            return null;
+          if (authHeader && authHeader.startsWith('Bearer ')) {
+            const idToken = authHeader.substring(7);
+            const decodedToken = await admin.auth().verifyIdToken(idToken);
+            const user = await db.query.users.findFirst({
+              where: eq(schema.users.firebaseUid, decodedToken.uid)
+            });
+            if (user) {
+              req.user = {
+                id: user.id,
+                email: user.email,
+                username: user.username,
+                fullName: user.fullName,
+                avatar: user.avatar,
+                avatarUrl: user.avatar,
+                firebaseUid: user.firebaseUid,
+                linkedinHeadline: user.linkedinHeadline,
+                linkedinProfileUrl: user.linkedinProfileUrl,
+                linkedinPhotoUrl: user.linkedinPhotoUrl,
+                aboutMe: user.aboutMe,
+                cognitiveIdentityCompleted: user.cognitiveIdentityCompleted,
+                learningEngineCompleted: user.learningEngineCompleted,
+                createdAt: user.createdAt,
+                updatedAt: user.updatedAt
+              };
+              // Also set session-like properties for router compatibility
+              req.session = { userId: user.id };
+            }
           }
-          const idToken = authHeader.substring(7);
+        } catch (e) {
+          // Token invalid or expired - continue without user
+        }
+        next();
+      });
+      
+      // ============================================
+      // AUTH ENDPOINTS (Cloud Run specific)
+      // ============================================
+      
+      // Login with Firebase token
+      app.post('/api/auth/login', async (req, res) => {
+        try {
+          const { idToken, email, displayName, photoURL } = req.body;
+          
+          if (!idToken) {
+            return res.status(400).json({ error: 'ID token required' });
+          }
+          
           const decodedToken = await admin.auth().verifyIdToken(idToken);
-          const user = await db.query.users.findFirst({
+          const firebaseUid = decodedToken.uid;
+          const userEmail = decodedToken.email || email;
+          
+          let user = await db.query.users.findFirst({
+            where: eq(schema.users.firebaseUid, firebaseUid)
+          });
+          
+          let isNewUser = false;
+          
+          if (!user && userEmail) {
+            user = await db.query.users.findFirst({
+              where: eq(schema.users.email, userEmail)
+            });
+            
+            if (user) {
+              const [updated] = await db.update(schema.users)
+                .set({ firebaseUid, updatedAt: new Date() })
+                .where(eq(schema.users.id, user.id))
+                .returning();
+              user = updated;
+            }
+          }
+          
+          if (!user) {
+            isNewUser = true;
+            const username = userEmail?.split('@')[0] || `user_${Date.now()}`;
+            const [newUser] = await db.insert(schema.users)
+              .values({
+                firebaseUid,
+                email: userEmail || '',
+                fullName: displayName || decodedToken.name,
+                avatar: photoURL || decodedToken.picture,
+                username,
+                dotSparkActivated: true
+              })
+              .returning();
+            user = newUser;
+          }
+          
+          res.json({
+            success: true,
+            isNewUser,
+            user: {
+              id: user.id,
+              email: user.email,
+              username: user.username,
+              fullName: user.fullName,
+              avatar: user.avatar,
+              avatarUrl: user.avatar,
+              firebaseUid: user.firebaseUid,
+              linkedinHeadline: user.linkedinHeadline,
+              linkedinProfileUrl: user.linkedinProfileUrl,
+              linkedinPhotoUrl: user.linkedinPhotoUrl,
+              cognitiveIdentityCompleted: user.cognitiveIdentityCompleted,
+              learningEngineCompleted: user.learningEngineCompleted,
+              createdAt: user.createdAt,
+              updatedAt: user.updatedAt
+            }
+          });
+        } catch (e: any) {
+          console.error('Auth login error:', e);
+          res.status(401).json({ error: 'Authentication failed: ' + e.message });
+        }
+      });
+      
+      // Firebase endpoint (alias for login)
+      app.post('/api/auth/firebase', async (req, res) => {
+        try {
+          const { idToken } = req.body;
+          if (!idToken) {
+            return res.status(400).json({ error: 'idToken required' });
+          }
+          
+          const decodedToken = await admin.auth().verifyIdToken(idToken);
+          let user = await db.query.users.findFirst({
             where: eq(schema.users.firebaseUid, decodedToken.uid)
           });
-          return user;
-        } catch (e) {
-          return null;
-        }
-      };
-      
-      // Register routes inline
-      app.get('/', (req, res) => {
-        res.json({ message: 'DotSpark API', status: 'running' });
-      });
-      
-      // Get thoughts - SOCIAL only (visibility = 'social' or sharedToSocial = true)
-      app.get('/api/thoughts', async (req, res) => {
-        try {
-          const thoughts = await db.query.thoughts.findMany({
-            where: or(
-              eq(schema.thoughts.visibility, 'social'),
-              eq(schema.thoughts.sharedToSocial, true)
-            ),
-            orderBy: desc(schema.thoughts.createdAt),
-            with: { user: true }
-          });
-          res.json({ thoughts });
-        } catch (e: any) {
-          res.status(500).json({ error: e.message });
-        }
-      });
-      
-      // Get dots
-      app.get('/api/dots', async (req, res) => {
-        try {
-          let userId = req.query.userId as string;
-          if (!userId) {
-            const user = await getUserFromToken(req);
-            if (user) userId = String(user.id);
+          
+          if (!user && decodedToken.email) {
+            user = await db.query.users.findFirst({
+              where: eq(schema.users.email, decodedToken.email)
+            });
+            if (user) {
+              const [updated] = await db.update(schema.users)
+                .set({ firebaseUid: decodedToken.uid })
+                .where(eq(schema.users.id, user.id))
+                .returning();
+              user = updated;
+            }
           }
+          
+          if (!user) {
+            const username = decodedToken.email?.split('@')[0] || `user_${Date.now()}`;
+            const [newUser] = await db.insert(schema.users)
+              .values({
+                firebaseUid: decodedToken.uid,
+                email: decodedToken.email || '',
+                fullName: decodedToken.name,
+                avatar: decodedToken.picture,
+                username,
+                dotSparkActivated: true
+              })
+              .returning();
+            user = newUser;
+          }
+          
+          res.json({ user, isNewUser: false });
+        } catch (e: any) {
+          res.status(401).json({ error: e.message });
+        }
+      });
+      
+      // Get current user
+      app.get('/api/auth/me', (req: any, res) => {
+        if (req.user) {
+          res.json({ user: req.user });
+        } else {
+          res.json({ user: null });
+        }
+      });
+      
+      // Auth refresh
+      app.post('/api/auth/refresh', (req: any, res) => {
+        if (req.user) {
+          res.json({ user: req.user });
+        } else {
+          res.json({ user: null });
+        }
+      });
+      
+      // Logout
+      app.post('/api/auth/logout', (req, res) => {
+        res.json({ success: true });
+      });
+      
+      // ============================================
+      // MOUNT MODULAR ROUTERS
+      // These contain all the business logic
+      // ============================================
+      
+      console.log('Loading modular routers...');
+      
+      // Thoughts router - handles /api/thoughts/*
+      const thoughtsModule = await import('./routes/thoughts');
+      app.use('/api/thoughts', thoughtsModule.default);
+      console.log('✅ Thoughts router mounted');
+      
+      // Social router - handles /api/social/*
+      const socialModule = await import('./routes/social');
+      app.use('/api/social', socialModule.default);
+      console.log('✅ Social router mounted');
+      
+      // User content router - handles /api/user-content/*
+      const userContentModule = await import('./routes/user-content');
+      app.use('/api/user-content', userContentModule.default);
+      console.log('✅ User content router mounted');
+      
+      // Notifications router - handles /api/notifications/*
+      const notificationsModule = await import('./routes/notifications');
+      app.use('/api/notifications', notificationsModule.default);
+      console.log('✅ Notifications router mounted');
+      
+      // Notifications simple router
+      const notificationsSimpleModule = await import('./routes/notifications-simple');
+      app.use('/api/notifications-simple', notificationsSimpleModule.default);
+      console.log('✅ Notifications simple router mounted');
+      
+      // ============================================
+      // ADDITIONAL ENDPOINTS NOT IN ROUTERS
+      // ============================================
+      
+      // Root endpoint
+      app.get('/', (req, res) => {
+        res.json({ message: 'ThinQers API', status: 'running', version: '2.0' });
+      });
+      
+      // Validate invite code
+      app.post('/api/validate-invite-code', (req, res) => {
+        const { inviteCode } = req.body;
+        if (inviteCode === 'DOTSPARK2024' || inviteCode === 'NEURAL' || inviteCode === 'THINQERS') {
+          res.json({ valid: true });
+        } else {
+          res.status(400).json({ message: 'Invalid invite code' });
+        }
+      });
+      
+      // DotSpark status
+      app.get('/api/dotspark/status', (req: any, res) => {
+        res.json({
+          isActive: !!req.user,
+          features: { cogniShield: true, neuralProcessing: true }
+        });
+      });
+      
+      // Get dots (direct endpoint)
+      app.get('/api/dots', async (req: any, res) => {
+        try {
+          const userId = req.query.userId ? parseInt(req.query.userId as string) : req.user?.id;
           if (!userId) return res.json([]);
           const dots = await db.query.dots.findMany({
-            where: eq(schema.dots.userId, parseInt(userId)),
+            where: eq(schema.dots.userId, userId),
             orderBy: desc(schema.dots.createdAt)
           });
           res.json(dots);
@@ -137,17 +336,13 @@ httpServer.listen(port, '0.0.0.0', () => {
         }
       });
       
-      // Get wheels
-      app.get('/api/wheels', async (req, res) => {
+      // Get wheels (direct endpoint)
+      app.get('/api/wheels', async (req: any, res) => {
         try {
-          let userId = req.query.userId as string;
-          if (!userId) {
-            const user = await getUserFromToken(req);
-            if (user) userId = String(user.id);
-          }
+          const userId = req.query.userId ? parseInt(req.query.userId as string) : req.user?.id;
           if (!userId) return res.json([]);
           const wheels = await db.query.wheels.findMany({
-            where: eq(schema.wheels.userId, parseInt(userId)),
+            where: eq(schema.wheels.userId, userId),
             orderBy: desc(schema.wheels.createdAt)
           });
           res.json(wheels);
@@ -156,17 +351,13 @@ httpServer.listen(port, '0.0.0.0', () => {
         }
       });
       
-      // Get chakras
-      app.get('/api/chakras', async (req, res) => {
+      // Get chakras (direct endpoint)
+      app.get('/api/chakras', async (req: any, res) => {
         try {
-          let userId = req.query.userId as string;
-          if (!userId) {
-            const user = await getUserFromToken(req);
-            if (user) userId = String(user.id);
-          }
+          const userId = req.query.userId ? parseInt(req.query.userId as string) : req.user?.id;
           if (!userId) return res.json([]);
           const chakras = await db.query.chakras.findMany({
-            where: eq(schema.chakras.userId, parseInt(userId)),
+            where: eq(schema.chakras.userId, userId),
             orderBy: desc(schema.chakras.createdAt)
           });
           res.json(chakras);
@@ -175,17 +366,13 @@ httpServer.listen(port, '0.0.0.0', () => {
         }
       });
       
-      // Get sparks
-      app.get('/api/sparks', async (req, res) => {
+      // Get sparks (direct endpoint)
+      app.get('/api/sparks', async (req: any, res) => {
         try {
-          let userId = req.query.userId as string;
-          if (!userId) {
-            const user = await getUserFromToken(req);
-            if (user) userId = String(user.id);
-          }
+          const userId = req.query.userId ? parseInt(req.query.userId as string) : req.user?.id;
           if (!userId) return res.json([]);
           const sparks = await db.query.sparks.findMany({
-            where: eq(schema.sparks.userId, parseInt(userId)),
+            where: eq(schema.sparks.userId, userId),
             orderBy: desc(schema.sparks.createdAt)
           });
           res.json(sparks);
@@ -194,396 +381,66 @@ httpServer.listen(port, '0.0.0.0', () => {
         }
       });
       
-      // Get user-content dots (for Dashboard and UserGrid)
-      app.get('/api/user-content/dots', async (req, res) => {
+      // Grid positions
+      app.get('/api/grid/positions', async (req: any, res) => {
         try {
-          const user = await getUserFromToken(req);
-          if (!user) return res.json([]);
-          const dots = await db.query.dots.findMany({
-            where: eq(schema.dots.userId, user.id),
-            orderBy: desc(schema.dots.createdAt)
-          });
-          res.json(dots);
-        } catch (e: any) {
-          res.status(500).json({ error: e.message });
-        }
-      });
-      
-      // Get user-content wheels
-      app.get('/api/user-content/wheels', async (req, res) => {
-        try {
-          const user = await getUserFromToken(req);
-          if (!user) return res.json([]);
-          const wheels = await db.query.wheels.findMany({
-            where: eq(schema.wheels.userId, user.id),
-            orderBy: desc(schema.wheels.createdAt)
-          });
-          res.json(wheels);
-        } catch (e: any) {
-          res.status(500).json({ error: e.message });
-        }
-      });
-      
-      // Get user-content chakras
-      app.get('/api/user-content/chakras', async (req, res) => {
-        try {
-          const user = await getUserFromToken(req);
-          if (!user) return res.json([]);
-          const chakras = await db.query.chakras.findMany({
-            where: eq(schema.chakras.userId, user.id),
-            orderBy: desc(schema.chakras.createdAt)
-          });
-          res.json(chakras);
-        } catch (e: any) {
-          res.status(500).json({ error: e.message });
-        }
-      });
-      
-      // Get social dots - returns thoughts shared to social (not personal dots)
-      app.get('/api/social/dots', async (req, res) => {
-        try {
-          // Return social thoughts, not dots (dots are always personal)
-          const socialThoughts = await db.query.thoughts.findMany({
-            where: or(
-              eq(schema.thoughts.visibility, 'social'),
-              eq(schema.thoughts.sharedToSocial, true)
-            ),
-            orderBy: desc(schema.thoughts.createdAt),
-            limit: 50,
-            with: { user: true }
-          });
-          res.json(socialThoughts);
-        } catch (e: any) {
-          res.status(500).json({ error: e.message });
-        }
-      });
-      
-      // Get grid positions
-      app.get('/api/grid/positions', async (req, res) => {
-        try {
-          const user = await getUserFromToken(req);
-          if (!user) {
+          if (!req.user) {
             return res.json({ 
               data: { 
-                dotPositions: {}, 
-                wheelPositions: {}, 
-                chakraPositions: {}, 
+                dotPositions: {}, wheelPositions: {}, chakraPositions: {}, 
                 statistics: { totalDots: 0, totalWheels: 0, totalChakras: 0, freeDots: 0 } 
               } 
             });
           }
           
-          // Return positions for user's content
-          const dots = await db.query.dots.findMany({
-            where: eq(schema.dots.userId, user.id)
-          });
-          const wheels = await db.query.wheels.findMany({
-            where: eq(schema.wheels.userId, user.id)
-          });
-          const chakras = await db.query.chakras.findMany({
-            where: eq(schema.chakras.userId, user.id)
-          });
+          const [dots, wheels, chakras] = await Promise.all([
+            db.query.dots.findMany({ where: eq(schema.dots.userId, req.user.id) }),
+            db.query.wheels.findMany({ where: eq(schema.wheels.userId, req.user.id) }),
+            db.query.chakras.findMany({ where: eq(schema.chakras.userId, req.user.id) })
+          ]);
           
           const dotPositions: Record<string, any> = {};
           const wheelPositions: Record<string, any> = {};
           const chakraPositions: Record<string, any> = {};
           
           dots.forEach((dot, i) => {
-            dotPositions[dot.id] = { x: (i % 5) * 100, y: Math.floor(i / 5) * 100 };
+            dotPositions[dot.id] = { x: dot.positionX ?? (i % 5) * 100, y: dot.positionY ?? Math.floor(i / 5) * 100 };
           });
           wheels.forEach((wheel, i) => {
-            wheelPositions[wheel.id] = { x: (i % 3) * 150, y: Math.floor(i / 3) * 150 };
+            wheelPositions[wheel.id] = { x: wheel.positionX ?? (i % 3) * 150, y: wheel.positionY ?? Math.floor(i / 3) * 150 };
           });
           chakras.forEach((chakra, i) => {
-            chakraPositions[chakra.id] = { x: (i % 2) * 200, y: Math.floor(i / 2) * 200 };
+            chakraPositions[chakra.id] = { x: chakra.positionX ?? (i % 2) * 200, y: chakra.positionY ?? Math.floor(i / 2) * 200 };
           });
           
           res.json({
             data: {
-              dotPositions,
-              wheelPositions,
-              chakraPositions,
+              dotPositions, wheelPositions, chakraPositions,
               statistics: { 
                 totalDots: dots.length, 
                 totalWheels: wheels.length, 
                 totalChakras: chakras.length, 
-                freeDots: dots.length 
+                freeDots: dots.filter(d => !d.wheelId).length 
               }
             }
           });
-        } catch (e: any) {
-          res.status(500).json({ error: e.message });
-        }
-      });
-      
-      // ThinQ Circle by ID
-      app.get('/api/thinq-circles/:circleId', async (req, res) => {
-        try {
-          const circleId = parseInt(req.params.circleId);
-          const circle = await db.query.thinqCircles.findFirst({
-            where: eq(schema.thinqCircles.id, circleId)
-          });
-          if (!circle) {
-            return res.json({ success: false, circle: null });
-          }
-          res.json({ success: true, circle });
-        } catch (e: any) {
-          res.status(500).json({ error: e.message });
-        }
-      });
-      
-      // ThinQ Circle thoughts
-      app.get('/api/thinq-circles/:circleId/thoughts', async (req, res) => {
-        try {
-          res.json({ thoughts: [] });
-        } catch (e: any) {
-          res.status(500).json({ error: e.message });
-        }
-      });
-      
-      // Thoughts sparks
-      app.get('/api/thoughts/:thoughtId/sparks', async (req, res) => {
-        try {
-          res.json({ success: true, sparks: [] });
-        } catch (e: any) {
-          res.status(500).json({ error: e.message });
-        }
-      });
-      
-      // Thoughts perspectives
-      app.get('/api/thoughts/:thoughtId/perspectives/personal', async (req, res) => {
-        try {
-          res.json({ perspectives: [] });
-        } catch (e: any) {
-          res.status(500).json({ error: e.message });
-        }
-      });
-      
-      // DotSpark status
-      app.get('/api/dotspark/status', async (req, res) => {
-        try {
-          const user = await getUserFromToken(req);
-          res.json({
-            isActive: !!user,
-            features: {
-              cogniShield: true,
-              neuralProcessing: true
-            }
-          });
-        } catch (e: any) {
-          res.status(500).json({ error: e.message });
-        }
-      });
-      
-      // User sparks count
-      app.get('/api/thoughts/user/sparks-count', async (req, res) => {
-        try {
-          const user = await getUserFromToken(req);
-          if (!user) return res.json({ count: 0 });
-          const sparksCount = await db.select({ count: count() }).from(schema.sparks).where(eq(schema.sparks.userId, user.id));
-          res.json({ count: sparksCount[0]?.count || 0 });
-        } catch (e: any) {
-          res.status(500).json({ error: e.message });
-        }
-      });
-      
-      // Thoughts myneura - user's PERSONAL thoughts only (visibility='personal')
-      app.get('/api/thoughts/myneura', async (req, res) => {
-        try {
-          const user = await getUserFromToken(req);
-          if (!user) return res.json({ thoughts: [], savedThoughts: [] });
-          
-          // Get user's own personal thoughts (not social ones)
-          const personalThoughts = await db.query.thoughts.findMany({
-            where: and(
-              eq(schema.thoughts.userId, user.id),
-              eq(schema.thoughts.visibility, 'personal')
-            ),
-            orderBy: desc(schema.thoughts.createdAt),
-            with: { user: true }
-          });
-          
-          // Also get thoughts the user has shared to social (their own)
-          const sharedThoughts = await db.query.thoughts.findMany({
-            where: and(
-              eq(schema.thoughts.userId, user.id),
-              eq(schema.thoughts.sharedToSocial, true)
-            ),
-            orderBy: desc(schema.thoughts.createdAt),
-            with: { user: true }
-          });
-          
-          // Get saved thoughts from others
-          const savedThoughtRecords = await db.query.savedThoughts.findMany({
-            where: eq(schema.savedThoughts.userId, user.id),
-            with: {
-              thought: {
-                with: { user: true }
-              }
-            }
-          });
-          const savedThoughtsData = savedThoughtRecords.map(s => s.thought).filter(Boolean);
-          
-          res.json({ 
-            thoughts: personalThoughts,
-            sharedThoughts,
-            savedThoughts: savedThoughtsData
-          });
-        } catch (e: any) {
-          res.status(500).json({ error: e.message });
-        }
-      });
-      
-      // Thoughts neural strength - includes perspectives count
-      app.get('/api/thoughts/neural-strength', async (req, res) => {
-        try {
-          const user = await getUserFromToken(req);
-          if (!user) return res.json({ strength: 0, perspectives: 0, sparks: 0, dots: 0 });
-          
-          const dotsCount = await db.select({ count: count() }).from(schema.dots).where(eq(schema.dots.userId, user.id));
-          const sparksCount = await db.select({ count: count() }).from(schema.sparks).where(eq(schema.sparks.userId, user.id));
-          const perspectivesCount = await db.select({ count: count() }).from(schema.perspectivesMessages).where(eq(schema.perspectivesMessages.userId, user.id));
-          
-          const dots = dotsCount[0]?.count || 0;
-          const sparks = sparksCount[0]?.count || 0;
-          const perspectives = perspectivesCount[0]?.count || 0;
-          
-          // Calculate strength based on all contributions
-          const strength = Math.min(100, (dots * 3) + (sparks * 2) + (perspectives * 1));
-          
-          res.json({ 
-            strength, 
-            perspectives, 
-            sparks, 
-            dots 
-          });
-        } catch (e: any) {
-          res.status(500).json({ error: e.message });
-        }
-      });
-      
-      // Social feed - only social/shared thoughts
-      app.get('/api/social/feed', async (req, res) => {
-        try {
-          const thoughts = await db.query.thoughts.findMany({
-            where: or(
-              eq(schema.thoughts.visibility, 'social'),
-              eq(schema.thoughts.sharedToSocial, true)
-            ),
-            orderBy: desc(schema.thoughts.createdAt),
-            limit: 20,
-            with: { user: true }
-          });
-          res.json({ feed: thoughts });
-        } catch (e: any) {
-          res.status(500).json({ error: e.message });
-        }
-      });
-      
-      // Categories
-      app.get('/api/categories', async (req, res) => {
-        try {
-          res.json([]);
-        } catch (e: any) {
-          res.status(500).json({ error: e.message });
-        }
-      });
-      
-      // Tags
-      app.get('/api/tags', async (req, res) => {
-        try {
-          res.json([]);
-        } catch (e: any) {
-          res.status(500).json({ error: e.message });
-        }
-      });
-      
-      // Related tags
-      app.get('/api/tags/:id/related', (req, res) => {
-        res.json([]);
-      });
-      
-      // Entries
-      app.get('/api/entries', async (req, res) => {
-        try {
-          const user = await getUserFromToken(req);
-          if (!user) return res.json([]);
-          res.json([]);
-        } catch (e: any) {
-          res.status(500).json({ error: e.message });
-        }
-      });
-      
-      // Entry by ID
-      app.get('/api/entries/:id', (req, res) => {
-        res.json(null);
-      });
-      
-      // Auth refresh
-      app.post('/api/auth/refresh', async (req, res) => {
-        try {
-          const user = await getUserFromToken(req);
-          if (!user) return res.json({ user: null });
-          res.json({ user });
-        } catch (e: any) {
-          res.status(500).json({ error: e.message });
-        }
-      });
-      
-      // Validate invite code
-      app.post('/api/validate-invite-code', (req, res) => {
-        const { inviteCode } = req.body;
-        if (inviteCode === 'DOTSPARK2024' || inviteCode === 'NEURAL') {
-          res.json({ valid: true });
-        } else {
-          res.status(400).json({ message: 'Invalid invite code' });
-        }
-      });
-      
-      // WhatsApp endpoints
-      app.get('/api/whatsapp/status', (req, res) => {
-        res.json({ registered: false, phoneNumber: null });
-      });
-      
-      app.get('/api/whatsapp/contact', (req, res) => {
-        res.json({ number: '+1234567890', message: 'Hello from DotSpark!' });
-      });
-      
-      app.post('/api/whatsapp/register-direct', (req, res) => {
-        res.json({ success: true });
-      });
-      
-      app.post('/api/whatsapp/unregister', (req, res) => {
-        res.json({ success: true });
-      });
-      
-      // Network insights
-      app.get('/api/network/insights', (req, res) => {
-        res.json({ insights: [], connections: 0 });
-      });
-      
-      // Users search
-      app.get('/api/users/search', async (req, res) => {
-        try {
-          const query = req.query.q as string;
-          if (!query) return res.json([]);
-          res.json([]);
         } catch (e: any) {
           res.status(500).json({ error: e.message });
         }
       });
       
       // User stats
-      app.get('/api/user/stats', async (req, res) => {
+      app.get('/api/user/stats', async (req: any, res) => {
         try {
-          const user = await getUserFromToken(req);
-          if (!user) return res.json({ dots: 0, wheels: 0, chakras: 0, sparks: 0, thoughts: 0 });
+          if (!req.user) return res.json({ dots: 0, wheels: 0, chakras: 0, sparks: 0, thoughts: 0 });
           
-          const dotsCount = await db.select({ count: count() }).from(schema.dots).where(eq(schema.dots.userId, user.id));
-          const wheelsCount = await db.select({ count: count() }).from(schema.wheels).where(eq(schema.wheels.userId, user.id));
-          const chakrasCount = await db.select({ count: count() }).from(schema.chakras).where(eq(schema.chakras.userId, user.id));
-          const sparksCount = await db.select({ count: count() }).from(schema.sparks).where(eq(schema.sparks.userId, user.id));
-          const thoughtsCount = await db.select({ count: count() }).from(schema.thoughts).where(eq(schema.thoughts.userId, user.id));
+          const [dotsCount, wheelsCount, chakrasCount, sparksCount, thoughtsCount] = await Promise.all([
+            db.select({ count: count() }).from(schema.dots).where(eq(schema.dots.userId, req.user.id)),
+            db.select({ count: count() }).from(schema.wheels).where(eq(schema.wheels.userId, req.user.id)),
+            db.select({ count: count() }).from(schema.chakras).where(eq(schema.chakras.userId, req.user.id)),
+            db.select({ count: count() }).from(schema.sparks).where(eq(schema.sparks.userId, req.user.id)),
+            db.select({ count: count() }).from(schema.thoughts).where(eq(schema.thoughts.userId, req.user.id))
+          ]);
           
           res.json({
             dots: dotsCount[0]?.count || 0,
@@ -597,22 +454,45 @@ httpServer.listen(port, '0.0.0.0', () => {
         }
       });
       
-      // Cognitive identity - GET
-      app.get('/api/users/cognitive-identity', async (req, res) => {
+      // Dashboard
+      app.get('/api/dashboard', async (req: any, res) => {
         try {
-          const user = await getUserFromToken(req);
-          if (!user) return res.json({ configured: false, identity: null });
+          const userId = req.query.userId ? parseInt(req.query.userId as string) : req.user?.id;
+          if (!userId) return res.json({ dots: 0, wheels: 0, chakras: 0, sparks: 0 });
+          
+          const [dotsCount, wheelsCount, chakrasCount, sparksCount] = await Promise.all([
+            db.select({ count: count() }).from(schema.dots).where(eq(schema.dots.userId, userId)),
+            db.select({ count: count() }).from(schema.wheels).where(eq(schema.wheels.userId, userId)),
+            db.select({ count: count() }).from(schema.chakras).where(eq(schema.chakras.userId, userId)),
+            db.select({ count: count() }).from(schema.sparks).where(eq(schema.sparks.userId, userId))
+          ]);
+          
+          res.json({
+            dots: dotsCount[0]?.count || 0,
+            wheels: wheelsCount[0]?.count || 0,
+            chakras: chakrasCount[0]?.count || 0,
+            sparks: sparksCount[0]?.count || 0
+          });
+        } catch (e: any) {
+          res.status(500).json({ error: e.message });
+        }
+      });
+      
+      // Cognitive identity endpoints
+      app.get('/api/users/cognitive-identity', async (req: any, res) => {
+        try {
+          if (!req.user) return res.json({ configured: false, identity: null });
           
           const identity = await db.query.cognitiveIdentity.findFirst({
-            where: eq(schema.cognitiveIdentity.userId, user.id)
+            where: eq(schema.cognitiveIdentity.userId, req.user.id)
           });
           
           res.json({ 
             configured: !!identity, 
             identity: identity || null,
             user: {
-              cognitiveIdentityCompleted: user.cognitiveIdentityCompleted,
-              learningEngineCompleted: user.learningEngineCompleted
+              cognitiveIdentityCompleted: req.user.cognitiveIdentityCompleted,
+              learningEngineCompleted: req.user.learningEngineCompleted
             }
           });
         } catch (e: any) {
@@ -620,20 +500,18 @@ httpServer.listen(port, '0.0.0.0', () => {
         }
       });
       
-      // Cognitive identity config GET
-      app.get('/api/cognitive-identity/config', async (req, res) => {
+      app.get('/api/cognitive-identity/config', async (req: any, res) => {
         try {
-          const user = await getUserFromToken(req);
-          if (!user) return res.json({ sections: [], progress: 0, isComplete: false });
+          if (!req.user) return res.json({ sections: [], progress: 0, isComplete: false });
           
           const identity = await db.query.cognitiveIdentity.findFirst({
-            where: eq(schema.cognitiveIdentity.userId, user.id)
+            where: eq(schema.cognitiveIdentity.userId, req.user.id)
           });
           
           res.json({ 
             sections: [],
             progress: identity ? 100 : 0,
-            isComplete: user.cognitiveIdentityCompleted || false,
+            isComplete: req.user.cognitiveIdentityCompleted || false,
             identity: identity || null
           });
         } catch (e: any) {
@@ -641,478 +519,169 @@ httpServer.listen(port, '0.0.0.0', () => {
         }
       });
       
-      app.post('/api/cognitive-identity/configure', async (req, res) => {
+      app.post('/api/cognitive-identity/configure', async (req: any, res) => {
         try {
-          const user = await getUserFromToken(req);
-          if (!user) return res.status(401).json({ error: 'Unauthorized' });
+          if (!req.user) return res.status(401).json({ error: 'Unauthorized' });
           
-          const data = req.body;
+          const { cognitivePace, signalFocus, impulseControl, mentalEnergyFlow } = req.body;
           
-          // Upsert cognitive identity
-          let identity = await db.query.cognitiveIdentity.findFirst({
-            where: eq(schema.cognitiveIdentity.userId, user.id)
+          const existing = await db.query.cognitiveIdentity.findFirst({
+            where: eq(schema.cognitiveIdentity.userId, req.user.id)
           });
           
-          if (identity) {
-            await db.update(schema.cognitiveIdentity)
-              .set({ ...data, updatedAt: new Date() })
-              .where(eq(schema.cognitiveIdentity.userId, user.id));
-          } else {
-            await db.insert(schema.cognitiveIdentity)
-              .values({ userId: user.id, ...data });
-          }
-          
-          // Mark user as having completed cognitive identity
-          await db.update(schema.users)
-            .set({ cognitiveIdentityCompleted: true, cognitiveIdentityCompletedAt: new Date() })
-            .where(eq(schema.users.id, user.id));
-          
-          res.json({ success: true });
-        } catch (e: any) {
-          res.status(500).json({ error: e.message });
-        }
-      });
-      
-      app.post('/api/cognishield/configure', async (req, res) => {
-        try {
-          const user = await getUserFromToken(req);
-          if (!user) return res.status(401).json({ error: 'Unauthorized' });
-          res.json({ success: true });
-        } catch (e: any) {
-          res.status(500).json({ error: e.message });
-        }
-      });
-      
-      // Mapping endpoints
-      app.get('/api/mapping/dot-to-wheel', (req, res) => {
-        res.json([]);
-      });
-      
-      app.get('/api/mapping/dot-to-chakra', (req, res) => {
-        res.json([]);
-      });
-      
-      app.get('/api/mapping/wheel-to-chakra', (req, res) => {
-        res.json([]);
-      });
-      
-      app.post('/api/mapping/dot-to-wheel', (req, res) => {
-        res.json({ success: true });
-      });
-      
-      app.post('/api/mapping/dot-to-chakra', (req, res) => {
-        res.json({ success: true });
-      });
-      
-      app.post('/api/mapping/wheel-to-chakra', (req, res) => {
-        res.json({ success: true });
-      });
-      
-      // Indexing endpoints
-      app.get('/api/indexing/stats', (req, res) => {
-        res.json({ indexed: 0, pending: 0 });
-      });
-      
-      app.post('/api/indexing/semantic-search', (req, res) => {
-        res.json({ results: [] });
-      });
-      
-      app.post('/api/indexing/analyze-patterns', (req, res) => {
-        res.json({ patterns: [] });
-      });
-      
-      app.post('/api/indexing/detect-gaps', (req, res) => {
-        res.json({ gaps: [] });
-      });
-      
-      app.post('/api/indexing/full-reindex', (req, res) => {
-        res.json({ success: true });
-      });
-      
-      // Chat endpoints
-      app.post('/api/chat/intelligent', (req, res) => {
-        res.json({ response: 'Chat functionality is available in development mode.' });
-      });
-      
-      app.post('/api/chat/continue-point', (req, res) => {
-        res.json({ response: 'Continue point chat.' });
-      });
-      
-      app.post('/api/chat/advanced', (req, res) => {
-        res.json({ response: 'Advanced chat.' });
-      });
-      
-      app.post('/api/transcribe-voice', (req, res) => {
-        res.json({ text: '' });
-      });
-      
-      // Cognitive analyze and query
-      app.post('/api/cognitive/analyze', (req, res) => {
-        res.json({ analysis: null });
-      });
-      
-      app.post('/api/cognitive/query', (req, res) => {
-        res.json({ result: null });
-      });
-      
-      // DotSpark tuning
-      app.post('/api/dotspark/tuning', (req, res) => {
-        res.json({ success: true });
-      });
-      
-      app.post('/api/dotspark/learning-focus', (req, res) => {
-        res.json({ success: true });
-      });
-      
-      // Thought by ID
-      app.get('/api/thoughts/:thoughtId', async (req, res) => {
-        try {
-          const thoughtId = parseInt(req.params.thoughtId);
-          const thought = await db.query.thoughts.findFirst({
-            where: eq(schema.thoughts.id, thoughtId),
-            with: { user: true }
-          });
-          if (!thought) return res.status(404).json({ error: 'Thought not found' });
-          res.json(thought);
-        } catch (e: any) {
-          res.status(500).json({ error: e.message });
-        }
-      });
-      
-      // Update thought
-      app.patch('/api/thoughts/:thoughtId', async (req, res) => {
-        try {
-          const thoughtId = parseInt(req.params.thoughtId);
-          const { heading, summary } = req.body;
-          const [updated] = await db.update(schema.thoughts)
-            .set({ heading, summary, updatedAt: new Date() })
-            .where(eq(schema.thoughts.id, thoughtId))
-            .returning();
-          res.json(updated);
-        } catch (e: any) {
-          res.status(500).json({ error: e.message });
-        }
-      });
-      
-      // Delete thought
-      app.delete('/api/thoughts/:thoughtId', async (req, res) => {
-        try {
-          const thoughtId = parseInt(req.params.thoughtId);
-          await db.delete(schema.thoughts).where(eq(schema.thoughts.id, thoughtId));
-          res.json({ success: true });
-        } catch (e: any) {
-          res.status(500).json({ error: e.message });
-        }
-      });
-      
-      // Thought social thread status
-      app.get('/api/thoughts/:thoughtId/social-thread-status', (req, res) => {
-        res.json({ shared: false });
-      });
-      
-      app.post('/api/thoughts/:thoughtId/social-thread-status', (req, res) => {
-        res.json({ success: true });
-      });
-      
-      // Thought perspectives
-      app.get('/api/thoughts/:thoughtId/perspectives', (req, res) => {
-        res.json({ perspectives: [] });
-      });
-      
-      app.post('/api/thoughts/:thoughtId/perspectives', (req, res) => {
-        res.json({ success: true });
-      });
-      
-      // Social sparks
-      app.get('/api/thoughts/:thoughtId/social-sparks', (req, res) => {
-        res.json({ sparks: [] });
-      });
-      
-      // Share thought to social
-      app.post('/api/thoughts/:thoughtId/share-to-social', (req, res) => {
-        res.json({ success: true });
-      });
-      
-      // Save thought to myneura
-      app.post('/api/thoughts/myneura/save/:thoughtId', (req, res) => {
-        res.json({ success: true });
-      });
-      
-      // Connections endpoints
-      app.get('/api/connections', (req, res) => {
-        res.json([]);
-      });
-      
-      app.get('/api/connections/requests', (req, res) => {
-        res.json([]);
-      });
-      
-      app.post('/api/connections', (req, res) => {
-        res.json({ success: true });
-      });
-      
-      app.post('/api/connections/:connectionId/accept', (req, res) => {
-        res.json({ success: true });
-      });
-      
-      app.post('/api/connections/:connectionId/reject', (req, res) => {
-        res.json({ success: true });
-      });
-      
-      app.delete('/api/connections/:connectionId', (req, res) => {
-        res.json({ success: true });
-      });
-      
-      // Entries share
-      app.post('/api/entries/share', (req, res) => {
-        res.json({ success: true });
-      });
-      
-      app.post('/api/entries/share-by-tags', (req, res) => {
-        res.json({ success: true });
-      });
-      
-      app.post('/api/entries/share-all', (req, res) => {
-        res.json({ success: true });
-      });
-      
-      // Get user by Firebase UID
-      app.get('/api/users/firebase/:firebaseUid', async (req, res) => {
-        try {
-          const user = await db.query.users.findFirst({
-            where: eq(schema.users.firebaseUid, req.params.firebaseUid)
-          });
-          if (!user) return res.status(404).json({ error: 'User not found' });
-          res.json(user);
-        } catch (e: any) {
-          res.status(500).json({ error: e.message });
-        }
-      });
-      
-      // Create/update user
-      app.post('/api/users/firebase', async (req, res) => {
-        try {
-          const { firebaseUid, email, displayName, photoURL } = req.body;
-          let user = await db.query.users.findFirst({
-            where: eq(schema.users.firebaseUid, firebaseUid)
-          });
-          
-          if (user) {
-            const [updated] = await db.update(schema.users)
-              .set({ 
-                email: email || user.email,
-                fullName: displayName || user.fullName,
-                avatar: photoURL || user.avatar,
-                updatedAt: new Date()
-              })
-              .where(eq(schema.users.id, user.id))
+          if (existing) {
+            const [updated] = await db.update(schema.cognitiveIdentity)
+              .set({ cognitivePace, signalFocus, impulseControl, mentalEnergyFlow, updatedAt: new Date() })
+              .where(eq(schema.cognitiveIdentity.userId, req.user.id))
               .returning();
-            return res.json(updated);
+            
+            await db.update(schema.users)
+              .set({ cognitiveIdentityCompleted: true })
+              .where(eq(schema.users.id, req.user.id));
+              
+            res.json({ success: true, identity: updated });
+          } else {
+            const [created] = await db.insert(schema.cognitiveIdentity)
+              .values({ userId: req.user.id, cognitivePace, signalFocus, impulseControl, mentalEnergyFlow })
+              .returning();
+            
+            await db.update(schema.users)
+              .set({ cognitiveIdentityCompleted: true })
+              .where(eq(schema.users.id, req.user.id));
+              
+            res.json({ success: true, identity: created });
           }
+        } catch (e: any) {
+          res.status(500).json({ error: e.message });
+        }
+      });
+      
+      // ThinQ Circles endpoints
+      app.get('/api/thinq-circles', async (req: any, res) => {
+        try {
+          if (!req.user) return res.json({ circles: [] });
           
-          const [newUser] = await db.insert(schema.users)
+          const circles = await db.query.thinqCircles.findMany({
+            where: or(
+              eq(schema.thinqCircles.createdBy, req.user.id),
+              sql`${req.user.id} IN (SELECT user_id FROM thinq_circle_members WHERE circle_id = ${schema.thinqCircles.id})`
+            ),
+            orderBy: desc(schema.thinqCircles.createdAt)
+          });
+          
+          res.json({ circles });
+        } catch (e: any) {
+          res.status(500).json({ error: e.message });
+        }
+      });
+      
+      app.get('/api/thinq-circles/:circleId', async (req: any, res) => {
+        try {
+          const circleId = parseInt(req.params.circleId);
+          const circle = await db.query.thinqCircles.findFirst({
+            where: eq(schema.thinqCircles.id, circleId)
+          });
+          res.json({ success: !!circle, circle: circle || null });
+        } catch (e: any) {
+          res.status(500).json({ error: e.message });
+        }
+      });
+      
+      app.get('/api/thinq-circles/:circleId/thoughts', async (req: any, res) => {
+        try {
+          const circleId = parseInt(req.params.circleId);
+          const circleDots = await db.query.circleDots.findMany({
+            where: eq(schema.circleDots.circleId, circleId),
+            with: { thought: { with: { user: true } } }
+          });
+          const thoughts = circleDots.map(cd => cd.thought).filter(Boolean);
+          res.json({ thoughts });
+        } catch (e: any) {
+          res.status(500).json({ error: e.message });
+        }
+      });
+      
+      app.post('/api/thinq-circles', async (req: any, res) => {
+        try {
+          if (!req.user) return res.status(401).json({ error: 'Unauthorized' });
+          
+          const { name, description } = req.body;
+          
+          const [circle] = await db.insert(schema.thinqCircles)
             .values({
-              firebaseUid,
-              email,
-              fullName: displayName,
-              avatar: photoURL,
-              username: email?.split('@')[0] || `user_${Date.now()}`
+              name,
+              description,
+              createdBy: req.user.id
             })
             .returning();
           
-          res.status(201).json(newUser);
+          res.json({ success: true, circle });
         } catch (e: any) {
           res.status(500).json({ error: e.message });
         }
-      });
-      
-      // ThinQ Circles
-      app.get('/api/thinq-circles', async (req, res) => {
-        try {
-          const circles = await db.query.thinqCircles.findMany({
-            orderBy: desc(schema.thinqCircles.createdAt)
-          });
-          res.json(circles);
-        } catch (e: any) {
-          res.status(500).json({ error: e.message });
-        }
-      });
-      
-      // ThinQ Circles - My Circles (returns all circles for now)
-      app.get('/api/thinq-circles/my-circles', async (req, res) => {
-        try {
-          const circles = await db.query.thinqCircles.findMany({
-            orderBy: desc(schema.thinqCircles.createdAt),
-            limit: 10
-          });
-          res.json(circles);
-        } catch (e: any) {
-          res.status(500).json({ error: e.message });
-        }
-      });
-      
-      // ThinQ Circles - Pending Invites
-      app.get('/api/thinq-circles/pending-invites', (req, res) => {
-        res.json([]);
-      });
-      
-      // Badges - Pending
-      app.get('/api/badges/pending', (req, res) => {
-        res.json([]);
       });
       
       // User badges
-      app.get('/api/users/:userId/badges', async (req, res) => {
+      app.get('/api/users/:userId/badges', async (req: any, res) => {
         try {
           const userId = parseInt(req.params.userId);
-          // Return sample badges for now
+          const userBadges = await db.query.userBadges.findMany({
+            where: eq(schema.userBadges.userId, userId),
+            with: { badge: true }
+          });
+          res.json({ badges: userBadges.map(ub => ub.badge) });
+        } catch (e: any) {
+          res.status(500).json({ error: e.message });
+        }
+      });
+      
+      // User profile
+      app.get('/api/users/:userId', async (req: any, res) => {
+        try {
+          const userId = parseInt(req.params.userId);
+          const user = await db.query.users.findFirst({
+            where: eq(schema.users.id, userId)
+          });
+          if (!user) return res.status(404).json({ error: 'User not found' });
+          
           res.json({
-            badges: [
-              { id: 1, name: 'First Dot', description: 'Created your first dot', earned: true, earnedAt: new Date() },
-              { id: 2, name: 'Deep Thinker', description: 'Created 10 dots', earned: false },
-              { id: 3, name: 'Connector', description: 'Linked 5 dots to wheels', earned: false }
-            ]
+            id: user.id,
+            username: user.username,
+            fullName: user.fullName,
+            avatar: user.avatar,
+            linkedinHeadline: user.linkedinHeadline,
+            linkedinProfileUrl: user.linkedinProfileUrl,
+            linkedinPhotoUrl: user.linkedinPhotoUrl,
+            aboutMe: user.aboutMe
           });
         } catch (e: any) {
           res.status(500).json({ error: e.message });
         }
       });
       
-      // Notifications - Simple (comprehensive user activity)
-      app.get('/api/notifications-simple', async (req, res) => {
+      // Recent activities
+      app.get('/api/activities/recent', async (req: any, res) => {
         try {
-          const user = await getUserFromToken(req);
-          if (!user) {
-            return res.json({ notifications: [], unreadCount: 0 });
-          }
+          if (!req.user) return res.json({ activities: [] });
           
-          // Gather recent activity from multiple sources
-          const [recentDots, recentWheels, recentSparks, recentThoughts] = await Promise.all([
-            db.query.dots.findMany({
-              where: eq(schema.dots.userId, user.id),
-              orderBy: desc(schema.dots.createdAt),
-              limit: 5
-            }),
-            db.query.wheels.findMany({
-              where: eq(schema.wheels.userId, user.id),
-              orderBy: desc(schema.wheels.createdAt),
-              limit: 3
-            }),
-            db.query.sparks.findMany({
-              where: eq(schema.sparks.userId, user.id),
-              orderBy: desc(schema.sparks.createdAt),
-              limit: 3
-            }),
-            db.query.thoughts.findMany({
-              where: eq(schema.thoughts.userId, user.id),
-              orderBy: desc(schema.thoughts.createdAt),
-              limit: 3
-            })
-          ]);
-          
-          const notifications: any[] = [];
-          
-          recentDots.forEach(dot => {
-            notifications.push({
-              id: `dot-${dot.id}`,
-              type: 'dot_created',
-              message: `You created a new dot: ${dot.oneWordSummary || 'Untitled'}`,
-              createdAt: dot.createdAt,
-              read: true
-            });
-          });
-          
-          recentWheels.forEach(wheel => {
-            notifications.push({
-              id: `wheel-${wheel.id}`,
-              type: 'wheel_created',
-              message: `You created a new wheel: ${wheel.heading || 'Untitled'}`,
-              createdAt: wheel.createdAt,
-              read: true
-            });
-          });
-          
-          recentSparks.forEach(spark => {
-            notifications.push({
-              id: `spark-${spark.id}`,
-              type: 'spark_created',
-              message: `You added a spark`,
-              createdAt: spark.createdAt,
-              read: true
-            });
-          });
-          
-          recentThoughts.forEach(thought => {
-            notifications.push({
-              id: `thought-${thought.id}`,
-              type: 'thought_created',
-              message: `You created a thought: ${thought.heading || 'Untitled'}`,
-              createdAt: thought.createdAt,
-              read: true
-            });
-          });
-          
-          // Sort by date descending and limit
-          notifications.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
-          
-          res.json({ notifications: notifications.slice(0, 10), unreadCount: 0 });
-        } catch (e: any) {
-          res.status(500).json({ error: e.message });
-        }
-      });
-      
-      // Notifications - Full list
-      app.get('/api/notifications', async (req, res) => {
-        try {
-          const user = await getUserFromToken(req);
-          if (!user) {
-            return res.json({ success: true, notifications: [], unreadCount: 0 });
-          }
-          // Return recent activity as notifications
-          const recentDots = await db.query.dots.findMany({
-            where: eq(schema.dots.userId, user.id),
-            orderBy: desc(schema.dots.createdAt),
-            limit: 10
-          });
-          const notifications = recentDots.map(dot => ({
-            id: dot.id,
-            type: 'dot_created',
-            title: 'New Dot Created',
-            message: `You created: ${dot.oneWordSummary || 'Untitled'}`,
-            createdAt: dot.createdAt,
-            read: true
-          }));
-          res.json({ success: true, notifications, unreadCount: 0 });
-        } catch (e: any) {
-          res.status(500).json({ error: e.message });
-        }
-      });
-      
-      // Recent activities (comprehensive)
-      app.get('/api/activities/recent', async (req, res) => {
-        try {
-          const user = await getUserFromToken(req);
-          if (!user) return res.json({ activities: [] });
-          
-          // Gather recent activity from multiple sources
           const [recentDots, recentWheels, recentChakras, recentThoughts] = await Promise.all([
             db.query.dots.findMany({
-              where: eq(schema.dots.userId, user.id),
+              where: eq(schema.dots.userId, req.user.id),
               orderBy: desc(schema.dots.createdAt),
               limit: 5
             }),
             db.query.wheels.findMany({
-              where: eq(schema.wheels.userId, user.id),
+              where: eq(schema.wheels.userId, req.user.id),
               orderBy: desc(schema.wheels.createdAt),
               limit: 3
             }),
             db.query.chakras.findMany({
-              where: eq(schema.chakras.userId, user.id),
+              where: eq(schema.chakras.userId, req.user.id),
               orderBy: desc(schema.chakras.createdAt),
               limit: 2
             }),
             db.query.thoughts.findMany({
-              where: eq(schema.thoughts.userId, user.id),
+              where: eq(schema.thoughts.userId, req.user.id),
               orderBy: desc(schema.thoughts.createdAt),
               limit: 3
             })
@@ -1156,7 +725,6 @@ httpServer.listen(port, '0.0.0.0', () => {
             });
           });
           
-          // Sort by date descending
           activities.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
           
           res.json({ activities: activities.slice(0, 15) });
@@ -1165,165 +733,57 @@ httpServer.listen(port, '0.0.0.0', () => {
         }
       });
       
-      // Dashboard
-      app.get('/api/dashboard', async (req, res) => {
+      // Categories and tags (stubs)
+      app.get('/api/categories', (req, res) => res.json([]));
+      app.get('/api/tags', (req, res) => res.json([]));
+      app.get('/api/tags/:id/related', (req, res) => res.json([]));
+      
+      // Entries (stubs)
+      app.get('/api/entries', (req, res) => res.json([]));
+      app.get('/api/entries/:id', (req, res) => res.json(null));
+      
+      // WhatsApp endpoints (stubs for Cloud Run)
+      app.get('/api/whatsapp/status', (req, res) => res.json({ registered: false }));
+      app.get('/api/whatsapp/contact', (req, res) => res.json({ number: null }));
+      app.post('/api/whatsapp/register-direct', (req, res) => res.json({ success: false, message: 'Not available on Cloud Run' }));
+      app.post('/api/whatsapp/unregister', (req, res) => res.json({ success: true }));
+      
+      // Network insights (stub)
+      app.get('/api/network/insights', (req, res) => res.json({ insights: [], connections: 0 }));
+      
+      // Users search
+      app.get('/api/users/search', async (req, res) => {
         try {
-          let userId = req.query.userId as string;
-          if (!userId) {
-            const user = await getUserFromToken(req);
-            if (user) userId = String(user.id);
-          }
-          if (!userId) return res.json({ dots: 0, wheels: 0, chakras: 0, sparks: 0 });
+          const query = req.query.q as string;
+          if (!query || query.length < 2) return res.json([]);
           
-          const dotsCount = await db.select({ count: count() }).from(schema.dots).where(eq(schema.dots.userId, parseInt(userId)));
-          const wheelsCount = await db.select({ count: count() }).from(schema.wheels).where(eq(schema.wheels.userId, parseInt(userId)));
-          const chakrasCount = await db.select({ count: count() }).from(schema.chakras).where(eq(schema.chakras.userId, parseInt(userId)));
-          const sparksCount = await db.select({ count: count() }).from(schema.sparks).where(eq(schema.sparks.userId, parseInt(userId)));
-          
-          res.json({
-            dots: dotsCount[0]?.count || 0,
-            wheels: wheelsCount[0]?.count || 0,
-            chakras: chakrasCount[0]?.count || 0,
-            sparks: sparksCount[0]?.count || 0
+          const users = await db.query.users.findMany({
+            where: sql`${schema.users.fullName} ILIKE ${'%' + query + '%'} OR ${schema.users.username} ILIKE ${'%' + query + '%'}`,
+            limit: 10,
+            columns: {
+              id: true,
+              username: true,
+              fullName: true,
+              avatar: true,
+              linkedinHeadline: true
+            }
           });
+          
+          res.json(users);
         } catch (e: any) {
           res.status(500).json({ error: e.message });
         }
       });
       
-      // Thoughts Stats
-      app.get('/api/thoughts/stats', async (req, res) => {
-        try {
-          const thoughtsCount = await db.select({ count: count() }).from(schema.thoughts);
-          res.json({ total: thoughtsCount[0]?.count || 0 });
-        } catch (e: any) {
-          res.status(500).json({ error: e.message });
-        }
-      });
-      
-      // Auth login - Firebase token verification
-      app.post('/api/auth/login', async (req, res) => {
-        try {
-          const { idToken, email, displayName, photoURL } = req.body;
-          
-          if (!idToken) {
-            return res.status(400).json({ error: 'ID token required' });
-          }
-          
-          // Verify Firebase token
-          const decodedToken = await admin.auth().verifyIdToken(idToken);
-          const firebaseUid = decodedToken.uid;
-          const userEmail = decodedToken.email || email;
-          
-          // Find or create user
-          let user = await db.query.users.findFirst({
-            where: eq(schema.users.firebaseUid, firebaseUid)
-          });
-          
-          if (!user && userEmail) {
-            // Try to find by email
-            user = await db.query.users.findFirst({
-              where: eq(schema.users.email, userEmail)
-            });
-            
-            if (user) {
-              // Link existing user to Firebase
-              const [updated] = await db.update(schema.users)
-                .set({ firebaseUid, updatedAt: new Date() })
-                .where(eq(schema.users.id, user.id))
-                .returning();
-              user = updated;
-            }
-          }
-          
-          if (!user) {
-            // Create new user
-            const username = userEmail?.split('@')[0] || `user_${Date.now()}`;
-            const [newUser] = await db.insert(schema.users)
-              .values({
-                firebaseUid,
-                email: userEmail,
-                fullName: displayName || decodedToken.name,
-                avatar: photoURL || decodedToken.picture,
-                username
-              })
-              .returning();
-            user = newUser;
-          }
-          
-          res.json({
-            success: true,
-            user: {
-              id: user.id,
-              email: user.email,
-              username: user.username,
-              fullName: user.fullName,
-              avatar: user.avatar,
-              avatarUrl: user.avatar, // Frontend expects avatarUrl
-              firebaseUid: user.firebaseUid,
-              createdAt: user.createdAt,
-              updatedAt: user.updatedAt
-            }
-          });
-        } catch (e: any) {
-          console.error('Auth login error:', e);
-          res.status(401).json({ error: 'Authentication failed: ' + e.message });
-        }
-      });
-      
-      // Auth me - get current user from Bearer token
-      app.get('/api/auth/me', async (req, res) => {
-        try {
-          const authHeader = req.headers.authorization;
-          if (!authHeader || !authHeader.startsWith('Bearer ')) {
-            return res.json({ user: null });
-          }
-          
-          const idToken = authHeader.substring(7);
-          const decodedToken = await admin.auth().verifyIdToken(idToken);
-          const firebaseUid = decodedToken.uid;
-          
-          const user = await db.query.users.findFirst({
-            where: eq(schema.users.firebaseUid, firebaseUid)
-          });
-          
-          if (!user) {
-            return res.json({ user: null });
-          }
-          
-          res.json({
-            user: {
-              id: user.id,
-              email: user.email,
-              username: user.username,
-              fullName: user.fullName,
-              avatar: user.avatar,
-              avatarUrl: user.avatar,
-              firebaseUid: user.firebaseUid,
-              createdAt: user.createdAt,
-              updatedAt: user.updatedAt
-            }
-          });
-        } catch (e: any) {
-          console.error('Auth me error:', e);
-          res.json({ user: null });
-        }
-      });
-      
-      // Auth logout
-      app.post('/api/auth/logout', (req, res) => {
-        res.json({ success: true });
-      });
-      
-      console.log('=== All routes registered ===');
+      console.log('=== All routes registered successfully ===');
       
     } catch (error: any) {
       console.error('ROUTE LOAD ERROR:', error.message);
       console.error('Stack:', error.stack);
       
       app.get('/', (req, res) => {
-        res.json({ 
-          message: 'DotSpark API',
+        res.status(500).json({ 
+          message: 'ThinQers API',
           status: 'error',
           error: error.message
         });
@@ -1331,6 +791,5 @@ httpServer.listen(port, '0.0.0.0', () => {
     }
   };
   
-  // Start loading routes
   loadRoutes();
 });
