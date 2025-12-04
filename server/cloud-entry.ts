@@ -1,6 +1,7 @@
 import express from 'express';
 import { createServer } from 'http';
 import admin from 'firebase-admin';
+import crypto from 'crypto';
 import { db } from '../db';
 import * as schema from '../shared/schema';
 import { eq, desc, count, or, and, sql } from 'drizzle-orm';
@@ -291,7 +292,6 @@ httpServer.listen(port, '0.0.0.0', () => {
           return res.status(500).json({ error: 'LinkedIn OAuth not configured' });
         }
         
-        const crypto = require('crypto');
         const state = crypto.randomBytes(32).toString('hex');
         oauthStates.set(state, { createdAt: Date.now() });
         
