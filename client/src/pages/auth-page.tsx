@@ -5,6 +5,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/use-auth-new";
 import { ArrowLeft } from "lucide-react";
 import { isMobileBrowser } from "@/lib/mobile-detection";
+import { API_BASE_URL } from "@/lib/queryClient";
 
 export default function AuthPage() {
   const [isLoading, setIsLoading] = useState(false);
@@ -129,7 +130,7 @@ export default function AuthPage() {
                 {/* LinkedIn Sign In */}
                 <Button 
                   className="w-full bg-[#0A66C2] hover:bg-[#004182] text-white py-6 text-base rounded-lg font-medium flex items-center justify-center gap-3"
-                  onClick={() => window.location.href = '/api/auth/linkedin'}
+                  onClick={() => window.location.href = `${API_BASE_URL}/api/auth/linkedin`}
                   type="button"
                   disabled={isLoading}
                 >
