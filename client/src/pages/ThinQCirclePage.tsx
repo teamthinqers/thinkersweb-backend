@@ -263,7 +263,7 @@ export default function ThinQCirclePage() {
                         <Avatar key={member.id} className="h-7 w-7 border-2 border-white">
                           <AvatarImage src={member.user.linkedinPhotoUrl || member.user.avatar} />
                           <AvatarFallback className="text-white text-xs" style={{ backgroundColor: '#F59E0B' }}>
-                            {member.user.fullName.charAt(0)}
+                            {(member.user.fullName || member.user.email || 'U').charAt(0).toUpperCase()}
                           </AvatarFallback>
                         </Avatar>
                       ))}
@@ -351,11 +351,11 @@ export default function ThinQCirclePage() {
                   <Avatar className="h-10 w-10">
                     <AvatarImage src={member.user.linkedinPhotoUrl || member.user.avatar} />
                     <AvatarFallback className="text-white" style={{ backgroundColor: '#F59E0B' }}>
-                      {member.user.fullName.charAt(0)}
+                      {(member.user.fullName || member.user.email || 'U').charAt(0).toUpperCase()}
                     </AvatarFallback>
                   </Avatar>
                   <div>
-                    <p className="font-medium text-gray-900">{member.user.fullName}</p>
+                    <p className="font-medium text-gray-900">{member.user.fullName || member.user.email}</p>
                     <p className="text-sm text-gray-500">{member.user.email}</p>
                   </div>
                 </div>
