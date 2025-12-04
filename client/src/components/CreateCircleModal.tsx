@@ -60,7 +60,8 @@ export function CreateCircleModal({ open, onOpenChange }: CreateCircleModalProps
         description: `${circleName} has been created successfully.`,
       });
 
-      queryClient.invalidateQueries({ queryKey: ['/api/thinq-circles/my-circles'] });
+      // Force refetch all circles queries immediately (not just invalidate)
+      await queryClient.refetchQueries({ queryKey: ['/api/thinq-circles/my-circles'] });
       
       // Reset form
       setCircleName('');
