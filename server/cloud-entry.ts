@@ -627,7 +627,7 @@ httpServer.listen(port, '0.0.0.0', () => {
       // User stats
       app.get('/api/user/stats', async (req: any, res) => {
         try {
-          if (!req.user) return res.json({ dots: 0, wheels: 0, chakras: 0, sparks: 0, thoughts: 0 });
+          if (!req.user) return res.status(401).json({ error: 'Authentication required' });
           
           const [dotsCount, wheelsCount, chakrasCount, sparksCount, thoughtsCount] = await Promise.all([
             db.select({ count: count() }).from(schema.dots).where(eq(schema.dots.userId, req.user.id)),
@@ -858,7 +858,7 @@ httpServer.listen(port, '0.0.0.0', () => {
       // Cognitive identity endpoints
       app.get('/api/users/cognitive-identity', async (req: any, res) => {
         try {
-          if (!req.user) return res.json({ configured: false, identity: null });
+          if (!req.user) return res.status(401).json({ error: 'Authentication required' });
           
           const identity = await db.query.cognitiveIdentity.findFirst({
             where: eq(schema.cognitiveIdentity.userId, req.user.id)
@@ -879,7 +879,7 @@ httpServer.listen(port, '0.0.0.0', () => {
       
       app.get('/api/cognitive-identity/config', async (req: any, res) => {
         try {
-          if (!req.user) return res.json({ success: false, configured: false, data: null });
+          if (!req.user) return res.status(401).json({ error: 'Authentication required' });
           
           const identity = await db.query.cognitiveIdentity.findFirst({
             where: eq(schema.cognitiveIdentity.userId, req.user.id)
@@ -940,7 +940,7 @@ httpServer.listen(port, '0.0.0.0', () => {
       // IMPORTANT: my-circles must come BEFORE :circleId to prevent "my-circles" matching as a circleId
       app.get('/api/thinq-circles/my-circles', async (req: any, res) => {
         try {
-          if (!req.user) return res.json({ success: true, circles: [] });
+          if (!req.user) return res.status(401).json({ error: 'Authentication required' });
           
           const circles = await db.query.thinqCircleMembers.findMany({
             where: eq(schema.thinqCircleMembers.userId, req.user.id),
@@ -979,7 +979,7 @@ httpServer.listen(port, '0.0.0.0', () => {
       // Get user's pending circle invites
       app.get('/api/thinq-circles/pending-invites', async (req: any, res) => {
         try {
-          if (!req.user) return res.json({ success: true, invites: [] });
+          if (!req.user) return res.status(401).json({ error: 'Authentication required' });
           
           const pendingInvites = await db.query.thinqCircleInvites.findMany({
             where: and(
@@ -1019,7 +1019,7 @@ httpServer.listen(port, '0.0.0.0', () => {
       // List all circles for user
       app.get('/api/thinq-circles', async (req: any, res) => {
         try {
-          if (!req.user) return res.json({ circles: [] });
+          if (!req.user) return res.status(401).json({ error: 'Authentication required' });
           
           const circles = await db.query.thinqCircles.findMany({
             where: or(
@@ -1774,7 +1774,7 @@ httpServer.listen(port, '0.0.0.0', () => {
       // Recent activities
       app.get('/api/activities/recent', async (req: any, res) => {
         try {
-          if (!req.user) return res.json({ activities: [] });
+          if (!req.user) return res.status(401).json({ error: 'Authentication required' });
           
           const [recentDots, recentWheels, recentChakras, recentThoughts] = await Promise.all([
             db.query.dots.findMany({
