@@ -58,7 +58,7 @@ interface PerspectiveMessage {
 }
 
 export default function SocialFeedPage() {
-  const { user, isLoading: authLoading } = useAuth();
+  const { user, isLoading: authLoading, authReady } = useAuth();
   const [, setLocation] = useLocation();
   const [selectedDot, setSelectedDot] = useState<ThoughtDot | null>(null);
   const [dots, setDots] = useState<ThoughtDot[]>([]);
@@ -111,7 +111,9 @@ export default function SocialFeedPage() {
     }>;
   }>({
     queryKey: ['/api/thinq-circles/my-circles'],
-    enabled: !!user,
+    enabled: !!user && authReady,
+    staleTime: 0,
+    refetchOnMount: 'always',
   });
 
   const userCircles = circlesResponse?.circles || [];

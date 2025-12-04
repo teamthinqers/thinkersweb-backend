@@ -61,7 +61,7 @@ export default function FloatingDot({ onClick, currentPage }: FloatingDotProps) 
   ];
   const dotRef = useRef<HTMLDivElement>(null);
   const dialogRef = useRef<HTMLDivElement>(null);
-  const { user } = useAuth();
+  const { user, authReady } = useAuth();
   const { toast } = useToast();
 
   // Fetch user's circles using useQuery
@@ -74,7 +74,9 @@ export default function FloatingDot({ onClick, currentPage }: FloatingDotProps) 
     }>;
   }>({
     queryKey: ['/api/thinq-circles/my-circles'],
-    enabled: !!user,
+    enabled: !!user && authReady,
+    staleTime: 0,
+    refetchOnMount: 'always',
   });
   
   const userCircles = circlesResponse?.circles || [];
