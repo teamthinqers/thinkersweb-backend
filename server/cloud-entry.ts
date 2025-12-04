@@ -773,10 +773,7 @@ httpServer.listen(port, '0.0.0.0', () => {
           });
           
           const recentThoughts = await db.query.thoughts.findMany({
-            where: and(
-              eq(schema.thoughts.userId, userId),
-              eq(schema.thoughts.visibility, 'social')
-            ),
+            where: eq(schema.thoughts.userId, userId),
             orderBy: desc(schema.thoughts.createdAt),
             limit: 5,
           });
