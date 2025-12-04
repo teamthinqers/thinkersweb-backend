@@ -1050,6 +1050,14 @@ httpServer.listen(port, '0.0.0.0', () => {
             })
             .returning();
           
+          // Add creator as a member of the circle (required for my-circles to work)
+          await db.insert(schema.thinqCircleMembers)
+            .values({
+              circleId: circle.id,
+              userId: req.user.id,
+              role: 'admin'
+            });
+          
           res.json({ success: true, circle });
         } catch (e: any) {
           res.status(500).json({ error: e.message });
