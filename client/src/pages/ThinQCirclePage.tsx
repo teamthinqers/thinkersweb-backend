@@ -148,7 +148,8 @@ export default function ThinQCirclePage() {
     },
   });
 
-  if (isLoading) {
+  // Show loading while auth is initializing or query is loading
+  if (!authReady || isLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-yellow-50 via-amber-50 to-yellow-100 flex items-center justify-center">
         <div className="text-center">
